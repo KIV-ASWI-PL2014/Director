@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+// Include forms namespaces
+using Director.Forms;
+
 namespace Director
 {
     static class Program
@@ -16,7 +19,7 @@ namespace Director
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainWindow());
+            Application.Run(new SplashScreen(new MainWindow()));
         }
     }
 }
