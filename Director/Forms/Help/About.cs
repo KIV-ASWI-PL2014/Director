@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Director.Forms
+namespace Director.Forms.Help
 {
     partial class About : Form
     {
