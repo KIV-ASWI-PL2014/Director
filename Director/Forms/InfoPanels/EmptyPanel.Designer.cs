@@ -33,12 +33,13 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(294, 261);
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(256, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Create new server or select something in scenario list";
+            this.label1.Size = new System.Drawing.Size(893, 547);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Create new server or select scenario!";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // EmptyPanel
             // 
@@ -49,12 +50,17 @@
             this.Name = "EmptyPanel";
             this.Size = new System.Drawing.Size(893, 547);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.Label label1;
+
+
+
+
+
+
     }
 }

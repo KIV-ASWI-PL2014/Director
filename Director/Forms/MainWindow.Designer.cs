@@ -29,17 +29,12 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.exitMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.scenariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.runAllScenariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
-            this.newServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newScenarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,23 +42,35 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
-            this.AboutProgram = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.ScenarioView = new System.Windows.Forms.TreeView();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.TestProgress = new System.Windows.Forms.ProgressBar();
             this.ContentPanel = new System.Windows.Forms.Panel();
             this.RootContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ScenarioContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.RequestContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.processingIcons = new System.Windows.Forms.Timer(this.components);
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.languagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.englishToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.czechToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
+            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.runAllScenariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.AboutProgram = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.addScenarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runAllTestsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ScenarioContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.addRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runThisScenarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.RequestContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyThisRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeThisRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,6 +87,7 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.scenariosToolStripMenuItem,
+            this.settingsToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -99,50 +107,16 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // newToolStripMenuItem
-            // 
-            this.newToolStripMenuItem.Image = global::Director.Properties.Resources.new_file;
-            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-            this.newToolStripMenuItem.Text = "New";
-            // 
-            // openToolStripMenuItem
-            // 
-            this.openToolStripMenuItem.Image = global::Director.Properties.Resources.open;
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-            this.openToolStripMenuItem.Text = "Open";
-            // 
-            // saveToolStripMenuItem
-            // 
-            this.saveToolStripMenuItem.Image = global::Director.Properties.Resources.save;
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-            this.saveToolStripMenuItem.Text = "Save";
-            // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(143, 6);
-            // 
-            // exitMenu
-            // 
-            this.exitMenu.Image = global::Director.Properties.Resources.exit;
-            this.exitMenu.Name = "exitMenu";
-            this.exitMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.exitMenu.Size = new System.Drawing.Size(146, 22);
-            this.exitMenu.Text = "Exit";
-            this.exitMenu.Click += new System.EventHandler(this.exitMenu_Click);
             // 
             // scenariosToolStripMenuItem
             // 
             this.scenariosToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.runAllScenariosToolStripMenuItem,
             this.toolStripMenuItem3,
-            this.newServerToolStripMenuItem,
             this.newScenarioToolStripMenuItem,
             this.toolStripMenuItem2,
             this.exportToolStripMenuItem,
@@ -151,24 +125,10 @@
             this.scenariosToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.scenariosToolStripMenuItem.Text = "Tests";
             // 
-            // runAllScenariosToolStripMenuItem
-            // 
-            this.runAllScenariosToolStripMenuItem.Image = global::Director.Properties.Resources.run;
-            this.runAllScenariosToolStripMenuItem.Name = "runAllScenariosToolStripMenuItem";
-            this.runAllScenariosToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.runAllScenariosToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.runAllScenariosToolStripMenuItem.Text = "Run All Scenarios";
-            // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
             this.toolStripMenuItem3.Size = new System.Drawing.Size(181, 6);
-            // 
-            // newServerToolStripMenuItem
-            // 
-            this.newServerToolStripMenuItem.Name = "newServerToolStripMenuItem";
-            this.newServerToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.newServerToolStripMenuItem.Text = "New server";
             // 
             // newScenarioToolStripMenuItem
             // 
@@ -214,14 +174,6 @@
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
             this.toolStripMenuItem4.Size = new System.Drawing.Size(153, 6);
             // 
-            // AboutProgram
-            // 
-            this.AboutProgram.Image = global::Director.Properties.Resources.information;
-            this.AboutProgram.Name = "AboutProgram";
-            this.AboutProgram.Size = new System.Drawing.Size(156, 22);
-            this.AboutProgram.Text = "About Program";
-            this.AboutProgram.Click += new System.EventHandler(this.AboutProgram_Click);
-            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
@@ -243,7 +195,7 @@
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.ScenarioView, 0, 1);
-            this.tableLayoutPanel2.Controls.Add(this.progressBar1, 0, 2);
+            this.tableLayoutPanel2.Controls.Add(this.TestProgress, 0, 2);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -273,16 +225,17 @@
             this.ScenarioView.TabIndex = 1;
             this.ScenarioView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ScenarioView_MouseUp);
             // 
-            // progressBar1
+            // TestProgress
             // 
-            this.progressBar1.Location = new System.Drawing.Point(3, 562);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(238, 19);
-            this.progressBar1.TabIndex = 2;
-            this.progressBar1.Value = 50;
+            this.TestProgress.Location = new System.Drawing.Point(3, 562);
+            this.TestProgress.Name = "TestProgress";
+            this.TestProgress.Size = new System.Drawing.Size(238, 19);
+            this.TestProgress.TabIndex = 2;
+            this.TestProgress.Value = 50;
             // 
             // ContentPanel
             // 
+            this.ContentPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ContentPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ContentPanel.Location = new System.Drawing.Point(253, 3);
             this.ContentPanel.Name = "ContentPanel";
@@ -297,6 +250,128 @@
             this.runAllTestsToolStripMenuItem});
             this.RootContextMenu.Name = "RootContextMenu";
             this.RootContextMenu.Size = new System.Drawing.Size(145, 70);
+            // 
+            // ScenarioContextMenu
+            // 
+            this.ScenarioContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editToolStripMenuItem1,
+            this.addRequestToolStripMenuItem,
+            this.runThisScenarioToolStripMenuItem,
+            this.pasteRequestToolStripMenuItem});
+            this.ScenarioContextMenu.Name = "ScenarioContextMenu";
+            this.ScenarioContextMenu.Size = new System.Drawing.Size(166, 92);
+            // 
+            // RequestContextMenu
+            // 
+            this.RequestContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editToolStripMenuItem,
+            this.copyThisRequestToolStripMenuItem,
+            this.removeThisRequestToolStripMenuItem});
+            this.RequestContextMenu.Name = "RequestContextMenu";
+            this.RequestContextMenu.Size = new System.Drawing.Size(182, 70);
+            // 
+            // processingIcons
+            // 
+            this.processingIcons.Enabled = true;
+            this.processingIcons.Interval = 300;
+            this.processingIcons.Tick += new System.EventHandler(this.processingIcons_Tick);
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.languagesToolStripMenuItem,
+            this.toolStripMenuItem5,
+            this.settingsToolStripMenuItem1});
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // languagesToolStripMenuItem
+            // 
+            this.languagesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.englishToolStripMenuItem,
+            this.czechToolStripMenuItem});
+            this.languagesToolStripMenuItem.Image = global::Director.Properties.Resources.address_bar;
+            this.languagesToolStripMenuItem.Name = "languagesToolStripMenuItem";
+            this.languagesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.languagesToolStripMenuItem.Text = "Languages";
+            // 
+            // englishToolStripMenuItem
+            // 
+            this.englishToolStripMenuItem.Checked = true;
+            this.englishToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.englishToolStripMenuItem.Image = global::Director.Properties.Resources.flag_great_britain;
+            this.englishToolStripMenuItem.Name = "englishToolStripMenuItem";
+            this.englishToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.englishToolStripMenuItem.Text = "English";
+            // 
+            // czechToolStripMenuItem
+            // 
+            this.czechToolStripMenuItem.Image = global::Director.Properties.Resources.flag_czech_republic;
+            this.czechToolStripMenuItem.Name = "czechToolStripMenuItem";
+            this.czechToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.czechToolStripMenuItem.Text = "Czech";
+            // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(149, 6);
+            // 
+            // newToolStripMenuItem
+            // 
+            this.newToolStripMenuItem.Image = global::Director.Properties.Resources.new_file;
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.newToolStripMenuItem.Text = "New";
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Image = global::Director.Properties.Resources.open;
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.openToolStripMenuItem.Text = "Open";
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Image = global::Director.Properties.Resources.save;
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.saveToolStripMenuItem.Text = "Save";
+            // 
+            // exitMenu
+            // 
+            this.exitMenu.Image = global::Director.Properties.Resources.exit;
+            this.exitMenu.Name = "exitMenu";
+            this.exitMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
+            this.exitMenu.Size = new System.Drawing.Size(146, 22);
+            this.exitMenu.Text = "Exit";
+            this.exitMenu.Click += new System.EventHandler(this.exitMenu_Click);
+            // 
+            // runAllScenariosToolStripMenuItem
+            // 
+            this.runAllScenariosToolStripMenuItem.Image = global::Director.Properties.Resources.run;
+            this.runAllScenariosToolStripMenuItem.Name = "runAllScenariosToolStripMenuItem";
+            this.runAllScenariosToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.runAllScenariosToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.runAllScenariosToolStripMenuItem.Text = "Run All Scenarios";
+            // 
+            // settingsToolStripMenuItem1
+            // 
+            this.settingsToolStripMenuItem1.Image = global::Director.Properties.Resources.cog_edit;
+            this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
+            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.settingsToolStripMenuItem1.Text = "Settings";
+            // 
+            // AboutProgram
+            // 
+            this.AboutProgram.Image = global::Director.Properties.Resources.information;
+            this.AboutProgram.Name = "AboutProgram";
+            this.AboutProgram.Size = new System.Drawing.Size(156, 22);
+            this.AboutProgram.Text = "About Program";
+            this.AboutProgram.Click += new System.EventHandler(this.AboutProgram_Click);
             // 
             // editToolStripMenuItem2
             // 
@@ -318,16 +393,6 @@
             this.runAllTestsToolStripMenuItem.Name = "runAllTestsToolStripMenuItem";
             this.runAllTestsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.runAllTestsToolStripMenuItem.Text = "Run all tests";
-            // 
-            // ScenarioContextMenu
-            // 
-            this.ScenarioContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.editToolStripMenuItem1,
-            this.addRequestToolStripMenuItem,
-            this.runThisScenarioToolStripMenuItem,
-            this.pasteRequestToolStripMenuItem});
-            this.ScenarioContextMenu.Name = "ScenarioContextMenu";
-            this.ScenarioContextMenu.Size = new System.Drawing.Size(166, 92);
             // 
             // editToolStripMenuItem1
             // 
@@ -357,15 +422,6 @@
             this.pasteRequestToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.pasteRequestToolStripMenuItem.Text = "Paste request";
             // 
-            // RequestContextMenu
-            // 
-            this.RequestContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.editToolStripMenuItem,
-            this.copyThisRequestToolStripMenuItem,
-            this.removeThisRequestToolStripMenuItem});
-            this.RequestContextMenu.Name = "RequestContextMenu";
-            this.RequestContextMenu.Size = new System.Drawing.Size(182, 70);
-            // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.Image = global::Director.Properties.Resources.cog_edit;
@@ -394,6 +450,7 @@
             this.ClientSize = new System.Drawing.Size(1148, 614);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -425,7 +482,6 @@
         private System.Windows.Forms.ToolStripMenuItem scenariosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runAllScenariosToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
-        private System.Windows.Forms.ToolStripMenuItem newServerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newScenarioToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
@@ -438,7 +494,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TreeView ScenarioView;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ProgressBar TestProgress;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip RootContextMenu;
         private System.Windows.Forms.ContextMenuStrip ScenarioContextMenu;
@@ -454,5 +510,12 @@
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.Panel ContentPanel;
+        private System.Windows.Forms.Timer processingIcons;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem languagesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem englishToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem czechToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem1;
     }
 }

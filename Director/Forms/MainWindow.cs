@@ -13,12 +13,26 @@ namespace Director.Forms
 {
     public partial class MainWindow : Form
     {
+        // Images constant
+        public const int SERVER_IMAGE = 0;
+        public const int SCENARIO_IMAGE = 1;
+        public const int REQUEST_NOT_SENT = 2;
+        public const int REQUEST_OK = 3;
+        public const int REQUEST_FAIL = 4;
 
-        // Prepare Info Pannels!
+        // Image processing revert compatibility
+        public const int REQUEST_PROCESS_START = 5;
+        public const int REQUEST_PROCESS_STOP = 12;
+
+        // Prepare Info Pannels
         private EmptyPanel _emptyPanel = new EmptyPanel();
         private ServerPanel _serverPanel = new ServerPanel();
         private RequestPanel _requestPanel = new RequestPanel();
         private ScenarioPanel _scenarioPanel = new ScenarioPanel();
+
+        // Processing images
+        private int _processingImageIndex = REQUEST_PROCESS_START;
+        private List<TreeNode> _processingNodes = new List<TreeNode>();
 
         public MainWindow()
         {
@@ -27,30 +41,42 @@ namespace Director.Forms
             // Create temporary tree view
             CreateTreeView();
 
+            // Initiate image List for tree view panel
+            _initiateTreeViewImages();
+
             // New empty panel!
-            ContentPanel.Controls.Add(_emptyPanel);
+            ContentPanel.Controls.Add(_emptyPanel); 
         }
 
-        private void CreateTreeView() {
+        private void _initiateTreeViewImages() 
+        {
+            // Create imagelist
             ImageList myImageList = new ImageList();
             myImageList.Images.Add(Director.Properties.Resources.ServerRoot);
             myImageList.Images.Add(Director.Properties.Resources.lightning);
             myImageList.Images.Add(Director.Properties.Resources.bullet_blue);
-            myImageList.Images.Add(Director.Properties.Resources.fail);
             myImageList.Images.Add(Director.Properties.Resources.ok);
-            myImageList.Images.Add(Director.Properties.Resources.Processing);
+            myImageList.Images.Add(Director.Properties.Resources.fail);      
+      
+            // Processing images
+            myImageList.Images.Add(Director.Properties.Resources.processing_0);
+            myImageList.Images.Add(Director.Properties.Resources.processing_1);
+            myImageList.Images.Add(Director.Properties.Resources.processing_2);
+            myImageList.Images.Add(Director.Properties.Resources.processing_3);
+            myImageList.Images.Add(Director.Properties.Resources.processing_4);
+            myImageList.Images.Add(Director.Properties.Resources.processing_5);
+            myImageList.Images.Add(Director.Properties.Resources.processing_6);
+            myImageList.Images.Add(Director.Properties.Resources.processing_7);
 
-            // Set image list to view
+            // Set images
             ScenarioView.ImageList = myImageList;
             ScenarioView.ImageIndex = 0;
             ScenarioView.SelectedImageIndex = 0;
+        }
 
-
+        private void CreateTreeView() {
             // Fill a bit
-            TreeNode rootNode = new TreeNode("Server #1");
-            rootNode.Tag = "root:0";
-            rootNode.ImageIndex = 0;
-            rootNode.SelectedImageIndex = 0;
+            TreeNode rootNode = CreateServerNode("Server #1");
 
             // Create several Scenario nodes
             TreeNode[] nodes = new TreeNode[4];
@@ -59,10 +85,10 @@ namespace Director.Forms
 
                 TreeNode [] requestNodes = new TreeNode[4];
 
-                requestNodes[0] = CreateRequestNode("Request #1", 2);
-                requestNodes[1] = CreateRequestNode("Request #2", 4);
-                requestNodes[2] = CreateRequestNode("Request #3", 3);
-                requestNodes[3] = CreateRequestNode("Request #4", 5);
+                requestNodes[0] = CreateRequestNode("Request #1", REQUEST_FAIL);
+                requestNodes[1] = CreateRequestNode("Request #2", REQUEST_NOT_SENT);
+                requestNodes[2] = CreateRequestNode("Request #3", REQUEST_OK);
+                requestNodes[3] = CreateRequestNode("Request #4", REQUEST_PROCESS_START);
                 nodes[i].Nodes.AddRange(requestNodes);
             }
             rootNode.Nodes.AddRange(nodes);
@@ -76,11 +102,23 @@ namespace Director.Forms
             System.Environment.Exit(0);
         }
 
+        /// <summary>
+        /// Creating server node
+        /// </summary>
+        /// <param name="name">Server node name</param>
+        /// <param name="icon">Default server icon</param>
+        /// <returns>Instance of tree node</returns>
+        private TreeNode CreateServerNode(String name, int icon = SERVER_IMAGE)
+        {
+            TreeNode _serverNode = new TreeNode(name, icon, icon);
+            _serverNode.Tag = "root:0";
+            return _serverNode;
+        }
 
         private TreeNode CreateScenarioNode(String name, int id = 0) {
             TreeNode scenarioNode = new TreeNode(name);
-            scenarioNode.ImageIndex = 1;
-            scenarioNode.SelectedImageIndex = 1;
+            scenarioNode.ImageIndex = SCENARIO_IMAGE;
+            scenarioNode.SelectedImageIndex = SCENARIO_IMAGE;
             scenarioNode.Tag = "scenario:" + id;
             return scenarioNode;
         }
@@ -90,6 +128,10 @@ namespace Director.Forms
             requestNode.ImageIndex = icon;
             requestNode.SelectedImageIndex = icon;
             requestNode.Tag = "request:" + requestId;
+
+            if (icon == REQUEST_PROCESS_START)
+                _processingNodes.Add(requestNode);
+
             return requestNode;            
         }
 
@@ -171,6 +213,23 @@ namespace Director.Forms
         {
             About aboutWindow = new About();
             aboutWindow.Show();
+        }
+
+        private void processingIcons_Tick(object sender, EventArgs e)
+        {
+            foreach (TreeNode _it in _processingNodes)
+            {
+                // Set all images to actual
+                _it.ImageIndex = _processingImageIndex;
+                _it.SelectedImageIndex = _processingImageIndex;
+            }
+
+            // Continue with image index
+            _processingImageIndex++;
+
+            // Iteration
+            if (_processingImageIndex > REQUEST_PROCESS_STOP)
+                _processingImageIndex = REQUEST_PROCESS_START;
         }
     }
 }
