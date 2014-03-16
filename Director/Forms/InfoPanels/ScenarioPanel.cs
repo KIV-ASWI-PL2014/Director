@@ -7,14 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Director.DataStructures;
 
 namespace Director.Forms.InfoPanels
 {
     public partial class ScenarioPanel : UserControl
     {
+        private Scenario _scenario;
+
         public ScenarioPanel()
         {
             InitializeComponent();
+        }
+
+        public void SetScenario(Scenario scenario)
+        {
+            _scenario = scenario;
         }
     }
 }

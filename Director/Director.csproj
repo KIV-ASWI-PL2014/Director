@@ -11,6 +11,7 @@
     <AssemblyName>Director</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -23,7 +24,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -70,6 +70,12 @@
     <Compile Include="DataStructures\Scenario.cs" />
     <Compile Include="DataStructures\Server.cs" />
     <Compile Include="ExportLib\Export.cs" />
+    <Compile Include="Forms\Export\ExportSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Export\ExportSettings.Designer.cs">
+      <DependentUpon>ExportSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Help\About.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -108,6 +114,7 @@
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Modules\GUIAbstractWorker.cs" />
+    <Compile Include="Forms\Modules\ProjectTreeGenerator.cs" />
     <Compile Include="ParserLib\Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -117,6 +124,9 @@
     <Compile Include="Forms\SplashScreen.Designer.cs">
       <DependentUpon>SplashScreen.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\Export\ExportSettings.resx">
+      <DependentUpon>ExportSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Help\About.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
@@ -261,12 +271,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
+    <None Include="Resources\page_code.png" />
+    <None Include="Resources\interface_preferences_small.png" />
+    <None Include="Resources\interface_preferences.png" />
+    <None Include="Resources\server_configuration.png" />
+    <None Include="Resources\locate.png" />
+    <None Include="Resources\note_go.png" />
+    <None Include="Resources\lightning_go.png" />
     <None Include="Resources\flag_great_britain.png" />
     <None Include="Resources\address_bar.png" />
     <None Include="Resources\flag_czech_republic.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Forms\Export\" />
     <Folder Include="Forms\Settings\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

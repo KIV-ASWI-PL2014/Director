@@ -37,8 +37,9 @@
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.newScenarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportResultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
@@ -52,28 +53,26 @@
             this.ScenarioContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.RequestContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.processingIcons = new System.Windows.Forms.Timer(this.components);
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.NewScenario = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenSavedScenario = new System.Windows.Forms.ToolStripMenuItem();
+            this.SaveScenario = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.runAllScenariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportScenarios = new System.Windows.Forms.ToolStripMenuItem();
             this.languagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.englishToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.czechToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
-            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.runAllScenariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutProgram = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.addScenarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runAllTestsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.addRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runThisScenarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyThisRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeThisRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.duplicateScenarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -98,9 +97,9 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newToolStripMenuItem,
-            this.openToolStripMenuItem,
-            this.saveToolStripMenuItem,
+            this.NewScenario,
+            this.OpenSavedScenario,
+            this.SaveScenario,
             this.toolStripMenuItem1,
             this.exitMenu});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -119,7 +118,7 @@
             this.toolStripMenuItem3,
             this.newScenarioToolStripMenuItem,
             this.toolStripMenuItem2,
-            this.exportToolStripMenuItem,
+            this.exportScenarios,
             this.exportResultsToolStripMenuItem});
             this.scenariosToolStripMenuItem.Name = "scenariosToolStripMenuItem";
             this.scenariosToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
@@ -141,17 +140,26 @@
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(181, 6);
             // 
-            // exportToolStripMenuItem
-            // 
-            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.exportToolStripMenuItem.Text = "Export";
-            // 
             // exportResultsToolStripMenuItem
             // 
             this.exportResultsToolStripMenuItem.Name = "exportResultsToolStripMenuItem";
             this.exportResultsToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.exportResultsToolStripMenuItem.Text = "Export results";
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.languagesToolStripMenuItem,
+            this.toolStripMenuItem5,
+            this.settingsToolStripMenuItem1});
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // toolStripMenuItem5
+            // 
+            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(128, 6);
             // 
             // aboutToolStripMenuItem
             // 
@@ -245,21 +253,20 @@
             // RootContextMenu
             // 
             this.RootContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.editToolStripMenuItem2,
             this.addScenarioToolStripMenuItem,
             this.runAllTestsToolStripMenuItem});
             this.RootContextMenu.Name = "RootContextMenu";
-            this.RootContextMenu.Size = new System.Drawing.Size(145, 70);
+            this.RootContextMenu.Size = new System.Drawing.Size(145, 48);
             // 
             // ScenarioContextMenu
             // 
             this.ScenarioContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.editToolStripMenuItem1,
             this.addRequestToolStripMenuItem,
             this.runThisScenarioToolStripMenuItem,
-            this.pasteRequestToolStripMenuItem});
+            this.pasteRequestToolStripMenuItem,
+            this.duplicateScenarioToolStripMenuItem});
             this.ScenarioContextMenu.Name = "ScenarioContextMenu";
-            this.ScenarioContextMenu.Size = new System.Drawing.Size(166, 92);
+            this.ScenarioContextMenu.Size = new System.Drawing.Size(172, 114);
             // 
             // RequestContextMenu
             // 
@@ -276,70 +283,30 @@
             this.processingIcons.Interval = 300;
             this.processingIcons.Tick += new System.EventHandler(this.processingIcons_Tick);
             // 
-            // settingsToolStripMenuItem
+            // NewScenario
             // 
-            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.languagesToolStripMenuItem,
-            this.toolStripMenuItem5,
-            this.settingsToolStripMenuItem1});
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.settingsToolStripMenuItem.Text = "Settings";
+            this.NewScenario.Image = global::Director.Properties.Resources.new_file;
+            this.NewScenario.Name = "NewScenario";
+            this.NewScenario.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.NewScenario.Size = new System.Drawing.Size(146, 22);
+            this.NewScenario.Text = "New";
             // 
-            // languagesToolStripMenuItem
+            // OpenSavedScenario
             // 
-            this.languagesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.englishToolStripMenuItem,
-            this.czechToolStripMenuItem});
-            this.languagesToolStripMenuItem.Image = global::Director.Properties.Resources.address_bar;
-            this.languagesToolStripMenuItem.Name = "languagesToolStripMenuItem";
-            this.languagesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.languagesToolStripMenuItem.Text = "Languages";
+            this.OpenSavedScenario.Image = global::Director.Properties.Resources.open;
+            this.OpenSavedScenario.Name = "OpenSavedScenario";
+            this.OpenSavedScenario.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.OpenSavedScenario.Size = new System.Drawing.Size(146, 22);
+            this.OpenSavedScenario.Text = "Open";
+            this.OpenSavedScenario.Click += new System.EventHandler(this.OpenSavedScenario_Click);
             // 
-            // englishToolStripMenuItem
+            // SaveScenario
             // 
-            this.englishToolStripMenuItem.Checked = true;
-            this.englishToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.englishToolStripMenuItem.Image = global::Director.Properties.Resources.flag_great_britain;
-            this.englishToolStripMenuItem.Name = "englishToolStripMenuItem";
-            this.englishToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.englishToolStripMenuItem.Text = "English";
-            // 
-            // czechToolStripMenuItem
-            // 
-            this.czechToolStripMenuItem.Image = global::Director.Properties.Resources.flag_czech_republic;
-            this.czechToolStripMenuItem.Name = "czechToolStripMenuItem";
-            this.czechToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.czechToolStripMenuItem.Text = "Czech";
-            // 
-            // toolStripMenuItem5
-            // 
-            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(149, 6);
-            // 
-            // newToolStripMenuItem
-            // 
-            this.newToolStripMenuItem.Image = global::Director.Properties.Resources.new_file;
-            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-            this.newToolStripMenuItem.Text = "New";
-            // 
-            // openToolStripMenuItem
-            // 
-            this.openToolStripMenuItem.Image = global::Director.Properties.Resources.open;
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-            this.openToolStripMenuItem.Text = "Open";
-            // 
-            // saveToolStripMenuItem
-            // 
-            this.saveToolStripMenuItem.Image = global::Director.Properties.Resources.save;
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
-            this.saveToolStripMenuItem.Text = "Save";
+            this.SaveScenario.Image = global::Director.Properties.Resources.save;
+            this.SaveScenario.Name = "SaveScenario";
+            this.SaveScenario.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.SaveScenario.Size = new System.Drawing.Size(146, 22);
+            this.SaveScenario.Text = "Save";
             // 
             // exitMenu
             // 
@@ -358,11 +325,45 @@
             this.runAllScenariosToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.runAllScenariosToolStripMenuItem.Text = "Run All Scenarios";
             // 
+            // exportScenarios
+            // 
+            this.exportScenarios.Image = global::Director.Properties.Resources.interface_preferences_small;
+            this.exportScenarios.Name = "exportScenarios";
+            this.exportScenarios.Size = new System.Drawing.Size(184, 22);
+            this.exportScenarios.Text = "Export";
+            this.exportScenarios.Click += new System.EventHandler(this.exportScenarios_Click);
+            // 
+            // languagesToolStripMenuItem
+            // 
+            this.languagesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.englishToolStripMenuItem,
+            this.czechToolStripMenuItem});
+            this.languagesToolStripMenuItem.Image = global::Director.Properties.Resources.locate;
+            this.languagesToolStripMenuItem.Name = "languagesToolStripMenuItem";
+            this.languagesToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.languagesToolStripMenuItem.Text = "Languages";
+            // 
+            // englishToolStripMenuItem
+            // 
+            this.englishToolStripMenuItem.Checked = true;
+            this.englishToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.englishToolStripMenuItem.Image = global::Director.Properties.Resources.flag_great_britain;
+            this.englishToolStripMenuItem.Name = "englishToolStripMenuItem";
+            this.englishToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.englishToolStripMenuItem.Text = "English";
+            // 
+            // czechToolStripMenuItem
+            // 
+            this.czechToolStripMenuItem.Image = global::Director.Properties.Resources.flag_czech_republic;
+            this.czechToolStripMenuItem.Name = "czechToolStripMenuItem";
+            this.czechToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.czechToolStripMenuItem.Text = "Czech";
+            // 
             // settingsToolStripMenuItem1
             // 
             this.settingsToolStripMenuItem1.Image = global::Director.Properties.Resources.cog_edit;
             this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
-            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(131, 22);
             this.settingsToolStripMenuItem1.Text = "Settings";
             // 
             // AboutProgram
@@ -372,13 +373,6 @@
             this.AboutProgram.Size = new System.Drawing.Size(156, 22);
             this.AboutProgram.Text = "About Program";
             this.AboutProgram.Click += new System.EventHandler(this.AboutProgram_Click);
-            // 
-            // editToolStripMenuItem2
-            // 
-            this.editToolStripMenuItem2.Image = global::Director.Properties.Resources.cog_edit;
-            this.editToolStripMenuItem2.Name = "editToolStripMenuItem2";
-            this.editToolStripMenuItem2.Size = new System.Drawing.Size(144, 22);
-            this.editToolStripMenuItem2.Text = "Edit";
             // 
             // addScenarioToolStripMenuItem
             // 
@@ -394,32 +388,25 @@
             this.runAllTestsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.runAllTestsToolStripMenuItem.Text = "Run all tests";
             // 
-            // editToolStripMenuItem1
-            // 
-            this.editToolStripMenuItem1.Image = global::Director.Properties.Resources.cog_edit;
-            this.editToolStripMenuItem1.Name = "editToolStripMenuItem1";
-            this.editToolStripMenuItem1.Size = new System.Drawing.Size(165, 22);
-            this.editToolStripMenuItem1.Text = "Edit";
-            // 
             // addRequestToolStripMenuItem
             // 
             this.addRequestToolStripMenuItem.Image = global::Director.Properties.Resources.add;
             this.addRequestToolStripMenuItem.Name = "addRequestToolStripMenuItem";
-            this.addRequestToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.addRequestToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.addRequestToolStripMenuItem.Text = "Add request";
             // 
             // runThisScenarioToolStripMenuItem
             // 
             this.runThisScenarioToolStripMenuItem.Image = global::Director.Properties.Resources.run;
             this.runThisScenarioToolStripMenuItem.Name = "runThisScenarioToolStripMenuItem";
-            this.runThisScenarioToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.runThisScenarioToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.runThisScenarioToolStripMenuItem.Text = "Run this Scenario";
             // 
             // pasteRequestToolStripMenuItem
             // 
             this.pasteRequestToolStripMenuItem.Image = global::Director.Properties.Resources.page_paste;
             this.pasteRequestToolStripMenuItem.Name = "pasteRequestToolStripMenuItem";
-            this.pasteRequestToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.pasteRequestToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.pasteRequestToolStripMenuItem.Text = "Paste request";
             // 
             // editToolStripMenuItem
@@ -442,6 +429,13 @@
             this.removeThisRequestToolStripMenuItem.Name = "removeThisRequestToolStripMenuItem";
             this.removeThisRequestToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.removeThisRequestToolStripMenuItem.Text = "Remove this request";
+            // 
+            // duplicateScenarioToolStripMenuItem
+            // 
+            this.duplicateScenarioToolStripMenuItem.Image = global::Director.Properties.Resources.page_code;
+            this.duplicateScenarioToolStripMenuItem.Name = "duplicateScenarioToolStripMenuItem";
+            this.duplicateScenarioToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.duplicateScenarioToolStripMenuItem.Text = "Duplicate scenario";
             // 
             // MainWindow
             // 
@@ -475,8 +469,8 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem OpenSavedScenario;
+        private System.Windows.Forms.ToolStripMenuItem SaveScenario;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem exitMenu;
         private System.Windows.Forms.ToolStripMenuItem scenariosToolStripMenuItem;
@@ -484,7 +478,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem newScenarioToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
-        private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportScenarios;
         private System.Windows.Forms.ToolStripMenuItem exportResultsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
@@ -495,7 +489,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TreeView ScenarioView;
         private System.Windows.Forms.ProgressBar TestProgress;
-        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem NewScenario;
         private System.Windows.Forms.ContextMenuStrip RootContextMenu;
         private System.Windows.Forms.ContextMenuStrip ScenarioContextMenu;
         private System.Windows.Forms.ContextMenuStrip RequestContextMenu;
@@ -506,8 +500,6 @@
         private System.Windows.Forms.ToolStripMenuItem copyThisRequestToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeThisRequestToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pasteRequestToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem2;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.Panel ContentPanel;
         private System.Windows.Forms.Timer processingIcons;
@@ -517,5 +509,6 @@
         private System.Windows.Forms.ToolStripMenuItem czechToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem duplicateScenarioToolStripMenuItem;
     }
 }

@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Director.Forms.Help;
+using Director.Forms.Export;
 
 namespace Director.Forms
 {
@@ -116,6 +117,12 @@ namespace Director.Forms
             return _serverNode;
         }
 
+        /// <summary>
+        /// Create Scenario node
+        /// </summary>
+        /// <param name="name">Scenario name</param>
+        /// <param name="id">Scenario ID</param>
+        /// <returns></returns>
         private TreeNode CreateScenarioNode(String name, int id = 0) {
             TreeNode scenarioNode = new TreeNode(name);
             scenarioNode.ImageIndex = SCENARIO_IMAGE;
@@ -212,8 +219,7 @@ namespace Director.Forms
 
         private void AboutProgram_Click(object sender, EventArgs e)
         {
-            About aboutWindow = new About();
-            aboutWindow.Show();
+            new About().ShowDialog();
         }
 
         private void processingIcons_Tick(object sender, EventArgs e)
@@ -231,6 +237,28 @@ namespace Director.Forms
             // Iteration
             if (_processingImageIndex > REQUEST_PROCESS_STOP)
                 _processingImageIndex = REQUEST_PROCESS_START;
+        }
+
+        /// <summary>
+        /// Menu click on export scenarios.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void exportScenarios_Click(object sender, EventArgs e)
+        {
+            new ExportSettings().ShowDialog();
+        }
+
+        private void OpenSavedScenario_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog _ofd = new OpenFileDialog();
+            _ofd.Filter = "API Director Files|*.adf";
+            _ofd.Title = "Open saved API Director scenario";
+
+            if (_ofd.ShowDialog() == DialogResult.OK)
+            { 
+                // Load file from _ofd.FileName();
+            }
         }
     }
 }
