@@ -8,5 +8,7 @@ namespace Director.DataStructures
 {
     public class Request
     {
+        private int ID { get; set; }
+        private int Position { get; set; }
     }
 }

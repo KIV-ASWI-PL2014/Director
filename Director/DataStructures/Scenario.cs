@@ -10,5 +10,7 @@ namespace Director.DataStructures
     {
         // Request list
         private List<Request> _requests = new List<Request>();
+        private int ID { get; set; }
+        private int Position { get; set; }
     }
 }

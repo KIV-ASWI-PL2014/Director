@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Director.Forms.Help;
 using Director.Forms.Export;
+using Director.DataStructures;
+using Director.Forms.Modules;
 
 namespace Director.Forms
 {
@@ -39,12 +41,15 @@ namespace Director.Forms
         // Actual selected panel for resizing!
         private UserControl _selectedPanel = null;
 
+        // Actual server parent instance
+        private Server _rootServer = null;
+
         public MainWindow()
         {
             InitializeComponent();
 
             // Create temporary tree view
-            CreateTreeView();
+            //CreateTreeView();
 
             // Initiate image List for tree view panel
             _initiateTreeViewImages();
@@ -302,6 +307,45 @@ namespace Director.Forms
                     break;
             }
 
+        }
+
+        /// <summary>
+        /// New scenario create!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewScenario_Click(object sender, EventArgs e)
+        {
+            // Create new default name server
+            _rootServer = new Server("New server");
+
+            // Refresh tree view
+            _refreshTreeView();
+
+            // Disable invalid menus
+            _disableWithoutActiveScenarioMenus();
+        }
+
+
+        /// <summary>
+        /// Refreshing scenario view with selected structures.
+        /// </summary>
+        private void _refreshTreeView()
+        {
+            if (_rootServer != null)
+            {
+                ProjectTreeGenerator.GenerateTree(_rootServer, ScenarioView);
+            }
+        }
+
+        /// <summary>
+        /// Disabling and enabling menu which are useless when new project is open!
+        /// </summary>
+        private void _disableWithoutActiveScenarioMenus()
+        {
+            NewScenario.Enabled = false;
+            SaveScenario.Enabled = true;
+            TestsMainMenu.Enabled = true;
         }
     }
 }

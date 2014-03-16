@@ -66,9 +66,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataStructures\Exceptions\InvalidUrlException.cs" />
     <Compile Include="DataStructures\Request.cs" />
     <Compile Include="DataStructures\Scenario.cs" />
     <Compile Include="DataStructures\Server.cs" />
+    <Compile Include="DataStructures\SupportStructures\Email.cs" />
     <Compile Include="ExportLib\Export.cs" />
     <Compile Include="Forms\Export\ExportSettings.cs">
       <SubType>Form</SubType>

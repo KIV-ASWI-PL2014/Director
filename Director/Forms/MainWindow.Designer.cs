@@ -33,7 +33,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.scenariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.TestsMainMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.newScenarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
@@ -88,7 +88,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.scenariosToolStripMenuItem,
+            this.TestsMainMenu,
             this.settingsToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -114,18 +114,19 @@
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
             // 
-            // scenariosToolStripMenuItem
+            // TestsMainMenu
             // 
-            this.scenariosToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.TestsMainMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.runAllScenariosToolStripMenuItem,
             this.toolStripMenuItem3,
             this.newScenarioToolStripMenuItem,
             this.toolStripMenuItem2,
             this.exportScenarios,
             this.exportResultsToolStripMenuItem});
-            this.scenariosToolStripMenuItem.Name = "scenariosToolStripMenuItem";
-            this.scenariosToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
-            this.scenariosToolStripMenuItem.Text = "Tests";
+            this.TestsMainMenu.Enabled = false;
+            this.TestsMainMenu.Name = "TestsMainMenu";
+            this.TestsMainMenu.Size = new System.Drawing.Size(46, 20);
+            this.TestsMainMenu.Text = "Tests";
             // 
             // toolStripMenuItem3
             // 
@@ -162,7 +163,7 @@
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(128, 6);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(149, 6);
             // 
             // aboutToolStripMenuItem
             // 
@@ -285,6 +286,7 @@
             this.NewScenario.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.NewScenario.Size = new System.Drawing.Size(152, 22);
             this.NewScenario.Text = "New";
+            this.NewScenario.Click += new System.EventHandler(this.NewScenario_Click);
             // 
             // OpenSavedScenario
             // 
@@ -297,6 +299,7 @@
             // 
             // SaveScenario
             // 
+            this.SaveScenario.Enabled = false;
             this.SaveScenario.Image = global::Director.Properties.Resources.save;
             this.SaveScenario.Name = "SaveScenario";
             this.SaveScenario.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
@@ -335,7 +338,7 @@
             this.czechToolStripMenuItem});
             this.languagesToolStripMenuItem.Image = global::Director.Properties.Resources.locate;
             this.languagesToolStripMenuItem.Name = "languagesToolStripMenuItem";
-            this.languagesToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.languagesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.languagesToolStripMenuItem.Text = "Languages";
             // 
             // englishToolStripMenuItem
@@ -344,21 +347,21 @@
             this.englishToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.englishToolStripMenuItem.Image = global::Director.Properties.Resources.flag_great_britain;
             this.englishToolStripMenuItem.Name = "englishToolStripMenuItem";
-            this.englishToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.englishToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.englishToolStripMenuItem.Text = "English";
             // 
             // czechToolStripMenuItem
             // 
             this.czechToolStripMenuItem.Image = global::Director.Properties.Resources.flag_czech_republic;
             this.czechToolStripMenuItem.Name = "czechToolStripMenuItem";
-            this.czechToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.czechToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.czechToolStripMenuItem.Text = "Czech";
             // 
             // settingsToolStripMenuItem1
             // 
             this.settingsToolStripMenuItem1.Image = global::Director.Properties.Resources.cog_edit;
             this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
-            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(131, 22);
+            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.settingsToolStripMenuItem1.Text = "Settings";
             // 
             // AboutProgram
@@ -505,7 +508,7 @@
         private System.Windows.Forms.ToolStripMenuItem SaveScenario;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem exitMenu;
-        private System.Windows.Forms.ToolStripMenuItem scenariosToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem TestsMainMenu;
         private System.Windows.Forms.ToolStripMenuItem runAllScenariosToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem newScenarioToolStripMenuItem;

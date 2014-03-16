@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Director.DataStructures;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Director.Forms.Modules
 {
@@ -12,6 +14,35 @@ namespace Director.Forms.Modules
     /// </summary>
     class ProjectTreeGenerator
     {
+        public static void GenerateTree(Server newServer, TreeView scenarioTreeView)
+        { 
+            // If scenario tree view is empty - just initilize!
+            if (scenarioTreeView.Nodes.Count == 0)
+            {
+                scenarioTreeView.Nodes.Add(_generateCleanStructure(newServer));
+            }
+        }
 
+        private static TreeNode _generateCleanStructure(Server newServer)
+        {
+            // Create root node
+            TreeNode rootNode = GenerateRootNode(newServer.Name);
+
+            // Return root node
+            return rootNode;
+
+        }
+
+        /// <summary>
+        /// Create root node.
+        /// </summary>
+        /// <param name="name">Root node name</param>
+        /// <returns></returns>
+        private static TreeNode GenerateRootNode(String name)
+        {
+            TreeNode node = new TreeNode(name, MainWindow.SERVER_IMAGE, MainWindow.SERVER_IMAGE);
+            node.Tag = "root:0";
+            return node;
+        }
     }
 }
