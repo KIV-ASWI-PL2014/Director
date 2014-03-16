@@ -36,6 +36,9 @@ namespace Director.Forms
         private int _processingImageIndex = REQUEST_PROCESS_START;
         private List<TreeNode> _processingNodes = new List<TreeNode>();
 
+        // Actual selected panel for resizing!
+        private UserControl _selectedPanel = null;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -47,10 +50,23 @@ namespace Director.Forms
             _initiateTreeViewImages();
 
             // New empty panel!
-            ContentPanel.Controls.Add(_emptyPanel); 
+            _setUserControl(_emptyPanel);
         }
 
-        private void _initiateTreeViewImages() 
+        /// <summary>
+        /// Set user control to main content panel!
+        /// </summary>
+        /// <param name="panel">New panel for replace</param>
+        private void _setUserControl(UserControl panel)
+        {
+            ContentPanel.Controls.Clear();
+            panel.Width = ContentPanel.Width;
+            panel.Height = ContentPanel.Height;
+            ContentPanel.Controls.Add(panel);
+            _selectedPanel = panel;
+        }
+
+        private void _initiateTreeViewImages()
         {
             // Create imagelist
             ImageList myImageList = new ImageList();
@@ -58,8 +74,8 @@ namespace Director.Forms
             myImageList.Images.Add(Director.Properties.Resources.lightning);
             myImageList.Images.Add(Director.Properties.Resources.bullet_blue);
             myImageList.Images.Add(Director.Properties.Resources.ok);
-            myImageList.Images.Add(Director.Properties.Resources.fail);      
-      
+            myImageList.Images.Add(Director.Properties.Resources.fail);
+
             // Processing images
             myImageList.Images.Add(Director.Properties.Resources.processing_0);
             myImageList.Images.Add(Director.Properties.Resources.processing_1);
@@ -76,16 +92,18 @@ namespace Director.Forms
             ScenarioView.SelectedImageIndex = 0;
         }
 
-        private void CreateTreeView() {
+        private void CreateTreeView()
+        {
             // Fill a bit
             TreeNode rootNode = CreateServerNode("Server #1");
 
             // Create several Scenario nodes
             TreeNode[] nodes = new TreeNode[4];
-            for(int i = 0; i < 4; i++) {
-                nodes[i] = CreateScenarioNode("Scenario #"+i.ToString());
+            for (int i = 0; i < 4; i++)
+            {
+                nodes[i] = CreateScenarioNode("Scenario #" + i.ToString());
 
-                TreeNode [] requestNodes = new TreeNode[4];
+                TreeNode[] requestNodes = new TreeNode[4];
 
                 requestNodes[0] = CreateRequestNode("Request #1", REQUEST_FAIL);
                 requestNodes[1] = CreateRequestNode("Request #2", REQUEST_NOT_SENT);
@@ -123,7 +141,8 @@ namespace Director.Forms
         /// <param name="name">Scenario name</param>
         /// <param name="id">Scenario ID</param>
         /// <returns></returns>
-        private TreeNode CreateScenarioNode(String name, int id = 0) {
+        private TreeNode CreateScenarioNode(String name, int id = 0)
+        {
             TreeNode scenarioNode = new TreeNode(name);
             scenarioNode.ImageIndex = SCENARIO_IMAGE;
             scenarioNode.SelectedImageIndex = SCENARIO_IMAGE;
@@ -131,7 +150,8 @@ namespace Director.Forms
             return scenarioNode;
         }
 
-        private TreeNode CreateRequestNode(String name, int icon, int requestId = 0) {
+        private TreeNode CreateRequestNode(String name, int icon, int requestId = 0)
+        {
             TreeNode requestNode = new TreeNode(name);
             requestNode.ImageIndex = icon;
             requestNode.SelectedImageIndex = icon;
@@ -140,56 +160,38 @@ namespace Director.Forms
             if (icon == REQUEST_PROCESS_START)
                 _processingNodes.Add(requestNode);
 
-            return requestNode;            
+            return requestNode;
         }
 
         private void ScenarioView_MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Left) {
+            if (e.Button == MouseButtons.Right)
+            {
                 Point p = new Point(e.X, e.Y);
 
                 TreeNode node = ScenarioView.GetNodeAt(p);
-                if (node != null) {
+                if (node != null)
+                {
                     // Select cursor node
                     ScenarioView.SelectedNode = node;
 
                     // Get Tag
-                    String [] tag_s = (Convert.ToString(node.Tag)).Split(":"[0]);
+                    String[] tag_s = (Convert.ToString(node.Tag)).Split(":"[0]);
 
-                    if (e.Button == MouseButtons.Left)
+
+                    switch (tag_s[0])
                     {
-                        switch (tag_s[0]) { 
-                            case "scenario":
-                                ContentPanel.Controls.Clear();
-                                ContentPanel.Controls.Add(_scenarioPanel);
-                                break;
-
-                            case "request":
-                                ContentPanel.Controls.Clear();
-                                ContentPanel.Controls.Add(_requestPanel);
-                                break;
-
-                            case "root":
-                                ContentPanel.Controls.Clear();
-                                ContentPanel.Controls.Add(_serverPanel);
-                                break;
-                        }
+                        case "scenario":
+                            ScenarioContextMenu.Show(ScenarioView, p);
+                            break;
+                        case "request":
+                            RequestContextMenu.Show(ScenarioView, p);
+                            break;
+                        case "root":
+                            RootContextMenu.Show(ScenarioView, p);
+                            break;
                     }
-                    else
-                    {
-                        switch (tag_s[0])
-                        {
-                            case "scenario":
-                                ScenarioContextMenu.Show(ScenarioView, p);
-                                break;
-                            case "request":
-                                RequestContextMenu.Show(ScenarioView, p);
-                                break;
-                            case "root":
-                                RootContextMenu.Show(ScenarioView, p);
-                                break;
-                        }
-                    }
+
                 }
             }
         }
@@ -200,21 +202,32 @@ namespace Director.Forms
                 System.Environment.Exit(0);
         }
 
-        private bool CloseWindowPrompt() {
+        private bool CloseWindowPrompt()
+        {
             var result = MessageBox.Show("Are you sure that you would like to quit application?", "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             return !(result == DialogResult.No);
         }
 
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!CloseWindowPrompt()) {
+            if (!CloseWindowPrompt())
+            {
                 e.Cancel = true;
             }
         }
 
+        /// <summary>
+        /// Resize selected panel!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainWindow_ResizeEnd(object sender, EventArgs e)
         {
-            // Resize end, Resize all elements
+            if (_selectedPanel != null)
+            {
+                _selectedPanel.Width = ContentPanel.Width;
+                _selectedPanel.Height = ContentPanel.Height;
+            }
         }
 
         private void AboutProgram_Click(object sender, EventArgs e)
@@ -256,9 +269,39 @@ namespace Director.Forms
             _ofd.Title = "Open saved API Director scenario";
 
             if (_ofd.ShowDialog() == DialogResult.OK)
-            { 
+            {
                 // Load file from _ofd.FileName();
             }
+        }
+
+        /// <summary>
+        /// Show propriet view after select node! (key arrows)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ScenarioView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            TreeNode node = ScenarioView.SelectedNode;
+
+            // Get Tag
+            String[] tag_s = (Convert.ToString(node.Tag)).Split(":"[0]);
+
+
+            switch (tag_s[0])
+            {
+                case "scenario":
+                    _setUserControl(_scenarioPanel);
+                    break;
+
+                case "request":
+                    _setUserControl(_requestPanel);
+                    break;
+
+                case "root":
+                    _setUserControl(_serverPanel);
+                    break;
+            }
+
         }
     }
 }

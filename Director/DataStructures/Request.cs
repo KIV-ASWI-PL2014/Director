@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Director.DataStructures
 {
-    class Request
+    public class Request
     {
     }
 }

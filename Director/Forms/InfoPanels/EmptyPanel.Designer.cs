@@ -52,12 +52,14 @@
             // 
             // flowLayoutPanel1
             // 
+            this.flowLayoutPanel1.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.flowLayoutPanel1.Controls.Add(this.label1);
             this.flowLayoutPanel1.Controls.Add(this.label2);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(887, 44);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(893, 50);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
             // label1
@@ -65,21 +67,22 @@
             this.label1.AutoSize = true;
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label1.Image = global::Director.Properties.Resources.domain_template;
-            this.label1.Location = new System.Drawing.Point(3, 5);
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
+            this.label1.Location = new System.Drawing.Point(10, 8);
+            this.label1.Margin = new System.Windows.Forms.Padding(10, 8, 3, 0);
             this.label1.MinimumSize = new System.Drawing.Size(32, 32);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(32, 40);
+            this.label1.Size = new System.Drawing.Size(32, 39);
             this.label1.TabIndex = 0;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label2.Location = new System.Drawing.Point(41, 0);
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(48, 0);
             this.label2.Name = "label2";
-            this.label2.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);
-            this.label2.Size = new System.Drawing.Size(268, 45);
+            this.label2.Padding = new System.Windows.Forms.Padding(0, 12, 0, 10);
+            this.label2.Size = new System.Drawing.Size(268, 47);
             this.label2.TabIndex = 1;
             this.label2.Text = "Welcome to API Director";
             // 

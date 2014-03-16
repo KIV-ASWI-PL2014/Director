@@ -13,16 +13,11 @@ namespace Director.Forms.InfoPanels
 {
     public partial class ScenarioPanel : UserControl
     {
-        private Scenario _scenario;
+        private Scenario _scenario { get; set; }
 
         public ScenarioPanel()
         {
             InitializeComponent();
-        }
-
-        public void SetScenario(Scenario scenario)
-        {
-            _scenario = scenario;
         }
     }
 }

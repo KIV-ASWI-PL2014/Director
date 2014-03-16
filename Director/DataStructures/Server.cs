@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Director.DataStructures
 {
-    class Server
+    public class Server
     {
         // Scenario list
         private List<Scenario> _scenarios = new List<Scenario>();
