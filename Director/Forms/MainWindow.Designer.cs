@@ -63,7 +63,7 @@
             this.czechToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutProgram = new System.Windows.Forms.ToolStripMenuItem();
-            this.addScenarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddScenarioRootMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.runAllTestsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runThisScenarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -249,10 +249,10 @@
             // RootContextMenu
             // 
             this.RootContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addScenarioToolStripMenuItem,
+            this.AddScenarioRootMenu,
             this.runAllTestsToolStripMenuItem});
             this.RootContextMenu.Name = "RootContextMenu";
-            this.RootContextMenu.Size = new System.Drawing.Size(145, 48);
+            this.RootContextMenu.Size = new System.Drawing.Size(153, 70);
             // 
             // ScenarioContextMenu
             // 
@@ -372,18 +372,19 @@
             this.AboutProgram.Text = "About Program";
             this.AboutProgram.Click += new System.EventHandler(this.AboutProgram_Click);
             // 
-            // addScenarioToolStripMenuItem
+            // AddScenarioRootMenu
             // 
-            this.addScenarioToolStripMenuItem.Image = global::Director.Properties.Resources.add;
-            this.addScenarioToolStripMenuItem.Name = "addScenarioToolStripMenuItem";
-            this.addScenarioToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
-            this.addScenarioToolStripMenuItem.Text = "Add Scenario";
+            this.AddScenarioRootMenu.Image = global::Director.Properties.Resources.add;
+            this.AddScenarioRootMenu.Name = "AddScenarioRootMenu";
+            this.AddScenarioRootMenu.Size = new System.Drawing.Size(152, 22);
+            this.AddScenarioRootMenu.Text = "Add Scenario";
+            this.AddScenarioRootMenu.Click += new System.EventHandler(this.AddScenarioRootMenu_Click);
             // 
             // runAllTestsToolStripMenuItem
             // 
             this.runAllTestsToolStripMenuItem.Image = global::Director.Properties.Resources.run;
             this.runAllTestsToolStripMenuItem.Name = "runAllTestsToolStripMenuItem";
-            this.runAllTestsToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.runAllTestsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.runAllTestsToolStripMenuItem.Text = "Run all tests";
             // 
             // addRequestToolStripMenuItem
@@ -528,7 +529,7 @@
         private System.Windows.Forms.ContextMenuStrip RootContextMenu;
         private System.Windows.Forms.ContextMenuStrip ScenarioContextMenu;
         private System.Windows.Forms.ContextMenuStrip RequestContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem addScenarioToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem AddScenarioRootMenu;
         private System.Windows.Forms.ToolStripMenuItem runAllTestsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addRequestToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runThisScenarioToolStripMenuItem;

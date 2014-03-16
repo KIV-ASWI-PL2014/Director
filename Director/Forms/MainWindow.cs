@@ -347,5 +347,14 @@ namespace Director.Forms
             SaveScenario.Enabled = true;
             TestsMainMenu.Enabled = true;
         }
+
+        private void AddScenarioRootMenu_Click(object sender, EventArgs e)
+        {
+            // Create new scenario
+            _rootServer.CreateNewScenario();
+
+            // Refresh view
+            _refreshTreeView();
+        }
     }
 }

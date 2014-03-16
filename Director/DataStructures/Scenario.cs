@@ -10,7 +10,21 @@ namespace Director.DataStructures
     {
         // Request list
         private List<Request> _requests = new List<Request>();
-        private int ID { get; set; }
-        private int Position { get; set; }
+        private int _id;
+        public int Id { get; set; }
+        private int _position;
+        public int Position { get; set; }
+        private String _name;
+        public String Name { get; set; }
+
+        public Scenario() : this(0,0)
+        { 
+            
+        }
+
+        public Scenario(int id, int position) {
+            Position = position;
+            Id = id;
+        }
     }
 }

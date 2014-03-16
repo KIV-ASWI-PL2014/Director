@@ -93,5 +93,16 @@ namespace Director.DataStructures
         }
 
 
+        /// <summary>
+        /// Create new next scenario!
+        /// </summary>
+        public void CreateNewScenario()
+        {
+            // Id and position is actual scenario list size
+            int idAndPosition = this.Scenarios.Count;
+
+            // Create a new one
+            Scenarios.Add(new Scenario(idAndPosition, idAndPosition));
+        }
     }
 }

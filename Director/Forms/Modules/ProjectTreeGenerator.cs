@@ -21,6 +21,11 @@ namespace Director.Forms.Modules
             {
                 scenarioTreeView.Nodes.Add(_generateCleanStructure(newServer));
             }
+            else
+            {
+                // Iterate and add or destroy
+
+            }
         }
 
         private static TreeNode _generateCleanStructure(Server newServer)
@@ -28,9 +33,17 @@ namespace Director.Forms.Modules
             // Create root node
             TreeNode rootNode = GenerateRootNode(newServer.Name);
 
+            // Create all scenarios
+
+
             // Return root node
             return rootNode;
 
+        }
+
+        private static TreeNode GenerateScenarioNode(String name)
+        {
+            return null;
         }
 
         /// <summary>

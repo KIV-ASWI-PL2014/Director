@@ -28,5 +28,22 @@ namespace Director.Forms.InfoPanels
         {
             _server = server;
         }
+
+        private void AuthenticationCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            // Enable or disable elements
+            if (AuthenticationCheckBox.Checked == true)
+            {
+                AuthenticationCredentials.Enabled = true;
+                AuthUsername.Enabled = true;
+                AuthPassword.Enabled = true;
+            }
+            else
+            {
+                AuthenticationCredentials.Enabled = false;
+                AuthUsername.Enabled = false;
+                AuthPassword.Enabled = false;
+            }
+        }
     }
 }
