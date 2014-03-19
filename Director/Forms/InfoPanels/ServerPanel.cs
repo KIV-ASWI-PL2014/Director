@@ -26,9 +26,24 @@ namespace Director.Forms.InfoPanels
         /// <param name="server"></param>
         public void SetServer(Server server)
         {
+            // Set server
             _server = server;
+
+            // Reload view data
+            _reloadView();
         }
 
+        private void _reloadView() 
+        {
+            EmailList.DataSource = _server.Emails;
+            Console.WriteLine("Nastaveni");
+        }
+
+        /// <summary>
+        /// Toggle authentication on / off
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AuthenticationCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             // Enable or disable elements

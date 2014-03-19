@@ -19,7 +19,9 @@ namespace Director
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SplashScreen(new MainWindow()));
+            //Application.Run(new SplashScreen(new MainWindow()));
+            //TODO: Debug
+            Application.Run(new MainWindow());
         }
     }
 }

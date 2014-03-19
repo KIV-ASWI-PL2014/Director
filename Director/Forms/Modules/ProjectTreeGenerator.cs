@@ -31,7 +31,7 @@ namespace Director.Forms.Modules
         private static TreeNode _generateCleanStructure(Server newServer)
         {
             // Create root node
-            TreeNode rootNode = GenerateRootNode(newServer.Name);
+            TreeNode rootNode = GenerateRootNode(newServer);
 
             // Create all scenarios
 
@@ -51,10 +51,10 @@ namespace Director.Forms.Modules
         /// </summary>
         /// <param name="name">Root node name</param>
         /// <returns></returns>
-        private static TreeNode GenerateRootNode(String name)
+        private static TreeNode GenerateRootNode(Server server)
         {
-            TreeNode node = new TreeNode(name, MainWindow.SERVER_IMAGE, MainWindow.SERVER_IMAGE);
-            node.Tag = "root:0";
+            TreeNode node = new TreeNode(server.Name, MainWindow.SERVER_IMAGE, MainWindow.SERVER_IMAGE);
+            node.Tag = server;
             return node;
         }
     }

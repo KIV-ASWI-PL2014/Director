@@ -28,14 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
-            "jan.strnadek@gmail.com",
-            "",
-            "",
-            ""}, -1);
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("bbcc");
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("");
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("");
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.AuthenticationCredentials = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
@@ -56,11 +48,7 @@
             this.AuthenticationCheckBox = new System.Windows.Forms.CheckBox();
             this.SaveServerSettings = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.EmailList = new System.Windows.Forms.DataGridView();
             this.tableLayoutPanel1.SuspendLayout();
             this.AuthenticationCredentials.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -68,6 +56,7 @@
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.EmailList)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -306,8 +295,8 @@
             // SaveServerSettings
             // 
             this.SaveServerSettings.Dock = System.Windows.Forms.DockStyle.Right;
-            this.SaveServerSettings.Location = new System.Drawing.Point(752, 539);
-            this.SaveServerSettings.Margin = new System.Windows.Forms.Padding(5);
+            this.SaveServerSettings.Location = new System.Drawing.Point(742, 539);
+            this.SaveServerSettings.Margin = new System.Windows.Forms.Padding(5, 5, 15, 5);
             this.SaveServerSettings.Name = "SaveServerSettings";
             this.SaveServerSettings.Size = new System.Drawing.Size(109, 25);
             this.SaveServerSettings.TabIndex = 4;
@@ -316,65 +305,26 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.listView1);
+            this.groupBox2.Controls.Add(this.EmailList);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(10, 373);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(10, 3, 10, 3);
             this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(10);
             this.groupBox2.Size = new System.Drawing.Size(846, 158);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Mail notifications";
             // 
-            // listView1
+            // EmailList
             // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3,
-            this.columnHeader4});
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView1.FullRowSelect = true;
-            this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.listView1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            listViewItem1.StateImageIndex = 0;
-            listViewItem2.StateImageIndex = 0;
-            listViewItem2.Tag = "bb";
-            listViewItem3.StateImageIndex = 0;
-            listViewItem4.StateImageIndex = 0;
-            this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4});
-            this.listView1.Location = new System.Drawing.Point(3, 16);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(840, 139);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Email address";
-            this.columnHeader1.Width = 190;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Success notify";
-            this.columnHeader2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader2.Width = 100;
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "Fail notify";
-            this.columnHeader3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader3.Width = 100;
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "Actions";
-            this.columnHeader4.Width = 150;
+            this.EmailList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.EmailList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EmailList.Location = new System.Drawing.Point(10, 23);
+            this.EmailList.Margin = new System.Windows.Forms.Padding(10);
+            this.EmailList.Name = "EmailList";
+            this.EmailList.Size = new System.Drawing.Size(826, 125);
+            this.EmailList.TabIndex = 0;
             // 
             // ServerPanel
             // 
@@ -395,6 +345,7 @@
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.EmailList)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -421,11 +372,7 @@
         private System.Windows.Forms.TextBox AuthPassword;
         private System.Windows.Forms.Button SaveServerSettings;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.ColumnHeader columnHeader3;
-        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.DataGridView EmailList;
 
 
 

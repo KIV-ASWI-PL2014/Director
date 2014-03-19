@@ -26,7 +26,6 @@ namespace Director.DataStructures
         /// <summary>
         /// Server name or global scenarios test case name.
         /// </summary>
-        private String _name;
         public String Name { get; set; }
 
         /// <summary>
@@ -66,6 +65,9 @@ namespace Director.DataStructures
             // Create scenarios and emails
             Scenarios = new List<Scenario>();
             Emails = new List<Email>();
+
+            Emails.Add(new Email() { UserEmail = "parovka@gmail.com", Error = true, Info = true });
+                                                                       
         }
 
         /// <summary>

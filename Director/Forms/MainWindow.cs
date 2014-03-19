@@ -48,14 +48,14 @@ namespace Director.Forms
         {
             InitializeComponent();
 
-            // Create temporary tree view
-            //CreateTreeView();
-
             // Initiate image List for tree view panel
             _initiateTreeViewImages();
 
             // New empty panel!
             _setUserControl(_emptyPanel);
+
+            // TODO: DEBUG
+            NewScenario_Click(null, null);
         }
 
         /// <summary>
@@ -65,8 +65,7 @@ namespace Director.Forms
         private void _setUserControl(UserControl panel)
         {
             ContentPanel.Controls.Clear();
-            panel.Width = ContentPanel.Width;
-            panel.Height = ContentPanel.Height;
+            panel.Dock = DockStyle.Fill;
             ContentPanel.Controls.Add(panel);
             _selectedPanel = panel;
         }
@@ -180,23 +179,19 @@ namespace Director.Forms
                     // Select cursor node
                     ScenarioView.SelectedNode = node;
 
-                    // Get Tag
-                    String[] tag_s = (Convert.ToString(node.Tag)).Split(":"[0]);
-
-
-                    switch (tag_s[0])
+                    // Type decision
+                    if (node.Tag.GetType() == typeof(Server))
                     {
-                        case "scenario":
-                            ScenarioContextMenu.Show(ScenarioView, p);
-                            break;
-                        case "request":
-                            RequestContextMenu.Show(ScenarioView, p);
-                            break;
-                        case "root":
-                            RootContextMenu.Show(ScenarioView, p);
-                            break;
+                        RootContextMenu.Show(ScenarioView, p);
                     }
-
+                    else if (node.Tag.GetType() == typeof(Request))
+                    {
+                        RequestContextMenu.Show(ScenarioView, p);
+                    }
+                    else if (node.Tag.GetType() == typeof(Scenario))
+                    {
+                        ScenarioContextMenu.Show(ScenarioView, p);
+                    }
                 }
             }
         }
@@ -221,20 +216,12 @@ namespace Director.Forms
             }
         }
 
+
         /// <summary>
-        /// Resize selected panel!
+        /// About window click.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MainWindow_ResizeEnd(object sender, EventArgs e)
-        {
-            if (_selectedPanel != null)
-            {
-                _selectedPanel.Width = ContentPanel.Width;
-                _selectedPanel.Height = ContentPanel.Height;
-            }
-        }
-
         private void AboutProgram_Click(object sender, EventArgs e)
         {
             new About().ShowDialog();
@@ -286,27 +273,18 @@ namespace Director.Forms
         /// <param name="e"></param>
         private void ScenarioView_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            // Get node
             TreeNode node = ScenarioView.SelectedNode;
 
-            // Get Tag
-            String[] tag_s = (Convert.ToString(node.Tag)).Split(":"[0]);
-
-
-            switch (tag_s[0])
+            if (node.Tag.GetType() == typeof(Server)) 
             {
-                case "scenario":
-                    _setUserControl(_scenarioPanel);
-                    break;
-
-                case "request":
-                    _setUserControl(_requestPanel);
-                    break;
-
-                case "root":
-                    _setUserControl(_serverPanel);
-                    break;
+                _serverPanel.SetServer((Server) node.Tag);
+                _setUserControl(_serverPanel);
+            } else if(node.Tag.GetType() == typeof(Request)) {
+                _setUserControl(_requestPanel);
+            } else if(node.Tag.GetType() == typeof(Scenario)) {
+                _setUserControl(_scenarioPanel);
             }
-
         }
 
         /// <summary>
