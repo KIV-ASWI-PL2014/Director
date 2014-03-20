@@ -74,6 +74,7 @@
             this.copyThisRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeThisRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.processingIcons = new System.Windows.Forms.Timer(this.components);
+            this.removeScenarioMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -401,9 +402,10 @@
             this.addRequestToolStripMenuItem,
             this.runThisScenarioToolStripMenuItem,
             this.pasteRequestToolStripMenuItem,
-            this.duplicateScenarioToolStripMenuItem});
+            this.duplicateScenarioToolStripMenuItem,
+            this.removeScenarioMenu});
             this.ScenarioContextMenu.Name = "ScenarioContextMenu";
-            this.ScenarioContextMenu.Size = new System.Drawing.Size(172, 114);
+            this.ScenarioContextMenu.Size = new System.Drawing.Size(172, 136);
             // 
             // addRequestToolStripMenuItem
             // 
@@ -469,6 +471,14 @@
             this.processingIcons.Enabled = true;
             this.processingIcons.Interval = 300;
             this.processingIcons.Tick += new System.EventHandler(this.processingIcons_Tick);
+            // 
+            // removeScenarioMenu
+            // 
+            this.removeScenarioMenu.Image = global::Director.Properties.Resources.fail;
+            this.removeScenarioMenu.Name = "removeScenarioMenu";
+            this.removeScenarioMenu.Size = new System.Drawing.Size(171, 22);
+            this.removeScenarioMenu.Text = "Remove scenario";
+            this.removeScenarioMenu.Click += new System.EventHandler(this.removeScenarioMenu_Click);
             // 
             // MainWindow
             // 
@@ -546,5 +556,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.Panel ContentPanel;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ToolStripMenuItem removeScenarioMenu;
     }
 }

@@ -362,5 +362,39 @@ namespace Director.Forms
                 _refreshTreeView();
             }
         }
+
+        /// <summary>
+        /// Removing scenario completely.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void removeScenarioMenu_Click(object sender, EventArgs e)
+        {
+            // Get selected node!
+            TreeNode _selectedNode = ScenarioView.SelectedNode;
+
+            // Selected node exist and it is scenario = msg box
+            if (_selectedNode != null && _selectedNode.Tag.GetType() == typeof(Scenario))
+            {
+                // Retype
+                Scenario _selectedScenario = (Scenario) _selectedNode.Tag;
+
+                // Dialog
+                DialogResult _dialogResult = MessageBox.Show("Are you sure, you want to destroy scenario: " + _selectedScenario.Name + "?", "Removing scenario", MessageBoxButtons.YesNo);
+
+                // If yes destroy node and refresh view! and refresh view
+                if (_dialogResult == DialogResult.Yes) 
+                { 
+                    // Remove from server list!
+                    _rootServer.Scenarios.Remove(_selectedScenario);
+
+                    // Set selected node to first
+                    ScenarioView.SelectedNode = ScenarioView.Nodes[0];
+
+                    // Refresh
+                    _refreshTreeView();
+                }
+            }
+        }
     }
 }
