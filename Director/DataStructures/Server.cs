@@ -101,10 +101,24 @@ namespace Director.DataStructures
         public void CreateNewScenario()
         {
             // Id and position is actual scenario list size
-            int idAndPosition = this.Scenarios.Count;
+            int _scenarioId = 1;
+
+            // There are some members of scenario in list
+            if (Scenarios.Count > 0)
+                _scenarioId = Scenarios.Max(x => x.Id) + 1;
 
             // Create a new one
-            Scenarios.Add(new Scenario(idAndPosition, idAndPosition));
+            Scenarios.Add(new Scenario(_scenarioId, Scenarios.Count, "New scenario"));
+        }
+
+        public List<int> GetScenarioIds()
+        {
+            List<int> _idList = new List<int>();
+
+            foreach (Scenario s in Scenarios)
+                _idList.Add(s.Id);
+
+            return _idList;
         }
     }
 }

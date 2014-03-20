@@ -9,7 +9,10 @@ using System.Threading;
 
 namespace Director.Forms.Modules
 {
-    public class GUIAbstractWorker
+    /// <summary>
+    /// Gui abstract worker help to create background GUI threads.
+    /// </summary>
+    public class GUIAbstractWorker : IDisposable
     {
         private GUIDataReceiver _receiver;
         private BackgroundWorker _worker = new BackgroundWorker();
@@ -46,6 +49,11 @@ namespace Director.Forms.Modules
         public void ReportProgress(int sender, String data) 
         {
             _worker.ReportProgress(sender, data);
+        }
+
+        public void Dispose()
+        {
+            _worker.CancelAsync();
         }
     }
 }

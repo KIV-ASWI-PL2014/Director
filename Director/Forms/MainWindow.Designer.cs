@@ -113,7 +113,7 @@
             this.NewScenario.Image = global::Director.Properties.Resources.new_file;
             this.NewScenario.Name = "NewScenario";
             this.NewScenario.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.NewScenario.Size = new System.Drawing.Size(152, 22);
+            this.NewScenario.Size = new System.Drawing.Size(146, 22);
             this.NewScenario.Text = "New";
             this.NewScenario.Click += new System.EventHandler(this.NewScenario_Click);
             // 
@@ -122,7 +122,7 @@
             this.OpenSavedScenario.Image = global::Director.Properties.Resources.open;
             this.OpenSavedScenario.Name = "OpenSavedScenario";
             this.OpenSavedScenario.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.OpenSavedScenario.Size = new System.Drawing.Size(152, 22);
+            this.OpenSavedScenario.Size = new System.Drawing.Size(146, 22);
             this.OpenSavedScenario.Text = "Open";
             this.OpenSavedScenario.Click += new System.EventHandler(this.OpenSavedScenario_Click);
             // 
@@ -132,20 +132,20 @@
             this.SaveScenario.Image = global::Director.Properties.Resources.save;
             this.SaveScenario.Name = "SaveScenario";
             this.SaveScenario.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.SaveScenario.Size = new System.Drawing.Size(152, 22);
+            this.SaveScenario.Size = new System.Drawing.Size(146, 22);
             this.SaveScenario.Text = "Save";
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(143, 6);
             // 
             // exitMenu
             // 
             this.exitMenu.Image = global::Director.Properties.Resources.exit;
             this.exitMenu.Name = "exitMenu";
             this.exitMenu.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.exitMenu.Size = new System.Drawing.Size(152, 22);
+            this.exitMenu.Size = new System.Drawing.Size(146, 22);
             this.exitMenu.Text = "Exit";
             this.exitMenu.Click += new System.EventHandler(this.exitMenu_Click);
             // 
@@ -403,7 +403,7 @@
             this.pasteRequestToolStripMenuItem,
             this.duplicateScenarioToolStripMenuItem});
             this.ScenarioContextMenu.Name = "ScenarioContextMenu";
-            this.ScenarioContextMenu.Size = new System.Drawing.Size(172, 92);
+            this.ScenarioContextMenu.Size = new System.Drawing.Size(172, 114);
             // 
             // addRequestToolStripMenuItem
             // 
@@ -411,6 +411,7 @@
             this.addRequestToolStripMenuItem.Name = "addRequestToolStripMenuItem";
             this.addRequestToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.addRequestToolStripMenuItem.Text = "Add request";
+            this.addRequestToolStripMenuItem.Click += new System.EventHandler(this.addRequestToolStripMenuItem_Click);
             // 
             // runThisScenarioToolStripMenuItem
             // 

@@ -276,13 +276,17 @@ namespace Director.Forms
             // Get node
             TreeNode node = ScenarioView.SelectedNode;
 
-            if (node.Tag.GetType() == typeof(Server)) 
+            if (node.Tag.GetType() == typeof(Server))
             {
-                _serverPanel.SetServer((Server) node.Tag);
+                _serverPanel.SetServer((Server)node.Tag);
                 _setUserControl(_serverPanel);
-            } else if(node.Tag.GetType() == typeof(Request)) {
+            }
+            else if (node.Tag.GetType() == typeof(Request))
+            {
                 _setUserControl(_requestPanel);
-            } else if(node.Tag.GetType() == typeof(Scenario)) {
+            }
+            else if (node.Tag.GetType() == typeof(Scenario))
+            {
                 _setUserControl(_scenarioPanel);
             }
         }
@@ -333,6 +337,30 @@ namespace Director.Forms
 
             // Refresh view
             _refreshTreeView();
+        }
+
+
+        /// <summary>
+        /// Add request to scenario.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void addRequestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get selected node!
+            TreeNode _selectedNode = ScenarioView.SelectedNode;
+
+            if (_selectedNode != null && _selectedNode.Tag.GetType() == typeof(Scenario))
+            {
+                // Add node to scenario
+                Scenario _selectedScenario = (Scenario)_selectedNode.Tag;
+
+                // Create request in scenario
+                _selectedScenario.CreateNewRequest();
+
+                // Refresh view
+                _refreshTreeView();
+            }
         }
     }
 }

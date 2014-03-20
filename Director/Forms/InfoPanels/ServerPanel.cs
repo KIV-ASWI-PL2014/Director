@@ -36,7 +36,6 @@ namespace Director.Forms.InfoPanels
         private void _reloadView() 
         {
             EmailList.DataSource = _server.Emails;
-            Console.WriteLine("Nastaveni");
         }
 
         /// <summary>
