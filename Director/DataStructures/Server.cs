@@ -31,7 +31,7 @@ namespace Director.DataStructures
         /// <summary>
         /// Default server end-point api url (pre-filled)
         /// </summary>
-        private String Url;
+        public String Url;
 
         /// <summary>
         /// Server running frequency!
@@ -39,28 +39,35 @@ namespace Director.DataStructures
         private String RunningFrequency { get; set; }
 
         /// <summary>
+        /// Use authentication credentials?
+        /// </summary>
+        public Boolean Authentication { get; set; }
+
+        /// <summary>
         /// Authentication name.
         /// </summary>
-        private String AuthName { get; set; }
+        public String AuthName { get; set; }
 
         /// <summary>
         /// Authentication password.
         /// </summary>
-        private String AuthPassword { get; set; }
+        public String AuthPassword { get; set; }
 
         /// <summary>
         /// Default constructor for serialization purposes.
         /// </summary>
-        public Server() : this ("") { }
+        public Server() : this ("", "") { }
 
         /// <summary>
         /// Create server instance with defined name!
         /// </summary>
         /// <param name="name">New name</param>
-        public Server(String name)
+        /// <param name="serverUrl">Server URL</param>
+        public Server(String name, String serverUrl)
         {
             // Set name
             this.Name = name;
+            this.Url  = serverUrl;
             
             // Create scenarios and emails
             Scenarios = new List<Scenario>();
@@ -74,7 +81,7 @@ namespace Director.DataStructures
         /// Return actual URL.
         /// </summary>
         /// <returns>URL</returns>
-        public String getUrl()
+        public String GetUrl()
         {
             return this.Url;
         }
@@ -83,13 +90,13 @@ namespace Director.DataStructures
         /// Url settings
         /// </summary>
         /// <param name="url"></param>
-        public void setUrl(String url)
+        public void SetUrl(String url)
         {
             Uri _newUri;
 
             // Uri validation
-            if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out _newUri))
-                this.Url = url;
+            if (Uri.TryCreate(url, UriKind.Absolute, out _newUri))
+                this.Url = _newUri.AbsoluteUri;
             else
                 throw new InvalidUrlException();
         }

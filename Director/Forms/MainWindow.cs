@@ -30,7 +30,7 @@ namespace Director.Forms
 
         // Prepare Info Pannels
         private EmptyPanel _emptyPanel = new EmptyPanel();
-        private ServerPanel _serverPanel = new ServerPanel();
+        private ServerPanel _serverPanel;
         private RequestPanel _requestPanel = new RequestPanel();
         private ScenarioPanel _scenarioPanel = new ScenarioPanel();
 
@@ -56,6 +56,9 @@ namespace Director.Forms
 
             // TODO: DEBUG
             NewScenario_Click(null, null);
+
+            // Create all panels with current instance of main window
+            _serverPanel = new ServerPanel(this);
         }
 
         /// <summary>
@@ -70,6 +73,9 @@ namespace Director.Forms
             _selectedPanel = panel;
         }
 
+        /// <summary>
+        /// Initiate all tree view images! - server, processing, error etc..
+        /// </summary>
         private void _initiateTreeViewImages()
         {
             // Create imagelist
@@ -96,77 +102,17 @@ namespace Director.Forms
             ScenarioView.SelectedImageIndex = 0;
         }
 
-        private void CreateTreeView()
-        {
-            // Fill a bit
-            TreeNode rootNode = CreateServerNode("Server #1");
-
-            // Create several Scenario nodes
-            TreeNode[] nodes = new TreeNode[4];
-            for (int i = 0; i < 4; i++)
-            {
-                nodes[i] = CreateScenarioNode("Scenario #" + i.ToString());
-
-                TreeNode[] requestNodes = new TreeNode[4];
-
-                requestNodes[0] = CreateRequestNode("Request #1", REQUEST_FAIL);
-                requestNodes[1] = CreateRequestNode("Request #2", REQUEST_NOT_SENT);
-                requestNodes[2] = CreateRequestNode("Request #3", REQUEST_OK);
-                requestNodes[3] = CreateRequestNode("Request #4", REQUEST_PROCESS_START);
-                nodes[i].Nodes.AddRange(requestNodes);
-            }
-            rootNode.Nodes.AddRange(nodes);
-
-
-            ScenarioView.Nodes.Add(rootNode);
-        }
-
+        /// <summary>
+        /// When is main window closed, close whole Application.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
             System.Environment.Exit(0);
         }
 
-        /// <summary>
-        /// Creating server node
-        /// </summary>
-        /// <param name="name">Server node name</param>
-        /// <param name="icon">Default server icon</param>
-        /// <returns>Instance of tree node</returns>
-        private TreeNode CreateServerNode(String name, int icon = SERVER_IMAGE)
-        {
-            TreeNode _serverNode = new TreeNode(name, icon, icon);
-            _serverNode.Tag = "root:0";
-            return _serverNode;
-        }
-
-        /// <summary>
-        /// Create Scenario node
-        /// </summary>
-        /// <param name="name">Scenario name</param>
-        /// <param name="id">Scenario ID</param>
-        /// <returns></returns>
-        private TreeNode CreateScenarioNode(String name, int id = 0)
-        {
-            TreeNode scenarioNode = new TreeNode(name);
-            scenarioNode.ImageIndex = SCENARIO_IMAGE;
-            scenarioNode.SelectedImageIndex = SCENARIO_IMAGE;
-            scenarioNode.Tag = "scenario:" + id;
-            return scenarioNode;
-        }
-
-        private TreeNode CreateRequestNode(String name, int icon, int requestId = 0)
-        {
-            TreeNode requestNode = new TreeNode(name);
-            requestNode.ImageIndex = icon;
-            requestNode.SelectedImageIndex = icon;
-            requestNode.Tag = "request:" + requestId;
-
-            if (icon == REQUEST_PROCESS_START)
-                _processingNodes.Add(requestNode);
-
-            return requestNode;
-        }
-
+ 
         private void ScenarioView_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -299,10 +245,10 @@ namespace Director.Forms
         private void NewScenario_Click(object sender, EventArgs e)
         {
             // Create new default name server
-            _rootServer = new Server("New server");
+            _rootServer = new Server("New server", "http://example.com/api/");
 
             // Refresh tree view
-            _refreshTreeView();
+            RefreshTreeView();
 
             // Disable invalid menus
             _disableWithoutActiveScenarioMenus();
@@ -312,7 +258,7 @@ namespace Director.Forms
         /// <summary>
         /// Refreshing scenario view with selected structures.
         /// </summary>
-        private void _refreshTreeView()
+        public void RefreshTreeView()
         {
             if (_rootServer != null)
             {
@@ -330,13 +276,18 @@ namespace Director.Forms
             TestsMainMenu.Enabled = true;
         }
 
+        /// <summary>
+        /// Add scenario from root menu!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddScenarioRootMenu_Click(object sender, EventArgs e)
         {
             // Create new scenario
             _rootServer.CreateNewScenario();
 
             // Refresh view
-            _refreshTreeView();
+            RefreshTreeView();
         }
 
 
@@ -359,7 +310,7 @@ namespace Director.Forms
                 _selectedScenario.CreateNewRequest();
 
                 // Refresh view
-                _refreshTreeView();
+                RefreshTreeView();
             }
         }
 
@@ -392,7 +343,7 @@ namespace Director.Forms
                     ScenarioView.SelectedNode = ScenarioView.Nodes[0];
 
                     // Refresh
-                    _refreshTreeView();
+                    RefreshTreeView();
                 }
             }
         }

@@ -41,14 +41,16 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.ServerName = new System.Windows.Forms.TextBox();
             this.EndPointUrl = new System.Windows.Forms.TextBox();
             this.ErrorUrl = new System.Windows.Forms.Label();
             this.AuthenticationCheckBox = new System.Windows.Forms.CheckBox();
-            this.SaveServerSettings = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.EmailList = new System.Windows.Forms.DataGridView();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.label4 = new System.Windows.Forms.Label();
+            this.ServerNameError = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.AuthenticationCredentials.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -57,6 +59,7 @@
             this.tableLayoutPanel2.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.EmailList)).BeginInit();
+            this.tableLayoutPanel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -67,8 +70,8 @@
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.AuthenticationCheckBox, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.SaveServerSettings, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.groupBox2, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.label7, 0, 5);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -146,6 +149,7 @@
             this.AuthUsername.Name = "AuthUsername";
             this.AuthUsername.Size = new System.Drawing.Size(820, 20);
             this.AuthUsername.TabIndex = 2;
+            this.AuthUsername.Leave += new System.EventHandler(this.AuthUsername_Leave);
             // 
             // AuthPassword
             // 
@@ -154,8 +158,10 @@
             this.AuthPassword.Location = new System.Drawing.Point(10, 73);
             this.AuthPassword.Margin = new System.Windows.Forms.Padding(10, 3, 10, 3);
             this.AuthPassword.Name = "AuthPassword";
+            this.AuthPassword.PasswordChar = '*';
             this.AuthPassword.Size = new System.Drawing.Size(820, 20);
             this.AuthPassword.TabIndex = 3;
+            this.AuthPassword.Leave += new System.EventHandler(this.AuthPassword_Leave);
             // 
             // flowLayoutPanel1
             // 
@@ -210,10 +216,10 @@
             this.tableLayoutPanel2.ColumnCount = 1;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Controls.Add(this.label3, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.label4, 0, 2);
             this.tableLayoutPanel2.Controls.Add(this.ServerName, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.EndPointUrl, 0, 3);
             this.tableLayoutPanel2.Controls.Add(this.ErrorUrl, 0, 4);
+            this.tableLayoutPanel2.Controls.Add(this.tableLayoutPanel4, 0, 2);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 16);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -237,17 +243,6 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "Server name";
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label4.Location = new System.Drawing.Point(10, 55);
-            this.label4.Margin = new System.Windows.Forms.Padding(10, 5, 3, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(91, 13);
-            this.label4.TabIndex = 1;
-            this.label4.Text = "End-Point URL";
-            // 
             // ServerName
             // 
             this.ServerName.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -256,6 +251,7 @@
             this.ServerName.Name = "ServerName";
             this.ServerName.Size = new System.Drawing.Size(820, 20);
             this.ServerName.TabIndex = 2;
+            this.ServerName.Leave += new System.EventHandler(this.ServerName_Leave);
             // 
             // EndPointUrl
             // 
@@ -265,6 +261,7 @@
             this.EndPointUrl.Name = "EndPointUrl";
             this.EndPointUrl.Size = new System.Drawing.Size(820, 20);
             this.EndPointUrl.TabIndex = 3;
+            this.EndPointUrl.Leave += new System.EventHandler(this.EndPointUrl_Leave);
             // 
             // ErrorUrl
             // 
@@ -292,17 +289,6 @@
             this.AuthenticationCheckBox.UseVisualStyleBackColor = true;
             this.AuthenticationCheckBox.CheckedChanged += new System.EventHandler(this.AuthenticationCheckBox_CheckedChanged);
             // 
-            // SaveServerSettings
-            // 
-            this.SaveServerSettings.Dock = System.Windows.Forms.DockStyle.Right;
-            this.SaveServerSettings.Location = new System.Drawing.Point(742, 539);
-            this.SaveServerSettings.Margin = new System.Windows.Forms.Padding(5, 5, 15, 5);
-            this.SaveServerSettings.Name = "SaveServerSettings";
-            this.SaveServerSettings.Size = new System.Drawing.Size(109, 25);
-            this.SaveServerSettings.TabIndex = 4;
-            this.SaveServerSettings.Text = "Save settings";
-            this.SaveServerSettings.UseVisualStyleBackColor = true;
-            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.EmailList);
@@ -326,6 +312,59 @@
             this.EmailList.Size = new System.Drawing.Size(826, 125);
             this.EmailList.TabIndex = 0;
             // 
+            // tableLayoutPanel4
+            // 
+            this.tableLayoutPanel4.ColumnCount = 2;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel4.Controls.Add(this.ServerNameError, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.label4, 0, 0);
+            this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(0, 50);
+            this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.RowCount = 1;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(840, 20);
+            this.tableLayoutPanel4.TabIndex = 5;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label4.Location = new System.Drawing.Point(10, 5);
+            this.label4.Margin = new System.Windows.Forms.Padding(10, 5, 3, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(91, 13);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "End-Point URL";
+            // 
+            // ServerNameError
+            // 
+            this.ServerNameError.AutoSize = true;
+            this.ServerNameError.Dock = System.Windows.Forms.DockStyle.Right;
+            this.ServerNameError.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.ServerNameError.ForeColor = System.Drawing.Color.Red;
+            this.ServerNameError.Location = new System.Drawing.Point(728, 3);
+            this.ServerNameError.Margin = new System.Windows.Forms.Padding(3, 3, 10, 0);
+            this.ServerNameError.Name = "ServerNameError";
+            this.ServerNameError.Size = new System.Drawing.Size(102, 17);
+            this.ServerNameError.TabIndex = 5;
+            this.ServerNameError.Text = "Name is required";
+            this.ServerNameError.Visible = false;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Dock = System.Windows.Forms.DockStyle.Right;
+            this.label7.Location = new System.Drawing.Point(672, 544);
+            this.label7.Margin = new System.Windows.Forms.Padding(10);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(184, 15);
+            this.label7.TabIndex = 6;
+            this.label7.Text = "All changes is persisted automatically!";
+            // 
             // ServerPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -346,6 +385,8 @@
             this.tableLayoutPanel2.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.EmailList)).EndInit();
+            this.tableLayoutPanel4.ResumeLayout(false);
+            this.tableLayoutPanel4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -359,7 +400,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox ServerName;
         private System.Windows.Forms.TextBox EndPointUrl;
         private System.Windows.Forms.Label ErrorUrl;
@@ -370,9 +410,12 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox AuthUsername;
         private System.Windows.Forms.TextBox AuthPassword;
-        private System.Windows.Forms.Button SaveServerSettings;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.DataGridView EmailList;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label ServerNameError;
+        private System.Windows.Forms.Label label7;
 
 
 
