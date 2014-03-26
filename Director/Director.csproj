@@ -118,7 +118,9 @@
     </Compile>
     <Compile Include="Forms\Modules\GUIAbstractWorker.cs" />
     <Compile Include="Forms\Modules\ProjectTreeGenerator.cs" />
+    <Compile Include="ParserLib\ParserError.cs" />
     <Compile Include="ParserLib\Parser.cs" />
+    <Compile Include="ParserLib\ParserResult.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Forms\SplashScreen.cs">

@@ -44,12 +44,12 @@
             this.ServerName = new System.Windows.Forms.TextBox();
             this.EndPointUrl = new System.Windows.Forms.TextBox();
             this.ErrorUrl = new System.Windows.Forms.Label();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.ServerNameError = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.AuthenticationCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.EmailList = new System.Windows.Forms.DataGridView();
-            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.label4 = new System.Windows.Forms.Label();
-            this.ServerNameError = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.AuthenticationCredentials.SuspendLayout();
@@ -57,9 +57,9 @@
             this.flowLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.tableLayoutPanel4.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.EmailList)).BeginInit();
-            this.tableLayoutPanel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -251,6 +251,7 @@
             this.ServerName.Name = "ServerName";
             this.ServerName.Size = new System.Drawing.Size(820, 20);
             this.ServerName.TabIndex = 2;
+            this.ServerName.TextChanged += new System.EventHandler(this.ServerName_Leave);
             this.ServerName.Leave += new System.EventHandler(this.ServerName_Leave);
             // 
             // EndPointUrl
@@ -276,6 +277,48 @@
             this.ErrorUrl.TabIndex = 4;
             this.ErrorUrl.Text = "Invalid URL";
             this.ErrorUrl.Visible = false;
+            // 
+            // tableLayoutPanel4
+            // 
+            this.tableLayoutPanel4.ColumnCount = 2;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel4.Controls.Add(this.ServerNameError, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.label4, 0, 0);
+            this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(0, 50);
+            this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.RowCount = 1;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(840, 20);
+            this.tableLayoutPanel4.TabIndex = 5;
+            // 
+            // ServerNameError
+            // 
+            this.ServerNameError.AutoSize = true;
+            this.ServerNameError.Dock = System.Windows.Forms.DockStyle.Right;
+            this.ServerNameError.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.ServerNameError.ForeColor = System.Drawing.Color.Red;
+            this.ServerNameError.Location = new System.Drawing.Point(728, 3);
+            this.ServerNameError.Margin = new System.Windows.Forms.Padding(3, 3, 10, 0);
+            this.ServerNameError.Name = "ServerNameError";
+            this.ServerNameError.Size = new System.Drawing.Size(102, 17);
+            this.ServerNameError.TabIndex = 5;
+            this.ServerNameError.Text = "Name is required";
+            this.ServerNameError.Visible = false;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.label4.Location = new System.Drawing.Point(10, 5);
+            this.label4.Margin = new System.Windows.Forms.Padding(10, 5, 3, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(91, 13);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "End-Point URL";
             // 
             // AuthenticationCheckBox
             // 
@@ -306,53 +349,15 @@
             // 
             this.EmailList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.EmailList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EmailList.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.EmailList.Location = new System.Drawing.Point(10, 23);
-            this.EmailList.Margin = new System.Windows.Forms.Padding(10);
             this.EmailList.Name = "EmailList";
+            this.EmailList.RowHeadersVisible = false;
+            this.EmailList.ShowCellErrors = false;
+            this.EmailList.ShowCellToolTips = false;
+            this.EmailList.ShowEditingIcon = false;
             this.EmailList.Size = new System.Drawing.Size(826, 125);
             this.EmailList.TabIndex = 0;
-            // 
-            // tableLayoutPanel4
-            // 
-            this.tableLayoutPanel4.ColumnCount = 2;
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel4.Controls.Add(this.ServerNameError, 0, 0);
-            this.tableLayoutPanel4.Controls.Add(this.label4, 0, 0);
-            this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel4.Location = new System.Drawing.Point(0, 50);
-            this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
-            this.tableLayoutPanel4.RowCount = 1;
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(840, 20);
-            this.tableLayoutPanel4.TabIndex = 5;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label4.Location = new System.Drawing.Point(10, 5);
-            this.label4.Margin = new System.Windows.Forms.Padding(10, 5, 3, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(91, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "End-Point URL";
-            // 
-            // ServerNameError
-            // 
-            this.ServerNameError.AutoSize = true;
-            this.ServerNameError.Dock = System.Windows.Forms.DockStyle.Right;
-            this.ServerNameError.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.ServerNameError.ForeColor = System.Drawing.Color.Red;
-            this.ServerNameError.Location = new System.Drawing.Point(728, 3);
-            this.ServerNameError.Margin = new System.Windows.Forms.Padding(3, 3, 10, 0);
-            this.ServerNameError.Name = "ServerNameError";
-            this.ServerNameError.Size = new System.Drawing.Size(102, 17);
-            this.ServerNameError.TabIndex = 5;
-            this.ServerNameError.Text = "Name is required";
-            this.ServerNameError.Visible = false;
             // 
             // label7
             // 
@@ -383,10 +388,10 @@
             this.groupBox1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.EmailList)).EndInit();
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel4.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.EmailList)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -411,11 +416,11 @@
         private System.Windows.Forms.TextBox AuthUsername;
         private System.Windows.Forms.TextBox AuthPassword;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.DataGridView EmailList;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label ServerNameError;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.DataGridView EmailList;
 
 
 

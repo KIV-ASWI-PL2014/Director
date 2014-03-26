@@ -32,7 +32,7 @@ namespace Director.Forms
         private EmptyPanel _emptyPanel = new EmptyPanel();
         private ServerPanel _serverPanel;
         private RequestPanel _requestPanel = new RequestPanel();
-        private ScenarioPanel _scenarioPanel = new ScenarioPanel();
+        private ScenarioPanel _scenarioPanel;
 
         // Processing images
         private int _processingImageIndex = REQUEST_PROCESS_START;
@@ -49,7 +49,7 @@ namespace Director.Forms
             InitializeComponent();
 
             // Initiate image List for tree view panel
-            _initiateTreeViewImages();
+            _initiateTreeView();
 
             // New empty panel!
             _setUserControl(_emptyPanel);
@@ -59,6 +59,7 @@ namespace Director.Forms
 
             // Create all panels with current instance of main window
             _serverPanel = new ServerPanel(this);
+            _scenarioPanel = new ScenarioPanel(this);
         }
 
         /// <summary>
@@ -76,8 +77,14 @@ namespace Director.Forms
         /// <summary>
         /// Initiate all tree view images! - server, processing, error etc..
         /// </summary>
-        private void _initiateTreeViewImages()
+        private void _initiateTreeView()
         {
+            // Set handlers
+            ScenarioView.ItemDrag += new ItemDragEventHandler(TreeView_ItemDrag);
+            ScenarioView.DragEnter += new DragEventHandler(TreeView_DragEnter);
+            ScenarioView.DragOver += new DragEventHandler(TreeView_DragOver);
+            ScenarioView.DragDrop += new DragEventHandler(TreeView_DragDrop);
+
             // Create imagelist
             ImageList myImageList = new ImageList();
             myImageList.Images.Add(Director.Properties.Resources.ServerRoot);
@@ -234,6 +241,7 @@ namespace Director.Forms
             else if (node.Tag.GetType() == typeof(Scenario))
             {
                 _setUserControl(_scenarioPanel);
+                _scenarioPanel.SetScenario((Scenario)node.Tag);
             }
         }
 
@@ -262,7 +270,7 @@ namespace Director.Forms
         {
             if (_rootServer != null)
             {
-                ProjectTreeGenerator.GenerateTree(_rootServer, ScenarioView);
+                ProjectTreeGenerator.GenerateTree(_rootServer, ScenarioView, this);
             }
         }
 
@@ -312,6 +320,73 @@ namespace Director.Forms
                 // Refresh view
                 RefreshTreeView();
             }
+        }
+
+        public void TreeView_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            DoDragDrop(e.Item, DragDropEffects.Move);
+        }
+
+        public void TreeView_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = e.AllowedEffect;
+        }
+
+        public void TreeView_DragDrop(object sender, DragEventArgs e)
+        {
+            // Retrieve the client coordinates of the drop location.
+            Point targetPoint = ScenarioView.PointToClient(new Point(e.X, e.Y));
+
+            // Retrieve the node at the drop location.
+            TreeNode targetNode = ScenarioView.GetNodeAt(targetPoint);
+
+            // Retrieve the node that was dragged.
+            TreeNode draggedNode = (TreeNode)e.Data.GetData(typeof(TreeNode));
+
+            // Confirm that the node at the drop location is not  
+            // the dragged node or a descendant of the dragged node. 
+            if (!draggedNode.Equals(targetNode) && !ContainsNode(draggedNode, targetNode))
+            {
+                // If it is a move operation, remove the node from its current  
+                // location and add it to the node at the drop location. 
+                if (e.Effect == DragDropEffects.Move)
+                {
+                    draggedNode.Remove();
+                    targetNode.Nodes.Add(draggedNode);
+                }
+
+                // If it is a copy operation, clone the dragged node  
+                // and add it to the node at the drop location. 
+                else if (e.Effect == DragDropEffects.Copy)
+                {
+                    targetNode.Nodes.Add((TreeNode)draggedNode.Clone());
+                }
+
+                // Expand the node at the location  
+                // to show the dropped node.
+                targetNode.Expand();
+            }
+        }
+
+        private bool ContainsNode(TreeNode node1, TreeNode node2)
+        {
+            // Check the parent node of the second node. 
+            if (node2.Parent == null) return false;
+            if (node2.Parent.Equals(node1)) return true;
+
+            // If the parent node is not null or equal to the first node,  
+            // call the ContainsNode method recursively using the parent of  
+            // the second node. 
+            return ContainsNode(node1, node2.Parent);
+        }
+
+        public void TreeView_DragOver(object sender, DragEventArgs e)
+        {
+            // Retrieve the client coordinates of the mouse position.
+            Point targetPoint = ScenarioView.PointToClient(new Point(e.X, e.Y));
+
+            // Select the node at the mouse position.
+            ScenarioView.SelectedNode = ScenarioView.GetNodeAt(targetPoint);      
         }
 
         /// <summary>

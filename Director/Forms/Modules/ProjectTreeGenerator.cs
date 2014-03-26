@@ -14,13 +14,20 @@ namespace Director.Forms.Modules
     /// </summary>
     class ProjectTreeGenerator
     {
+
+        private static MainWindow _mainWindow { get; set; }
+
         /// <summary>
         /// Regenerating tree view tree!
         /// </summary>
         /// <param name="newServer">Server</param>
         /// <param name="scenarioTreeView">Scenario tree view</param>
-        public static void GenerateTree(Server newServer, TreeView scenarioTreeView)
+        public static void GenerateTree(Server newServer, TreeView scenarioTreeView, MainWindow mainWindow)
         {
+            // Main window
+            _mainWindow = mainWindow;
+
+            // compare
             _compareNodeStructure(newServer, scenarioTreeView);
         }
 

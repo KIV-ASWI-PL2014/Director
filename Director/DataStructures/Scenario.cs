@@ -33,6 +33,34 @@ namespace Director.DataStructures
 
 
         /// <summary>
+        /// Available frequencies
+        /// </summary>
+        public enum FREQUENCIES : int
+        {
+            Never = 0,
+            PerThirdtyM,
+            PerHour,
+            PerThreeHours,
+            PerSixHours,
+            PerTwelveHours,
+            PerDay
+        }
+
+        /// <summary>
+        /// Public int frequency
+        /// </summary>
+        public int frequency = (int) FREQUENCIES.Never;
+
+        /// <summary>
+        /// Public frequency for settings from GUI.
+        /// </summary>
+        public int Frequency
+        {
+            get { return frequency; }
+            set { frequency = (int) value; }
+        }
+
+        /// <summary>
         /// Default constructor
         /// </summary>
         public Scenario() : this(0, 0, "") { }

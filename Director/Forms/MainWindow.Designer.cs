@@ -69,12 +69,12 @@
             this.runThisScenarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateScenarioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeScenarioMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.RequestContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyThisRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeThisRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.processingIcons = new System.Windows.Forms.Timer(this.components);
-            this.removeScenarioMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -405,7 +405,7 @@
             this.duplicateScenarioToolStripMenuItem,
             this.removeScenarioMenu});
             this.ScenarioContextMenu.Name = "ScenarioContextMenu";
-            this.ScenarioContextMenu.Size = new System.Drawing.Size(172, 136);
+            this.ScenarioContextMenu.Size = new System.Drawing.Size(172, 114);
             // 
             // addRequestToolStripMenuItem
             // 
@@ -435,6 +435,14 @@
             this.duplicateScenarioToolStripMenuItem.Name = "duplicateScenarioToolStripMenuItem";
             this.duplicateScenarioToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.duplicateScenarioToolStripMenuItem.Text = "Duplicate scenario";
+            // 
+            // removeScenarioMenu
+            // 
+            this.removeScenarioMenu.Image = global::Director.Properties.Resources.fail;
+            this.removeScenarioMenu.Name = "removeScenarioMenu";
+            this.removeScenarioMenu.Size = new System.Drawing.Size(171, 22);
+            this.removeScenarioMenu.Text = "Remove scenario";
+            this.removeScenarioMenu.Click += new System.EventHandler(this.removeScenarioMenu_Click);
             // 
             // RequestContextMenu
             // 
@@ -471,14 +479,6 @@
             this.processingIcons.Enabled = true;
             this.processingIcons.Interval = 300;
             this.processingIcons.Tick += new System.EventHandler(this.processingIcons_Tick);
-            // 
-            // removeScenarioMenu
-            // 
-            this.removeScenarioMenu.Image = global::Director.Properties.Resources.fail;
-            this.removeScenarioMenu.Name = "removeScenarioMenu";
-            this.removeScenarioMenu.Size = new System.Drawing.Size(171, 22);
-            this.removeScenarioMenu.Text = "Remove scenario";
-            this.removeScenarioMenu.Click += new System.EventHandler(this.removeScenarioMenu_Click);
             // 
             // MainWindow
             // 

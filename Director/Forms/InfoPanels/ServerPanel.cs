@@ -113,7 +113,7 @@ namespace Director.Forms.InfoPanels
                 // Hide label
                 ErrorUrl.Visible = false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Set label visible and set focus! (invalid url)
                 ErrorUrl.Visible = true;
