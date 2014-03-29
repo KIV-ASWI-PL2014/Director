@@ -11,7 +11,7 @@ namespace Director
         [STAThread]
         static void Main()
         {
-            Application.Initialize(ToolkitType.Wpf);
+			Application.Initialize(ToolkitType.Cocoa);
             var mainWindow = new Window()
             {
                 Title = "Xwt Demo Application",
