@@ -14,8 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <ProductVersion>12.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <StartupObject>Director.Program</StartupObject>
-    <UseMSBuildEngine>False</UseMSBuildEngine>
+    <StartupObject>Director.ProgramMac</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -63,8 +62,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\Controls\InfoBox.cs" />
+    <Compile Include="Forms\Panels\Homepage.cs" />
     <Compile Include="Forms\MainWindow.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="ProgramMac.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -109,5 +111,23 @@
       <Project>{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}</Project>
       <Name>Xwt.Mac</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Forms\Export\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\homepage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\new_server.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\exit.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

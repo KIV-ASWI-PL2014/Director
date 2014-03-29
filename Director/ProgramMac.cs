@@ -18,6 +18,12 @@ namespace Director
         {
             Application.Initialize(ToolkitType.Cocoa);
             MainWindow _mainWindow = new MainWindow();
+
+			// Close window handlers
+			_mainWindow.Closed += delegate {
+				Application.Exit();
+			};
+
             _mainWindow.Show();
             Application.Run();
         }

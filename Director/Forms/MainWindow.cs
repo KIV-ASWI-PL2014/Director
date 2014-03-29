@@ -64,12 +64,13 @@ namespace Director.Forms
 
             // Create tree view
             CurrentServer = new TreeView();
-            CurrentServer.WidthRequest = 100;
+			CurrentServer.MinWidth = 150;
+			CurrentServer.WidthRequest = 150;
 
             // Add server to main box
             MainBox.Panel1.Content = CurrentServer;
-            MainBox.Panel1.Resize = false;
-            MainBox.Panel1.Shrink = false;
+			MainBox.Panel1.Resize = false;
+			MainBox.Panel1.Shrink = false;
 
             // Prepare content box
             ContentBox = new VBox();
