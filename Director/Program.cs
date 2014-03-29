@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Director.Forms;
+using System;
 using Xwt;
 
 namespace Director
@@ -11,16 +12,12 @@ namespace Director
         [STAThread]
         static void Main()
         {
-			Application.Initialize(ToolkitType.Cocoa);
-            var mainWindow = new Window()
-            {
-                Title = "Xwt Demo Application",
-                Width = 500,
-                Height = 400
-            };
-            mainWindow.Show();
+			Application.Initialize(ToolkitType.Wpf);
+
+            MainWindow _mainWindow = new MainWindow();
+            _mainWindow.Show();
             Application.Run();
-            mainWindow.Dispose();
+            _mainWindow.Dispose();
         }
     }
 }
