@@ -1,10 +1,14 @@
-﻿using Director.Forms;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Xwt;
+using Director.Forms;
 
 namespace Director
 {
-    static class Program
+    static class ProgramMac
     {
         /// <summary>
         /// The main entry point for the application.
@@ -12,7 +16,7 @@ namespace Director
         [STAThread]
         static void Main()
         {
-			Application.Initialize(ToolkitType.Wpf);
+            Application.Initialize(ToolkitType.Cocoa);
             MainWindow _mainWindow = new MainWindow();
             _mainWindow.Show();
             Application.Run();
