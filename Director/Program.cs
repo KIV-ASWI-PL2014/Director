@@ -12,12 +12,13 @@ namespace Director
         [STAThread]
         static void Main()
         {
-			Application.Initialize(ToolkitType.Wpf);
+			Application.Initialize(ToolkitType.Cocoa);
 
             MainWindow _mainWindow = new MainWindow();
             _mainWindow.Show();
             Application.Run();
-            _mainWindow.Dispose();
+			_mainWindow.Dispose();
+			Application.Dispose();
         }
     }
 }
