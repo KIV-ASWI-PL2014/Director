@@ -12,12 +12,17 @@ namespace Director.ParserLib
         {
         }
 
-        ParserResult validate(string template, Dictionary<string, string> customVariables)
+        ParserResult generateRequest(string template, Dictionary<string, string> customVariables)
         {
             return null;
         }
 
-        ParserResult parse(string template, string response, Dictionary<string, string> customVariables)
+        ParserResult validateResponse(string template, Dictionary<string, string> customVariables)
+        {
+            return null;
+        }
+
+        ParserResult parseResponse(string template, string response, Dictionary<string, string> customVariables)
         {
             return null;
         }

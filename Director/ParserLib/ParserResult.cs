@@ -8,14 +8,13 @@ namespace Director.ParserLib
 {
     class ParserResult
     {
-        private bool success;
-        private Dictionary<string, string> customVariables;
         private List<ParserError> errors;
+        private string result;
 
-        ParserResult(Dictionary<string, string> customVariables, List<ParserError> errors)
+        ParserResult(List<ParserError> errors, string result)
         {
-            this.customVariables = customVariables;
             this.errors = errors;
+            this.result = result;
         }
 
         bool isSuccess()
@@ -26,14 +25,14 @@ namespace Director.ParserLib
             return false;
         }
 
-        Dictionary<string, string> getCustomVariables()
-        {
-            return customVariables;
-        }
-
         List<ParserError> getErrors()
         {
             return errors;
+        }
+
+        string getResult()
+        {
+            return result;
         }
     }
 }
