@@ -130,11 +130,6 @@ namespace Director.Forms
             CurrentServer.Columns.Add("Server", ColumnImage, ColumnName); // Dummy column, not sure why?
             CurrentServer.HeadersVisible = false;
 
-            // Create temporary server
-            //var server = CreateTreeItem(null, "Server", ServerImage);
-            //var scenario = CreateTreeItem(server, "Test scenario", ScenarioImage);
-            //CreateTreeItem(scenario, "Test request", ProcessingImage);
-
             // Net item parsing
             CurrentServer.ButtonPressed += HandleMouseOnTreeView;
 
@@ -143,8 +138,8 @@ namespace Director.Forms
 
             // Add server to main box
             MainBox.Panel1.Content = CurrentServer;
-            MainBox.Panel1.Resize = false;
-            MainBox.Panel1.Shrink = false;
+			MainBox.Panel1.Resize = false;
+			MainBox.Panel1.Shrink = false;
 
             // Prepare content box
             ContentBox = new VBox();

@@ -164,6 +164,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="Resources\ok.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
