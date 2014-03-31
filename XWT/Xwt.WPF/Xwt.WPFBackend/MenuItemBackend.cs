@@ -113,6 +113,12 @@ namespace Xwt.WPFBackend
 			set { this.menuItem.Visibility = (value) ? Visibility.Visible : Visibility.Collapsed; }
 		}
 
+        public bool Enabled
+        {
+            get { return this.menuItem.IsEnabled; }
+            set { this.menuItem.IsEnabled = value; }
+        }
+
 		public void SetImage (ImageDescription imageBackend)
 		{
 			if (imageBackend.IsNull)

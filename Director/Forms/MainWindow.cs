@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Xwt;
 using Director.Forms.Panels;
 using Xwt.Drawing;
+using Director.Forms.Controls;
+using Director.DataStructures;
 
 namespace Director.Forms
 {
@@ -32,18 +34,72 @@ namespace Director.Forms
         private VBox DirectorHomepage = new Homepage();
 
         /// <summary>
+        /// Server page.
+        /// </summary>
+        private VBox ServerPage = new ServerPage();
+
+        /// <summary>
         /// Current server sumary.
         /// </summary>
         private TreeView CurrentServer { get; set; }
 
+        /// <summary>
+        /// New server store.
+        /// </summary>
+        private TreeStore ServerStore;
+
+        /// <summary>
+        /// New server or server whitch is using.
+        /// </summary>
+        private Server UServer { get; set; }
+
+        /// <summary>
+        /// Data fields describing server - save to TreeStore.
+        /// </summary>
+        private DataField<Image> ColumnImage = new DataField<Image>();
+        private DataField<String> ColumnName = new DataField<string>();
+        private DataField<Object> ColumnType = new DataField<object>();
+
+
+        /// <summary>
+        /// Default images for Server tree.
+        /// </summary>
+        private Image ServerImage = Image.FromResource(DirectorImages.ROOT_ICON);
+        private Image ScenarioImage = Image.FromResource(DirectorImages.SCENARIO_ICON);
+        private Image RequestImage = Image.FromResource(DirectorImages.REQUEST_ICON);
+        private Image ProcessingImage = Image.FromResource(DirectorImages.PROCESSING_ICON);
+
+        /// <summary>
+        /// Server context menu.
+        /// </summary>
+        private Menu ServerMenu;
+
+        /// <summary>
+        /// Scenario context menu.
+        /// </summary>
+        private Menu ScenarioMenu;
+
+        /// <summary>
+        /// Request context menu.
+        /// </summary>
+        private Menu RequestMenu;
+
+        /// <summary>
+        /// Default constructor initiate components!
+        /// </summary>
         public MainWindow()
         {
             _initializeComponents();
         }
 
+        /// <summary>
+        /// Initiate all form components.
+        /// </summary>
         private void _initializeComponents() {
             /// Title and Initial size
-            Title = "API Director";
+            Title = Director.Locales.Language.MainWindowTitle;
+
+            // Set default size
             Width = 650;
             Height = 500;
 
@@ -56,7 +112,9 @@ namespace Director.Forms
             // Initialize content
             _intializeBoxes();
         }
-
+        /// <summary>
+        /// Initialize whole layout!
+        /// </summary>
         private void _intializeBoxes()
         {
             // Create HPaned main box
@@ -65,6 +123,23 @@ namespace Director.Forms
             // Create tree view
             CurrentServer = new TreeView();
             CurrentServer.WidthRequest = 100;
+            CurrentServer.SelectionMode = SelectionMode.Single;
+
+            // Create tree view!
+            ServerStore = new TreeStore(ColumnName, ColumnImage, ColumnType);
+            CurrentServer.Columns.Add("Server", ColumnImage, ColumnName); // Dummy column, not sure why?
+            CurrentServer.HeadersVisible = false;
+
+            // Create temporary server
+            //var server = CreateTreeItem(null, "Server", ServerImage);
+            //var scenario = CreateTreeItem(server, "Test scenario", ScenarioImage);
+            //CreateTreeItem(scenario, "Test request", ProcessingImage);
+
+            // Net item parsing
+            CurrentServer.ButtonPressed += HandleMouseOnTreeView;
+
+            // Set data source
+            CurrentServer.DataSource = ServerStore;
 
             // Add server to main box
             MainBox.Panel1.Content = CurrentServer;
@@ -81,28 +156,62 @@ namespace Director.Forms
             MainBox.Panel2.Resize = true;
             MainBox.Panel2.Shrink = true;
 
+            // Position
+            MainBox.Position = 220;
+
             // Set content to main box
             Content = MainBox;
         }
 
+        private void HandleMouseOnTreeView(object sender, ButtonEventArgs e)
+        {
+            if (e.Button == PointerButton.Right && CurrentServer.SelectedRow != null)
+            {
+                Point p = new Point(e.X, e.Y);
+                TreePosition tmp;
+                RowDropPosition tmp2;
+
+                CurrentServer.GetDropTargetRow(e.X, e.Y, out tmp2, out tmp);
+                CurrentServer.SelectRow(tmp);
+                ServerMenu.Popup(CurrentServer, p.X, p.Y);
+            }
+        }
+
+        /// <summary>
+        /// Menu associers.
+        /// </summary>
+        private MenuItem NewServer;
+
+        /// <summary>
+        /// Prepare menu.
+        /// </summary>
         private void _initializeMenu() 
         {
+            // Default menu
             Menu menu = new Menu();
 
-            MenuItem server = new MenuItem("Server");
+            // Create main menu item
+            MenuItem server = new MenuItem(Director.Locales.Language.MenuServer);
+
+            // Prepare submenu
             server.SubMenu = new Menu();
 
             // Sub menu server
-            MenuItem _new = new MenuItem("New server");
-            _new.Image = Image.FromResource("Director.Resources.new_server.png");
-            server.SubMenu.Items.Add(_new);
+            NewServer = new MenuItem(Director.Locales.Language.MenuNewServer)
+            { 
+                Image = Image.FromResource(DirectorImages.NEW_SERVER_ICON) 
+            };
+            NewServer.Clicked += CreateNewServer;
+            server.SubMenu.Items.Add(NewServer);
 
             // Separator before exit
             server.SubMenu.Items.Add(new SeparatorMenuItem());
 
             // Sub menu exit
-            MenuItem _exit = new MenuItem("Exit");
-            _exit.Image = Image.FromResource("Director.Resources.exit.png");
+            MenuItem _exit = new MenuItem(Director.Locales.Language.MenuExitProgram)
+            {
+                Image = Image.FromResource(DirectorImages.EXIT_ICON)
+            };
             _exit.Clicked += delegate
             {
                 Application.Exit();
@@ -112,8 +221,90 @@ namespace Director.Forms
 
             // Set menu
             MainMenu = menu;
+
+            // Create server menu
+            ServerMenu = new Menu();
+
+            // Add scenario item
+            MenuItem MenuAddScenario = new MenuItem(Director.Locales.Language.MenuAddScenario)
+            {
+                Image = Image.FromResource(DirectorImages.ADD_ICON)
+            };
+            ServerMenu.Items.Add(MenuAddScenario);
+            MenuAddScenario.Clicked += AddScenario;
         }
 
+        /// <summary>
+        /// Create new scenario which belongs to server.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddScenario(object sender, EventArgs e)
+        {
+            // Get selected row
+            TreePosition tmp = CurrentServer.SelectedRow;
+
+            // Return if null
+            if (tmp == null) 
+                return;
+
+            // Get row
+            var data = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+
+            if (data is Server)
+            {
+                Server s = (Server)data;
+
+                // Add new scenario
+                Scenario NewScenario = s.CreateNewScenario();
+
+                // Add to tree!
+                CreateTreeItem(tmp, NewScenario.Name, ScenarioImage, NewScenario);
+            }
+        }
+
+        /// <summary>
+        /// Create tree item on specific position.
+        /// </summary>
+        /// <param name="pos">Position</param>
+        /// <param name="name">Item name</param>
+        /// <param name="icon">Icon</param>
+        /// <param name="item">Object</param>
+        /// <returns>New tree position</returns>
+        private TreePosition CreateTreeItem(TreePosition pos, string name, Image icon, Object item)
+        {
+            return ServerStore.AddNode(pos)
+                              .SetValue(ColumnName, name)
+                              .SetValue(ColumnImage, icon)
+                              .SetValue(ColumnType, item)
+                              .CurrentPosition;
+        }
+
+        /// <summary>
+        /// Create new server and add server to server store!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CreateNewServer(object sender, EventArgs e)
+        {
+            // Create server
+            UServer = new Server(Director.Locales.Language.NewServerString, Director.Locales.Language.NewServerURL);
+
+            // Add server to tree store
+            ServerStore.Clear();
+
+            // Add node
+            CreateTreeItem(null, UServer.Name, ServerImage, UServer);
+
+            // Disable server menu
+            NewServer.Enabled = false;
+        }
+
+
+        /// <summary>
+        /// Dispose window.
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);

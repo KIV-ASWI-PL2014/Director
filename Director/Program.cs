@@ -15,6 +15,14 @@ namespace Director
 			Application.Initialize(ToolkitType.Wpf);
             MainWindow _mainWindow = new MainWindow();
             _mainWindow.Show();
+            _mainWindow.Disposed += delegate
+            {
+                Application.Exit();
+            };
+            _mainWindow.Closed += delegate
+            {
+                Application.Exit();
+            };
             Application.Run();
         }
     }

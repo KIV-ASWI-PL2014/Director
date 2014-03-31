@@ -13,7 +13,7 @@ namespace Director.Forms.Panels
 
         public Homepage()
         {
-            InfoBox _infoBox = new InfoBox("Api Director", "Director.Resources.homepage.png");
+            InfoBox _infoBox = new InfoBox("Api Director", DirectorImages.HOMEPAGE_IMAGE);
             PackStart(_infoBox);
             MarginLeft = 10;
         }
