@@ -34,32 +34,25 @@ namespace Xwt.Mac
 {
 	static class CellUtil
 	{
-		public static NSCell CreateCell (NSTableView table, ICellSource source, ICollection<CellView> cells, int column)
+		public static NSCell CreateCell (ICellSource source, ICollection<CellView> cells)
 		{
 			CompositeCell c = new CompositeCell (Orientation.Horizontal, source);
 			foreach (var cell in cells)
-				c.AddCell ((ICellRenderer) CreateCell (table, c, cell, column));
+				c.AddCell ((ICellRenderer) CreateCell (c, cell));
 			return c;
 		}
 		
-		static NSCell CreateCell (NSTableView table, CompositeCell source, CellView cell, int column)
+		static NSCell CreateCell (CompositeCell source, CellView cell)
 		{
-			ICellRenderer cr = null;
-
 			if (cell is ITextCellViewFrontend)
-				cr = new TextTableCell ();
-			else if (cell is IImageCellViewFrontend)
-				cr = new ImageTableCell ();
-			else if (cell is ICanvasCellViewFrontend)
-				cr = new CanvasTableCell ();
-			else if (cell is ICheckBoxCellViewFrontend)
-				cr = new CheckBoxTableCell ();
-			else
-				throw new NotImplementedException ();
-			cr.Backend = new CellViewBackend (table, column);
-			ICellViewFrontend fr = cell;
-			fr.AttachBackend (null, cr.Backend);
-			return (NSCell)cr;
+				return new TextTableCell ((ITextCellViewFrontend) cell);
+			if (cell is IImageCellViewFrontend)
+				return new ImageTableCell ((IImageCellViewFrontend) cell);
+			if (cell is ICanvasCellViewFrontend)
+				return new CanvasTableCell ((ICanvasCellViewFrontend) cell);
+			if (cell is ICheckBoxCellViewFrontend)
+				return new CheckBoxTableCell ((ICheckBoxCellViewFrontend) cell);
+			throw new NotImplementedException ();
 		}
 	}
 }

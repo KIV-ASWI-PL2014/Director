@@ -35,13 +35,5 @@ namespace Xwt.Backends
 		Rectangle GetDrawingAreaForBounds (Rectangle cellBounds);
 		Size GetRequiredSize ();
 	}
-
-	public class CellViewStatus
-	{
-		public Rectangle CellBounds { get; set; }
-		public Rectangle BackgroundBounds { get; set; }
-		public bool Selected { get; set; }
-		public bool HasFocus { get; set; }
-	}
 }
 

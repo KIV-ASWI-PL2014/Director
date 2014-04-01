@@ -59,11 +59,6 @@ namespace Xwt
 			return new MenuItemBackendHost ();
 		}
 		
-		static MenuItem ()
-		{
-			MapEvent (MenuItemEvent.Clicked, typeof(MenuItem), "OnClicked");
-		}
-		
 		public MenuItem ()
 		{
 			if (!IsSeparator)
@@ -135,14 +130,12 @@ namespace Xwt
 			get { return Backend.Visible; }
 			set { Backend.Visible = value; }
 		}
-
-        [DefaultValue(true)]
-        public bool Enabled
-        {
-            get { return Backend.Enabled; }
-            set { Backend.Enabled = value; }
-        }
 		
+    public KeyAccelerator Accelerator {
+      get { return Backend.Accelerator; }
+      set { Backend.Accelerator = value; }
+    }
+
 		public Image Image {
 			get { return image; }
 			set {
@@ -192,6 +185,7 @@ namespace Xwt
 			OnClicked (EventArgs.Empty);
 		}
 		
+		[MappedEvent(MenuItemEvent.Clicked)]
 		protected virtual void OnClicked (EventArgs e)
 		{
 			if (clicked != null)
@@ -216,5 +210,15 @@ namespace Xwt
 		CheckBox,
 		RadioButton
 	}
+
+  public class KeyAccelerator
+  {
+    public ConsoleKeyInfo KeyInfo;
+    public bool CommandOrWindowsKey;
+    public KeyAccelerator(ConsoleKeyInfo keyInfo, bool CommandOrWindowsKey) {
+      this.KeyInfo = keyInfo;
+      this.CommandOrWindowsKey = CommandOrWindowsKey;
+    }
+  }
 }
 

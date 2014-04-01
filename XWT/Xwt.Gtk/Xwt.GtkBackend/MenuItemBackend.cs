@@ -41,6 +41,14 @@ namespace Xwt.GtkBackend
 		bool changingCheck;
 		ApplicationContext context;
 		
+    public KeyAccelerator Accelerator {
+      get {
+        return null;
+      }
+      set {
+      }
+    }
+    
 		public MenuItemBackend ()
 			: this (new Gtk.ImageMenuItem (""))
 		{
@@ -119,15 +127,6 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				item.Visible = value;
-			}
-		}
-
-		public bool Enabled {
-			get {
-				return item.Sensitive;
-			}
-			set {
-				item.Sensitive = value;
 			}
 		}
 		

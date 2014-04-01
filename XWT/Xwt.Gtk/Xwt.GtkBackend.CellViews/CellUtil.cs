@@ -51,30 +51,33 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public static CellViewBackend CreateCellRenderer (ApplicationContext actx, Widget widget, ICellRendererTarget col, object target, ICellViewFrontend view)
+		public static Gtk.CellRenderer CreateCellRenderer (ApplicationContext actx, ICellRendererTarget col, object target, ICellViewFrontend view, Gtk.TreeModel model)
 		{
-			CellViewBackend crd;
-
 			if (view is ITextCellViewFrontend) {
-				crd = new CustomCellRendererText ();
+				var cr = new CustomCellRendererText ((ITextCellViewFrontend)view);
+				col.PackStart (target, cr, true);
+				col.SetCellDataFunc (target, cr, (cell_layout, cell, treeModel, iter) => cr.LoadData (col as TreeViewBackend, treeModel, iter));
+				return cr;
 			}
 			else if (view is ICheckBoxCellViewFrontend) {
-				crd = new CustomCellRendererToggle ();
+				CustomCellRendererToggle cr = new CustomCellRendererToggle ((ICheckBoxCellViewFrontend)view);
+				col.PackStart (target, cr, false);
+				col.SetCellDataFunc (target, cr, (cellLayout, cell, treeModel, iter) => cr.LoadData (col as TreeViewBackend, treeModel, iter));
+				return cr;
 			}
 			else if (view is IImageCellViewFrontend) {
-				crd = new CustomCellRendererImage ();
+				CustomCellRendererImage cr = new CustomCellRendererImage (actx, (IImageCellViewFrontend)view);
+				col.PackStart (target, cr, false);
+				col.SetCellDataFunc (target, cr, (cellLayout, cell, treeModel, iter) => cr.LoadData (col as TreeViewBackend, treeModel, iter));
+				return cr;
 			}
 			else if (view is ICanvasCellViewFrontend) {
-				crd = new CustomCellRenderer ();
+				var cr = new CustomCellRenderer ((ICanvasCellViewFrontend) view);
+				col.PackStart (target, cr, false);
+				col.SetCellDataFunc (target, cr, (cellLayout, cell, treeModel, iter) => cr.LoadData (col as TreeViewBackend, treeModel, iter));
+				return cr;
 			}
-			else
-				throw new NotSupportedException ("Unknown cell view type: " + view.GetType ());
-
-			crd.Initialize (view, col, target);
-			col.PackStart (target, crd.CellRenderer, false);
-			col.SetCellDataFunc (target, crd.CellRenderer, (cellLayout, cell, treeModel, iter) => crd.LoadData (treeModel, iter));
-			view.AttachBackend (widget, crd);
-			return crd;
+			throw new NotSupportedException ("Unknown cell view type: " + view.GetType ());
 		}
 		
 		public static Gtk.Widget CreateCellRenderer (ApplicationContext actx, ICollection<CellView> views)
@@ -147,15 +150,6 @@ namespace Xwt.GtkBackend
 		void PackEnd (object target, Gtk.CellRenderer cr, bool expand);
 		void AddAttribute (object target, Gtk.CellRenderer cr, string field, int column);
 		void SetCellDataFunc (object target, Gtk.CellRenderer cr, Gtk.CellLayoutDataFunc dataFunc);
-		Rectangle GetCellBounds (object target, Gtk.CellRenderer cr, Gtk.TreeIter iter);
-		Rectangle GetCellBackgroundBounds (object target, Gtk.CellRenderer cr, Gtk.TreeIter iter);
-		void SetCurrentEventRow (string path);
-		Gtk.Widget EventRootWidget { get; }
-		bool GetCellPosition (Gtk.CellRenderer r, int ex, int ey, out int cx, out int cy, out Gtk.TreeIter iter);
-		void QueueDraw (object target, Gtk.TreeIter iter);
-		Gtk.TreeModel Model { get; }
-		Gtk.TreeIter PressedIter { get; set; }
-		CellViewBackend PressedCell { get; set; }
 	}
 
 }

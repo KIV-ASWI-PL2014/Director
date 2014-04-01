@@ -35,11 +35,6 @@ namespace Xwt
 		{
 		}
 
-		protected void QueueDraw ()
-		{
-			((ICanvasCellViewBackend)BackendHost.Backend).QueueDraw ();
-		}
-
 		/// <summary>
 		/// Called when the cell needs to be redrawn
 		/// </summary>

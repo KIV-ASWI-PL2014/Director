@@ -33,30 +33,34 @@ using Xwt.Backends;
 namespace Xwt.GtkBackend
 {
 
-	public class CustomCellRendererImage: CellViewBackend
+	public class CustomCellRendererImage: Gtk.CellRenderer, ICellDataSource
 	{
-		ImageRenderer renderer;
-
-		public CustomCellRendererImage ()
-		{
-			renderer = new ImageRenderer ();
-			CellRenderer = renderer;
-		}
-
-		protected override void OnLoadData ()
-		{
-			var view = (IImageCellViewFrontend)Frontend;
-			renderer.Context = ApplicationContext;
-			renderer.Image = view.Image.ToImageDescription ();
-		}
-	}
-
-	class ImageRenderer: Gtk.CellRenderer
-	{
+		TreeModel treeModel;
+		TreeIter iter;
 		ImageDescription image;
+		ApplicationContext actx;
+		IImageCellViewFrontend view;
 
-		public ApplicationContext Context;
-
+		public CustomCellRendererImage (ApplicationContext actx, IImageCellViewFrontend view)
+		{
+			this.actx = actx;
+			this.view = view;
+		}
+		
+		public void LoadData (TreeViewBackend treeBackend, TreeModel treeModel, TreeIter iter)
+		{
+			this.treeModel = treeModel;
+			this.iter = iter;
+			view.Initialize (this);
+			Image = view.Image.ToImageDescription ();
+			Visible = view.Visible;
+		}
+		
+		object ICellDataSource.GetValue (IDataField field)
+		{
+			return CellUtil.GetModelValue (treeModel, iter, field.Index);
+		}
+		
 		[GLib.Property ("image")]
 		public ImageDescription Image {
 			get { return image; }
@@ -71,10 +75,10 @@ namespace Xwt.GtkBackend
 			var ctx = Gdk.CairoHelper.Create (window);
 			using (ctx) {
 				var pix = ((GtkImage)image.Backend);
-				pix.Draw (Context, ctx, Util.GetScaleFactor (widget), cell_area.X, cell_area.Y, image);
+				pix.Draw (actx, ctx, Util.GetScaleFactor (widget), cell_area.X, cell_area.Y, image);
 			}
 		}
-
+		
 		public override void GetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
 			if (image.IsNull) {

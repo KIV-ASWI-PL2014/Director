@@ -94,6 +94,12 @@ namespace Xwt.Mac
 				return true;
 			}
 		}
+		
+		public override bool MouseDownCanMoveWindow {
+			get {
+				return Backend.MouseDownCanMoveWindow;
+			}
+		}
 
 		public override bool AcceptsFirstResponder ()
 		{
@@ -116,6 +122,7 @@ namespace Xwt.Mac
 			args.X = p.X;
 			args.Y = p.Y;
 			args.Button = PointerButton.Right;
+			args.MultiplePress = theEvent.ClickCount;
 			context.InvokeUserCode (delegate {
 				eventSink.OnButtonPressed (args);
 			});
@@ -128,6 +135,7 @@ namespace Xwt.Mac
 			args.X = p.X;
 			args.Y = p.Y;
 			args.Button = PointerButton.Right;
+			args.MultiplePress = theEvent.ClickCount;
 			context.InvokeUserCode (delegate {
 				eventSink.OnButtonReleased (args);
 			});
@@ -140,6 +148,7 @@ namespace Xwt.Mac
 			args.X = p.X;
 			args.Y = p.Y;
 			args.Button = PointerButton.Left;
+			args.MultiplePress = theEvent.ClickCount;
 			context.InvokeUserCode (delegate {
 				eventSink.OnButtonPressed (args);
 			});
@@ -152,6 +161,7 @@ namespace Xwt.Mac
 			args.X = p.X;
 			args.Y = p.Y;
 			args.Button = (PointerButton) theEvent.ButtonNumber + 1;
+			args.MultiplePress = theEvent.ClickCount;
 			context.InvokeUserCode (delegate {
 				eventSink.OnButtonReleased (args);
 			});
@@ -163,6 +173,18 @@ namespace Xwt.Mac
 			MouseMovedEventArgs args = new MouseMovedEventArgs ((long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds, p.X, p.Y);
 			context.InvokeUserCode (delegate {
 				eventSink.OnMouseMoved (args);
+			});
+		}
+		
+		public override void MouseEntered(NSEvent theEvent) {
+			context.InvokeUserCode (delegate {
+				eventSink.OnMouseEntered ();
+			});
+		}
+		
+		public override void MouseExited(NSEvent theEvent) {
+			context.InvokeUserCode (delegate {
+				eventSink.OnMouseExited ();
 			});
 		}
 		

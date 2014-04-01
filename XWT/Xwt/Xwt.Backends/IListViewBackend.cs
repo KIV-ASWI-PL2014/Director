@@ -37,9 +37,6 @@ namespace Xwt.Backends
 
 		bool BorderVisible { get; set; }
 		bool HeadersVisible { get; set; }
-
-		int GetRowAtPosition (Point p);
-		Rectangle GetCellBounds (int row, CellView cell, bool includeMargin);
 	}
 	
 	public enum ListViewEvent

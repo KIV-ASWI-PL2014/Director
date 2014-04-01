@@ -107,7 +107,6 @@ namespace Xwt.GtkBackend
 			RegisterBackend<IScrollbarBackend, ScrollbarBackend> ();
 			RegisterBackend<IPasswordEntryBackend, PasswordEntryBackend> ();
 			RegisterBackend<KeyboardHandler, GtkKeyboardHandler> ();
-			RegisterBackend<ISearchTextEntryBackend, SearchTextEntryBackend> ();
 
 			string typeName = null;
 			string asmName = null;
@@ -275,10 +274,9 @@ namespace Xwt.GtkBackend
 				throw new NotSupportedException ();
 		}
 
-		public override object GetBackendForContext (object nativeWidget, object nativeContext)
+		public override object GetBackendForContext (object nativeContext)
 		{
-			Gtk.Widget w = (Gtk.Widget)nativeWidget;
-			return new CairoContextBackend (Util.GetScaleFactor (w)) { Context = (Cairo.Context)nativeContext };
+			return new CairoContextBackend (1) { Context = (Cairo.Context)nativeContext };
 		}
 		
 		public override object GetNativeParentWindow (Widget w)

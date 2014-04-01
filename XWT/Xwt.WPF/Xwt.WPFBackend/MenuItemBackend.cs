@@ -48,6 +48,14 @@ namespace Xwt.WPFBackend
 		string label;
 		bool useMnemonic;
 
+    public KeyAccelerator Accelerator {
+      get {
+        return null;
+      }
+      set {
+      }
+    }
+
 		public MenuItemBackend ()
 			: this (new SWC.MenuItem())
 		{
@@ -112,12 +120,6 @@ namespace Xwt.WPFBackend
 			get { return this.menuItem.IsVisible; }
 			set { this.menuItem.Visibility = (value) ? Visibility.Visible : Visibility.Collapsed; }
 		}
-
-        public bool Enabled
-        {
-            get { return this.menuItem.IsEnabled; }
-            set { this.menuItem.IsEnabled = value; }
-        }
 
 		public void SetImage (ImageDescription imageBackend)
 		{

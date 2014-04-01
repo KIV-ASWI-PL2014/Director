@@ -31,93 +31,50 @@ using Xwt.GtkBackend;
 
 namespace Xwt.GtkBackend
 {
-	class CustomCellRenderer: CellViewBackend, ICanvasCellViewBackend
+	class CustomCellRenderer: Gtk.CellRenderer, ICellDataSource
 	{
-		Rectangle cellArea;
-		Rectangle backgroundArea;
-		bool isSelected;
-		bool hasFocus;
-		bool isDrawing;
+		TreeModel treeModel;
+		TreeIter iter;
+		ICanvasCellViewFrontend cellView;
 
-		public override void Initialize (ICellViewFrontend cellView, ICellRendererTarget rendererTarget, object target)
+		public CustomCellRenderer (ICanvasCellViewFrontend cellView)
 		{
-			base.Initialize (cellView, rendererTarget, target);
-			CellRenderer = new CanvasRenderer {
-				Parent = this,
-				CellView = (ICanvasCellViewFrontend) cellView 
-			};
+			this.cellView = cellView;
 		}
 
-		internal void StartDrawing (Rectangle ba, Rectangle ca, Gtk.CellRendererState flags)
+		#region ICellDataSource implementation
+
+		public void LoadData (TreeViewBackend treeBackend, TreeModel treeModel, TreeIter iter)
 		{
-			this.cellArea = ca;
-			this.backgroundArea = ba;
-			isSelected = (flags & Gtk.CellRendererState.Selected) != 0;
-			hasFocus = (flags & Gtk.CellRendererState.Focused) != 0;
-			isDrawing = true;
+			this.treeModel = treeModel;
+			this.iter = iter;
+			cellView.Initialize (this);
+			Visible = cellView.Visible;
 		}
 
-		internal void EndDrawing ()
+		object ICellDataSource.GetValue (IDataField field)
 		{
-			isDrawing = false;
+			return CellUtil.GetModelValue (treeModel, iter, field.Index);
 		}
 
-		public override Rectangle CellBounds {
-			get {
-				if (isDrawing)
-					return cellArea;
-				return base.CellBounds;
-			}
-		}
-
-		public override Rectangle BackgroundBounds {
-			get {
-				if (isDrawing)
-					return backgroundArea;
-				return base.BackgroundBounds;
-			}
-		}
-
-		public override bool Selected {
-			get {
-				if (isDrawing)
-					return isSelected;
-				return base.Selected;
-			}
-		}
-
-		public override bool HasFocus {
-			get {
-				if (isDrawing)
-					return hasFocus;
-				return base.HasFocus;
-			}
-		}
-	}
-
-	class CanvasRenderer: Gtk.CellRenderer
-	{
-		public ICanvasCellViewFrontend CellView;
-		public CustomCellRenderer Parent;
+		#endregion
 
 		protected override void Render (Gdk.Drawable window, Gtk.Widget widget, Gdk.Rectangle background_area, Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, Gtk.CellRendererState flags)
 		{
-			Parent.StartDrawing (new Rectangle (background_area.X, background_area.Y, background_area.Width, background_area.Height), new Rectangle (cell_area.X, cell_area.Y, cell_area.Width, cell_area.Height), flags);
-			CellView.ApplicationContext.InvokeUserCode (delegate {
+			cellView.ApplicationContext.InvokeUserCode (delegate {
 				CairoContextBackend ctx = new CairoContextBackend (Util.GetScaleFactor (widget));
 				ctx.Context = Gdk.CairoHelper.Create (window);
 				using (ctx) {
-					CellView.Draw (ctx, new Rectangle (cell_area.X, cell_area.Y, cell_area.Width, cell_area.Height));
+					cellView.Draw (ctx, new Rectangle (cell_area.X, cell_area.Y, cell_area.Width, cell_area.Height));
 				}
 			});
-			Parent.EndDrawing ();
 		}
 
 		public override void GetSize (Gtk.Widget widget, ref Gdk.Rectangle cell_area, out int x_offset, out int y_offset, out int width, out int height)
 		{
 			Size size = new Size ();
-			CellView.ApplicationContext.InvokeUserCode (delegate {
-				size = CellView.GetRequiredSize ();
+			cellView.ApplicationContext.InvokeUserCode (delegate {
+				size = cellView.GetRequiredSize ();
 			});
 			width = (int) size.Width;
 			height = (int) size.Height;

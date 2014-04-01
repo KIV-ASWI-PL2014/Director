@@ -39,7 +39,6 @@ namespace Xwt.Mac
 		protected NSTableView Table;
 		ScrollView scroll;
 		NSObject selChangeObserver;
-		NormalClipView clipView;
 		
 		public TableViewBackend ()
 		{
@@ -49,9 +48,6 @@ namespace Xwt.Mac
 		{
 			Table = CreateView ();
 			scroll = new ScrollView ();
-			clipView = new NormalClipView ();
-			clipView.Scrolled += OnScrolled;
-			scroll.ContentView = clipView;
 			scroll.DocumentView = Table;
 			scroll.BorderType = NSBorderType.BezelBorder;
 			ViewObject = scroll;
@@ -116,31 +112,7 @@ namespace Xwt.Mac
 				}
 			}
 		}
-
-		ScrollControlBackend vertScroll;
-		public IScrollControlBackend CreateVerticalScrollControl ()
-		{
-			if (vertScroll == null)
-				vertScroll = new ScrollControlBackend (ApplicationContext, scroll, true);
-			return vertScroll;
-		}
-
-		ScrollControlBackend horScroll;
-		public IScrollControlBackend CreateHorizontalScrollControl ()
-		{
-			if (horScroll == null)
-				horScroll = new ScrollControlBackend (ApplicationContext, scroll, false);
-			return horScroll;
-		}
-
-		void OnScrolled (object o, EventArgs e)
-		{
-			if (vertScroll != null)
-				vertScroll.NotifyValueChanged ();
-			if (horScroll != null)
-				horScroll.NotifyValueChanged ();
-		}
-
+		
 		protected override Size GetNaturalSize ()
 		{
 			return EventSink.GetDefaultNaturalSize ();
@@ -191,7 +163,7 @@ namespace Xwt.Mac
 			var tcol = new NSTableColumn ();
 			tcol.Editable = true;
 			cols.Add (tcol);
-			var c = CellUtil.CreateCell (Table, this, col.Views, cols.Count - 1);
+			var c = CellUtil.CreateCell (this, col.Views);
 			tcol.DataCell = c;
 			Table.AddColumn (tcol);
 			var hc = new NSTableHeaderCell ();
@@ -209,7 +181,7 @@ namespace Xwt.Mac
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			NSTableColumn tcol = (NSTableColumn) handle;
-			tcol.DataCell = CellUtil.CreateCell (Table, this, col.Views, cols.IndexOf (tcol));
+			tcol.DataCell = CellUtil.CreateCell (this, col.Views);
 		}
 
 		public void SelectAll ()

@@ -35,6 +35,8 @@ namespace Xwt.Mac
 {
 	class TextTableCell: NSTextFieldCell, ICellRenderer
 	{
+		ITextCellViewFrontend cellView;
+		
 		public TextTableCell ()
 		{
 		}
@@ -43,26 +45,29 @@ namespace Xwt.Mac
 		{
 		}
 		
-		ITextCellViewFrontend Frontend {
-			get { return (ITextCellViewFrontend) Backend.Frontend; }
+		public TextTableCell (ITextCellViewFrontend cellView)
+		{
+			this.cellView = cellView;
 		}
 		
-		public CellViewBackend Backend { get; set; }
-
 		public CompositeCell CellContainer { get; set; }
 
 		public void Fill ()
 		{
-			if (Frontend.Markup != null)
-				AttributedStringValue = FormattedText.FromMarkup (Frontend.Markup).ToAttributedString ();
+			if (cellView.Markup != null)
+				AttributedStringValue = FormattedText.FromMarkup (cellView.Markup).ToAttributedString ();
 			else
-				StringValue = Frontend.Text ?? "";
+				StringValue = cellView.Text ?? "";
+		}
+		
+		public ICellViewFrontend Frontend {
+			get { return cellView; }
 		}
 
 		public void CopyFrom (object other)
 		{
 			var ob = (TextTableCell)other;
-			Backend = ob.Backend;
+			cellView = ob.cellView;
 		}
 	}
 }

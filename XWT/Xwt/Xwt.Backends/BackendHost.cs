@@ -25,8 +25,6 @@
 // THE SOFTWARE.
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.ComponentModel;
 
 
 namespace Xwt.Backends
@@ -43,12 +41,14 @@ namespace Xwt.Backends
 		}
 	}
 
-	public class BackendHost: EventHost
+	public class BackendHost
 	{
 		IBackend backend;
 		bool usingCustomBackend;
 		Toolkit engine;
 
+		HashSet<object> defaultEnabledEvents;
+		
 		public BackendHost ()
 		{
 			engine = Toolkit.CurrentEngine;
@@ -58,8 +58,10 @@ namespace Xwt.Backends
 		{
 			this.backend = backend;
 			usingCustomBackend = true;
-			LoadBackend ();
+			OnBackendCreated ();
 		}
+		
+		public object Parent { get; internal set; }
 		
 		public IBackend Backend {
 			get {
@@ -119,15 +121,35 @@ namespace Xwt.Backends
 				OnBackendCreated ();
 			}
 		}
-
-		protected override void OnEnableEvent (object eventId)
+		
+		public void OnBeforeEventAdd (object eventId, Delegate eventDelegate)
 		{
-			Backend.EnableEvent (eventId);
+			if (eventDelegate == null && !DefaultEnabledEvents.Contains (eventId))
+				Backend.EnableEvent (eventId);
+		}
+		
+		public void OnAfterEventRemove (object eventId, Delegate eventDelegate)
+		{
+			if (eventDelegate == null && !DefaultEnabledEvents.Contains (eventId))
+				Backend.DisableEvent (eventId);
+		}
+		
+		internal HashSet<object> DefaultEnabledEvents {
+			get {
+				if (defaultEnabledEvents == null) {
+					defaultEnabledEvents = EventUtil.GetDefaultEnabledEvents (Parent.GetType (), GetDefaultEnabledEvents);
+				}
+				return defaultEnabledEvents;
+			}
 		}
 
-		protected override void OnDisableEvent (object eventId)
+		/// <summary>
+		/// Gets the events which are enabled by default for this widget
+		/// </summary>
+		/// <returns>The enabled events (must be valid event enum values)</returns>
+		protected virtual IEnumerable<object> GetDefaultEnabledEvents ()
 		{
-			Backend.DisableEvent (eventId);
+			yield break;
 		}
 	}
 }

@@ -1,9 +1,13 @@
-﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="1.4.2014 6:41:20">
+﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="1.4.2014 19:18:22">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug Mac" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="../XWT/Xwt.Mac/Xwt.Mac/PanedBackend.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="../XWT/Xwt/Xwt/TreeView.cs">
     <Files>
-      <File FileName="../XWT/Xwt.Mac/Xwt.Mac/PanedBackend.cs" Line="69" Column="29" />
-      <File FileName="../XWT/Xwt.Mac/Xwt.Mac/ViewBackend.cs" Line="1" Column="1" />
+      <File FileName="Forms/MainWindow.cs" Line="1" Column="1" />
+      <File FileName="Config.cs" Line="1" Column="1" />
+      <File FileName="../XWT/Xwt/Xwt/TreeStore.cs" Line="1" Column="1" />
+      <File FileName="../XWT/Xwt/Xwt/TreeView.cs" Line="40" Column="27" />
+      <File FileName="../XWT/Xwt.Mac/Xwt.Mac/TreeViewBackend.cs" Line="1" Column="1" />
+      <File FileName="ProgramMac.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

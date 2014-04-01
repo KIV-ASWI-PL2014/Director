@@ -29,44 +29,55 @@ using Xwt.Backends;
 
 namespace Xwt.GtkBackend
 {
-	public class CustomCellRendererText: CellViewBackend
+	public class CustomCellRendererText: Gtk.CellRendererText, ICellDataSource
 	{
-		Gtk.CellRendererText cellRenderer;
+		TreeViewBackend treeBackend;
+		ITextCellViewFrontend view;
+		TreeModel treeModel;
+		TreeIter iter;
 
-		public CustomCellRendererText ()
+		public CustomCellRendererText (ITextCellViewFrontend view)
 		{
-			CellRenderer = cellRenderer = new Gtk.CellRendererText ();
-			cellRenderer.Edited += HandleEdited;
+			this.view = view;
 		}
 
-		protected override void OnLoadData ()
+		public void LoadData (TreeViewBackend treeBackend, TreeModel treeModel, TreeIter iter)
 		{
-			var view = (ITextCellViewFrontend) Frontend;
+			this.treeBackend = treeBackend;
+			this.treeModel = treeModel;
+			this.iter = iter;
+			view.Initialize (this);
 
 			if (view.Markup != null) {
 				FormattedText tx = FormattedText.FromMarkup (view.Markup);
-				cellRenderer.Text = tx.Text;
+				Text = tx.Text;
 				var atts = new FastPangoAttrList ();
 				atts.AddAttributes (new TextIndexer (tx.Text), tx.Attributes);
-				cellRenderer.Attributes = new Pango.AttrList (atts.Handle);
+				Attributes = new Pango.AttrList (atts.Handle);
 				atts.Dispose ();
 			} else {
-				cellRenderer.Text = view.Text;
+				Text = view.Text;
 			}
-			cellRenderer.Editable = view.Editable;
-			cellRenderer.Ellipsize = view.Ellipsize.ToGtkValue ();
+			Editable = view.Editable;
+			Visible = view.Visible;
+			Ellipsize = view.Ellipsize.ToGtkValue ();
 		}
 		
-		void HandleEdited (object o, EditedArgs args)
+		public object GetValue (IDataField field)
 		{
-			SetCurrentEventRow ();
-			var view = (ITextCellViewFrontend) Frontend;
+			return CellUtil.GetModelValue (treeModel, iter, field.Index);
+		}
+
+		protected override void OnEdited (string path, string new_text)
+		{
+			CellUtil.SetCurrentEventRow (treeBackend, path);
 
 			if (!view.RaiseTextChanged () && view.TextField != null) {
 				Gtk.TreeIter iter;
-				if (TreeModel.GetIterFromString (out iter, args.Path))
-					CellUtil.SetModelValue (TreeModel, iter, view.TextField.Index, view.TextField.FieldType, args.NewText);
+				if (treeModel.GetIterFromString (out iter, path))
+					CellUtil.SetModelValue (treeModel, iter, view.TextField.Index, view.TextField.FieldType, new_text);
 			}
+			base.OnEdited (path, new_text);
 		}
 	}
 }

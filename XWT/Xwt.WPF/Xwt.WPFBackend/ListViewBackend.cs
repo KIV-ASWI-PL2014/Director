@@ -43,17 +43,7 @@ namespace Xwt.WPFBackend
 		{
 			ListView = new ExListView();
 			ListView.View = this.view;
-        }
-
-		public ScrollViewer ScrollViewer {
-			get {
-	            Decorator border = System.Windows.Media.VisualTreeHelper.GetChild(ListView, 0) as Decorator;
-	            if (border != null)
-	                return border.Child as ScrollViewer;
-	            else
-	                return null;
-	        }
-        }
+		}
 		
 		public ScrollPolicy VerticalScrollPolicy {
 			get { return ScrollViewer.GetVerticalScrollBarVisibility (this.ListView).ToXwtScrollPolicy (); }
@@ -65,17 +55,7 @@ namespace Xwt.WPFBackend
 			set { ScrollViewer.SetHorizontalScrollBarVisibility (ListView, value.ToWpfScrollBarVisibility ()); }
 		}
 
-		public IScrollControlBackend CreateVerticalScrollControl()
-		{
-			return new ScrollControlBackend(ScrollViewer, true);
-		}
-
-		public IScrollControlBackend CreateHorizontalScrollControl()
-		{
-			return new ScrollControlBackend(ScrollViewer, false);
-		}
-       
-        private bool borderVisible = true;
+		private bool borderVisible = true;
 		public bool BorderVisible
 		{
 			get { return this.borderVisible; }
@@ -116,9 +96,9 @@ namespace Xwt.WPFBackend
 		public object AddColumn (ListViewColumn col)
 		{
 			var column = new GridViewColumn ();
-			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (Frontend, col.Views) };
+			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (col.Views) };
 			if (col.HeaderView != null)
-				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (Frontend, col.HeaderView) };
+				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (col.HeaderView) };
 			else
 				column.Header = col.Title;
 
@@ -135,9 +115,9 @@ namespace Xwt.WPFBackend
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			var column = (GridViewColumn) handle;
-            column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Frontend, col.Views) };
+			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (col.Views) };
 			if (col.HeaderView != null)
-                column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Frontend, col.HeaderView) };
+				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (col.HeaderView) };
 			else
 				column.Header = col.Title;
 		}
@@ -234,16 +214,5 @@ namespace Xwt.WPFBackend
 		}
 
 		private static readonly Setter HideHeadersSetter = new Setter (UIElement.VisibilityProperty, Visibility.Collapsed);
-
-
-        public int GetRowAtPosition(Point p)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Rectangle GetCellBounds(int row, CellView cell, bool includeMargin)
-        {
-            throw new NotImplementedException();
-        }
-    }
+	}
 }

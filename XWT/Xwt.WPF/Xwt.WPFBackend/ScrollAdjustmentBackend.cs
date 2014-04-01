@@ -31,7 +31,7 @@ using System.Windows.Controls;
 namespace Xwt.WPFBackend
 {
 	internal class ScrollAdjustmentBackend
-		: Backend, IScrollAdjustmentBackend, IScrollControlBackend
+		: Backend, IScrollAdjustmentBackend
 	{
 		double scrollValue;
 		double lowerValue;
@@ -39,70 +39,28 @@ namespace Xwt.WPFBackend
 		double pageIncrement;
 		double stepIncrement;
 		double pageSize;
-        bool isVertical;
-		IScrollAdjustmentEventSink eventSink;
-		IScrollControlEventSink controlEventSink;
 
 		public CustomScrollViewPort TargetViewport { get; set; }
 
-        public ScrollViewer TargetScrollViewer { get; set; }
-
-        public ScrollAdjustmentBackend()
-        {
-        }
-
-        public ScrollAdjustmentBackend (ScrollViewer s, bool isVertical)
-        {
-            TargetScrollViewer = s;
-            this.isVertical = isVertical;
-            scrollValue = 0;
-            lowerValue = 0;
-        }
-
-        public void Initialize(IScrollAdjustmentEventSink eventSink)
+		public void Initialize (IScrollAdjustmentEventSink eventSink)
 		{
-			this.eventSink = eventSink;
-		}
-
-		public void Initialize (IScrollControlEventSink eventSink)
-		{
-			controlEventSink = eventSink;
+			EventSink = eventSink;
 		}
 
 		public void SetOffset (double offset)
 		{
 			// The offset is relative to 0, it has to be converted to the lower/upper value range
 			scrollValue = LowerValue + offset;
-			Context.InvokeUserCode (delegate {
-				if (eventSink != null)
-					eventSink.OnValueChanged ();
-				if (controlEventSink != null)
-					controlEventSink.OnValueChanged ();
-			});
+			Context.InvokeUserCode (EventSink.OnValueChanged);
 		}
 
 		public double Value
 		{
 			get { return scrollValue; }
 			set {
-                scrollValue = value;
-
 				// Provide the value to the viewport, which will update
 				// the ScrollView. The viewport expects an offset starting at 0.
-                if (TargetViewport != null)
-                    TargetViewport.SetOffset(this, value - LowerValue);
-
-                if (upperValue == lowerValue)
-                    return;
-
-                var off = (value - lowerValue) / (upperValue - lowerValue);
-
-				if (TargetScrollViewer != null)	{
-					if (isVertical)
-						TargetScrollViewer.ScrollToVerticalOffset(TargetScrollViewer.ExtentHeight * off);
-					else
-						TargetScrollViewer.ScrollToHorizontalOffset(TargetScrollViewer.ExtentWidth * off);
-				}
+				TargetViewport.SetOffset (this, value - LowerValue);
 			}
 		}
 
@@ -155,6 +113,12 @@ namespace Xwt.WPFBackend
 		{
 			if (TargetViewport != null)
 				TargetViewport.UpdateCustomExtent ();
+		}
+
+		internal IScrollAdjustmentEventSink EventSink
+		{
+			get;
+			private set;
 		}
 	}
 }

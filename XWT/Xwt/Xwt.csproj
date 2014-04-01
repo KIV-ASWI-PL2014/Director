@@ -3,14 +3,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt</RootNamespace>
     <AssemblyName>Xwt</AssemblyName>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
-    <ProductVersion>12.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -29,16 +29,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Mac|AnyCPU'">
-    <OutputPath>bin\Debug Mac\</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <Optimize>false</Optimize>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Linux|AnyCPU'">
-    <OutputPath>bin\Debug Linux\</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <Optimize>false</Optimize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -188,6 +178,8 @@
     <Compile Include="Xwt.Backends\ISeparatorMenuItemBackend.cs" />
     <Compile Include="Xwt\EllipsizeMode.cs" />
     <Compile Include="Xwt\RowDropPosition.cs" />
+    <Compile Include="Xwt\ScrollAdjustment.cs" />
+    <Compile Include="Xwt.Backends\IScrollAdjustmentBackend.cs" />
     <Compile Include="Xwt\OpenFileDialog.cs" />
     <Compile Include="Xwt\SaveFileDialog.cs" />
     <Compile Include="Xwt\FileDialog.cs" />
@@ -323,15 +315,6 @@
     <Compile Include="Xwt.Drawing\NinePatchImage.cs" />
     <Compile Include="Xwt\WebView.cs" />
     <Compile Include="Xwt.Backends\IWebViewBackend.cs" />
-    <Compile Include="Xwt.Backends\IScrollAdjustmentBackend.cs" />
-    <Compile Include="Xwt\ScrollAdjustment.cs" />
-    <Compile Include="Xwt\ScrollControl.cs" />
-    <Compile Include="Xwt.Backends\IScrollControlBackend.cs" />
-    <Compile Include="Xwt.Backends\ICellViewBackend.cs" />
-    <Compile Include="Xwt.Backends\EventHost.cs" />
-    <Compile Include="Xwt.Backends\ICanvasCellViewBackend.cs" />
-    <Compile Include="Xwt\SearchTextEntry.cs" />
-    <Compile Include="Xwt.Backends\ISearchTextEntryBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
