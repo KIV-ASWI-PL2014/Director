@@ -288,10 +288,7 @@ namespace Director.Forms
             CreateTreeItem(null, UServer.Name, ServerImage, UServer);
 
             // Disable server menu
-			NewServer.Sensitive = false;
-
-			// Add Store to treeView again
-			CurrentServer.DataSource = ServerStore;
+			NewServer.Sensitive = true;
         }
 
 

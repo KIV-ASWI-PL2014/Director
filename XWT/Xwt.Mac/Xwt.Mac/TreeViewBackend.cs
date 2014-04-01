@@ -75,14 +75,21 @@ namespace Xwt.Mac
 			NSTableColumn tcol = (NSTableColumn) base.AddColumn (col);
 			if (Tree.OutlineTableColumn == null)
 				Tree.OutlineTableColumn = tcol;
+				
 			return tcol;
 		}
 		
 		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
 		{
 			this.source = source;
+			source.NodeChanged += RefreshDataSource;
 			tsource = new TreeSource (source);
 			Tree.DataSource = tsource;
+		}
+
+		private void RefreshDataSource(object sender, Xwt.TreeNodeEventArgs args)
+		{
+			Table.ReloadData ();
 		}
 		
 		public override object GetValue (object pos, int nField)
