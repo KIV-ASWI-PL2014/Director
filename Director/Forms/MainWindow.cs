@@ -16,7 +16,7 @@ namespace Director.Forms
         /// <summary>
         /// Default box
         /// </summary>
-        private HPaned MainBox { get; set; }
+		private HBox MainBox { get; set; }
 
         /// <summary>
         /// Content box for widgets!
@@ -118,11 +118,14 @@ namespace Director.Forms
         private void _intializeBoxes()
         {
             // Create HPaned main box
-            MainBox = new HPaned();
+			MainBox = new HBox();
+			MainBox.ExpandVertical = true;
+			MainBox.ExpandHorizontal = true;
+			MainBox.Spacing = 3;
 
             // Create tree view
             CurrentServer = new TreeView();
-            CurrentServer.WidthRequest = 100;
+			CurrentServer.WidthRequest = 200;
             CurrentServer.SelectionMode = SelectionMode.Single;
 
             // Create tree view!
@@ -137,9 +140,7 @@ namespace Director.Forms
             CurrentServer.DataSource = ServerStore;
 
             // Add server to main box
-            MainBox.Panel1.Content = CurrentServer;
-			MainBox.Panel1.Resize = false;
-			MainBox.Panel1.Shrink = false;
+			MainBox.PackStart (CurrentServer);
 
             // Prepare content box
             ContentBox = new VBox();
@@ -147,15 +148,10 @@ namespace Director.Forms
             ContentBox.PackStart(DirectorHomepage, expand: true, fill: true);
 
             // Add to panel
-            MainBox.Panel2.Content = ContentBox;
-            MainBox.Panel2.Resize = true;
-            MainBox.Panel2.Shrink = true;
-
-            // Position
-            MainBox.Position = 220;
+			MainBox.PackStart (ContentBox, true, true);
 
             // Set content to main box
-            Content = MainBox;
+			Content = MainBox;
         }
 
         private void HandleMouseOnTreeView(object sender, ButtonEventArgs e)

@@ -100,7 +100,16 @@ namespace Xwt.Mac
 				item.Hidden = !value;
 			}
 		}
-		
+
+		public bool Enabled {
+			get {
+				return item.Enabled;
+			}
+			set {
+				item.Enabled = true;
+			}
+		}
+
 		public bool Sensitive {
 			get {
 				return item.Enabled;
