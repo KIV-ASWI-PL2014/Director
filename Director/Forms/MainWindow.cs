@@ -292,7 +292,8 @@ namespace Director.Forms
             CreateTreeItem(null, UServer.Name, ServerImage, UServer);
 
             // Disable server menu
-            NewServer.Enabled = false;
+            //NewServer.Enabled = false;
+            NewServer.Sensitive = false;
         }
 
 
