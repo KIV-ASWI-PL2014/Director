@@ -101,8 +101,6 @@ namespace Xwt.Backends
 		void OnHidden ();
 		bool OnCloseRequested ();
 		void OnClosed ();
-		void OnBecomeMain ();
-		void OnBecomeKey ();
 	}
 
 	[Flags]

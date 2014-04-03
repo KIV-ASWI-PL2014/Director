@@ -16,6 +16,28 @@ namespace Director.Forms.Panels
             InfoBox _infoBox = new InfoBox("Api Director", DirectorImages.HOMEPAGE_IMAGE);
             PackStart(_infoBox);
             MarginLeft = 10;
+
+			TextEntry ta = new TextEntry ();
+			ta.ButtonPressed += HandleButtonPressed;
+			Label la = new Label ("Right click here to show the context menu");
+			menu = new Menu ();
+			menu.Items.Add (new MenuItem ("One"));
+			menu.Items.Add (new MenuItem ("Two"));
+			menu.Items.Add (new MenuItem ("Three"));
+			menu.Items.Add (new SeparatorMenuItem ());
+			menu.Items.Add (new MenuItem ("End"));
+
+			la.ButtonPressed += HandleButtonPressed;
+			PackStart (la);
+			PackStart (ta);
         }
+			
+		Menu menu;
+
+		void HandleButtonPressed (object sender, ButtonEventArgs e)
+		{
+			if (e.Button == PointerButton.Right)
+				menu.Popup ();
+		}
     }
 }

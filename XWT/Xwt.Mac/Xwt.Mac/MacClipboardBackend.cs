@@ -57,71 +57,14 @@ namespace Xwt.Mac
 		}
 
 		public override bool IsTypeAvailable (TransferDataType type)
-		{ 
-			NSPasteboard pb = NSPasteboard.GeneralPasteboard;
-			NSObject[] classes;
-			NSDictionary options;
-			bool isType;
-
-			if (type == TransferDataType.Image) {
-				//The below only works for images copied from web browsers, doesn't work for raw images.
-
-//				NSObject urlClassObj = NSObject.FromObject(new MonoMac.ObjCRuntime.Class(typeof(NSUrl)));
-//				NSObject imageClassObj = NSObject.FromObject(new MonoMac.ObjCRuntime.Class(typeof(NSImage)));
-//				classes = new NSObject[]{ urlClassObj };
-//				NSObject a = new NSString(type.ToUTI());
-//				options = NSDictionary.FromObjectAndKey(imageClassObj, a);
-//				isType = pb.CanReadObjectForClasses(classes, options);
-//				return isType;
-
-				var item = pb.PasteboardItems[0];
-				for (int i= 0; i< item.Types.Length; i++) {
-					if (item.Types[i].Equals("public.tiff")) {
-						return true;
-					}
-				}
-				return false;
-			} else if (type == TransferDataType.Text) {
-				classes = new NSObject[] {
-					NSObject.FromObject(new MonoMac.ObjCRuntime.Class(typeof(NSAttributedString))),
-					NSObject.FromObject(new MonoMac.ObjCRuntime.Class(typeof(NSString)))
-				};
-				options = new NSDictionary();
-				isType = pb.CanReadObjectForClasses(classes, options);
-				return isType;
-			} else if (type == TransferDataType.Uri) {
-				//files
-				classes = new NSObject[]{ NSObject.FromObject(new MonoMac.ObjCRuntime.Class(typeof(NSUrl))) };
-				options = NSDictionary.FromObjectAndKey(NSObject.FromObject(NSNumber.FromBoolean(true)), new NSString(type.ToUTI()));
-				isType = pb.CanReadObjectForClasses(classes, options);
-				return isType;
-			}
-			return NSPasteboard.GeneralPasteboard.CanReadItemWithDataConformingToTypes (new string[] {type.ToUTI ()});
+		{
+			return NSPasteboard.GeneralPasteboard.CanReadItemWithDataConformingToTypes (new[] { type.ToUTI () });
 		}
-
 
 		public override object GetData (TransferDataType type)
 		{
-			if (type == TransferDataType.Uri) {
-				NSUrl url = NSUrl.FromPasteboard(NSPasteboard.GeneralPasteboard);
-				if(url.IsFileUrl) {
-					return new Uri(url.Path);
-				} else {
-					return (Uri)url;
-				}
-			}
-
-			if(type == TransferDataType.Image) {
-				NSPasteboard pasteBoard = NSPasteboard.GeneralPasteboard;
-				string[] imageTypes = NSImage.ImageUnfilteredPasteboardTypes();
-				for (int i = 0; i< imageTypes.Length; i++) {
-					NSData imgData = pasteBoard.GetDataForType(imageTypes[i]);
-					if(imgData != null) {
-						NSImage nsImg = new NSImage(imgData);
-						return ApplicationContext.Toolkit.WrapImage (nsImg);
-					}
-				}
-			}
+			if (type == TransferDataType.Uri)
+				return (Uri)NSUrl.FromPasteboard (NSPasteboard.GeneralPasteboard);
 
 			var data = NSPasteboard.GeneralPasteboard.GetDataForType (type.ToUTI ());
 			if (data == null)
@@ -129,6 +72,8 @@ namespace Xwt.Mac
 
 			if (type == TransferDataType.Text)
 				return data.ToString ();
+			if (type == TransferDataType.Image)
+				return new NSImage (data);
 
 			unsafe {
 				var bytes = new byte [data.Length];

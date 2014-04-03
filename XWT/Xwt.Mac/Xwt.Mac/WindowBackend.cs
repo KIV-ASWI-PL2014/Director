@@ -138,13 +138,6 @@ namespace Xwt.Mac
 			set { }
 		}
 		
-		public override bool CanBecomeKeyWindow {
-			get {
-				// must be overriden or borderless windows will not be able to become key
-				return frontend.CanBecomeKey;
-			}
-		}
-		
 		public virtual bool HasFocus {
 			get { return false; }
 		}
@@ -326,18 +319,6 @@ namespace Xwt.Mac
 			ApplicationContext.InvokeUserCode (delegate {
 				eventSink.OnBoundsChanged (((IWindowBackend)this).Bounds);
 			});
-		}
-		
-		public override void BecomeMainWindow ()
-		{
-      base.BecomeMainWindow ();
-			eventSink.OnBecomeMain ();
-		}
-		
-		public override void BecomeKeyWindow ()
-		{
-      base.BecomeKeyWindow ();
-			eventSink.OnBecomeKey ();
 		}
 
 		void IWindowBackend.SetChild (IWidgetBackend child)

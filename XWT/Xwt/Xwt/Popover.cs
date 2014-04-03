@@ -47,6 +47,11 @@ namespace Xwt
 
 		EventHandler closedEvent;
 
+		static Popover ()
+		{
+			MapEvent (PopoverEvent.Closed, typeof(Popover), "OnClosed");
+		}
+
 		protected class PopoverBackendHost: BackendHost<Popover,IPopoverBackend>, IPopoverEventSink
 		{
 			protected override void OnBackendCreated ()
@@ -161,7 +166,6 @@ namespace Xwt
 				Backend.Dispose ();
 		}
 
-		[MappedEvent(PopoverEvent.Closed)]
 		protected virtual void OnClosed ()
 		{
 			shown = false;

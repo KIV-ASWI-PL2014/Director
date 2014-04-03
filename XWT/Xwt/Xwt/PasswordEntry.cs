@@ -12,6 +12,12 @@ namespace Xwt
 	{
 		EventHandler changed, activated;
 
+		static PasswordEntry ()
+		{
+			MapEvent (PasswordEntryEvent.Changed, typeof (PasswordEntry), "OnChanged");
+			MapEvent (PasswordEntryEvent.Activated, typeof (PasswordEntry), "OnActivated");
+		}
+
 		protected new class WidgetBackendHost : Widget.WidgetBackendHost, IPasswordEntryEventSink
 		{
 			public void OnChanged ()
@@ -60,7 +66,6 @@ namespace Xwt
 			set { Backend.PlaceholderText = value; }
 		}
 
-		[MappedEvent(PasswordEntryEvent.Changed)]
 		protected virtual void OnChanged (EventArgs e)
 		{
 			if (changed != null)
@@ -79,7 +84,6 @@ namespace Xwt
 			}
 		}
 
-		[MappedEvent(PasswordEntryEvent.Activated)]
 		protected virtual void OnActivated (EventArgs e)
 		{
 			if (activated != null)

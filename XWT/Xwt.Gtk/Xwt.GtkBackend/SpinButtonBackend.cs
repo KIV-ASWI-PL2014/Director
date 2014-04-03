@@ -137,7 +137,6 @@ namespace Xwt.GtkBackend
 		public void SetButtonStyle (ButtonStyle style)
 		{
 			switch (style) {
-			case ButtonStyle.AlwaysBorderless:
 			case ButtonStyle.Borderless:
 			case ButtonStyle.Flat:
 				Widget.HasFrame = false;

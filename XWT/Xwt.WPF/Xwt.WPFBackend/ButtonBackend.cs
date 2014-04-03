@@ -34,7 +34,6 @@ using System.Windows.Media;
 using System.Text.RegularExpressions;
 using SWC = System.Windows.Controls;
 using Xwt.Backends;
-using System.Reflection;
 
 
 namespace Xwt.WPFBackend
@@ -78,9 +77,6 @@ namespace Xwt.WPFBackend
 					Button.ClearValue (SWC.Control.BackgroundProperty);
 					Button.BorderThickness = new Thickness (0);
 					Button.BorderBrush = Brushes.Transparent;
-					break;
-				case ButtonStyle.AlwaysBorderless:
-					Button.Style = (Style)ButtonResources["NoChromeButton"];
 					break;
 			}
 			Button.InvalidateMeasure ();
@@ -166,8 +162,7 @@ namespace Xwt.WPFBackend
 			get
 			{
 				if (buttonsDictionary == null) {
-					Assembly thisAssembly = Assembly.GetAssembly(typeof(Xwt.WPFBackend.ButtonBackend));
-					Uri uri = new Uri (String.Format("pack://application:,,,/{0};component/XWT.WPFBackend/Buttons.xaml", thisAssembly.GetName().Name));
+					Uri uri = new Uri ("pack://application:,,,/Xwt.WPF;component/XWT.WPFBackend/Buttons.xaml");
 					buttonsDictionary = (ResourceDictionary)XamlReader.Load (System.Windows.Application.GetResourceStream (uri).Stream);
 				}
 

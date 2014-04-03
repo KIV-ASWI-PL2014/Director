@@ -65,6 +65,11 @@ namespace Xwt
 			}
 		}
 		
+		static Notebook ()
+		{
+			MapEvent (NotebookEvent.CurrentTabChanged, typeof(Notebook), "OnCurrentTabChanged");
+		}
+		
 		public Notebook ()
 		{
 			tabs = new ChildrenCollection <NotebookTab> ((WidgetBackendHost) BackendHost);
@@ -136,7 +141,6 @@ namespace Xwt
 			set { Backend.TabOrientation = value; }
 		}
 		
-		[MappedEvent(NotebookEvent.CurrentTabChanged)]
 		protected virtual void OnCurrentTabChanged (EventArgs e)
 		{
 			if (currentTabChanged != null)

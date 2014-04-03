@@ -176,13 +176,7 @@ namespace Xwt
 			string assembly = type.Substring (i+1).Trim ();
 			type = type.Substring (0, i).Trim ();
 			try {
-				Assembly asm = null;
-				try {
-					asm = Assembly.Load (assembly);
-				} catch (System.IO.FileNotFoundException) {
-					// This will happen when assemblies are merged for deployment
-					asm = Assembly.GetExecutingAssembly();
-				}
+				Assembly asm = Assembly.Load (assembly);
 				if (asm != null) {
 					Type t = asm.GetType (type);
 					if (t != null) {
@@ -245,10 +239,6 @@ namespace Xwt
 		{
 			ValidateObject (image);
 			return backend.GetNativeImage (image);
-		}
-		
-		public object GetNativeWindow (Window window) {
-			return window.Backend;
 		}
 
 		public T CreateObject<T> () where T:new()
@@ -368,9 +358,9 @@ namespace Xwt
 			return new Image (backend.GetBackendForImage (nativeImage));
 		}
 
-		public Context WrapContext (object nativeContext)
+		public Context WrapContext (object nativeWidget, object nativeContext)
 		{
-			return new Context (backend.GetBackendForContext (nativeContext), this);
+			return new Context (backend.GetBackendForContext (nativeWidget, nativeContext), this);
 		}
 
 		public object ValidateObject (object obj)
@@ -416,6 +406,11 @@ namespace Xwt
 
 		public ToolkitFeatures SupportedFeatures {
 			get { return backend.SupportedFeatures; }
+		}
+
+		public void RegisterBackend<TBackend, TImplementation> () where TImplementation: TBackend
+		{
+			backend.RegisterBackend<TBackend, TImplementation> ();
 		}
 
 		internal Image GetStockIcon (string id)

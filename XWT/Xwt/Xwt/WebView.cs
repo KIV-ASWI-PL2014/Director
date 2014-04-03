@@ -45,6 +45,11 @@ namespace Xwt
 			}
 		}
 
+		static WebView ()
+		{
+			MapEvent (WebViewEvent.Loaded, typeof(WebView), "OnLoaded");
+		}
+
 		public WebView ()
 		{
 		}
@@ -72,7 +77,6 @@ namespace Xwt
 			}
 		}
 
-		[MappedEvent(WebViewEvent.Loaded)]
 		protected virtual void OnLoaded (EventArgs e)
 		{
 		}

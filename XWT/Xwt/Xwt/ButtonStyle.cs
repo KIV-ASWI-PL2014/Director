@@ -31,8 +31,7 @@ namespace Xwt
 	{
 		Normal,
 		Flat,
-		Borderless,
-		AlwaysBorderless, // don't show a border even on mouseover
+		Borderless
 	}
 	
 	public enum ButtonType

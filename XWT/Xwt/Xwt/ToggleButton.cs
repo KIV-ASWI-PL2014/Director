@@ -42,6 +42,11 @@ namespace Xwt
 			}
 		}
 		
+		static ToggleButton ()
+		{
+			MapEvent (ToggleButtonEvent.Toggled, typeof(ToggleButton), "OnToggled");
+		}
+		
 		public ToggleButton ()
 		{
 		}
@@ -79,7 +84,6 @@ namespace Xwt
 			set { Backend.Active = value; }
 		}
 		
-		[MappedEvent(ToggleButtonEvent.Toggled)]
 		protected void OnToggled (EventArgs a)
 		{
 			if (toggledEvent != null)

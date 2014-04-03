@@ -280,11 +280,6 @@ namespace Xwt.WPFBackend
 			return s;
 		}
 
-		protected override void OnActivated(EventArgs e) {
-			base.OnActivated(e);
-			((WindowBackend)Frontend.GetBackend()).EventSink.OnBecomeKey();
-		}
-
 		protected override void OnRenderSizeChanged (SizeChangedInfo sizeInfo)
 		{
 			// Once the physical size of the window has been set we can calculate

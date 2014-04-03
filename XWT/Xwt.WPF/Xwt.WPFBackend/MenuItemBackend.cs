@@ -48,14 +48,6 @@ namespace Xwt.WPFBackend
 		string label;
 		bool useMnemonic;
 
-    public KeyAccelerator Accelerator {
-      get {
-        return null;
-      }
-      set {
-      }
-    }
-
 		public MenuItemBackend ()
 			: this (new SWC.MenuItem())
 		{

@@ -76,6 +76,14 @@ namespace Xwt
 			}
 		}
 		
+		static TreeView ()
+		{
+			MapEvent (TableViewEvent.SelectionChanged, typeof(TreeView), "OnSelectionChanged");
+			MapEvent (TreeViewEvent.RowActivated, typeof(TreeView), "OnRowActivated");
+			MapEvent (TreeViewEvent.RowExpanded, typeof(TreeView), "OnRowExpanded");
+			MapEvent (TreeViewEvent.RowExpanding, typeof(TreeView), "OnRowExpanding");
+		}
+	
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Xwt.TreeView"/> class.
 		/// </summary>
@@ -115,7 +123,25 @@ namespace Xwt
 			get { return Backend.HorizontalScrollPolicy; }
 			set { Backend.HorizontalScrollPolicy = value; }
 		}
-		
+
+		ScrollControl verticalScrollAdjustment;
+		public ScrollControl VerticalScrollControl {
+			get {
+				if (verticalScrollAdjustment == null)
+					verticalScrollAdjustment = new ScrollControl (Backend.CreateVerticalScrollControl ());
+				return verticalScrollAdjustment;
+			}
+		}
+
+		ScrollControl horizontalScrollAdjustment;
+		public ScrollControl HorizontalScrollControl {
+			get {
+				if (horizontalScrollAdjustment == null)
+					horizontalScrollAdjustment = new ScrollControl (Backend.CreateHorizontalScrollControl ());
+				return horizontalScrollAdjustment;
+			}
+		}
+
 		/// <summary>
 		/// Gets the tree columns.
 		/// </summary>
@@ -390,7 +416,6 @@ namespace Xwt
 		/// <param name='a'>
 		/// Event arguments
 		/// </param>
-		[MappedEvent(TableViewEvent.SelectionChanged)]
 		protected virtual void OnSelectionChanged (EventArgs a)
 		{
 			if (selectionChanged != null)
@@ -417,7 +442,6 @@ namespace Xwt
 		/// Raises the row activated event.
 		/// </summary>
 		/// <param name="a">The alpha component.</param>
-		[MappedEvent(TreeViewEvent.RowActivated)]
 		protected virtual void OnRowActivated (TreeViewRowEventArgs a)
 		{
 			if (rowActivated != null)
@@ -444,7 +468,6 @@ namespace Xwt
 		/// Raises the row expanding event.
 		/// </summary>
 		/// <param name="a">The alpha component.</param>
-		[MappedEvent(TreeViewEvent.RowExpanding)]
 		protected virtual void OnRowExpanding (TreeViewRowEventArgs a)
 		{
 			if (rowExpanding != null)
@@ -471,7 +494,6 @@ namespace Xwt
 		/// Raises the row expanding event.
 		/// </summary>
 		/// <param name="a">The alpha component.</param>
-		[MappedEvent(TreeViewEvent.RowExpanded)]
 		protected virtual void OnRowExpanded (TreeViewRowEventArgs a)
 		{
 			if (rowExpanded != null)

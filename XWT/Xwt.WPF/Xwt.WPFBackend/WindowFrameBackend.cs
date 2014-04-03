@@ -160,10 +160,8 @@ namespace Xwt.WPFBackend
 		{
 			get { return window.Visibility == Visibility.Visible; }
 			set {
-				if (value) {
-					window.ShowActivated = ((Window)Frontend).CanBecomeKey;
+				if (value)
 					window.Show ();
-				}
 				else
 					window.Hide ();
 			}
@@ -210,12 +208,8 @@ namespace Xwt.WPFBackend
 		public void SetSize (double width, double height)
 		{
 			var r = Bounds;
-			if (width > -1) {
-				r.Width = width;
-			}
-			if (height > -1) {
-				r.Height = height;
-			}
+			r.Width = width;
+			r.Height = height;
 			Bounds = r;
 		}
 

@@ -26,6 +26,7 @@
 
 using System;
 using Xwt.Backends;
+using System.Linq;
 
 namespace Xwt.GtkBackend
 {
@@ -216,7 +217,8 @@ namespace Xwt.GtkBackend
 		
 		public void ScrollToRow (TreePosition pos)
 		{
-			Widget.ScrollToCell (Widget.Model.GetPath (((IterPos)pos).Iter), Widget.Columns[0], false, 0, 0);
+			if (Widget.Columns.Length > 0)
+				Widget.ScrollToCell (Widget.Model.GetPath (((IterPos)pos).Iter), Widget.Columns[0], false, 0, 0);
 		}
 		
 		public void ExpandToRow (TreePosition pos)
@@ -252,6 +254,21 @@ namespace Xwt.GtkBackend
 			default: pos = RowDropPosition.Into; break;
 			}
 			return true;
+		}
+
+		public override void SetCurrentEventRow (string path)
+		{
+			var treeFrontend = (TreeView)Frontend;
+
+			TreePosition toggledItem = null;
+
+			var pathParts = path.Split (':').Select (part => int.Parse (part));
+
+			foreach (int pathPart in pathParts) {
+				toggledItem = treeFrontend.DataSource.GetChild (toggledItem, pathPart);
+			}
+
+			CurrentEventRow = toggledItem;
 		}
 	}
 }

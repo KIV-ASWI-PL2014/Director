@@ -236,6 +236,28 @@ namespace Xwt
 				throw new InvalidOperationException ("CreateBackendHost for Widget did not return a WidgetBackendHost instance");
 		}
 		
+		static Widget ()
+		{
+			MapEvent (WidgetEvent.DragOverCheck, typeof(Widget), "OnDragOverCheck");
+			MapEvent (WidgetEvent.DragOver, typeof(Widget), "OnDragOver");
+			MapEvent (WidgetEvent.DragDropCheck, typeof(Widget), "OnDragDropCheck");
+			MapEvent (WidgetEvent.DragDrop, typeof(Widget), "OnDragDrop");
+			MapEvent (WidgetEvent.DragLeave, typeof(Widget), "OnDragLeave");
+			MapEvent (WidgetEvent.KeyPressed, typeof(Widget), "OnKeyPressed");
+			MapEvent (WidgetEvent.KeyReleased, typeof(Widget), "OnKeyReleased");
+			MapEvent (WidgetEvent.GotFocus, typeof(Widget), "OnGotFocus");
+			MapEvent (WidgetEvent.LostFocus, typeof(Widget), "OnLostFocus");
+			MapEvent (WidgetEvent.MouseEntered, typeof(Widget), "OnMouseEntered");
+			MapEvent (WidgetEvent.MouseExited, typeof(Widget), "OnMouseExited");
+			MapEvent (WidgetEvent.ButtonPressed, typeof(Widget), "OnButtonPressed");
+			MapEvent (WidgetEvent.ButtonReleased, typeof(Widget), "OnButtonReleased");
+			MapEvent (WidgetEvent.MouseMoved, typeof(Widget), "OnMouseMoved");
+			MapEvent (WidgetEvent.DragStarted, typeof(Widget), "OnDragStarted");
+			MapEvent (WidgetEvent.BoundsChanged, typeof(Widget), "OnBoundsChanged");
+			MapEvent (WidgetEvent.PreferredSizeCheck, typeof (Widget), "OnGetPreferredSize");
+			MapEvent (WidgetEvent.MouseScrolled, typeof(Widget), "OnMouseScrolled");
+		}
+		
 		internal protected static IBackend GetBackend (Widget w)
 		{
 			if (w != null && w.Backend is XwtWidgetBackend)
@@ -701,7 +723,6 @@ namespace Xwt
 		/// <param name='args'>
 		/// Arguments.
 		/// </param>
-		[MappedEvent(WidgetEvent.DragOverCheck)]
 		internal protected virtual void OnDragOverCheck (DragOverCheckEventArgs args)
 		{
 			if (dragOverCheck != null)
@@ -714,7 +735,6 @@ namespace Xwt
 		/// <param name='args'>
 		/// Arguments.
 		/// </param>
-		[MappedEvent(WidgetEvent.DragOver)]
 		internal protected virtual void OnDragOver (DragOverEventArgs args)
 		{
 			if (dragOver != null)
@@ -727,7 +747,6 @@ namespace Xwt
 		/// <param name='args'>
 		/// Arguments.
 		/// </param>
-		[MappedEvent(WidgetEvent.DragDropCheck)]
 		internal protected virtual void OnDragDropCheck (DragCheckEventArgs args)
 		{
 			if (dragDropCheck != null)
@@ -740,7 +759,6 @@ namespace Xwt
 		/// <param name='args'>
 		/// Arguments.
 		/// </param>
-		[MappedEvent(WidgetEvent.DragDrop)]
 		internal protected virtual void OnDragDrop (DragEventArgs args)
 		{
 			if (dragDrop != null)
@@ -753,7 +771,6 @@ namespace Xwt
 		/// <param name='args'>
 		/// Arguments.
 		/// </param>
-		[MappedEvent(WidgetEvent.DragLeave)]
 		internal protected virtual void OnDragLeave (EventArgs args)
 		{
 			if (dragLeave != null)
@@ -775,7 +792,6 @@ namespace Xwt
 		/// <param name='args'>
 		/// Arguments.
 		/// </param>
-		[MappedEvent(WidgetEvent.DragStarted)]
 		protected virtual void OnDragStarted (DragStartedEventArgs args)
 		{
 			if (dragStarted != null)
@@ -791,28 +807,24 @@ namespace Xwt
 			}
 		}
 		
-		[MappedEvent(WidgetEvent.KeyPressed)]
 		internal protected virtual void OnKeyPressed (KeyEventArgs args)
 		{
 			if (keyPressed != null)
 				keyPressed (this, args);
 		}
 		
-		[MappedEvent(WidgetEvent.KeyReleased)]
 		internal protected virtual void OnKeyReleased (KeyEventArgs args)
 		{
 			if (keyReleased != null)
 				keyReleased (this, args);
 		}
 		
-		[MappedEvent(WidgetEvent.GotFocus)]
 		internal protected virtual void OnGotFocus (EventArgs args)
 		{
 			if (gotFocus != null)
 				gotFocus (this, args);
 		}
 		
-		[MappedEvent(WidgetEvent.LostFocus)]
 		internal protected virtual void OnLostFocus (EventArgs args)
 		{
 			if (lostFocus != null)
@@ -825,7 +837,6 @@ namespace Xwt
 		/// <param name='args'>
 		/// Arguments.
 		/// </param>
-		[MappedEvent(WidgetEvent.MouseEntered)]
 		protected virtual void OnMouseEntered (EventArgs args)
 		{
 			if (mouseEntered != null)
@@ -838,28 +849,24 @@ namespace Xwt
 		/// <param name='args'>
 		/// Arguments.
 		/// </param>
-		[MappedEvent(WidgetEvent.MouseExited)]
 		protected virtual void OnMouseExited (EventArgs args)
 		{
 			if (mouseExited != null)
 				mouseExited (this, args);
 		}
 		
-		[MappedEvent(WidgetEvent.ButtonPressed)]
 		protected virtual void OnButtonPressed (ButtonEventArgs args)
 		{
 			if (buttonPressed != null)
 				buttonPressed (this, args);
 		}
 		
-		[MappedEvent(WidgetEvent.ButtonReleased)]
 		protected virtual void OnButtonReleased (ButtonEventArgs args)
 		{
 			if (buttonReleased != null)
 				buttonReleased (this, args);
 		}
 		
-		[MappedEvent(WidgetEvent.MouseMoved)]
 		protected virtual void OnMouseMoved (MouseMovedEventArgs args)
 		{
 			if (mouseMoved != null)
@@ -877,7 +884,6 @@ namespace Xwt
 			OnBoundsChanged ();
 		}
 
-		[MappedEvent(WidgetEvent.MouseScrolled)]
 		protected virtual void OnMouseScrolled (MouseScrolledEventArgs args)
 		{
 			if (mouseScrolled != null)
@@ -896,7 +902,6 @@ namespace Xwt
 			}
 		}
 		
-		[MappedEvent(WidgetEvent.BoundsChanged)]
 		protected virtual void OnBoundsChanged ()
 		{
 			if (boundsChanged != null)
@@ -1045,7 +1050,6 @@ namespace Xwt
 		/// <summary>
 		/// Gets the preferred size of the widget (it must not include the widget margin)
 		/// </summary>
-		[MappedEvent(WidgetEvent.PreferredSizeCheck)]
 		protected virtual Size OnGetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 		{
 			return Backend.GetPreferredSize (widthConstraint, heightConstraint);

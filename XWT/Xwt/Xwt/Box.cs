@@ -77,9 +77,6 @@ namespace Xwt
 		{
 			children = new ChildrenCollection<BoxPlacement> ((WidgetBackendHost)BackendHost);
 			direction = dir;
-			BoundsChanged += (object sender, EventArgs e) => {
-			 	OnPreferredSizeChanged();
-			};
 		}
 		
 		public double Spacing {

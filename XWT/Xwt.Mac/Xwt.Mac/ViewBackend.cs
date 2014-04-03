@@ -63,7 +63,6 @@ namespace Xwt.Mac
 		bool sizeCalcPending = true;
 		bool sensitive = true;
 		bool canGetFocus = true;
-		bool mouseDownCanMoveWindow = false;
 		Xwt.Drawing.Color backgroundColor;
 
 		void IBackend.InitializeBackend (object frontend, ApplicationContext context)
@@ -170,15 +169,6 @@ namespace Xwt.Mac
 					UpdateSensitiveStatus (s, sensitive && parentIsSensitive);
 			}
 		}
-		
-		public bool MouseDownCanMoveWindow {
-			get {
-				return mouseDownCanMoveWindow;
-			}
-			set {
-				mouseDownCanMoveWindow = value;
-			}
-		}
 
 		public virtual bool CanGetFocus {
 			get { return canGetFocus; }
@@ -218,31 +208,29 @@ namespace Xwt.Mac
 		public void SetCursor (CursorType cursor)
 		{
 			NSCursor ctype;
-			if(cursor == CursorType.Arrow)
+			if (cursor == CursorType.Arrow)
 				ctype = NSCursor.ArrowCursor;
-			else if(cursor == CursorType.Crosshair)
+			else if (cursor == CursorType.Crosshair)
 				ctype = NSCursor.CrosshairCursor;
-			else if(cursor == CursorType.Hand)
+			else if (cursor == CursorType.Hand)
 				ctype = NSCursor.ClosedHandCursor;
-			else if(cursor == CursorType.IBeam)
+			else if (cursor == CursorType.IBeam)
 				ctype = NSCursor.IBeamCursor;
-			else if(cursor == CursorType.ResizeDown)
+			else if (cursor == CursorType.ResizeDown)
 				ctype = NSCursor.ResizeDownCursor;
-			else if(cursor == CursorType.ResizeUp)
+			else if (cursor == CursorType.ResizeUp)
 				ctype = NSCursor.ResizeUpCursor;
-			else if(cursor == CursorType.ResizeLeft)
+			else if (cursor == CursorType.ResizeLeft)
 				ctype = NSCursor.ResizeLeftCursor;
-			else if(cursor == CursorType.ResizeRight)
+			else if (cursor == CursorType.ResizeRight)
 				ctype = NSCursor.ResizeRightCursor;
-			else if(cursor == CursorType.ResizeLeftRight)
+			else if (cursor == CursorType.ResizeLeftRight)
 				ctype = NSCursor.ResizeLeftRightCursor;
-			else if(cursor == CursorType.ResizeUpDown)
+			else if (cursor == CursorType.ResizeUpDown)
 				ctype = NSCursor.ResizeUpDownCursor;
 			else
 				ctype = NSCursor.ArrowCursor;
-			Widget.DiscardCursorRects();
-			Widget.AddCursorRect(Widget.Bounds, ctype);
-			Widget.CursorUpdate(new NSEvent());
+			// TODO: assign the cursor
 		}
 		
 		~ViewBackend ()
@@ -491,10 +479,6 @@ namespace Xwt.Mac
 				WidgetEvent ev = (WidgetEvent) eventId;
 				currentEvents |= ev;
 				switch (ev) {
-				case WidgetEvent.KeyPressed:
-				case WidgetEvent.KeyReleased:
-					SetupKeyEvents (Widget.GetType ());
-					break;
 				case WidgetEvent.GotFocus:
 				case WidgetEvent.LostFocus:
 					SetupFocusEvents (Widget.GetType ());
@@ -502,7 +486,7 @@ namespace Xwt.Mac
 				}
 			}
 		}
-
+		
 		public virtual void DisableEvent (object eventId)
 		{
 			if (eventId is WidgetEvent) {
@@ -510,7 +494,7 @@ namespace Xwt.Mac
 				currentEvents &= ~ev;
 			}
 		}
-
+		
 		static Selector draggingEnteredSel = new Selector ("draggingEntered:");
 		static Selector draggingUpdatedSel = new Selector ("draggingUpdated:");
 		static Selector draggingExitedSel = new Selector ("draggingExited:");
@@ -519,17 +503,9 @@ namespace Xwt.Mac
 		static Selector concludeDragOperationSel = new Selector ("concludeDragOperation:");
 		static Selector becomeFirstResponderSel = new Selector ("becomeFirstResponder");
 		static Selector resignFirstResponderSel = new Selector ("resignFirstResponder");
-		static Selector keyDownSel = new Selector ("keyDown:");
-		static Selector keyUpSel = new Selector ("keyUp:");
 
 		static HashSet<Type> typesConfiguredForDragDrop = new HashSet<Type> ();
 		static HashSet<Type> typesConfiguredForFocusEvents = new HashSet<Type> ();
-		static HashSet<Type> typesConfiguredForKeyEvents = new HashSet<Type> ();
-
-		// class_addmethod docs:
-		// and secret string syntax
-		// https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/Reference/reference.html
-		// https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html#//apple_ref/doc/uid/TP40008048-CH100
 
 		static void SetupForDragDrop (Type type)
 		{
@@ -556,40 +532,7 @@ namespace Xwt.Mac
 				}
 			}
 		}
-
-		static void SetupKeyEvents (Type type)
-		{
-			lock (typesConfiguredForKeyEvents) {
-				if (typesConfiguredForKeyEvents.Add (type)) {
-					Class c = new Class (type);
-					c.AddMethod (keyDownSel.Handle, new Action<IntPtr,IntPtr,IntPtr> (OnKeyDown), "v@:@");
-					c.AddMethod (keyUpSel.Handle, new Action<IntPtr,IntPtr,IntPtr> (OnKeyUp), "v@:@");
-				}
-			}
-		}
-
-		static void OnKeyDown (IntPtr sender, IntPtr sel, IntPtr evt)
-		{
-			IViewObject ob = Runtime.GetNSObject (sender) as IViewObject;
-			if (ob == null)
-				return;
-			NSEvent theEvent = new NSEvent(evt);
-			Key key = Util.TranslateToXwtKey(theEvent.Characters, theEvent.ModifierFlags);
-			KeyEventArgs kea = new KeyEventArgs(key, theEvent.ModifierFlags.ToXwtValue(), theEvent.IsARepeat, (long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds);
-			ob.Backend.EventSink.OnKeyPressed(kea);
-		}
-
-		static void OnKeyUp (IntPtr sender, IntPtr sel, IntPtr evt)
-		{
-			IViewObject ob = Runtime.GetNSObject (sender) as IViewObject;
-			if (ob == null)
-				return;
-			NSEvent theEvent = new NSEvent(evt);
-			Key key = Util.TranslateToXwtKey(theEvent.Characters, theEvent.ModifierFlags);
-			KeyEventArgs kea = new KeyEventArgs(key, theEvent.ModifierFlags.ToXwtValue(), theEvent.IsARepeat, (long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds);
-			ob.Backend.EventSink.OnKeyReleased(kea);
-		}
-
+		
 		public void DragStart (DragStartData sdata)
 		{
 			var lo = Widget.ConvertPointToBase (new PointF (Widget.Bounds.X, Widget.Bounds.Y));

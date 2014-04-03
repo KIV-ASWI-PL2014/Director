@@ -156,15 +156,25 @@ namespace Director.Forms
 
         private void HandleMouseOnTreeView(object sender, ButtonEventArgs e)
         {
-            if (e.Button == PointerButton.Right && CurrentServer.SelectedRow != null)
+            if (e.Button == PointerButton.Right)
             {
                 Point p = new Point(e.X, e.Y);
                 TreePosition tmp;
                 RowDropPosition tmp2;
 
-                CurrentServer.GetDropTargetRow(e.X, e.Y, out tmp2, out tmp);
-                CurrentServer.SelectRow(tmp);
-                ServerMenu.Popup(CurrentServer, p.X, p.Y);
+				if (CurrentServer.GetDropTargetRow (e.X, e.Y, out tmp2, out tmp)) {
+					// Set row
+					CurrentServer.SelectRow (tmp);
+
+					// Get row data - for proper ContextMenu
+					var data = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+
+					if (data is Server) {
+						ServerMenu.Popup (CurrentServer, p.X, p.Y);
+					} else if (data is Scenario) {
+						ScenarioMenu.Popup (CurrentServer, p.X, p.Y);
+					}
+				}
             }
         }
 
@@ -223,6 +233,15 @@ namespace Director.Forms
             };
             ServerMenu.Items.Add(MenuAddScenario);
             MenuAddScenario.Clicked += AddScenario;
+
+			// Create Scenario menu
+			ScenarioMenu = new Menu ();
+
+			// Add request menu
+			MenuItem MenuAddRequest = new MenuItem ("Request") {
+				Image = Image.FromResource(DirectorImages.ADD_ICON)
+			};
+			ScenarioMenu.Items.Add (MenuAddRequest);
         }
 
         /// <summary>
@@ -288,7 +307,7 @@ namespace Director.Forms
             CreateTreeItem(null, UServer.Name, ServerImage, UServer);
 
             // Disable server menu
-			NewServer.Sensitive = true;
+			NewServer.Sensitive = false;
         }
 
 

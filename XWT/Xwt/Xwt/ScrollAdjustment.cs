@@ -65,6 +65,11 @@ namespace Xwt
 			return new ScrollAdjustmentBackendHost ();
 		}
 		
+		static ScrollAdjustment ()
+		{
+			MapEvent (ScrollAdjustmentEvent.ValueChanged, typeof(ScrollAdjustment), "OnValueChanged");
+		}
+
 		public ScrollAdjustment ()
 		{
 			lowerValue = 0;
@@ -187,7 +192,6 @@ namespace Xwt
 			OnAdjustmentChanged ();
 		}
 		
-		[MappedEvent(ScrollAdjustmentEvent.ValueChanged)]
 		protected virtual void OnValueChanged (EventArgs e)
 		{
 			if (valueChanged != null)

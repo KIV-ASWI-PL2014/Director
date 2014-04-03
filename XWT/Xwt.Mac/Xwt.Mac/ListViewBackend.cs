@@ -3,7 +3,8 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
-//       Jan Strnadek <jan.strnadek@gmail.com>
+//		 Jan Strnadek <jan.strnadek@gmail.com>
+//       	- add delegates for refreshing NSTableView DataSource after source was changed!
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -52,7 +53,6 @@ namespace Xwt.Mac
 			this.source = source;
 			tsource = new ListSource (source);
 			Table.DataSource = tsource;
-
 			source.RowChanged += delegate(object sender, ListRowEventArgs e) {
 				Table.ReloadData();
 			};
@@ -61,11 +61,6 @@ namespace Xwt.Mac
 		public int[] SelectedRows {
 			get {
 				int[] sel = new int [Table.SelectedRowCount];
-
-				if(Table.SelectedRowCount == 0) {
-					return sel;
-				}
-
 				int i = 0;
 				foreach (int r in Table.SelectedRows)
 					sel [i++] = r;
@@ -95,6 +90,17 @@ namespace Xwt.Mac
 
 		// TODO
 		public bool BorderVisible { get; set; }
+
+
+		public int GetRowAtPosition (Point p)
+		{
+			return 0;
+		}
+
+		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)
+		{
+			return Rectangle.Zero;
+		}
 	}
 	
 	class TableRow: NSObject, ITablePosition
@@ -132,7 +138,7 @@ namespace Xwt.Mac
 
 		public override int GetRowCount (NSTableView tableView)
 		{
-			return source != null ? source.RowCount : 0;
+			return source.RowCount;
 		}
 
 		public override void SetObjectValue (NSTableView tableView, MonoMac.Foundation.NSObject theObject, NSTableColumn tableColumn, int row)

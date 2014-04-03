@@ -51,6 +51,12 @@ namespace Xwt
 			}
 		}
 		
+		static CheckBox ()
+		{
+			MapEvent (CheckBoxEvent.Clicked, typeof(CheckBox), "OnClicked");
+			MapEvent (CheckBoxEvent.Toggled, typeof(CheckBox), "OnToggled");
+		}
+		
 		public CheckBox ()
 		{
 		}
@@ -116,14 +122,12 @@ namespace Xwt
 			set { Backend.AllowMixed = value; }
 		}
 		
-		[MappedEvent(CheckBoxEvent.Clicked)]
 		protected virtual void OnClicked (EventArgs e)
 		{
 			if (clicked != null)
 				clicked (this, e);
 		}
 		
-		[MappedEvent(CheckBoxEvent.Toggled)]
 		protected virtual void OnToggled (EventArgs e)
 		{
 			if (toggled != null)

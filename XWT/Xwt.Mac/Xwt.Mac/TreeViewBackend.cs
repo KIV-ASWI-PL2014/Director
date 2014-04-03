@@ -3,6 +3,8 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
+//		 Jan Strnadek <jan.strnadek@gmail.com>
+//       	- add delegates for refreshing NSOutlineView DataSource after source was changed!
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -51,6 +53,7 @@ namespace Xwt.Mac
 			{
 				Backend.EventSink.OnRowExpanding (((TreeItem)notification.UserInfo["NSObject"]).Position);
 			}
+
 		}
 		
 		NSOutlineView Tree {
@@ -59,7 +62,7 @@ namespace Xwt.Mac
 		
 		protected override NSTableView CreateView ()
 		{
-			var t = new NSOutlineView ();
+			var t = new OutlineViewBackend(EventSink, ApplicationContext);
 			t.Delegate = new TreeDelegate () { Backend = this };
 			return t;
 		}
@@ -75,21 +78,19 @@ namespace Xwt.Mac
 			NSTableColumn tcol = (NSTableColumn) base.AddColumn (col);
 			if (Tree.OutlineTableColumn == null)
 				Tree.OutlineTableColumn = tcol;
-				
 			return tcol;
 		}
 		
 		public void SetSource (ITreeDataSource source, IBackend sourceBackend)
 		{
 			this.source = source;
-			source.NodeChanged += RefreshDataSource;
 			tsource = new TreeSource (source);
 			Tree.DataSource = tsource;
-		}
 
-		private void RefreshDataSource(object sender, Xwt.TreeNodeEventArgs args)
-		{
-			Table.ReloadData ();
+			// You have to call Reload data for Cocoa
+			source.NodeChanged += delegate(object sender, TreeNodeEventArgs e) {
+				Table.ReloadData();
+			};
 		}
 		
 		public override object GetValue (object pos, int nField)
@@ -174,11 +175,26 @@ namespace Xwt.Mac
 				it = Tree.GetParent (it);
 			}
 		}
-		
+
+		/** Implement */
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
 		{
+			// Get row
+			int row = Tree.GetRow (new System.Drawing.PointF ((float)x, (float)y));
+
+			// Set position
 			pos = RowDropPosition.Into;
+
+			// Set node position
 			nodePosition = null;
+
+			// Row found
+			if (row >= 0) {
+				nodePosition = ((TreeItem)Tree.ItemAtRow (row)).Position;
+				return true;
+			}
+
+			// Nothing found
 			return false;
 		}
 		

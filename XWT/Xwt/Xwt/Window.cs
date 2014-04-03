@@ -37,16 +37,6 @@ namespace Xwt
 		WidgetSpacing padding;
 		Menu mainMenu;
 		bool shown;
-		bool canBecomeKey = true;
-
-		public bool CanBecomeKey {
-			get {
-				return canBecomeKey;
-			}
-			set {
-				canBecomeKey = value;
-			}
-		}
 
 		protected new class WindowBackendHost: WindowFrame.WindowBackendHost
 		{
@@ -62,7 +52,7 @@ namespace Xwt
 			Padding = 12;
 		}
 		
-		public IWindowBackend Backend {
+		IWindowBackend Backend {
 			get { return (IWindowBackend) BackendHost.Backend; } 
 		}
 

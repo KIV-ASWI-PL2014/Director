@@ -132,7 +132,6 @@ namespace Xwt.GtkBackend
 				SetMiniMode (false);
 				Widget.Relief = Gtk.ReliefStyle.None;
 				break;
-			case ButtonStyle.AlwaysBorderless:
 			case ButtonStyle.Borderless:
 				SetMiniMode (true);
 				Widget.Relief = Gtk.ReliefStyle.None;
