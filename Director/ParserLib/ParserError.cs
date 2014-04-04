@@ -6,30 +6,30 @@ using System.Threading.Tasks;
 
 namespace Director.ParserLib
 {
-    class ParserError
+    public class ParserError
     {
         private int line;
         private int position;
         private string message;
 
-        ParserError(int line, int position, string message)
+        public ParserError(int line, int position, string message)
         {
             this.line = line;
             this.position = position;
             this.message = message;
         }
 
-        int getLine()
+        public int getLine()
         {
             return line;
         }
 
-        int getPosition()
+        public int getPosition()
         {
             return position;
         }
 
-        string getMessage()
+        public string getMessage()
         {
             return message;
         }

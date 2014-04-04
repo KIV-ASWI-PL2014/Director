@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace Director.ParserLib
 {
-    class ParserResult
+    public class ParserResult
     {
         private List<ParserError> errors;
         private string result;
 
-        ParserResult(List<ParserError> errors, string result)
+        public ParserResult(List<ParserError> errors, string result)
         {
             this.errors = errors;
             this.result = result;
         }
 
-        bool isSuccess()
+        public bool isSuccess()
         {
             if (errors == null || errors.Count == 0)
                 return true;
@@ -25,12 +25,12 @@ namespace Director.ParserLib
             return false;
         }
 
-        List<ParserError> getErrors()
+        public List<ParserError> getErrors()
         {
             return errors;
         }
 
-        string getResult()
+        public string getResult()
         {
             return result;
         }

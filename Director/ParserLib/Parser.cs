@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 
 namespace Director.ParserLib
 {
-    class Parser
+    public class Parser
     {
-        Parser()
+        public Parser()
         {
         }
 
-        ParserResult generateRequest(string template, Dictionary<string, string> customVariables)
-        {
-            return null;
-        }
-
-        ParserResult validateResponse(string template, Dictionary<string, string> customVariables)
+        public ParserResult generateRequest(string template, Dictionary<string, string> customVariables)
         {
             return null;
         }
 
-        ParserResult parseResponse(string template, string response, Dictionary<string, string> customVariables)
+        public ParserResult validateResponse(string template, Dictionary<string, string> customVariables)
+        {
+            return null;
+        }
+
+        public ParserResult parseResponse(string template, string response, Dictionary<string, string> customVariables)
         {
             return null;
         }
