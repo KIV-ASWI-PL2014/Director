@@ -105,6 +105,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Config.cs" />
+    <Compile Include="Forms\Panels\ScenarioPage.cs" />
+    <Compile Include="Forms\Panels\RequestPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

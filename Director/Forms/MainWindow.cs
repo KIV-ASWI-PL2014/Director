@@ -36,7 +36,17 @@ namespace Director.Forms
         /// <summary>
         /// Server page.
         /// </summary>
-        private VBox ServerPage = new ServerPage();
+		private ServerPage ServerBox = new ServerPage();
+
+		/// <summary>
+		/// Scenario page.
+		/// </summary>
+		private ScenarioPage ScenarioBox = new ScenarioPage(); 
+
+		/// <summary>
+		/// Request page.
+		/// </summary>
+		private RequestPage RequestBox = new RequestPage();
 
         /// <summary>
         /// Current server sumary.
@@ -127,6 +137,7 @@ namespace Director.Forms
             CurrentServer = new TreeView();
 			CurrentServer.WidthRequest = 200;
             CurrentServer.SelectionMode = SelectionMode.Single;
+			CurrentServer.SelectionChanged += UpdateControlView;
 
             // Create tree view!
             ServerStore = new TreeStore(ColumnName, ColumnImage, ColumnType);
@@ -145,7 +156,7 @@ namespace Director.Forms
             // Prepare content box
             ContentBox = new VBox();
             ContentBox.MarginLeft = 10;
-            ContentBox.PackStart(DirectorHomepage, expand: true, fill: true);
+			SetContentBoxControl (DirectorHomepage);
 
             // Add to panel
 			MainBox.PackStart (ContentBox, true, true);
@@ -154,6 +165,44 @@ namespace Director.Forms
 			Content = MainBox;
         }
 
+		/// <summary>
+		/// Set main control box.
+		/// </summary>
+		/// <param name="box">Box.</param>
+		private void SetContentBoxControl(VBox box)
+		{
+			if (CurrentControl != null)
+				ContentBox.Remove (CurrentControl);
+
+			ContentBox.PackStart (box, expand: true, fill: true);
+			CurrentControl = box;
+		}
+
+		/// <summary>
+		/// Handler react on tree view selection changes.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		private void UpdateControlView(object sender, EventArgs e)
+		{
+			if (CurrentServer.SelectedRow != null) {
+				var s = ServerStore.GetNavigatorAt (CurrentServer.SelectedRow).GetValue (ColumnType);
+				if (s is Server) {
+					SetContentBoxControl (ServerBox);
+					ServerBox.SetServer ((Server) s);
+				} else if (s is Scenario) {
+					SetContentBoxControl (ScenarioBox);
+				} else if (s is Request) {
+					SetContentBoxControl (RequestBox);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Right click mouse handler on tree view!
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
         private void HandleMouseOnTreeView(object sender, ButtonEventArgs e)
         {
             if (e.Button == PointerButton.Right)
@@ -241,6 +290,7 @@ namespace Director.Forms
 			MenuItem MenuAddRequest = new MenuItem ("Request") {
 				Image = Image.FromResource(DirectorImages.ADD_ICON)
 			};
+			MenuAddRequest.Clicked += AddRequest;
 			ScenarioMenu.Items.Add (MenuAddRequest);
         }
 
@@ -272,6 +322,27 @@ namespace Director.Forms
                 CreateTreeItem(tmp, NewScenario.Name, ScenarioImage, NewScenario);
             }
         }
+
+		/// <summary>
+		/// Create new request belongs to selected scenario.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		private void AddRequest(object sender, EventArgs e)
+		{
+			TreePosition tmp = CurrentServer.SelectedRow;
+
+			if (tmp == null)
+				return;
+
+			var data = ServerStore.GetNavigatorAt (tmp).GetValue (ColumnType);
+
+			if (data is Scenario) {
+				Scenario s = (Scenario)data;
+				Request NewRequest = s.CreateNewRequest ();
+				CreateTreeItem (tmp, NewRequest.Name, RequestImage, NewRequest);
+			}
+		}
 
         /// <summary>
         /// Create tree item on specific position.
@@ -308,6 +379,9 @@ namespace Director.Forms
 
             // Disable server menu
 			NewServer.Sensitive = false;
+
+			// Disable server menu mac!
+			NewServer.Clicked -= CreateNewServer;
         }
 
 
