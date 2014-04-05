@@ -14,18 +14,23 @@ namespace UnitTestParser
         public const String template2 = "\"###{0}##\"";
         public const String template3 = "\"#{0}##{1}##\"";
         public const String template4 = "\"#{0}#{1}#{2}##\"";
+        public const String template5 = "\"#{0}####\"";
 
-        Dictionary<string, string> values; 
+        Dictionary<string, string> values;
+        Dictionary<string, string> customVariables;
+        Boolean[] useTemplate;
         String type; 
         String operation;
         Parser parser;
 
-        public Scenario(Dictionary<string, string> values, String type, String operation, Parser parser) 
+        public Scenario(Dictionary<string, string> values, String type, String operation, Parser parser, Boolean[] useTemplate, Dictionary<string, string> customVariables) 
         {
             this.values = values;
             this.type = type;
             this.operation = operation;
             this.parser = parser;
+            this.useTemplate = useTemplate;
+            this.customVariables = customVariables;
         }
 
         public void Test(Boolean positive)
@@ -34,17 +39,18 @@ namespace UnitTestParser
             ParserResult pr;
             response = generateResponse();
 
-            for (int i = 1; i <= 4; i++ )
+            for (int i = 1; i <= 5; i++ )
             {
+                if (useTemplate[i - 1] == false)
+                    continue;
                 template = generateTemplate(i);
-                pr = parser.parseResponse(template, response, null);
-                
+                pr = parser.parseResponse(template, response, customVariables);
                 
                 Assert.IsNotNull(pr);
                 if (positive)
                     Assert.IsTrue(pr.isSuccess());
                 else
-                    Assert.IsFalse(pr.isSuccess());             
+                    Assert.IsFalse(pr.isSuccess());            
             }
         }
 
@@ -99,6 +105,10 @@ namespace UnitTestParser
                     case 4:
                         tmp = template4;
                         tmp = String.Format(tmp, type, operation, item.Value);
+                        break;
+                    case 5:
+                        tmp = template5;
+                        tmp = String.Format(tmp, type);
                         break;
                     default:
                         return "";
