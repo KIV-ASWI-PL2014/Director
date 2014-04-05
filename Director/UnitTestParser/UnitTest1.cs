@@ -521,7 +521,7 @@ namespace UnitTestParser
 
         [TestMethod]
         public void IpNotEqualInteger()
-        {
+        { 
             Dictionary<string, string> customVar = new Dictionary<string, string>
             {
                 {"a", "-10"},
@@ -543,15 +543,60 @@ namespace UnitTestParser
         [TestMethod]
         public void IpGreaterThanFloat()
         {
+            String result; 
             Dictionary<string, string> customVar = new Dictionary<string, string>
             {
                 {"var", "-10.2"},
             };
 
-            ParserResult pr = parser.parseResponse("{ a : \"#float#ip_gt#var##\", b: \"#float#ip_gt#0##\"  }", "{ b: 1 }", customVar);
+            ParserResult pr = parser.parseResponse("{ a : \"#float#ip_gt#var#res#\", b: \"#float#ip_gt#0##\"  }", "{ b: 1 }", customVar);
             Assert.IsNotNull(pr);
             Assert.IsTrue(pr.isSuccess());
 
+            Assert.IsTrue(customVar.TryGetValue("res", out result));
+            Assert.AreEqual(result, "-10.2");
+
+        }
+
+
+        //#######################################
+        //          arrays
+        //#######################################
+
+        [TestMethod]
+        public void ArrayInteger()
+        {
+            String result; 
+            Dictionary<string, string> customVar = new Dictionary<string, string>
+            {
+                {"a", "3"},
+                {"b", "10"}
+            };
+            String template = "\"foo\": [\"#array#uv_ge#a#res#\", \"#integer#uv_ge#b##\"] ";
+            String response = "foo: [10,20,30]";
+            ParserResult pr = parser.parseResponse(template, response, customVar);
+            
+            Assert.IsNotNull(pr);
+            Assert.IsTrue(pr.isSuccess());
+
+            Assert.IsTrue( customVar.TryGetValue("res", out result) );
+            Assert.AreEqual(result, "3");
+        }
+
+
+        [TestMethod]
+        public void ArrayString()
+        {
+            Dictionary<string, string> customVar = new Dictionary<string, string>
+            {
+                {"a", "abc"}
+            };
+            String template = "\"foo\": [\"#string#uv_ne#a##\"";
+            String response = "foo: [\"ab\", \"abcd\"]";
+            ParserResult pr = parser.parseResponse(template, response, customVar);
+
+            Assert.IsNotNull(pr);
+            Assert.IsTrue(pr.isSuccess());
         }
     }
 }
