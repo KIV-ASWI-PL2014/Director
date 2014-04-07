@@ -141,8 +141,11 @@ namespace Director.Forms
 
             // Create tree view!
             ServerStore = new TreeStore(ColumnName, ColumnImage, ColumnType);
-            CurrentServer.Columns.Add("Server", ColumnImage, ColumnName); // Dummy column, not sure why?
-            CurrentServer.HeadersVisible = false;
+			CurrentServer.Columns.Add("Server", ColumnImage, ColumnName); // Dummy column, not sure why?
+			CurrentServer.HeadersVisible = false;
+
+			// Clear tree view!
+			ClearCurrentServerTree ();
 
             // Net item parsing
             CurrentServer.ButtonPressed += HandleMouseOnTreeView;
@@ -163,7 +166,26 @@ namespace Director.Forms
 
             // Set content to main box
 			Content = MainBox;
+
+			CreateNewServer (null, null);
         }
+
+		/// <summary>
+		/// Clear current server tree - add help box item!
+		/// </summary>
+		private void ClearCurrentServerTree()
+		{
+			// Server store
+			ServerStore.Clear ();
+
+			// Create server store box!
+			CreateTreeItem (
+				null, 
+				"Information", 
+				Image.FromResource(DirectorImages.HELP_ICON), 
+				DirectorHomepage
+			);
+		}
 
 		/// <summary>
 		/// Set main control box.
@@ -189,11 +211,13 @@ namespace Director.Forms
 				var s = ServerStore.GetNavigatorAt (CurrentServer.SelectedRow).GetValue (ColumnType);
 				if (s is Server) {
 					SetContentBoxControl (ServerBox);
-					ServerBox.SetServer ((Server) s);
+					ServerBox.SetServer ((Server)s);
 				} else if (s is Scenario) {
 					SetContentBoxControl (ScenarioBox);
 				} else if (s is Request) {
 					SetContentBoxControl (RequestBox);
+				} else if (s is Homepage) {
+					SetContentBoxControl (DirectorHomepage);
 				}
 			}
 		}
@@ -207,7 +231,6 @@ namespace Director.Forms
         {
             if (e.Button == PointerButton.Right)
             {
-                Point p = new Point(e.X, e.Y);
                 TreePosition tmp;
                 RowDropPosition tmp2;
 
@@ -219,9 +242,11 @@ namespace Director.Forms
 					var data = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
 
 					if (data is Server) {
-						ServerMenu.Popup (CurrentServer, p.X, p.Y);
+						ServerMenu.Popup (CurrentServer, e.X, e.Y);
 					} else if (data is Scenario) {
-						ScenarioMenu.Popup (CurrentServer, p.X, p.Y);
+						ScenarioMenu.Popup (CurrentServer, e.X, e.Y);
+					} else if (data is Request) {
+						RequestMenu.Popup (CurrentServer, e.X, e.Y);
 					}
 				}
             }
@@ -287,12 +312,56 @@ namespace Director.Forms
 			ScenarioMenu = new Menu ();
 
 			// Add request menu
-			MenuItem MenuAddRequest = new MenuItem ("Request") {
+			MenuItem MenuAddRequest = new MenuItem ("Add request") {
 				Image = Image.FromResource(DirectorImages.ADD_ICON)
 			};
 			MenuAddRequest.Clicked += AddRequest;
 			ScenarioMenu.Items.Add (MenuAddRequest);
+
+			// Separator
+			ScenarioMenu.Items.Add (new SeparatorMenuItem ());
+
+			// Delete scenario menu
+			MenuItem MenuRemoveScenario = new MenuItem ("Remove scenario") {
+				Image = Image.FromResource(DirectorImages.CROSS_ICON)
+			};
+			ScenarioMenu.Items.Add (MenuRemoveScenario);
+			MenuRemoveScenario.Clicked += RemoveScenario;
+
+			// Request menu
+			RequestMenu = new Menu ();
+			MenuItem MenuRemoveRequest = new MenuItem ("Remove request") {
+				Image = Image.FromResource(DirectorImages.CROSS_ICON)
+			};
+			RequestMenu.Items.Add (MenuRemoveRequest);
         }
+
+		/// <summary>
+		/// Remove scenario context menu item clicked!
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		private void RemoveScenario(object sender, EventArgs e)
+		{
+			TreePosition tmp = CurrentServer.SelectedRow;
+
+			if (tmp == null)
+				return;
+
+			var s = ServerStore.GetNavigatorAt (tmp).GetValue (ColumnType);
+
+			if (s is Scenario) {
+				Scenario sc = (Scenario)s;
+				bool res = MessageDialog.Confirm ("Are you sure, you want to remove this scenario?", Command.Ok);
+				if (res) {
+					// Remove scenario
+					UServer.RemoveScenario (sc);
+
+					// Remove from tree view
+					ServerStore.GetNavigatorAt (tmp).Remove ();
+				}
+			}
+		}
 
         /// <summary>
         /// Create new scenario which belongs to server.
@@ -372,7 +441,7 @@ namespace Director.Forms
             UServer = new Server(Director.Locales.Language.NewServerString, Director.Locales.Language.NewServerURL);
 
             // Add server to tree store
-            ServerStore.Clear();
+			ClearCurrentServerTree ();
 
             // Add node
             CreateTreeItem(null, UServer.Name, ServerImage, UServer);

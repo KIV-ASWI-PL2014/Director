@@ -133,5 +133,15 @@ namespace Director.DataStructures
 
             return _idList;
         }
+
+
+		/// <summary>
+		/// Remove scenario item.
+		/// </summary>
+		/// <param name="sc">Sc.</param>
+		public void RemoveScenario(Scenario sc)
+		{
+			Scenarios.Remove(sc);
+		}
     }
 }

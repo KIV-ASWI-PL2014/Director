@@ -11,33 +11,50 @@ namespace Director.Forms.Panels
     class Homepage : VBox
     {
 
+		string MarkDownText
+		{
+			get
+			{
+				return @"
+# Director - Rest Scenario Tester
+
+Project Site: http://director.strnadj.eu/
+
+## Overview
+
+Director is project for testing REST APIs by scenarios.
+
+## Contact
+
+- Email: jan.strnadek@gmail.com
+- Webpage: http://director.strnadj.eu/
+
+## Changelog
+
+- Mac OS X View optimalization
+
+";
+			}
+		}
+
+		/// <summary>
+		/// Homepage initializer.
+		/// </summary>
         public Homepage()
         {
             InfoBox _infoBox = new InfoBox("Api Director", DirectorImages.HOMEPAGE_IMAGE);
             PackStart(_infoBox);
             MarginLeft = 10;
 
-			TextEntry ta = new TextEntry ();
-			ta.ButtonPressed += HandleButtonPressed;
-			Label la = new Label ("Right click here to show the context menu");
-			menu = new Menu ();
-			menu.Items.Add (new MenuItem ("One"));
-			menu.Items.Add (new MenuItem ("Two"));
-			menu.Items.Add (new MenuItem ("Three"));
-			menu.Items.Add (new SeparatorMenuItem ());
-			menu.Items.Add (new MenuItem ("End"));
+			var markdown = new MarkdownView() {
+				Markdown = MarkDownText
+			};
+			markdown.Margin = 10;
 
-			la.ButtonPressed += HandleButtonPressed;
-			PackStart (la);
-			PackStart (ta);
+			var scrolled = new ScrollView (markdown) {
+				MinHeight = 400
+			};
+			PackStart (scrolled, true);
         }
-			
-		Menu menu;
-
-		void HandleButtonPressed (object sender, ButtonEventArgs e)
-		{
-			if (e.Button == PointerButton.Right)
-				menu.Popup ();
-		}
     }
 }

@@ -72,7 +72,7 @@ namespace Director.Forms.Controls
             _layout.SetFontWeight(FontWeight.Bold, 0, Label.Length);
 
 			// Cocoa layouts
-			ctx.DrawTextLayout (_layout, 45, ((Config.Cocoa) ? 5 : 2));
+			ctx.DrawTextLayout (_layout, 45, ((Config.Cocoa || Config.Gtk) ? 5 : 2));
 		}
     }
 }
