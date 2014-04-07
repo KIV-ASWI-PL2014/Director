@@ -16,7 +16,10 @@ namespace Director
         [STAThread]
         static void Main()
         {
-			Application.Initialize(ToolkitType.Cocoa);
+			// Set toolkit type
+			Config.SetAppType (ToolkitType.Cocoa); 
+
+			Application.Initialize(Config.GetAppType());
             MainWindow _mainWindow = new MainWindow();
 
 			// Close window handlers

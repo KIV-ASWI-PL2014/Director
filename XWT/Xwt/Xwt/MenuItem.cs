@@ -135,13 +135,6 @@ namespace Xwt
 			get { return Backend.Visible; }
 			set { Backend.Visible = value; }
 		}
-
-        [DefaultValue(true)]
-        public bool Enabled
-        {
-            get { return Backend.Enabled; }
-            set { Backend.Enabled = value; }
-        }
 		
 		public Image Image {
 			get { return image; }

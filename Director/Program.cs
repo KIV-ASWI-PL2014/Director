@@ -12,13 +12,15 @@ namespace Director
         [STAThread]
         static void Main()
         {
+			// Setapp type
+			Config.SetAppType(ToolkitType.Wpf); 
+
+			// Initialize
+			Application.Initialize(Config.GetAppType());
+
 			Application.Initialize(ToolkitType.Wpf);
             MainWindow _mainWindow = new MainWindow();
             _mainWindow.Show();
-            _mainWindow.Disposed += delegate
-            {
-                Application.Exit();
-            };
             _mainWindow.Closed += delegate
             {
                 Application.Exit();

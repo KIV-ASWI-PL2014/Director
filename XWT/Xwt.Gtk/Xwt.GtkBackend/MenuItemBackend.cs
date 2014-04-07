@@ -121,15 +121,6 @@ namespace Xwt.GtkBackend
 				item.Visible = value;
 			}
 		}
-
-		public bool Enabled {
-			get {
-				return item.Sensitive;
-			}
-			set {
-				item.Sensitive = value;
-			}
-		}
 		
 		public bool Checked {
 			get { return (item is Gtk.CheckMenuItem) && ((Gtk.CheckMenuItem)item).Active; }

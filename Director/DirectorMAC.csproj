@@ -104,6 +104,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Config.cs" />
+    <Compile Include="Forms\Panels\ScenarioPage.cs" />
+    <Compile Include="Forms\Panels\RequestPage.cs" />
+    <EmbeddedResource Include="Resources\help.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

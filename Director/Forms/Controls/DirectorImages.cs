@@ -18,5 +18,6 @@ namespace Director.Forms.Controls
         public const string PROCESSING_ICON = "Director.Resources.processing.gif";
         public const string ADD_ICON = "Director.Resources.add.png";
         public const string HOMEPAGE_IMAGE = "Director.Resources.homepage.png";
+		public const string HELP_ICON = "Director.Resources.help.png";
     }
 }
