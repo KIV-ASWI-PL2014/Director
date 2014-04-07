@@ -61,6 +61,51 @@ namespace Director.Locales {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add request.
+        /// </summary>
+        internal static string ContextMenuAddRequest {
+            get {
+                return ResourceManager.GetString("ContextMenuAddRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove request.
+        /// </summary>
+        internal static string ContextMenuRemoveRequest {
+            get {
+                return ResourceManager.GetString("ContextMenuRemoveRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove scenario.
+        /// </summary>
+        internal static string ContextMenuRemoveScenario {
+            get {
+                return ResourceManager.GetString("ContextMenuRemoveScenario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server name cannot be empty!.
+        /// </summary>
+        internal static string InvalidServerName {
+            get {
+                return ResourceManager.GetString("InvalidServerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid server url!.
+        /// </summary>
+        internal static string InvalidServerURL {
+            get {
+                return ResourceManager.GetString("InvalidServerURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Api Director.
         /// </summary>
         internal static string MainWindowTitle {
@@ -106,6 +151,15 @@ namespace Director.Locales {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to remove this scenario?.
+        /// </summary>
+        internal static string MessageBoxRemoveScenario {
+            get {
+                return ResourceManager.GetString("MessageBoxRemoveScenario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New scenario.
         /// </summary>
         internal static string NewScenarioName {
@@ -129,6 +183,78 @@ namespace Director.Locales {
         internal static string NewServerURL {
             get {
                 return ResourceManager.GetString("NewServerURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request.
+        /// </summary>
+        internal static string RequestInfoBox {
+            get {
+                return ResourceManager.GetString("RequestInfoBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default running periodicity.
+        /// </summary>
+        internal static string RunningPeriodicity {
+            get {
+                return ResourceManager.GetString("RunningPeriodicity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scenario.
+        /// </summary>
+        internal static string ScenarioInfoBox {
+            get {
+                return ResourceManager.GetString("ScenarioInfoBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server.
+        /// </summary>
+        internal static string ServerInfoBox {
+            get {
+                return ResourceManager.GetString("ServerInfoBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server name.
+        /// </summary>
+        internal static string ServerName {
+            get {
+                return ResourceManager.GetString("ServerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server settings.
+        /// </summary>
+        internal static string ServerSettings {
+            get {
+                return ResourceManager.GetString("ServerSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default server URL.
+        /// </summary>
+        internal static string ServerURL {
+            get {
+                return ResourceManager.GetString("ServerURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Information.
+        /// </summary>
+        internal static string TreeStoreInformation {
+            get {
+                return ResourceManager.GetString("TreeStoreInformation", resourceCulture);
             }
         }
     }

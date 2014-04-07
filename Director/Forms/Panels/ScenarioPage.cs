@@ -15,7 +15,7 @@ namespace Director.Forms.Panels
 	{
 		public ScenarioPage()
 		{
-			InfoBox _infoBox = new InfoBox("Scenario", DirectorImages.HOMEPAGE_IMAGE);
+			InfoBox _infoBox = new InfoBox(Director.Locales.Language.ScenarioInfoBox, DirectorImages.SCENARIO_IMAGE);
 			PackStart(_infoBox);
 			MarginLeft = 10;
 		}

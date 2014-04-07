@@ -16,7 +16,7 @@ namespace Director.Forms
         /// <summary>
         /// Default box
         /// </summary>
-		private HBox MainBox { get; set; }
+        private HBox MainBox { get; set; }
 
         /// <summary>
         /// Content box for widgets!
@@ -36,17 +36,17 @@ namespace Director.Forms
         /// <summary>
         /// Server page.
         /// </summary>
-		private ServerPage ServerBox = new ServerPage();
+        private ServerPage ServerBox = new ServerPage();
 
-		/// <summary>
-		/// Scenario page.
-		/// </summary>
-		private ScenarioPage ScenarioBox = new ScenarioPage(); 
+        /// <summary>
+        /// Scenario page.
+        /// </summary>
+        private ScenarioPage ScenarioBox = new ScenarioPage();
 
-		/// <summary>
-		/// Request page.
-		/// </summary>
-		private RequestPage RequestBox = new RequestPage();
+        /// <summary>
+        /// Request page.
+        /// </summary>
+        private RequestPage RequestBox = new RequestPage();
 
         /// <summary>
         /// Current server sumary.
@@ -105,7 +105,8 @@ namespace Director.Forms
         /// <summary>
         /// Initiate all form components.
         /// </summary>
-        private void _initializeComponents() {
+        private void _initializeComponents()
+        {
             /// Title and Initial size
             Title = Director.Locales.Language.MainWindowTitle;
 
@@ -128,24 +129,24 @@ namespace Director.Forms
         private void _intializeBoxes()
         {
             // Create HPaned main box
-			MainBox = new HBox();
-			MainBox.ExpandVertical = true;
-			MainBox.ExpandHorizontal = true;
-			MainBox.Spacing = 3;
+            MainBox = new HBox();
+            MainBox.ExpandVertical = true;
+            MainBox.ExpandHorizontal = true;
+            MainBox.Spacing = 3;
 
             // Create tree view
             CurrentServer = new TreeView();
-			CurrentServer.WidthRequest = 200;
+            CurrentServer.WidthRequest = 200;
             CurrentServer.SelectionMode = SelectionMode.Single;
-			CurrentServer.SelectionChanged += UpdateControlView;
+            CurrentServer.SelectionChanged += UpdateControlView;
 
             // Create tree view!
             ServerStore = new TreeStore(ColumnName, ColumnImage, ColumnType);
-			CurrentServer.Columns.Add("Server", ColumnImage, ColumnName); // Dummy column, not sure why?
-			CurrentServer.HeadersVisible = false;
+            CurrentServer.Columns.Add("Server", ColumnImage, ColumnName); // Dummy column, not sure why?
+            CurrentServer.HeadersVisible = false;
 
-			// Clear tree view!
-			ClearCurrentServerTree ();
+            // Clear tree view!
+            ClearCurrentServerTree();
 
             // Net item parsing
             CurrentServer.ButtonPressed += HandleMouseOnTreeView;
@@ -154,79 +155,87 @@ namespace Director.Forms
             CurrentServer.DataSource = ServerStore;
 
             // Add server to main box
-			MainBox.PackStart (CurrentServer);
+            MainBox.PackStart(CurrentServer);
 
             // Prepare content box
             ContentBox = new VBox();
             ContentBox.MarginLeft = 10;
-			SetContentBoxControl (DirectorHomepage);
+            SetContentBoxControl(DirectorHomepage);
 
             // Add to panel
-			MainBox.PackStart (ContentBox, true, true);
+            MainBox.PackStart(ContentBox, true, true);
 
             // Set content to main box
-			Content = MainBox;
+            Content = MainBox;
 
-			CreateNewServer (null, null);
+            CreateNewServer(null, null);
         }
 
-		/// <summary>
-		/// Clear current server tree - add help box item!
-		/// </summary>
-		private void ClearCurrentServerTree()
-		{
-			// Server store
-			ServerStore.Clear ();
+        /// <summary>
+        /// Clear current server tree - add help box item!
+        /// </summary>
+        private void ClearCurrentServerTree()
+        {
+            // Server store
+            ServerStore.Clear();
 
-			// Create server store box!
-			CreateTreeItem (
-				null, 
-				"Information", 
-				Image.FromResource(DirectorImages.HELP_ICON), 
-				DirectorHomepage
-			);
-		}
+            // Create server store box!
+            CreateTreeItem(
+                null,
+                Director.Locales.Language.TreeStoreInformation,
+                Image.FromResource(DirectorImages.HELP_ICON),
+                DirectorHomepage
+            );
+        }
 
-		/// <summary>
-		/// Set main control box.
-		/// </summary>
-		/// <param name="box">Box.</param>
-		private void SetContentBoxControl(VBox box)
-		{
-			if (CurrentControl != null)
-				ContentBox.Remove (CurrentControl);
+        /// <summary>
+        /// Set main control box.
+        /// </summary>
+        /// <param name="box">Box.</param>
+        private void SetContentBoxControl(VBox box)
+        {
+            if (CurrentControl != null)
+                ContentBox.Remove(CurrentControl);
 
-			ContentBox.PackStart (box, expand: true, fill: true);
-			CurrentControl = box;
-		}
+            ContentBox.PackStart(box, expand: true, fill: true);
+            CurrentControl = box;
+        }
 
-		/// <summary>
-		/// Handler react on tree view selection changes.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		private void UpdateControlView(object sender, EventArgs e)
-		{
-			if (CurrentServer.SelectedRow != null) {
-				var s = ServerStore.GetNavigatorAt (CurrentServer.SelectedRow).GetValue (ColumnType);
-				if (s is Server) {
-					SetContentBoxControl (ServerBox);
-					ServerBox.SetServer ((Server)s);
-				} else if (s is Scenario) {
-					SetContentBoxControl (ScenarioBox);
-				} else if (s is Request) {
-					SetContentBoxControl (RequestBox);
-				} else if (s is Homepage) {
-					SetContentBoxControl (DirectorHomepage);
-				}
-			}
-		}
+        /// <summary>
+        /// Handler react on tree view selection changes.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        private void UpdateControlView(object sender, EventArgs e)
+        {
+            if (CurrentServer.SelectedRow != null)
+            {
+                var s = ServerStore.GetNavigatorAt(CurrentServer.SelectedRow).GetValue(ColumnType);
+                if (s is Server)
+                {
+                    SetContentBoxControl(ServerBox);
+                    ServerBox.SetServer((Server)s);
+                }
+                else if (s is Scenario)
+                {
+                    SetContentBoxControl(ScenarioBox);
+                }
+                else if (s is Request)
+                {
+                    SetContentBoxControl(RequestBox);
+                }
+                else if (s is Homepage)
+                {
+                    SetContentBoxControl(DirectorHomepage);
+                }
+            }
+        }
 
-		/// <summary>
-		/// Right click mouse handler on tree view!
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
+        /// <summary>
+        /// Right click mouse handler on tree view!
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
         private void HandleMouseOnTreeView(object sender, ButtonEventArgs e)
         {
             if (e.Button == PointerButton.Right)
@@ -234,21 +243,27 @@ namespace Director.Forms
                 TreePosition tmp;
                 RowDropPosition tmp2;
 
-				if (CurrentServer.GetDropTargetRow (e.X, e.Y, out tmp2, out tmp)) {
-					// Set row
-					CurrentServer.SelectRow (tmp);
+                if (CurrentServer.GetDropTargetRow(e.X, e.Y, out tmp2, out tmp))
+                {
+                    // Set row
+                    CurrentServer.SelectRow(tmp);
 
-					// Get row data - for proper ContextMenu
-					var data = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+                    // Get row data - for proper ContextMenu
+                    var data = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
 
-					if (data is Server) {
-						ServerMenu.Popup (CurrentServer, e.X, e.Y);
-					} else if (data is Scenario) {
-						ScenarioMenu.Popup (CurrentServer, e.X, e.Y);
-					} else if (data is Request) {
-						RequestMenu.Popup (CurrentServer, e.X, e.Y);
-					}
-				}
+                    if (data is Server)
+                    {
+                        ServerMenu.Popup(CurrentServer, e.X, e.Y);
+                    }
+                    else if (data is Scenario)
+                    {
+                        ScenarioMenu.Popup(CurrentServer, e.X, e.Y);
+                    }
+                    else if (data is Request)
+                    {
+                        RequestMenu.Popup(CurrentServer, e.X, e.Y);
+                    }
+                }
             }
         }
 
@@ -260,7 +275,7 @@ namespace Director.Forms
         /// <summary>
         /// Prepare menu.
         /// </summary>
-        private void _initializeMenu() 
+        private void _initializeMenu()
         {
             // Default menu
             Menu menu = new Menu();
@@ -273,8 +288,8 @@ namespace Director.Forms
 
             // Sub menu server
             NewServer = new MenuItem(Director.Locales.Language.MenuNewServer)
-            { 
-                Image = Image.FromResource(DirectorImages.NEW_SERVER_ICON) 
+            {
+                Image = Image.FromResource(DirectorImages.NEW_SERVER_ICON)
             };
             NewServer.Clicked += CreateNewServer;
             server.SubMenu.Items.Add(NewServer);
@@ -308,60 +323,65 @@ namespace Director.Forms
             ServerMenu.Items.Add(MenuAddScenario);
             MenuAddScenario.Clicked += AddScenario;
 
-			// Create Scenario menu
-			ScenarioMenu = new Menu ();
+            // Create Scenario menu
+            ScenarioMenu = new Menu();
 
-			// Add request menu
-			MenuItem MenuAddRequest = new MenuItem ("Add request") {
-				Image = Image.FromResource(DirectorImages.ADD_ICON)
-			};
-			MenuAddRequest.Clicked += AddRequest;
-			ScenarioMenu.Items.Add (MenuAddRequest);
+            // Add request menu
+            MenuItem MenuAddRequest = new MenuItem(Director.Locales.Language.ContextMenuAddRequest)
+            {
+                Image = Image.FromResource(DirectorImages.ADD_ICON)
+            };
+            MenuAddRequest.Clicked += AddRequest;
+            ScenarioMenu.Items.Add(MenuAddRequest);
 
-			// Separator
-			ScenarioMenu.Items.Add (new SeparatorMenuItem ());
+            // Separator
+            ScenarioMenu.Items.Add(new SeparatorMenuItem());
 
-			// Delete scenario menu
-			MenuItem MenuRemoveScenario = new MenuItem ("Remove scenario") {
-				Image = Image.FromResource(DirectorImages.CROSS_ICON)
-			};
-			ScenarioMenu.Items.Add (MenuRemoveScenario);
-			MenuRemoveScenario.Clicked += RemoveScenario;
+            // Delete scenario menu
+            MenuItem MenuRemoveScenario = new MenuItem(Director.Locales.Language.ContextMenuRemoveScenario)
+            {
+                Image = Image.FromResource(DirectorImages.CROSS_ICON)
+            };
+            ScenarioMenu.Items.Add(MenuRemoveScenario);
+            MenuRemoveScenario.Clicked += RemoveScenario;
 
-			// Request menu
-			RequestMenu = new Menu ();
-			MenuItem MenuRemoveRequest = new MenuItem ("Remove request") {
-				Image = Image.FromResource(DirectorImages.CROSS_ICON)
-			};
-			RequestMenu.Items.Add (MenuRemoveRequest);
+            // Request menu
+            RequestMenu = new Menu();
+            MenuItem MenuRemoveRequest = new MenuItem(Director.Locales.Language.ContextMenuRemoveRequest)
+            {
+                Image = Image.FromResource(DirectorImages.CROSS_ICON)
+            };
+            RequestMenu.Items.Add(MenuRemoveRequest);
         }
 
-		/// <summary>
-		/// Remove scenario context menu item clicked!
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		private void RemoveScenario(object sender, EventArgs e)
-		{
-			TreePosition tmp = CurrentServer.SelectedRow;
+        /// <summary>
+        /// Remove scenario context menu item clicked!
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        private void RemoveScenario(object sender, EventArgs e)
+        {
+            TreePosition tmp = CurrentServer.SelectedRow;
 
-			if (tmp == null)
-				return;
+            if (tmp == null)
+                return;
 
-			var s = ServerStore.GetNavigatorAt (tmp).GetValue (ColumnType);
+            var s = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
 
-			if (s is Scenario) {
-				Scenario sc = (Scenario)s;
-				bool res = MessageDialog.Confirm ("Are you sure, you want to remove this scenario?", Command.Ok);
-				if (res) {
-					// Remove scenario
-					UServer.RemoveScenario (sc);
+            if (s is Scenario)
+            {
+                Scenario sc = (Scenario)s;
+                bool res = MessageDialog.Confirm(Director.Locales.Language.MessageBoxRemoveScenario, Command.Ok);
+                if (res)
+                {
+                    // Remove scenario
+                    UServer.RemoveScenario(sc);
 
-					// Remove from tree view
-					ServerStore.GetNavigatorAt (tmp).Remove ();
-				}
-			}
-		}
+                    // Remove from tree view
+                    ServerStore.GetNavigatorAt(tmp).Remove();
+                }
+            }
+        }
 
         /// <summary>
         /// Create new scenario which belongs to server.
@@ -374,7 +394,7 @@ namespace Director.Forms
             TreePosition tmp = CurrentServer.SelectedRow;
 
             // Return if null
-            if (tmp == null) 
+            if (tmp == null)
                 return;
 
             // Get row
@@ -392,26 +412,27 @@ namespace Director.Forms
             }
         }
 
-		/// <summary>
-		/// Create new request belongs to selected scenario.
-		/// </summary>
-		/// <param name="sender">Sender.</param>
-		/// <param name="e">E.</param>
-		private void AddRequest(object sender, EventArgs e)
-		{
-			TreePosition tmp = CurrentServer.SelectedRow;
+        /// <summary>
+        /// Create new request belongs to selected scenario.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        private void AddRequest(object sender, EventArgs e)
+        {
+            TreePosition tmp = CurrentServer.SelectedRow;
 
-			if (tmp == null)
-				return;
+            if (tmp == null)
+                return;
 
-			var data = ServerStore.GetNavigatorAt (tmp).GetValue (ColumnType);
+            var data = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
 
-			if (data is Scenario) {
-				Scenario s = (Scenario)data;
-				Request NewRequest = s.CreateNewRequest ();
-				CreateTreeItem (tmp, NewRequest.Name, RequestImage, NewRequest);
-			}
-		}
+            if (data is Scenario)
+            {
+                Scenario s = (Scenario)data;
+                Request NewRequest = s.CreateNewRequest();
+                CreateTreeItem(tmp, NewRequest.Name, RequestImage, NewRequest);
+            }
+        }
 
         /// <summary>
         /// Create tree item on specific position.
@@ -441,16 +462,16 @@ namespace Director.Forms
             UServer = new Server(Director.Locales.Language.NewServerString, Director.Locales.Language.NewServerURL);
 
             // Add server to tree store
-			ClearCurrentServerTree ();
+            ClearCurrentServerTree();
 
             // Add node
             CreateTreeItem(null, UServer.Name, ServerImage, UServer);
 
             // Disable server menu
-	    NewServer.Sensitive = false;
+            NewServer.Sensitive = false;
 
-		// Disable server menu mac!
-		NewServer.Clicked -= CreateNewServer;
+            // Disable server menu mac!
+            NewServer.Clicked -= CreateNewServer;
         }
 
 

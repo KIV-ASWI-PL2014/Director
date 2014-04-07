@@ -117,6 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ContextMenuAddRequest" xml:space="preserve">
+    <value>Add request</value>
+  </data>
+  <data name="ContextMenuRemoveRequest" xml:space="preserve">
+    <value>Remove request</value>
+  </data>
+  <data name="ContextMenuRemoveScenario" xml:space="preserve">
+    <value>Remove scenario</value>
+  </data>
+  <data name="InvalidServerName" xml:space="preserve">
+    <value>Server name cannot be empty!</value>
+  </data>
+  <data name="InvalidServerURL" xml:space="preserve">
+    <value>Invalid server url!</value>
+  </data>
   <data name="MainWindowTitle" xml:space="preserve">
     <value>Api Director</value>
   </data>
@@ -132,6 +147,9 @@
   <data name="MenuServer" xml:space="preserve">
     <value>Server</value>
   </data>
+  <data name="MessageBoxRemoveScenario" xml:space="preserve">
+    <value>Are you sure you want to remove this scenario?</value>
+  </data>
   <data name="NewScenarioName" xml:space="preserve">
     <value>New scenario</value>
   </data>
@@ -140,5 +158,29 @@
   </data>
   <data name="NewServerURL" xml:space="preserve">
     <value>http://api.example.com/</value>
+  </data>
+  <data name="RequestInfoBox" xml:space="preserve">
+    <value>Request</value>
+  </data>
+  <data name="RunningPeriodicity" xml:space="preserve">
+    <value>Default running periodicity</value>
+  </data>
+  <data name="ScenarioInfoBox" xml:space="preserve">
+    <value>Scenario</value>
+  </data>
+  <data name="ServerInfoBox" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="ServerName" xml:space="preserve">
+    <value>Server name</value>
+  </data>
+  <data name="ServerSettings" xml:space="preserve">
+    <value>Server settings</value>
+  </data>
+  <data name="ServerURL" xml:space="preserve">
+    <value>Default server URL</value>
+  </data>
+  <data name="TreeStoreInformation" xml:space="preserve">
+    <value>Information</value>
   </data>
 </root>
