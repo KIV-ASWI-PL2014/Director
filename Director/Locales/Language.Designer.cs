@@ -61,6 +61,24 @@ namespace Director.Locales {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authorization.
+        /// </summary>
+        internal static string Authorization {
+            get {
+                return ResourceManager.GetString("Authorization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authorization settings.
+        /// </summary>
+        internal static string AuthorizationSettings {
+            get {
+                return ResourceManager.GetString("AuthorizationSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add request.
         /// </summary>
         internal static string ContextMenuAddRequest {
@@ -84,6 +102,33 @@ namespace Director.Locales {
         internal static string ContextMenuRemoveScenario {
             get {
                 return ResourceManager.GetString("ContextMenuRemoveScenario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        internal static string Email {
+            get {
+                return ResourceManager.GetString("Email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email notifications.
+        /// </summary>
+        internal static string EmailNotifications {
+            get {
+                return ResourceManager.GetString("EmailNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Errors.
+        /// </summary>
+        internal static string Errors {
+            get {
+                return ResourceManager.GetString("Errors", resourceCulture);
             }
         }
         
@@ -187,6 +232,24 @@ namespace Director.Locales {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notification.
+        /// </summary>
+        internal static string Notification {
+            get {
+                return ResourceManager.GetString("Notification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        internal static string Password {
+            get {
+                return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request.
         /// </summary>
         internal static string RequestInfoBox {
@@ -255,6 +318,15 @@ namespace Director.Locales {
         internal static string TreeStoreInformation {
             get {
                 return ResourceManager.GetString("TreeStoreInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username.
+        /// </summary>
+        internal static string Username {
+            get {
+                return ResourceManager.GetString("Username", resourceCulture);
             }
         }
     }

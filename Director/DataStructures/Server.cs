@@ -73,8 +73,7 @@ namespace Director.DataStructures
             Scenarios = new List<Scenario>();
             Emails = new List<Email>();
 
-            Emails.Add(new Email() { UserEmail = "parovka@gmail.com", Error = true, Info = true });
-                                                                       
+            Emails.Add(new Email() { UserEmail = "parovka@gmail.com", Errors = true, Notifications = true });          
         }
 
         /// <summary>

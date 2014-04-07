@@ -7,6 +7,7 @@ using Xwt;
 using Director.Forms.Controls;
 using Director.DataStructures;
 using Xwt.Drawing;
+using Director.DataStructures.SupportStructures;
 
 namespace Director.Forms.Panels
 {
@@ -26,7 +27,37 @@ namespace Director.Forms.Panels
         /// </summary>
         private TextEntry ServerName { get; set; }
 
+        /// <summary>
+        /// Frequency.
+        /// </summary>
         private ComboBox FrequencyRunning { get; set; }
+
+        /// <summary>
+        /// Authorization.
+        /// </summary>
+        private CheckBox AuthRequired { get; set; }
+
+        /// <summary>
+        /// User name for auth.
+        /// </summary>
+        private TextEntry AuthUserName { get; set; }
+
+        /// <summary>
+        /// User password.
+        /// </summary>
+        private PasswordEntry AuthUserPassword { get; set; }
+
+        /// <summary>
+        /// Authentication frame.
+        /// </summary>
+        private Frame Authentication { get; set; }
+
+        private ListView EmailNotifications { get; set; }
+
+        private DataField<string> EmailAddress { get; set; }
+        private DataField<bool> Errors { get; set; }
+        private DataField<bool> Notifications { get; set; }
+        private ListStore EmailAddressStore { get; set; }
 
         /// <summary>
         /// Invalid scenario name description.
@@ -78,6 +109,22 @@ namespace Director.Forms.Panels
 			ActiveServer = server;
             ServerName.Text = server.Name;
             ServerURL.Text = server.GetUrl();
+            AuthUserName.Text = server.AuthName;
+            AuthUserPassword.Password = server.AuthPassword;
+            AuthRequired.State = (server.Authentication) ? CheckBoxState.On : CheckBoxState.Off;
+            
+            // Refresh data
+            AuthRequired_Toggled(null, null);
+
+            EmailAddressStore.Clear();
+
+            // Emails
+            foreach (Email e in server.Emails) {
+                var i = EmailAddressStore.AddRow();
+                EmailAddressStore.SetValue(i, EmailAddress, e.UserEmail);
+                EmailAddressStore.SetValue(i, Errors, e.Errors);
+                EmailAddressStore.SetValue(i, Notifications, e.Notifications);
+            }
 		}
 
         /// <summary>
@@ -136,6 +183,120 @@ namespace Director.Forms.Panels
             // Add Frame to server settings
             f.Content = ServerSettings;
             PackStart(f);
+
+
+            // Authorization
+            AuthRequired = new CheckBox(Director.Locales.Language.Authorization);
+            AuthRequired.MarginLeft = 10;
+            PackStart(AuthRequired);
+
+            // Create Authentication Frame
+            Authentication = new Frame()
+            {
+                Label =  Director.Locales.Language.AuthorizationSettings,
+                Padding = 10
+            };
+
+            // Login and Password fields
+            VBox AuthBox = new VBox();
+
+            AuthBox.PackStart(new Label()
+            {
+                Text = Director.Locales.Language.Username
+            });
+            AuthUserName = new TextEntry();
+            AuthUserName.Changed += AuthUserName_Changed;
+            AuthBox.PackStart(AuthUserName);
+
+            AuthBox.PackStart(new Label()
+            {
+                Text = Director.Locales.Language.Password
+            });
+            AuthUserPassword = new PasswordEntry();
+            AuthUserPassword.Changed += AuthUserPassword_Changed;
+            AuthBox.PackStart(AuthUserPassword);
+
+            // Authentication content
+            Authentication.Content = AuthBox;
+            PackStart(Authentication);
+
+            // Change value
+            AuthRequired.Toggled += AuthRequired_Toggled;
+
+
+            // Email settings
+            Frame EmailFrame = new Frame()
+            {
+                Label = Director.Locales.Language.EmailNotifications,
+                Padding = 10,
+                MinHeight = 180
+            };
+
+            // Create containers
+            EmailAddress = new DataField<string>();
+            Notifications = new DataField<bool>();
+            Errors = new DataField<bool>();
+
+            // Big container
+            EmailAddressStore = new ListStore(EmailAddress, Notifications, Errors);
+
+            // New store
+            EmailNotifications = new ListView();
+            EmailNotifications.DataSource = EmailAddressStore;
+
+            // Create columns
+            EmailNotifications.Columns.Add(
+                new ListViewColumn(
+                    Director.Locales.Language.Email,
+                    new TextCellView { Editable = true, TextField = EmailAddress }
+                )
+            );
+            EmailNotifications.Columns.Add(
+                new ListViewColumn(
+                    Director.Locales.Language.Errors,
+                    new CheckBoxCellView { Editable = true, ActiveField = Errors }
+                )
+            );
+            EmailNotifications.Columns.Add(
+                new ListViewColumn(
+                    Director.Locales.Language.Notification,
+                    new CheckBoxCellView { Editable = true, ActiveField = Notifications }
+                )
+            );
+            EmailFrame.Content = EmailNotifications;
+            PackStart(EmailFrame);
+        }
+
+        /// <summary>
+        /// Toggle auth required checkbox.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void AuthRequired_Toggled(object sender, EventArgs e)
+        {
+            bool active = (AuthRequired.State == CheckBoxState.On);
+            ActiveServer.Authentication = active;
+            Authentication.Sensitive = active;
+        }
+
+        /// <summary>
+        /// Auth user password change save!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void AuthUserPassword_Changed(object sender, EventArgs e)
+        {
+            ActiveServer.AuthPassword = AuthUserPassword.Password; 
+        }
+
+        /// <summary>
+        /// Save auth user name.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void AuthUserName_Changed(object sender, EventArgs e)
+        {
+            ActiveServer.AuthName = AuthUserName.Text;
         }
 
         /// <summary>
@@ -145,7 +306,15 @@ namespace Director.Forms.Panels
         /// <param name="e"></param>
         void ServerURL_Changed(object sender, EventArgs e)
         {
-            
+            try
+            {
+                ActiveServer.SetUrl(ServerURL.Text); 
+                InvalidServerURL.Visible = false;
+            }
+            catch (Exception ex)
+            {
+                InvalidServerURL.Visible = true;
+            }
         }
 
         /// <summary>

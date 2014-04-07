@@ -111,8 +111,8 @@ namespace Director.Forms
             Title = Director.Locales.Language.MainWindowTitle;
 
             // Set default size
-            Width = 650;
-            Height = 500;
+            Width = 750;
+            Height = 600;
 
             // Center screen
             InitialLocation = WindowLocation.CenterScreen;

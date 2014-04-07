@@ -69,6 +69,7 @@
     <Compile Include="DataStructures\Scenario.cs" />
     <Compile Include="DataStructures\Server.cs" />
     <Compile Include="DataStructures\SupportStructures\Email.cs" />
+    <Compile Include="DataStructures\SupportStructures\EmailStore.cs" />
     <Compile Include="Forms\Controls\DirectorImages.cs" />
     <Compile Include="Forms\Controls\InfoBox.cs" />
     <Compile Include="Forms\Panels\Homepage.cs" />

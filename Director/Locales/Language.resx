@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Authorization" xml:space="preserve">
+    <value>Authorization</value>
+  </data>
+  <data name="AuthorizationSettings" xml:space="preserve">
+    <value>Authorization settings</value>
+  </data>
   <data name="ContextMenuAddRequest" xml:space="preserve">
     <value>Add request</value>
   </data>
@@ -125,6 +131,15 @@
   </data>
   <data name="ContextMenuRemoveScenario" xml:space="preserve">
     <value>Remove scenario</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="EmailNotifications" xml:space="preserve">
+    <value>Email notifications</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Errors</value>
   </data>
   <data name="InvalidServerName" xml:space="preserve">
     <value>Server name cannot be empty!</value>
@@ -159,6 +174,12 @@
   <data name="NewServerURL" xml:space="preserve">
     <value>http://api.example.com/</value>
   </data>
+  <data name="Notification" xml:space="preserve">
+    <value>Notification</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
   <data name="RequestInfoBox" xml:space="preserve">
     <value>Request</value>
   </data>
@@ -182,5 +203,8 @@
   </data>
   <data name="TreeStoreInformation" xml:space="preserve">
     <value>Information</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Username</value>
   </data>
 </root>
