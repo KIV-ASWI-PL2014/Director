@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-// Include forms namespaces
 using Director.Forms;
+using System;
+using Xwt;
 
 namespace Director
 {
@@ -17,11 +12,20 @@ namespace Director
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new SplashScreen(new MainWindow()));
-            //TODO: Debug
-            Application.Run(new MainWindow());
+			// Setapp type
+			Config.SetAppType(ToolkitType.Wpf); 
+
+			// Initialize
+			Application.Initialize(Config.GetAppType());
+
+			Application.Initialize(ToolkitType.Wpf);
+            MainWindow _mainWindow = new MainWindow();
+            _mainWindow.Show();
+            _mainWindow.Closed += delegate
+            {
+                Application.Exit();
+            };
+            Application.Run();
         }
     }
 }

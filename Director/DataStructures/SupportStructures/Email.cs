@@ -16,9 +16,9 @@ namespace Director.DataStructures.SupportStructures
         public String UserEmail { get; set; }
 
         [DisplayName("Information reports")]
-        public bool Info { get; set; }
+        public bool Notifications { get; set; }
 
         [DisplayName("Erorr reports")]
-        public bool Error { get; set; }
+        public bool Errors { get; set; }
     }
 }

@@ -1,426 +1,541 @@
-﻿using Director.Forms.InfoPanels;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using Director.Forms.Help;
-using Director.Forms.Export;
+using Xwt;
+using Director.Forms.Panels;
+using Xwt.Drawing;
+using Director.Forms.Controls;
 using Director.DataStructures;
-using Director.Forms.Modules;
+using Director.Forms.Export;
 
 namespace Director.Forms
 {
-    public partial class MainWindow : Form
+    class MainWindow : Window
     {
-        // Images constant
-        public const int SERVER_IMAGE = 0;
-        public const int SCENARIO_IMAGE = 1;
-        public const int REQUEST_NOT_SENT = 2;
-        public const int REQUEST_OK = 3;
-        public const int REQUEST_FAIL = 4;
+        /// <summary>
+        /// Default box
+        /// </summary>
+        private HBox MainBox { get; set; }
 
-        // Image processing revert compatibility
-        public const int REQUEST_PROCESS_START = 5;
-        public const int REQUEST_PROCESS_STOP = 12;
+        /// <summary>
+        /// Content box for widgets!
+        /// </summary>
+        private VBox ContentBox { get; set; }
 
-        // Prepare Info Pannels
-        private EmptyPanel _emptyPanel = new EmptyPanel();
-        private ServerPanel _serverPanel;
-        private RequestPanel _requestPanel = new RequestPanel();
-        private ScenarioPanel _scenarioPanel;
+        /// <summary>
+        /// Current control.
+        /// </summary>
+        private VBox CurrentControl { get; set; }
 
-        // Processing images
-        private int _processingImageIndex = REQUEST_PROCESS_START;
-        private List<TreeNode> _processingNodes = new List<TreeNode>();
+        /// <summary>
+        /// New instance of homepage.
+        /// </summary>
+        private VBox DirectorHomepage = new Homepage();
 
-        // Actual selected panel for resizing!
-        private UserControl _selectedPanel = null;
+        /// <summary>
+        /// Server page.
+        /// </summary>
+        private ServerPage ServerBox;
 
-        // Actual server parent instance
-        private Server _rootServer = null;
+        /// <summary>
+        /// Scenario page.
+        /// </summary>
+        private ScenarioPage ScenarioBox = new ScenarioPage();
 
+        /// <summary>
+        /// Request page.
+        /// </summary>
+        private RequestPage RequestBox = new RequestPage();
+
+        /// <summary>
+        /// Current server sumary.
+        /// </summary>
+        private TreeView CurrentServer { get; set; }
+
+        /// <summary>
+        /// New server store.
+        /// </summary>
+        private TreeStore ServerStore;
+
+        /// <summary>
+        /// New server or server whitch is using.
+        /// </summary>
+        private Server UServer { get; set; }
+
+        /// <summary>
+        /// Data fields describing server - save to TreeStore.
+        /// </summary>
+        private DataField<Image> ColumnImage = new DataField<Image>();
+        private DataField<String> ColumnName = new DataField<string>();
+        private DataField<Object> ColumnType = new DataField<object>();
+
+        /// <summary>
+        /// Default images for Server tree.
+        /// </summary>
+        private Image ServerImage = Image.FromResource(DirectorImages.ROOT_ICON);
+        private Image ScenarioImage = Image.FromResource(DirectorImages.SCENARIO_ICON);
+        private Image RequestImage = Image.FromResource(DirectorImages.REQUEST_ICON);
+        private Image ProcessingImage = Image.FromResource(DirectorImages.PROCESSING_ICON);
+
+        /// <summary>
+        /// Server context menu.
+        /// </summary>
+        private Menu ServerMenu;
+
+        /// <summary>
+        /// Scenario context menu.
+        /// </summary>
+        private Menu ScenarioMenu;
+
+        /// <summary>
+        /// Request context menu.
+        /// </summary>
+        private Menu RequestMenu;
+
+        /// <summary>
+        /// Open scenario.
+        /// </summary>
+        private MenuItem OpenScenarioMenu;
+
+        /// <summary>
+        /// Export scenario menu.
+        /// </summary>
+        private MenuItem SaveScenarioMenu;
+
+        /// <summary>
+        /// Default constructor initiate components!
+        /// </summary>
         public MainWindow()
         {
-            InitializeComponent();
-
-            // Initiate image List for tree view panel
-            _initiateTreeView();
-
-            // New empty panel!
-            _setUserControl(_emptyPanel);
-
-            // TODO: DEBUG
-            NewScenario_Click(null, null);
-
-            // Create all panels with current instance of main window
-            _serverPanel = new ServerPanel(this);
-            _scenarioPanel = new ScenarioPanel(this);
+            _initializeComponents();
         }
 
         /// <summary>
-        /// Set user control to main content panel!
+        /// Initiate all form components.
         /// </summary>
-        /// <param name="panel">New panel for replace</param>
-        private void _setUserControl(UserControl panel)
+        private void _initializeComponents()
         {
-            ContentPanel.Controls.Clear();
-            panel.Dock = DockStyle.Fill;
-            ContentPanel.Controls.Add(panel);
-            _selectedPanel = panel;
+            // Prepare boxes
+            ServerBox = new ServerPage(this);
+
+            /// Title and Initial size
+            Title = Director.Locales.Language.MainWindowTitle;
+
+            // Set default size
+            Width = 750;
+            Height = 600;
+
+            // Center screen
+            InitialLocation = WindowLocation.CenterScreen;
+
+            // Initialize menu
+            _initializeMenu();
+
+            // Initialize content
+            _intializeBoxes();
+        }
+        /// <summary>
+        /// Initialize whole layout!
+        /// </summary>
+        private void _intializeBoxes()
+        {
+            // Create HPaned main box
+            MainBox = new HBox();
+            MainBox.ExpandVertical = true;
+            MainBox.ExpandHorizontal = true;
+            MainBox.Spacing = 3;
+
+            // Create tree view
+            CurrentServer = new TreeView();
+            CurrentServer.WidthRequest = 200;
+            CurrentServer.SelectionMode = SelectionMode.Single;
+            CurrentServer.SelectionChanged += UpdateControlView;
+
+            // Create tree view!
+            ServerStore = new TreeStore(ColumnName, ColumnImage, ColumnType);
+            CurrentServer.Columns.Add("Server", ColumnImage, ColumnName); // Dummy column, not sure why?
+            CurrentServer.HeadersVisible = false;
+
+            // Clear tree view!
+            ClearCurrentServerTree();
+
+            // Net item parsing
+            CurrentServer.ButtonPressed += HandleMouseOnTreeView;
+
+            // Set data source
+            CurrentServer.DataSource = ServerStore;
+
+            // Add server to main box
+            MainBox.PackStart(CurrentServer);
+
+            // Prepare content box
+            ContentBox = new VBox();
+            ContentBox.MarginLeft = 10;
+            SetContentBoxControl(DirectorHomepage);
+
+            // Add to panel
+            MainBox.PackStart(ContentBox, true, true);
+
+            // Set content to main box
+            Content = MainBox;
+
+            CreateNewServer(null, null);
         }
 
         /// <summary>
-        /// Initiate all tree view images! - server, processing, error etc..
+        /// Clear current server tree - add help box item!
         /// </summary>
-        private void _initiateTreeView()
+        private void ClearCurrentServerTree()
         {
-            // Set handlers
-            ScenarioView.ItemDrag += new ItemDragEventHandler(TreeView_ItemDrag);
-            ScenarioView.DragEnter += new DragEventHandler(TreeView_DragEnter);
-            ScenarioView.DragOver += new DragEventHandler(TreeView_DragOver);
-            ScenarioView.DragDrop += new DragEventHandler(TreeView_DragDrop);
+            // Server store
+            ServerStore.Clear();
 
-            // Create imagelist
-            ImageList myImageList = new ImageList();
-            myImageList.Images.Add(Director.Properties.Resources.ServerRoot);
-            myImageList.Images.Add(Director.Properties.Resources.lightning);
-            myImageList.Images.Add(Director.Properties.Resources.bullet_blue);
-            myImageList.Images.Add(Director.Properties.Resources.ok);
-            myImageList.Images.Add(Director.Properties.Resources.fail);
-
-            // Processing images
-            myImageList.Images.Add(Director.Properties.Resources.processing_0);
-            myImageList.Images.Add(Director.Properties.Resources.processing_1);
-            myImageList.Images.Add(Director.Properties.Resources.processing_2);
-            myImageList.Images.Add(Director.Properties.Resources.processing_3);
-            myImageList.Images.Add(Director.Properties.Resources.processing_4);
-            myImageList.Images.Add(Director.Properties.Resources.processing_5);
-            myImageList.Images.Add(Director.Properties.Resources.processing_6);
-            myImageList.Images.Add(Director.Properties.Resources.processing_7);
-
-            // Set images
-            ScenarioView.ImageList = myImageList;
-            ScenarioView.ImageIndex = 0;
-            ScenarioView.SelectedImageIndex = 0;
+            // Create server store box!
+            CreateTreeItem(
+                null,
+                Director.Locales.Language.TreeStoreInformation,
+                Image.FromResource(DirectorImages.HELP_ICON),
+                DirectorHomepage
+            );
         }
 
         /// <summary>
-        /// When is main window closed, close whole Application.
+        /// Set main control box.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
+        /// <param name="box">Box.</param>
+        private void SetContentBoxControl(VBox box)
         {
-            System.Environment.Exit(0);
+            if (CurrentControl != null)
+                ContentBox.Remove(CurrentControl);
+
+            ContentBox.PackStart(box, expand: true, fill: true);
+            CurrentControl = box;
         }
 
- 
-        private void ScenarioView_MouseUp(object sender, MouseEventArgs e)
+        /// <summary>
+        /// Handler react on tree view selection changes.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        private void UpdateControlView(object sender, EventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            if (CurrentServer.SelectedRow != null)
             {
-                Point p = new Point(e.X, e.Y);
-
-                TreeNode node = ScenarioView.GetNodeAt(p);
-                if (node != null)
+                var s = ServerStore.GetNavigatorAt(CurrentServer.SelectedRow).GetValue(ColumnType);
+                if (s is Server)
                 {
-                    // Select cursor node
-                    ScenarioView.SelectedNode = node;
-
-                    // Type decision
-                    if (node.Tag.GetType() == typeof(Server))
-                    {
-                        RootContextMenu.Show(ScenarioView, p);
-                    }
-                    else if (node.Tag.GetType() == typeof(Request))
-                    {
-                        RequestContextMenu.Show(ScenarioView, p);
-                    }
-                    else if (node.Tag.GetType() == typeof(Scenario))
-                    {
-                        ScenarioContextMenu.Show(ScenarioView, p);
-                    }
+                    SetContentBoxControl(ServerBox);
+                    ServerBox.SetServer((Server)s);
                 }
-            }
-        }
-
-        private void exitMenu_Click(object sender, EventArgs e)
-        {
-            if (CloseWindowPrompt())
-                System.Environment.Exit(0);
-        }
-
-        private bool CloseWindowPrompt()
-        {
-            var result = MessageBox.Show("Are you sure that you would like to quit application?", "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            return !(result == DialogResult.No);
-        }
-
-        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (!CloseWindowPrompt())
-            {
-                e.Cancel = true;
-            }
-        }
-
-
-        /// <summary>
-        /// About window click.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AboutProgram_Click(object sender, EventArgs e)
-        {
-            new About().ShowDialog();
-        }
-
-        private void processingIcons_Tick(object sender, EventArgs e)
-        {
-            foreach (TreeNode _it in _processingNodes)
-            {
-                // Set all images to actual
-                _it.ImageIndex = _processingImageIndex;
-                _it.SelectedImageIndex = _processingImageIndex;
-            }
-
-            // Continue with image index
-            _processingImageIndex++;
-
-            // Iteration
-            if (_processingImageIndex > REQUEST_PROCESS_STOP)
-                _processingImageIndex = REQUEST_PROCESS_START;
-        }
-
-        /// <summary>
-        /// Menu click on export scenarios.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void exportScenarios_Click(object sender, EventArgs e)
-        {
-            new ExportSettings().ShowDialog();
-        }
-
-        private void OpenSavedScenario_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog _ofd = new OpenFileDialog();
-            _ofd.Filter = "API Director Files|*.adf";
-            _ofd.Title = "Open saved API Director scenario";
-
-            if (_ofd.ShowDialog() == DialogResult.OK)
-            {
-                // Load file from _ofd.FileName();
-            }
-        }
-
-        /// <summary>
-        /// Show propriet view after select node! (key arrows)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ScenarioView_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            // Get node
-            TreeNode node = ScenarioView.SelectedNode;
-
-            if (node.Tag.GetType() == typeof(Server))
-            {
-                _serverPanel.SetServer((Server)node.Tag);
-                _setUserControl(_serverPanel);
-            }
-            else if (node.Tag.GetType() == typeof(Request))
-            {
-                _setUserControl(_requestPanel);
-            }
-            else if (node.Tag.GetType() == typeof(Scenario))
-            {
-                _setUserControl(_scenarioPanel);
-                _scenarioPanel.SetScenario((Scenario)node.Tag);
-            }
-        }
-
-        /// <summary>
-        /// New scenario create!
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NewScenario_Click(object sender, EventArgs e)
-        {
-            // Create new default name server
-            _rootServer = new Server("New server", "http://example.com/api/");
-
-            // Refresh tree view
-            RefreshTreeView();
-
-            // Disable invalid menus
-            _disableWithoutActiveScenarioMenus();
-        }
-
-
-        /// <summary>
-        /// Refreshing scenario view with selected structures.
-        /// </summary>
-        public void RefreshTreeView()
-        {
-            if (_rootServer != null)
-            {
-                ProjectTreeGenerator.GenerateTree(_rootServer, ScenarioView, this);
-            }
-        }
-
-        /// <summary>
-        /// Disabling and enabling menu which are useless when new project is open!
-        /// </summary>
-        private void _disableWithoutActiveScenarioMenus()
-        {
-            NewScenario.Enabled = false;
-            SaveScenario.Enabled = true;
-            TestsMainMenu.Enabled = true;
-        }
-
-        /// <summary>
-        /// Add scenario from root menu!
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AddScenarioRootMenu_Click(object sender, EventArgs e)
-        {
-            // Create new scenario
-            _rootServer.CreateNewScenario();
-
-            // Refresh view
-            RefreshTreeView();
-        }
-
-
-        /// <summary>
-        /// Add request to scenario.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void addRequestToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // Get selected node!
-            TreeNode _selectedNode = ScenarioView.SelectedNode;
-
-            if (_selectedNode != null && _selectedNode.Tag.GetType() == typeof(Scenario))
-            {
-                // Add node to scenario
-                Scenario _selectedScenario = (Scenario)_selectedNode.Tag;
-
-                // Create request in scenario
-                _selectedScenario.CreateNewRequest();
-
-                // Refresh view
-                RefreshTreeView();
-            }
-        }
-
-        public void TreeView_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-            DoDragDrop(e.Item, DragDropEffects.Move);
-        }
-
-        public void TreeView_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = e.AllowedEffect;
-        }
-
-        public void TreeView_DragDrop(object sender, DragEventArgs e)
-        {
-            // Retrieve the client coordinates of the drop location.
-            Point targetPoint = ScenarioView.PointToClient(new Point(e.X, e.Y));
-
-            // Retrieve the node at the drop location.
-            TreeNode targetNode = ScenarioView.GetNodeAt(targetPoint);
-
-            // Retrieve the node that was dragged.
-            TreeNode draggedNode = (TreeNode)e.Data.GetData(typeof(TreeNode));
-
-            // Confirm that the node at the drop location is not  
-            // the dragged node or a descendant of the dragged node. 
-            if (!draggedNode.Equals(targetNode) && !ContainsNode(draggedNode, targetNode))
-            {
-                // If it is a move operation, remove the node from its current  
-                // location and add it to the node at the drop location. 
-                if (e.Effect == DragDropEffects.Move)
+                else if (s is Scenario)
                 {
-                    draggedNode.Remove();
-                    targetNode.Nodes.Add(draggedNode);
+                    SetContentBoxControl(ScenarioBox);
                 }
-
-                // If it is a copy operation, clone the dragged node  
-                // and add it to the node at the drop location. 
-                else if (e.Effect == DragDropEffects.Copy)
+                else if (s is Request)
                 {
-                    targetNode.Nodes.Add((TreeNode)draggedNode.Clone());
+                    SetContentBoxControl(RequestBox);
                 }
-
-                // Expand the node at the location  
-                // to show the dropped node.
-                targetNode.Expand();
+                else if (s is Homepage)
+                {
+                    SetContentBoxControl(DirectorHomepage);
+                }
             }
-        }
-
-        private bool ContainsNode(TreeNode node1, TreeNode node2)
-        {
-            // Check the parent node of the second node. 
-            if (node2.Parent == null) return false;
-            if (node2.Parent.Equals(node1)) return true;
-
-            // If the parent node is not null or equal to the first node,  
-            // call the ContainsNode method recursively using the parent of  
-            // the second node. 
-            return ContainsNode(node1, node2.Parent);
-        }
-
-        public void TreeView_DragOver(object sender, DragEventArgs e)
-        {
-            // Retrieve the client coordinates of the mouse position.
-            Point targetPoint = ScenarioView.PointToClient(new Point(e.X, e.Y));
-
-            // Select the node at the mouse position.
-            ScenarioView.SelectedNode = ScenarioView.GetNodeAt(targetPoint);      
         }
 
         /// <summary>
-        /// Removing scenario completely.
+        /// Right click mouse handler on tree view!
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        private void HandleMouseOnTreeView(object sender, ButtonEventArgs e)
+        {
+            if (e.Button == PointerButton.Right)
+            {
+                TreePosition tmp;
+                RowDropPosition tmp2;
+
+                if (CurrentServer.GetDropTargetRow(e.X, e.Y, out tmp2, out tmp))
+                {
+                    // Set row
+                    CurrentServer.SelectRow(tmp);
+
+                    // Get row data - for proper ContextMenu
+                    var data = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+
+                    if (data is Server)
+                    {
+                        ServerMenu.Popup(CurrentServer, e.X, e.Y);
+                    }
+                    else if (data is Scenario)
+                    {
+                        ScenarioMenu.Popup(CurrentServer, e.X, e.Y);
+                    }
+                    else if (data is Request)
+                    {
+                        RequestMenu.Popup(CurrentServer, e.X, e.Y);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Menu associers.
+        /// </summary>
+        private MenuItem NewServer;
+
+        /// <summary>
+        /// Prepare menu.
+        /// </summary>
+        private void _initializeMenu()
+        {
+            // Default menu
+            Menu menu = new Menu();
+
+            // Create main menu item
+            MenuItem server = new MenuItem(Director.Locales.Language.MenuServer);
+
+            // Prepare submenu
+            server.SubMenu = new Menu();
+
+            // Sub menu server
+            NewServer = new MenuItem(Director.Locales.Language.MenuNewServer)
+            {
+                Image = Image.FromResource(DirectorImages.NEW_SERVER_ICON)
+            };
+            NewServer.Clicked += CreateNewServer;
+            server.SubMenu.Items.Add(NewServer);
+
+            // Scenario open
+            OpenScenarioMenu = new MenuItem(Director.Locales.Language.MenuOpenScenario)
+            {
+                Image = Image.FromResource(DirectorImages.OPEN_SCENARIO_ICON)
+            };
+            OpenScenarioMenu.Clicked += OpenNewScenario;
+            server.SubMenu.Items.Add(OpenScenarioMenu);
+
+            // Export scenario
+            SaveScenarioMenu = new MenuItem(Director.Locales.Language.MenuSaveScenario)
+            { 
+                Image = Image.FromResource(DirectorImages.SAVE_SCENARIO_ICON)
+            };
+            SaveScenarioMenu.Clicked += SaveScenario;
+            server.SubMenu.Items.Add(SaveScenarioMenu);
+
+            // Separator before exit
+            server.SubMenu.Items.Add(new SeparatorMenuItem());
+
+            // Sub menu exit
+            MenuItem _exit = new MenuItem(Director.Locales.Language.MenuExitProgram)
+            {
+                Image = Image.FromResource(DirectorImages.EXIT_ICON)
+            };
+            _exit.Clicked += delegate
+            {
+                Application.Exit();
+            };
+            server.SubMenu.Items.Add(_exit);
+            menu.Items.Add(server);
+
+            // Set menu
+            MainMenu = menu;
+
+            // Create server menu
+            ServerMenu = new Menu();
+
+            // Add scenario item
+            MenuItem MenuAddScenario = new MenuItem(Director.Locales.Language.MenuAddScenario)
+            {
+                Image = Image.FromResource(DirectorImages.ADD_ICON)
+            };
+            ServerMenu.Items.Add(MenuAddScenario);
+            MenuAddScenario.Clicked += AddScenario;
+
+            // Create Scenario menu
+            ScenarioMenu = new Menu();
+
+            // Add request menu
+            MenuItem MenuAddRequest = new MenuItem(Director.Locales.Language.ContextMenuAddRequest)
+            {
+                Image = Image.FromResource(DirectorImages.ADD_ICON)
+            };
+            MenuAddRequest.Clicked += AddRequest;
+            ScenarioMenu.Items.Add(MenuAddRequest);
+
+            // Separator
+            ScenarioMenu.Items.Add(new SeparatorMenuItem());
+
+            // Delete scenario menu
+            MenuItem MenuRemoveScenario = new MenuItem(Director.Locales.Language.ContextMenuRemoveScenario)
+            {
+                Image = Image.FromResource(DirectorImages.CROSS_ICON)
+            };
+            ScenarioMenu.Items.Add(MenuRemoveScenario);
+            MenuRemoveScenario.Clicked += RemoveScenario;
+
+            // Request menu
+            RequestMenu = new Menu();
+            MenuItem MenuRemoveRequest = new MenuItem(Director.Locales.Language.ContextMenuRemoveRequest)
+            {
+                Image = Image.FromResource(DirectorImages.CROSS_ICON)
+            };
+            RequestMenu.Items.Add(MenuRemoveRequest);
+        }
+
+        /// <summary>
+        /// Open new scenario.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void removeScenarioMenu_Click(object sender, EventArgs e)
+        private void OpenNewScenario(object sender, EventArgs e)
         {
-            // Get selected node!
-            TreeNode _selectedNode = ScenarioView.SelectedNode;
+            OpenFileDialog dlg = new OpenFileDialog(Director.Locales.Language.DialogOpenScenario);
+            dlg.Multiselect = false;
+            dlg.Filters.Add(new FileDialogFilter("Director files", "*.dsce"));
+            if (dlg.Run())
+                MessageDialog.ShowMessage("Files: ", string.Join("\n", dlg.FileNames));
+        }
 
-            // Selected node exist and it is scenario = msg box
-            if (_selectedNode != null && _selectedNode.Tag.GetType() == typeof(Scenario))
+        /// <summary>
+        /// Export scenario.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveScenario(object sender, EventArgs e)
+        {
+            ExportWindow ew = new ExportWindow(UServer);
+            ew.Show();
+        }
+
+        /// <summary>
+        /// Remove scenario context menu item clicked!
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        private void RemoveScenario(object sender, EventArgs e)
+        {
+            TreePosition tmp = CurrentServer.SelectedRow;
+
+            if (tmp == null)
+                return;
+
+            var s = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+
+            if (s is Scenario)
             {
-                // Retype
-                Scenario _selectedScenario = (Scenario) _selectedNode.Tag;
+                Scenario sc = (Scenario)s;
+                bool res = MessageDialog.Confirm(Director.Locales.Language.MessageBoxRemoveScenario, Command.Ok);
+                if (res)
+                {
+                    // Remove scenario
+                    UServer.RemoveScenario(sc);
 
-                // Dialog
-                DialogResult _dialogResult = MessageBox.Show("Are you sure, you want to destroy scenario: " + _selectedScenario.Name + "?", "Removing scenario", MessageBoxButtons.YesNo);
-
-                // If yes destroy node and refresh view! and refresh view
-                if (_dialogResult == DialogResult.Yes) 
-                { 
-                    // Remove from server list!
-                    _rootServer.Scenarios.Remove(_selectedScenario);
-
-                    // Set selected node to first
-                    ScenarioView.SelectedNode = ScenarioView.Nodes[0];
-
-                    // Refresh
-                    RefreshTreeView();
+                    // Remove from tree view
+                    ServerStore.GetNavigatorAt(tmp).Remove();
                 }
             }
+        }
+
+        /// <summary>
+        /// Create new scenario which belongs to server.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddScenario(object sender, EventArgs e)
+        {
+            // Get selected row
+            TreePosition tmp = CurrentServer.SelectedRow;
+
+            // Return if null
+            if (tmp == null)
+                return;
+
+            // Get row
+            var data = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+
+            if (data is Server)
+            {
+                Server s = (Server)data;
+
+                // Add new scenario
+                Scenario NewScenario = s.CreateNewScenario();
+
+                // Add to tree!
+                CreateTreeItem(tmp, NewScenario.Name, ScenarioImage, NewScenario);
+            }
+        }
+
+        /// <summary>
+        /// Create new request belongs to selected scenario.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        private void AddRequest(object sender, EventArgs e)
+        {
+            TreePosition tmp = CurrentServer.SelectedRow;
+
+            if (tmp == null)
+                return;
+
+            var data = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+
+            if (data is Scenario)
+            {
+                Scenario s = (Scenario)data;
+                Request NewRequest = s.CreateNewRequest();
+                CreateTreeItem(tmp, NewRequest.Name, RequestImage, NewRequest);
+            }
+        }
+
+        /// <summary>
+        /// Create tree item on specific position.
+        /// </summary>
+        /// <param name="pos">Position</param>
+        /// <param name="name">Item name</param>
+        /// <param name="icon">Icon</param>
+        /// <param name="item">Object</param>
+        /// <returns>New tree position</returns>
+        private TreePosition CreateTreeItem(TreePosition pos, string name, Image icon, Object item)
+        {
+            return ServerStore.AddNode(pos)
+                              .SetValue(ColumnName, name)
+                              .SetValue(ColumnImage, icon)
+                              .SetValue(ColumnType, item)
+                              .CurrentPosition;
+        }
+
+        /// <summary>
+        /// Create new server and add server to server store!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CreateNewServer(object sender, EventArgs e)
+        {
+            // Create server
+            UServer = new Server(Director.Locales.Language.NewServerString, Director.Locales.Language.NewServerURL);
+
+            // Add server to tree store
+            ClearCurrentServerTree();
+
+            // Add node
+            CreateTreeItem(null, UServer.Name, ServerImage, UServer);
+
+            // Disable server menu
+            NewServer.Sensitive = false;
+
+            // Disable server menu mac!
+            NewServer.Clicked -= CreateNewServer;
+        }
+
+
+        /// <summary>
+        /// Dispose window.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
         }
     }
 }

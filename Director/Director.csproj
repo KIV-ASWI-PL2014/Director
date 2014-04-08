@@ -4,14 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{851985E4-E66F-49A5-9D0B-F1B90FB92870}</ProjectGuid>
+    <ProjectGuid>{B89BA9F2-99D8-422B-9D63-16CF2F5BC62A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Director</RootNamespace>
     <AssemblyName>Director</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <StartupObject>Director.Program</StartupObject>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -24,6 +26,7 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -31,7 +34,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -46,13 +49,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>Director.Program</StartupObject>
-  </PropertyGroup>
-  <PropertyGroup />
-  <PropertyGroup>
-    <ApplicationIcon>favicon.ico</ApplicationIcon>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -61,112 +57,59 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="MonoMac">
+      <HintPath>..\XWT\MonoMac.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.cs" />
     <Compile Include="DataStructures\Exceptions\InvalidUrlException.cs" />
     <Compile Include="DataStructures\Request.cs" />
     <Compile Include="DataStructures\Scenario.cs" />
     <Compile Include="DataStructures\Server.cs" />
     <Compile Include="DataStructures\SupportStructures\Email.cs" />
     <Compile Include="ExportLib\Export.cs" />
-    <Compile Include="Forms\Export\ExportSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Export\ExportSettings.Designer.cs">
-      <DependentUpon>ExportSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Help\About.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Help\About.Designer.cs">
-      <DependentUpon>About.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\InfoPanels\EmptyPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\InfoPanels\EmptyPanel.Designer.cs">
-      <DependentUpon>EmptyPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\InfoPanels\RequestPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\InfoPanels\RequestPanel.Designer.cs">
-      <DependentUpon>RequestPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\InfoPanels\ScenarioPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\InfoPanels\ScenarioPanel.Designer.cs">
-      <DependentUpon>ScenarioPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\InfoPanels\ServerPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\InfoPanels\ServerPanel.Designer.cs">
-      <DependentUpon>ServerPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Interfaces\IDataReceiver.cs" />
-    <Compile Include="Forms\MainWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\MainWindow.Designer.cs">
-      <DependentUpon>MainWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Modules\GUIAbstractWorker.cs" />
-    <Compile Include="Forms\Modules\ProjectTreeGenerator.cs" />
     <Compile Include="ParserLib\ParserError.cs" />
     <Compile Include="ParserLib\Parser.cs" />
     <Compile Include="ParserLib\ParserResult.cs" />
+    <Compile Include="DataStructures\SupportStructures\EmailStore.cs" />
+    <Compile Include="Forms\Controls\DirectorImages.cs" />
+    <Compile Include="Forms\Controls\InfoBox.cs" />
+    <Compile Include="Forms\Export\ExportWindow.cs" />
+    <Compile Include="Forms\Panels\Homepage.cs" />
+    <Compile Include="Forms\MainWindow.cs" />
+    <Compile Include="Forms\Panels\PanelBase.cs" />
+    <Compile Include="Forms\Panels\RequestPage.cs" />
+    <Compile Include="Forms\Panels\ScenarioPage.cs" />
+    <Compile Include="Forms\Panels\ServerPage.cs" />
+    <Compile Include="Locales\Language.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Language.resx</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="ProgramMac.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Forms\SplashScreen.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\SplashScreen.Designer.cs">
-      <DependentUpon>SplashScreen.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="Forms\Export\ExportSettings.resx">
-      <DependentUpon>ExportSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Help\About.resx">
-      <DependentUpon>About.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\InfoPanels\EmptyPanel.resx">
-      <DependentUpon>EmptyPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\InfoPanels\RequestPanel.resx">
-      <DependentUpon>RequestPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\InfoPanels\ScenarioPanel.resx">
-      <DependentUpon>ScenarioPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\InfoPanels\ServerPanel.resx">
-      <DependentUpon>ServerPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainWindow.resx">
-      <DependentUpon>MainWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SplashScreen.resx">
-      <DependentUpon>SplashScreen.cs</DependentUpon>
+    <EmbeddedResource Include="Locales\Language.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Language.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -174,58 +117,28 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Info.plist" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
   <ItemGroup>
-    <None Include="Resources\splashscreen.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\server_lightning.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\folder_explore.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\disk.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\door_in.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\information.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\accept.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\cross.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\resultset_next.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\document_empty.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\add.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ServerRoot.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\bullet_blue.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\lightning.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\page_copy.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\page_paste.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\cog_edit.png" />
+    <ProjectReference Include="..\XWT\Xwt.WPF\Xwt.WPF.csproj">
+      <Project>{c93d746e-1586-4d4f-b411-bf5a966e6a08}</Project>
+      <Name>Xwt.WPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XWT\Xwt\Xwt.csproj">
+      <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
+      <Name>Xwt</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -244,58 +157,103 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <None Include="Resources\tmp-1.gif" />
+    <EmbeddedResource Include="Resources\homepage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\0.gif" />
+    <EmbeddedResource Include="Resources\new_server.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\1.gif" />
+    <EmbeddedResource Include="Resources\exit.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\2.gif" />
+    <EmbeddedResource Include="Resources\ok.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\3.gif" />
+    <EmbeddedResource Include="Resources\request.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\4.gif" />
+    <EmbeddedResource Include="Resources\cross.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\5.gif" />
+    <EmbeddedResource Include="Resources\scenario.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\6.gif" />
+    <EmbeddedResource Include="Resources\root.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\7.gif" />
+    <EmbeddedResource Include="Resources\processing.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\domain_template.png" />
+    <EmbeddedResource Include="Resources\add.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="favicon.ico" />
-    <None Include="Resources\page_code.png" />
-    <None Include="Resources\interface_preferences_small.png" />
-    <None Include="Resources\interface_preferences.png" />
-    <None Include="Resources\server_configuration.png" />
-    <None Include="Resources\locate.png" />
-    <None Include="Resources\note_go.png" />
-    <None Include="Resources\lightning_go.png" />
-    <None Include="Resources\flag_great_britain.png" />
-    <None Include="Resources\address_bar.png" />
-    <None Include="Resources\flag_czech_republic.png" />
+    <EmbeddedResource Include="Resources\help.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Forms\Settings\" />
+    <EmbeddedResource Include="Resources\export.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\scenario_page.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\request_page.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\server_page.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\open.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\copy.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\paste.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\run.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\save.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

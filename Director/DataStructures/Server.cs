@@ -73,8 +73,7 @@ namespace Director.DataStructures
             Scenarios = new List<Scenario>();
             Emails = new List<Email>();
 
-            Emails.Add(new Email() { UserEmail = "parovka@gmail.com", Error = true, Info = true });
-                                                                       
+            Emails.Add(new Email() { UserEmail = "parovka@gmail.com", Errors = true, Notifications = true });          
         }
 
         /// <summary>
@@ -105,7 +104,7 @@ namespace Director.DataStructures
         /// <summary>
         /// Create new next scenario!
         /// </summary>
-        public void CreateNewScenario()
+        public Scenario CreateNewScenario()
         {
             // Id and position is actual scenario list size
             int _scenarioId = 1;
@@ -115,7 +114,13 @@ namespace Director.DataStructures
                 _scenarioId = Scenarios.Max(x => x.Id) + 1;
 
             // Create a new one
-            Scenarios.Add(new Scenario(_scenarioId, Scenarios.Count, "New scenario"));
+            Scenario NewScenario = new Scenario(_scenarioId, Scenarios.Count, Director.Locales.Language.NewScenarioName);
+
+            // Add to list
+            Scenarios.Add(NewScenario);
+
+            // Return scenario
+            return NewScenario;
         }
 
         public List<int> GetScenarioIds()
@@ -127,5 +132,15 @@ namespace Director.DataStructures
 
             return _idList;
         }
+
+
+		/// <summary>
+		/// Remove scenario item.
+		/// </summary>
+		/// <param name="sc">Sc.</param>
+		public void RemoveScenario(Scenario sc)
+		{
+			Scenarios.Remove(sc);
+		}
     }
 }
