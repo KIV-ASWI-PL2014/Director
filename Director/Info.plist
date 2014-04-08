@@ -12,5 +12,9 @@
 	<string>10.6</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.developer-tools</string>
+	<key>CFBundleDisplayName</key>
+	<string>Director</string>
 </dict>
 </plist>

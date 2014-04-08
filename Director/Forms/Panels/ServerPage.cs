@@ -131,7 +131,7 @@ namespace Director.Forms.Panels
         { 
             // Server Name + URL + Periodicity window
             Frame f = new Frame();
-            f.Label = Director.Locales.Language.ServerSettings;
+			f.Label = Director.Locales.Language.ServerSettings;
             f.Padding = 10;
 
             // Create VBOX

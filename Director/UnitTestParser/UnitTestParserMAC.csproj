@@ -55,7 +55,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Director.csproj">
+    <ProjectReference Include="..\DirectorMAC.csproj">
       <Project>{851985e4-e66f-49a5-9d0b-f1b90fb92870}</Project>
       <Name>Director</Name>
     </ProjectReference>
