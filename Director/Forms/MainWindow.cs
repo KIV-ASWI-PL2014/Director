@@ -8,6 +8,7 @@ using Director.Forms.Panels;
 using Xwt.Drawing;
 using Director.Forms.Controls;
 using Director.DataStructures;
+using Director.Forms.Export;
 
 namespace Director.Forms
 {
@@ -36,7 +37,7 @@ namespace Director.Forms
         /// <summary>
         /// Server page.
         /// </summary>
-        private ServerPage ServerBox = new ServerPage();
+        private ServerPage ServerBox;
 
         /// <summary>
         /// Scenario page.
@@ -70,7 +71,6 @@ namespace Director.Forms
         private DataField<String> ColumnName = new DataField<string>();
         private DataField<Object> ColumnType = new DataField<object>();
 
-
         /// <summary>
         /// Default images for Server tree.
         /// </summary>
@@ -95,6 +95,16 @@ namespace Director.Forms
         private Menu RequestMenu;
 
         /// <summary>
+        /// Open scenario.
+        /// </summary>
+        private MenuItem OpenScenarioMenu;
+
+        /// <summary>
+        /// Export scenario menu.
+        /// </summary>
+        private MenuItem SaveScenarioMenu;
+
+        /// <summary>
         /// Default constructor initiate components!
         /// </summary>
         public MainWindow()
@@ -107,6 +117,9 @@ namespace Director.Forms
         /// </summary>
         private void _initializeComponents()
         {
+            // Prepare boxes
+            ServerBox = new ServerPage(this);
+
             /// Title and Initial size
             Title = Director.Locales.Language.MainWindowTitle;
 
@@ -294,6 +307,22 @@ namespace Director.Forms
             NewServer.Clicked += CreateNewServer;
             server.SubMenu.Items.Add(NewServer);
 
+            // Scenario open
+            OpenScenarioMenu = new MenuItem(Director.Locales.Language.MenuOpenScenario)
+            {
+                Image = Image.FromResource(DirectorImages.OPEN_SCENARIO_ICON)
+            };
+            OpenScenarioMenu.Clicked += OpenNewScenario;
+            server.SubMenu.Items.Add(OpenScenarioMenu);
+
+            // Export scenario
+            SaveScenarioMenu = new MenuItem(Director.Locales.Language.MenuSaveScenario)
+            { 
+                Image = Image.FromResource(DirectorImages.SAVE_SCENARIO_ICON)
+            };
+            SaveScenarioMenu.Clicked += SaveScenario;
+            server.SubMenu.Items.Add(SaveScenarioMenu);
+
             // Separator before exit
             server.SubMenu.Items.Add(new SeparatorMenuItem());
 
@@ -352,6 +381,31 @@ namespace Director.Forms
                 Image = Image.FromResource(DirectorImages.CROSS_ICON)
             };
             RequestMenu.Items.Add(MenuRemoveRequest);
+        }
+
+        /// <summary>
+        /// Open new scenario.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OpenNewScenario(object sender, EventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog(Director.Locales.Language.DialogOpenScenario);
+            dlg.Multiselect = false;
+            dlg.Filters.Add(new FileDialogFilter("Director files", "*.dsce"));
+            if (dlg.Run())
+                MessageDialog.ShowMessage("Files: ", string.Join("\n", dlg.FileNames));
+        }
+
+        /// <summary>
+        /// Export scenario.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveScenario(object sender, EventArgs e)
+        {
+            ExportWindow ew = new ExportWindow(UServer);
+            ew.Show();
         }
 
         /// <summary>

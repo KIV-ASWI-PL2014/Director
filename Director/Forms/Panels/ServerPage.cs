@@ -14,7 +14,7 @@ namespace Director.Forms.Panels
     /// <summary>
     /// Server description.
     /// </summary>
-    class ServerPage : VBox
+    class ServerPage : PanelBase
     {
 		/// <summary>
 		/// Current server instance.
@@ -91,12 +91,9 @@ namespace Director.Forms.Panels
         /// <summary>
         /// Create server page.
         /// </summary>
-		public ServerPage()
+        public ServerPage(MainWindow _mainWindow) : base(_mainWindow, Director.Locales.Language.ServerInfoBox, DirectorImages.SERVER_IMAGE)
 		{
-			InfoBox _infoBox = new InfoBox(Director.Locales.Language.ServerInfoBox, DirectorImages.SERVER_IMAGE);
-			PackStart(_infoBox);
-			MarginLeft = 10;
-            _initializeComponents();
+
 		}
 
 		/// <summary>
@@ -130,7 +127,7 @@ namespace Director.Forms.Panels
         /// <summary>
         /// Initialize window.
         /// </summary>
-        private void _initializeComponents()
+        public override void _initializeComponents()
         { 
             // Server Name + URL + Periodicity window
             Frame f = new Frame();
@@ -264,7 +261,7 @@ namespace Director.Forms.Panels
                 )
             );
             EmailFrame.Content = EmailNotifications;
-            PackStart(EmailFrame);
+            PackStart(EmailFrame, expand: true, fill: true);
         }
 
         /// <summary>

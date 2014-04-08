@@ -106,6 +106,15 @@ namespace Director.Locales {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select scenario file.
+        /// </summary>
+        internal static string DialogOpenScenario {
+            get {
+                return ResourceManager.GetString("DialogOpenScenario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
         internal static string Email {
@@ -129,6 +138,15 @@ namespace Director.Locales {
         internal static string Errors {
             get {
                 return ResourceManager.GetString("Errors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export scenario.
+        /// </summary>
+        internal static string ExportDialog {
+            get {
+                return ResourceManager.GetString("ExportDialog", resourceCulture);
             }
         }
         
@@ -183,6 +201,24 @@ namespace Director.Locales {
         internal static string MenuNewServer {
             get {
                 return ResourceManager.GetString("MenuNewServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open scenario.
+        /// </summary>
+        internal static string MenuOpenScenario {
+            get {
+                return ResourceManager.GetString("MenuOpenScenario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save scenario.
+        /// </summary>
+        internal static string MenuSaveScenario {
+            get {
+                return ResourceManager.GetString("MenuSaveScenario", resourceCulture);
             }
         }
         

@@ -132,6 +132,9 @@
   <data name="ContextMenuRemoveScenario" xml:space="preserve">
     <value>Remove scenario</value>
   </data>
+  <data name="DialogOpenScenario" xml:space="preserve">
+    <value>Select scenario file</value>
+  </data>
   <data name="Email" xml:space="preserve">
     <value>Email</value>
   </data>
@@ -140,6 +143,9 @@
   </data>
   <data name="Errors" xml:space="preserve">
     <value>Errors</value>
+  </data>
+  <data name="ExportDialog" xml:space="preserve">
+    <value>Export scenario</value>
   </data>
   <data name="InvalidServerName" xml:space="preserve">
     <value>Server name cannot be empty!</value>
@@ -158,6 +164,12 @@
   </data>
   <data name="MenuNewServer" xml:space="preserve">
     <value>New server</value>
+  </data>
+  <data name="MenuOpenScenario" xml:space="preserve">
+    <value>Open scenario</value>
+  </data>
+  <data name="MenuSaveScenario" xml:space="preserve">
+    <value>Save scenario</value>
   </data>
   <data name="MenuServer" xml:space="preserve">
     <value>Server</value>

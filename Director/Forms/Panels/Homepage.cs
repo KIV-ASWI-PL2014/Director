@@ -8,7 +8,7 @@ using Director.Forms.Controls;
 
 namespace Director.Forms.Panels
 {
-    class Homepage : VBox
+    class Homepage : PanelBase
     {
 
 		string MarkDownText
@@ -38,23 +38,29 @@ Director is project for testing REST APIs by scenarios.
 		}
 
 		/// <summary>
-		/// Homepage initializer.
+		/// Homepage constructor.
 		/// </summary>
-        public Homepage()
+        public Homepage() : base(null, "Api Director", DirectorImages.HOMEPAGE_IMAGE)
         {
-            InfoBox _infoBox = new InfoBox("Api Director", DirectorImages.HOMEPAGE_IMAGE);
-            PackStart(_infoBox);
-            MarginLeft = 10;
 
-			var markdown = new MarkdownView() {
-				Markdown = MarkDownText
-			};
-			markdown.Margin = 10;
+        }
 
-			var scrolled = new ScrollView (markdown) {
-				MinHeight = 400
-			};
-			PackStart (scrolled, true);
+        /// <summary>
+        /// Create components
+        /// </summary>
+        public override void _initializeComponents()
+        {
+            var markdown = new MarkdownView()
+            {
+                Markdown = MarkDownText
+            };
+            markdown.Margin = 10;
+
+            var scrolled = new ScrollView(markdown)
+            {
+                MinHeight = 400
+            };
+            PackStart(scrolled, true);
         }
     }
 }
