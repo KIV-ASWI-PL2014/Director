@@ -6,19 +6,18 @@ using System.Threading.Tasks;
 
 namespace Director.ParserLib
 {
-    class ParserResult
+    public class ParserResult
     {
-        private bool success;
-        private Dictionary<string, string> customVariables;
         private List<ParserError> errors;
+        private string result;
 
-        ParserResult(Dictionary<string, string> customVariables, List<ParserError> errors)
+        public ParserResult(List<ParserError> errors, string result)
         {
-            this.customVariables = customVariables;
             this.errors = errors;
+            this.result = result;
         }
 
-        bool isSuccess()
+        public bool isSuccess()
         {
             if (errors == null || errors.Count == 0)
                 return true;
@@ -26,14 +25,14 @@ namespace Director.ParserLib
             return false;
         }
 
-        Dictionary<string, string> getCustomVariables()
-        {
-            return customVariables;
-        }
-
-        List<ParserError> getErrors()
+        public List<ParserError> getErrors()
         {
             return errors;
+        }
+
+        public string getResult()
+        {
+            return result;
         }
     }
 }

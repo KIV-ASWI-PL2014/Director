@@ -1,0 +1,61 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectorMAC", "DirectorMAC.csproj", "{B89BA9F2-99D8-422B-9D63-16CF2F5BC62A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt", "..\XWT\Xwt\Xwt.csproj", "{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Gtk", "..\XWT\Xwt.Gtk\Xwt.Gtk.csproj", "{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt.Mac", "..\XWT\Xwt.Mac\Xwt.Mac.csproj", "{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestParser", "UnitTestParser\UnitTestParser.csproj", "{EB6A1F10-FD34-4C46-927F-06BCD78165B6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Linux|Any CPU = Debug Linux|Any CPU
+		Debug Mac|Any CPU = Debug Mac|Any CPU
+		Debug Windows|Any CPU = Debug Windows|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Debug Linux|Any CPU.ActiveCfg = Debug Linux|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Debug Linux|Any CPU.Build.0 = Debug Linux|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Debug Mac|Any CPU.ActiveCfg = Debug Mac|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Debug Windows|Any CPU.ActiveCfg = Debug|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Debug Windows|Any CPU.Build.0 = Debug|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}.Debug Linux|Any CPU.ActiveCfg = Debug Linux|Any CPU
+		{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}.Debug Mac|Any CPU.ActiveCfg = Debug Mac|Any CPU
+		{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}.Debug Windows|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7C1673E-5124-4BE5-8D21-EC8B12F85B6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B89BA9F2-99D8-422B-9D63-16CF2F5BC62A}.Debug Linux|Any CPU.ActiveCfg = Debug Linux|Any CPU
+		{B89BA9F2-99D8-422B-9D63-16CF2F5BC62A}.Debug Linux|Any CPU.Build.0 = Debug Linux|Any CPU
+		{B89BA9F2-99D8-422B-9D63-16CF2F5BC62A}.Debug Mac|Any CPU.ActiveCfg = Debug Mac|Any CPU
+		{B89BA9F2-99D8-422B-9D63-16CF2F5BC62A}.Debug Mac|Any CPU.Build.0 = Debug Mac|Any CPU
+		{B89BA9F2-99D8-422B-9D63-16CF2F5BC62A}.Debug Windows|Any CPU.ActiveCfg = Debug|Any CPU
+		{B89BA9F2-99D8-422B-9D63-16CF2F5BC62A}.Debug Windows|Any CPU.Build.0 = Debug|Any CPU
+		{B89BA9F2-99D8-422B-9D63-16CF2F5BC62A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B89BA9F2-99D8-422B-9D63-16CF2F5BC62A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}.Debug Linux|Any CPU.ActiveCfg = Debug Linux|Any CPU
+		{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}.Debug Linux|Any CPU.Build.0 = Debug Linux|Any CPU
+		{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}.Debug Mac|Any CPU.ActiveCfg = Debug Mac|Any CPU
+		{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}.Debug Windows|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3887A93-B2BD-4097-8E2F-3A063EFF32FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Debug Linux|Any CPU.ActiveCfg = Debug Linux|Any CPU
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Debug Mac|Any CPU.ActiveCfg = Debug Mac|Any CPU
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Debug Windows|Any CPU.ActiveCfg = Debug|Any CPU
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Debug Windows|Any CPU.Build.0 = Debug|Any CPU
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = DirectorMAC.csproj
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -95,7 +95,7 @@ namespace Director.DataStructures
         /// <summary>
         /// Create new empty request in list.
         /// </summary>
-        public void CreateNewRequest()
+		public Request CreateNewRequest()
         {
             // Get max ID
             int _requestId = 1;
@@ -105,7 +105,11 @@ namespace Director.DataStructures
                 _requestId = Requests.Max(x => x.Id) + 1;
 
             // Create request
-            Requests.Add(new Request(_requestId, Requests.Count, "New request"));
+			Request ret = new Request (_requestId, Requests.Count, "New request");
+			Requests.Add(ret);
+
+			// Return request
+			return ret;
         }
     }
 }
