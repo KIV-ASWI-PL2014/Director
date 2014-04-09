@@ -144,8 +144,35 @@
   <data name="Errors" xml:space="preserve">
     <value>Errors</value>
   </data>
+  <data name="Every10Minutes" xml:space="preserve">
+    <value>Every 10 minutes</value>
+  </data>
+  <data name="Every12Hours" xml:space="preserve">
+    <value>Every 12 hours</value>
+  </data>
+  <data name="Every30Minutes" xml:space="preserve">
+    <value>Every 30 minutes</value>
+  </data>
+  <data name="Every3Hours" xml:space="preserve">
+    <value>Every 3 hours</value>
+  </data>
+  <data name="Every5Minutes" xml:space="preserve">
+    <value>Every 5 minutes</value>
+  </data>
+  <data name="Every6Hours" xml:space="preserve">
+    <value>Every 6 hours</value>
+  </data>
+  <data name="EveryDay" xml:space="preserve">
+    <value>Every day</value>
+  </data>
+  <data name="EveryHour" xml:space="preserve">
+    <value>Every hour</value>
+  </data>
   <data name="ExportDialog" xml:space="preserve">
     <value>Export scenario</value>
+  </data>
+  <data name="InvalidScenarioName" xml:space="preserve">
+    <value>Invalid scnario name!</value>
   </data>
   <data name="InvalidServerName" xml:space="preserve">
     <value>Server name cannot be empty!</value>
@@ -200,6 +227,12 @@
   </data>
   <data name="ScenarioInfoBox" xml:space="preserve">
     <value>Scenario</value>
+  </data>
+  <data name="ScenarioName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ScenarioSettings" xml:space="preserve">
+    <value>Scenario settings</value>
   </data>
   <data name="ServerInfoBox" xml:space="preserve">
     <value>Server</value>

@@ -42,7 +42,7 @@ namespace Director.Forms
         /// <summary>
         /// Scenario page.
         /// </summary>
-        private ScenarioPage ScenarioBox = new ScenarioPage();
+        private ScenarioPage ScenarioBox;
 
         /// <summary>
         /// Request page.
@@ -119,6 +119,7 @@ namespace Director.Forms
         {
             // Prepare boxes
             ServerBox = new ServerPage(this);
+            ScenarioBox = new ScenarioPage(this);
 
             /// Title and Initial size
             Title = Director.Locales.Language.MainWindowTitle;
@@ -228,10 +229,13 @@ namespace Director.Forms
                 {
                     SetContentBoxControl(ServerBox);
                     ServerBox.SetServer((Server)s);
+                    ServerBox.ActualPosition = CurrentServer.SelectedRow;
                 }
                 else if (s is Scenario)
                 {
                     SetContentBoxControl(ScenarioBox);
+                    ScenarioBox.SetScenario((Scenario)s);
+                    ScenarioBox.ActualPosition = CurrentServer.SelectedRow;
                 }
                 else if (s is Request)
                 {
@@ -242,6 +246,17 @@ namespace Director.Forms
                     SetContentBoxControl(DirectorHomepage);
                 }
             }
+        }
+
+
+        /// <summary>
+        /// Update tree store text item.
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="text"></param>
+        public void UpdateTreeStoreText(TreePosition position, String text)
+        {
+            ServerStore.GetNavigatorAt(position).SetValue(ColumnName, text);
         }
 
         /// <summary>

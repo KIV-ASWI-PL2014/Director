@@ -36,7 +36,7 @@ namespace Director.DataStructures
         /// <summary>
         /// Server running frequency!
         /// </summary>
-        private String RunningFrequency { get; set; }
+        public int RunningFrequency { get; set; }
 
         /// <summary>
         /// Use authentication credentials?

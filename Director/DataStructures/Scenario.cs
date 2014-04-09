@@ -31,34 +31,10 @@ namespace Director.DataStructures
         /// </summary>
         public String Name { get; set; }
 
-
-        /// <summary>
-        /// Available frequencies
-        /// </summary>
-        public enum FREQUENCIES : int
-        {
-            Never = 0,
-            PerThirdtyM,
-            PerHour,
-            PerThreeHours,
-            PerSixHours,
-            PerTwelveHours,
-            PerDay
-        }
-
         /// <summary>
         /// Public int frequency
         /// </summary>
-        public int frequency = (int) FREQUENCIES.Never;
-
-        /// <summary>
-        /// Public frequency for settings from GUI.
-        /// </summary>
-        public int Frequency
-        {
-            get { return frequency; }
-            set { frequency = (int) value; }
-        }
+        public int RunningFrequency { get; set; }
 
         /// <summary>
         /// Default constructor

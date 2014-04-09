@@ -104,12 +104,20 @@ namespace Director.Forms.Panels
 		{
 			// Fill columns
 			ActiveServer = server;
+
+            // SKip change event
+            ServerName.Changed -= ServerName_Changed;
             ServerName.Text = server.Name;
+            ServerName.Changed += ServerName_Changed;
             ServerURL.Text = server.GetUrl();
             AuthUserName.Text = server.AuthName;
             AuthUserPassword.Password = server.AuthPassword;
             AuthRequired.State = (server.Authentication) ? CheckBoxState.On : CheckBoxState.Off;
             
+            // Set frequency running
+            if (server.RunningFrequency >= 0)
+                FrequencyRunning.SelectedIndex = server.RunningFrequency;
+
             // Refresh data
             AuthRequired_Toggled(null, null);
 
@@ -167,15 +175,10 @@ namespace Director.Forms.Panels
                 Text = Director.Locales.Language.RunningPeriodicity
             });
             FrequencyRunning = new ComboBox();
-            FrequencyRunning.Items.Add("Every 5 minutes");
-            FrequencyRunning.Items.Add("Every 10 minutes");
-            FrequencyRunning.Items.Add("Every 30 minutes");
-            FrequencyRunning.Items.Add("Every hour");
-            FrequencyRunning.Items.Add("Every 6 hours");
-            FrequencyRunning.Items.Add("Every 12 hours");
-            FrequencyRunning.Items.Add("Every day");
-            FrequencyRunning.SelectedIndex = 5;
+            FrequencyHelper.FillComboBox(FrequencyRunning);
             ServerSettings.PackStart(FrequencyRunning);
+            FrequencyRunning.SelectedIndex = 0;
+            FrequencyRunning.SelectionChanged += FrequencyRunning_SelectionChanged;
 
             // Add Frame to server settings
             f.Content = ServerSettings;
@@ -265,6 +268,16 @@ namespace Director.Forms.Panels
         }
 
         /// <summary>
+        /// Change frequency selection.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void FrequencyRunning_SelectionChanged(object sender, EventArgs e)
+        {
+            ActiveServer.RunningFrequency = FrequencyRunning.SelectedIndex;
+        }
+
+        /// <summary>
         /// Toggle auth required checkbox.
         /// </summary>
         /// <param name="sender"></param>
@@ -326,6 +339,7 @@ namespace Director.Forms.Panels
             InvalidServerName.Visible = invalid;
             if (invalid)
                 ServerName.SetFocus();
+            CurrentMainWindow.UpdateTreeStoreText(ActualPosition, ActiveServer.Name);
         }
     }
 }

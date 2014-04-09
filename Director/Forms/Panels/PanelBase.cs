@@ -17,12 +17,17 @@ namespace Director.Forms.Panels
         /// <summary>
         /// Panel info box.
         /// </summary>
-        private InfoBox MainInfoBox { get; set; }
+        protected InfoBox MainInfoBox { get; set; }
 
         /// <summary>
         /// Main window.
         /// </summary>
-        private MainWindow MainWindow { get; set; }
+        protected MainWindow CurrentMainWindow { get; set; }
+
+        /// <summary>
+        /// Set actual position.
+        /// </summary>
+        public TreePosition ActualPosition { get; set; }
 
 
         /// <summary>
@@ -33,7 +38,7 @@ namespace Director.Forms.Panels
         /// <param name="_image"></param>
         public PanelBase(MainWindow _mainWindow, String _desc, String _image)
         {
-            MainWindow = _mainWindow;
+            CurrentMainWindow = _mainWindow;
             MainInfoBox = new InfoBox(_desc, _image);
             PackStart(MainInfoBox);
             MarginLeft = 10;

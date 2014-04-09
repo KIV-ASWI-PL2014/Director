@@ -70,6 +70,7 @@
     <Compile Include="DataStructures\Scenario.cs" />
     <Compile Include="DataStructures\Server.cs" />
     <Compile Include="DataStructures\SupportStructures\Email.cs" />
+    <Compile Include="DataStructures\SupportStructures\Frequency.cs" />
     <Compile Include="ExportLib\Export.cs" />
     <Compile Include="ParserLib\ParserError.cs" />
     <Compile Include="ParserLib\Parser.cs" />
@@ -93,7 +94,7 @@
     <Compile Include="ProgramMac.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Locales\Language.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Language.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
