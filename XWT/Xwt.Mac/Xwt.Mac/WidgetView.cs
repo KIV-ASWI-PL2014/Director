@@ -71,8 +71,8 @@ namespace Xwt.Mac
 			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
 
 			//fill BackgroundColor
-			ctx.SetFillColor (Backend.Frontend.BackgroundColor.ToCGColor ());
-			ctx.FillRect (Bounds);
+			//	ctx.SetFillColor (Backend.Frontend.BackgroundColor.ToCGColor ());
+			//ctx.FillRect (Bounds);
 		}
 
 		public override void UpdateTrackingAreas ()

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xwt;
+using Xwt.Drawing;
 using Director.Forms.Controls;
 
 namespace Director.Forms.Panels
@@ -52,7 +53,7 @@ Director is project for testing REST APIs by scenarios.
         {
             var markdown = new MarkdownView()
             {
-                Markdown = MarkDownText
+				Markdown = MarkDownText
             };
             markdown.Margin = 10;
 

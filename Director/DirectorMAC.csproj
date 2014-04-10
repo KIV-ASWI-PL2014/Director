@@ -28,26 +28,6 @@
     <EnablePackageSigning>false</EnablePackageSigning>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug Linux|AnyCPU' ">
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug Linux</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <EnableCodeSigning>false</EnableCodeSigning>
-    <CreatePackage>false</CreatePackage>
-    <IncludeMonoRuntime>false</IncludeMonoRuntime>
-    <UseSGen>false</UseSGen>
-    <EnablePackageSigning>false</EnablePackageSigning>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug Windows|AnyCPU' ">
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug Windows</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <EnableCodeSigning>false</EnableCodeSigning>
-    <CreatePackage>false</CreatePackage>
-    <IncludeMonoRuntime>false</IncludeMonoRuntime>
-    <UseSGen>false</UseSGen>
-    <EnablePackageSigning>false</EnablePackageSigning>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release MAC|AnyCPU' ">
     <Optimize>false</Optimize>
     <OutputPath>bin\Release MAC</OutputPath>
@@ -71,6 +51,9 @@
     <Reference Include="MonoMac">
       <HintPath>..\XWT\MonoMac.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\XWT\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
@@ -79,9 +62,11 @@
     <Compile Include="DataStructures\Scenario.cs" />
     <Compile Include="DataStructures\Server.cs" />
     <Compile Include="DataStructures\SupportStructures\Email.cs" />
+    <Compile Include="DataStructures\SupportStructures\Frequency.cs" />
     <Compile Include="ExportLib\Export.cs" />
     <Compile Include="ParserLib\ParserError.cs" />
     <Compile Include="ParserLib\Parser.cs" />
+    <Compile Include="ParserLib\ParserItem.cs" />
     <Compile Include="ParserLib\ParserResult.cs" />
     <Compile Include="DataStructures\SupportStructures\EmailStore.cs" />
     <Compile Include="Forms\Controls\DirectorImages.cs" />
@@ -93,23 +78,20 @@
     <Compile Include="Forms\Panels\RequestPage.cs" />
     <Compile Include="Forms\Panels\ScenarioPage.cs" />
     <Compile Include="Forms\Panels\ServerPage.cs" />
-    <Compile Include="Locales\Language.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Language.resx</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="ProgramMac.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Locales\Language.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Language.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
