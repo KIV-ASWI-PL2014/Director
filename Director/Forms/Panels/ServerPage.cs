@@ -64,7 +64,7 @@ namespace Director.Forms.Panels
         /// </summary>
         private Label InvalidServerName = new Label()
         {
-            Markup = "<b>" + Director.Locales.Language.InvalidServerName + "</b>",
+            Markup = "<b>" + Director.Properties.Resources.InvalidServerName + "</b>",
             Visible = false,
             TextColor = Colors.Red,
             TextAlignment = Alignment.End,
@@ -76,7 +76,7 @@ namespace Director.Forms.Panels
         /// </summary>
         private Label InvalidServerURL = new Label()
         {
-            Markup = "<b>" + Director.Locales.Language.InvalidServerURL + "</b>",
+            Markup = "<b>" + Director.Properties.Resources.InvalidServerURL + "</b>",
             Visible = false,
             TextColor = Colors.Red,
             TextAlignment = Alignment.End,
@@ -91,7 +91,8 @@ namespace Director.Forms.Panels
         /// <summary>
         /// Create server page.
         /// </summary>
-        public ServerPage(MainWindow _mainWindow) : base(_mainWindow, Director.Locales.Language.ServerInfoBox, DirectorImages.SERVER_IMAGE)
+        public ServerPage(MainWindow _mainWindow)
+            : base(_mainWindow, Director.Properties.Resources.ServerInfoBox, DirectorImages.SERVER_IMAGE)
 		{
 
 		}
@@ -139,7 +140,7 @@ namespace Director.Forms.Panels
         { 
             // Server Name + URL + Periodicity window
             Frame f = new Frame();
-			f.Label = Director.Locales.Language.ServerSettings;
+            f.Label = Director.Properties.Resources.ServerSettings;
             f.Padding = 10;
 
             // Create VBOX
@@ -148,7 +149,7 @@ namespace Director.Forms.Panels
             // Prepare text box
             ServerSettings.PackStart(new Label()
             {
-                Text = Director.Locales.Language.ServerName
+                Text = Director.Properties.Resources.ServerName
             });
             ServerName = new TextEntry();
             ServerName.Changed += ServerName_Changed;
@@ -160,7 +161,7 @@ namespace Director.Forms.Panels
             // Server URL
             ServerSettings.PackStart(new Label()
             {
-                Text = Director.Locales.Language.ServerURL
+                Text = Director.Properties.Resources.ServerURL
             });
             ServerURL = new TextEntry();
             ServerURL.Changed += ServerURL_Changed;
@@ -172,7 +173,7 @@ namespace Director.Forms.Panels
             // Frequency settings
             ServerSettings.PackStart(new Label()
             {
-                Text = Director.Locales.Language.RunningPeriodicity
+                Text = Director.Properties.Resources.RunningPeriodicity
             });
             FrequencyRunning = new ComboBox();
             FrequencyHelper.FillComboBox(FrequencyRunning);
@@ -186,14 +187,14 @@ namespace Director.Forms.Panels
 
 
             // Authorization
-            AuthRequired = new CheckBox(Director.Locales.Language.Authorization);
+            AuthRequired = new CheckBox(Director.Properties.Resources.Authorization);
             AuthRequired.MarginLeft = 10;
             PackStart(AuthRequired);
 
             // Create Authentication Frame
             Authentication = new Frame()
             {
-                Label =  Director.Locales.Language.AuthorizationSettings,
+                Label = Director.Properties.Resources.AuthorizationSettings,
                 Padding = 10
             };
 
@@ -202,7 +203,7 @@ namespace Director.Forms.Panels
 
             AuthBox.PackStart(new Label()
             {
-                Text = Director.Locales.Language.Username
+                Text = Director.Properties.Resources.Username
             });
             AuthUserName = new TextEntry();
             AuthUserName.Changed += AuthUserName_Changed;
@@ -210,7 +211,7 @@ namespace Director.Forms.Panels
 
             AuthBox.PackStart(new Label()
             {
-                Text = Director.Locales.Language.Password
+                Text = Director.Properties.Resources.Password
             });
             AuthUserPassword = new PasswordEntry();
             AuthUserPassword.Changed += AuthUserPassword_Changed;
@@ -227,7 +228,7 @@ namespace Director.Forms.Panels
             // Email settings
             Frame EmailFrame = new Frame()
             {
-                Label = Director.Locales.Language.EmailNotifications,
+                Label = Director.Properties.Resources.EmailNotifications,
                 Padding = 10,
                 MinHeight = 180
             };
@@ -247,19 +248,19 @@ namespace Director.Forms.Panels
             // Create columns
             EmailNotifications.Columns.Add(
                 new ListViewColumn(
-                    Director.Locales.Language.Email,
+                    Director.Properties.Resources.Email,
                     new TextCellView { Editable = true, TextField = EmailAddress }
                 )
             );
             EmailNotifications.Columns.Add(
                 new ListViewColumn(
-                    Director.Locales.Language.Errors,
+                    Director.Properties.Resources.Errors,
                     new CheckBoxCellView { Editable = true, ActiveField = Errors }
                 )
             );
             EmailNotifications.Columns.Add(
                 new ListViewColumn(
-                    Director.Locales.Language.Notification,
+                    Director.Properties.Resources.Notification,
                     new CheckBoxCellView { Editable = true, ActiveField = Notifications }
                 )
             );

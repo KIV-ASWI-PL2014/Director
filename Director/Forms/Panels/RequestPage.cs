@@ -15,7 +15,7 @@ namespace Director.Forms.Panels
 	{
 		public RequestPage()
 		{
-			InfoBox _infoBox = new InfoBox(Director.Locales.Language.RequestInfoBox, DirectorImages.REQUEST_IMAGE);
+            InfoBox _infoBox = new InfoBox(Director.Properties.Resources.RequestInfoBox, DirectorImages.REQUEST_IMAGE);
 			PackStart(_infoBox);
 			MarginLeft = 10;
 		}

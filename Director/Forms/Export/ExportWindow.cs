@@ -29,7 +29,7 @@ namespace Director.Forms.Export
             ActiveServer = server;
 
             /// Title and Initial size
-            Title = Director.Locales.Language.ExportDialog;
+            Title = Director.Properties.Resources.ExportDialog;
 
             // Set default size
             Width = 450;

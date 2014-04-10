@@ -114,7 +114,7 @@ namespace Director.DataStructures
                 _scenarioId = Scenarios.Max(x => x.Id) + 1;
 
             // Create a new one
-            Scenario NewScenario = new Scenario(_scenarioId, Scenarios.Count, Director.Locales.Language.NewScenarioName);
+            Scenario NewScenario = new Scenario(_scenarioId, Scenarios.Count, Director.Properties.Resources.NewScenarioName);
 
             // Add to list
             Scenarios.Add(NewScenario);

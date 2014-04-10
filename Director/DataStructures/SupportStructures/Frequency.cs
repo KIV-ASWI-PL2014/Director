@@ -29,13 +29,13 @@ namespace Director.DataStructures.SupportStructures
         /// <param name="_combo"></param>
         public static void FillComboBox(ComboBox _combo)
         {
-            _combo.Items.Add(Director.Locales.Language.Every5Minutes);
-            _combo.Items.Add(Director.Locales.Language.Every10Minutes);
-            _combo.Items.Add(Director.Locales.Language.Every30Minutes);
-            _combo.Items.Add(Director.Locales.Language.EveryHour);
-            _combo.Items.Add(Director.Locales.Language.Every6Hours);
-            _combo.Items.Add(Director.Locales.Language.Every12Hours);
-            _combo.Items.Add(Director.Locales.Language.EveryDay);
+            _combo.Items.Add(Director.Properties.Resources.Every5Minutes);
+            _combo.Items.Add(Director.Properties.Resources.Every10Minutes);
+            _combo.Items.Add(Director.Properties.Resources.Every30Minutes);
+            _combo.Items.Add(Director.Properties.Resources.EveryHour);
+            _combo.Items.Add(Director.Properties.Resources.Every6Hours);
+            _combo.Items.Add(Director.Properties.Resources.Every12Hours);
+            _combo.Items.Add(Director.Properties.Resources.EveryDay);
         }
     }
 }

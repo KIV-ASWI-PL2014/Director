@@ -178,4 +178,139 @@
   <data name="save" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\save.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Authorization" xml:space="preserve">
+    <value>Authorization</value>
+  </data>
+  <data name="AuthorizationSettings" xml:space="preserve">
+    <value>Authorization settings</value>
+  </data>
+  <data name="ContextMenuAddRequest" xml:space="preserve">
+    <value>Add request</value>
+  </data>
+  <data name="ContextMenuRemoveRequest" xml:space="preserve">
+    <value>Remove request</value>
+  </data>
+  <data name="ContextMenuRemoveScenario" xml:space="preserve">
+    <value>Remove scenario</value>
+  </data>
+  <data name="DialogOpenScenario" xml:space="preserve">
+    <value>Select scenario file</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="EmailNotifications" xml:space="preserve">
+    <value>Email notifications</value>
+  </data>
+  <data name="Errors" xml:space="preserve">
+    <value>Errors</value>
+  </data>
+  <data name="Every10Minutes" xml:space="preserve">
+    <value>Every 10 minutes</value>
+  </data>
+  <data name="Every12Hours" xml:space="preserve">
+    <value>Every 12 hours</value>
+  </data>
+  <data name="Every30Minutes" xml:space="preserve">
+    <value>Every 30 minutes</value>
+  </data>
+  <data name="Every3Hours" xml:space="preserve">
+    <value>Every 3 hours</value>
+  </data>
+  <data name="Every5Minutes" xml:space="preserve">
+    <value>Every 5 minutes</value>
+  </data>
+  <data name="Every6Hours" xml:space="preserve">
+    <value>Every 6 hours</value>
+  </data>
+  <data name="EveryDay" xml:space="preserve">
+    <value>Every day</value>
+  </data>
+  <data name="EveryHour" xml:space="preserve">
+    <value>Every hour</value>
+  </data>
+  <data name="ExportDialog" xml:space="preserve">
+    <value>Export scenario</value>
+  </data>
+  <data name="InvalidScenarioName" xml:space="preserve">
+    <value>Invalid scnario name!</value>
+  </data>
+  <data name="InvalidServerName" xml:space="preserve">
+    <value>Server name cannot be empty!</value>
+  </data>
+  <data name="InvalidServerURL" xml:space="preserve">
+    <value>Invalid server url!</value>
+  </data>
+  <data name="MainWindowTitle" xml:space="preserve">
+    <value>Api Director</value>
+  </data>
+  <data name="MenuAddScenario" xml:space="preserve">
+    <value>Add scenario</value>
+  </data>
+  <data name="MenuExitProgram" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="MenuNewServer" xml:space="preserve">
+    <value>New server</value>
+  </data>
+  <data name="MenuOpenScenario" xml:space="preserve">
+    <value>Open scenario</value>
+  </data>
+  <data name="MenuSaveScenario" xml:space="preserve">
+    <value>Save scenario</value>
+  </data>
+  <data name="MenuServer" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="MessageBoxRemoveScenario" xml:space="preserve">
+    <value>Are you sure you want to remove this scenario?</value>
+  </data>
+  <data name="NewScenarioName" xml:space="preserve">
+    <value>New scenario</value>
+  </data>
+  <data name="NewServerString" xml:space="preserve">
+    <value>New server</value>
+  </data>
+  <data name="NewServerURL" xml:space="preserve">
+    <value>http://api.example.com/</value>
+  </data>
+  <data name="Notification" xml:space="preserve">
+    <value>Notification</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="RequestInfoBox" xml:space="preserve">
+    <value>Request</value>
+  </data>
+  <data name="RunningPeriodicity" xml:space="preserve">
+    <value>Default running periodicity</value>
+  </data>
+  <data name="ScenarioInfoBox" xml:space="preserve">
+    <value>Scenario</value>
+  </data>
+  <data name="ScenarioName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ScenarioSettings" xml:space="preserve">
+    <value>Scenario settings</value>
+  </data>
+  <data name="ServerInfoBox" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="ServerName" xml:space="preserve">
+    <value>Server name</value>
+  </data>
+  <data name="ServerSettings" xml:space="preserve">
+    <value>Server settings</value>
+  </data>
+  <data name="ServerURL" xml:space="preserve">
+    <value>Default server URL</value>
+  </data>
+  <data name="TreeStoreInformation" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
 </root>

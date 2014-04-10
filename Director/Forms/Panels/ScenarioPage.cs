@@ -26,7 +26,7 @@ namespace Director.Forms.Panels
         /// </summary>
         private Label InvalidScenarioName = new Label()
         {
-            Markup = "<b>" + Director.Locales.Language.InvalidScenarioName + "</b>",
+            Markup = "<b>" + Director.Properties.Resources.InvalidScenarioName + "</b>",
             Visible = false,
             TextColor = Colors.Red,
             TextAlignment = Alignment.End,
@@ -47,7 +47,8 @@ namespace Director.Forms.Panels
         /// Default constructor.
         /// </summary>
         /// <param name="_window"></param>
-		public ScenarioPage(MainWindow _window) : base(_window, Director.Locales.Language.ScenarioInfoBox, DirectorImages.SCENARIO_IMAGE)
+        public ScenarioPage(MainWindow _window)
+            : base(_window, Director.Properties.Resources.ScenarioInfoBox, DirectorImages.SCENARIO_IMAGE)
 		{
 
 		}
@@ -76,7 +77,7 @@ namespace Director.Forms.Panels
         {
             Frame f = new Frame()
             {
-                Label = Director.Locales.Language.ScenarioSettings,
+                Label = Director.Properties.Resources.ScenarioSettings,
                 Padding = 10
             };
             VBox ScenarioSettings = new VBox();
@@ -84,14 +85,14 @@ namespace Director.Forms.Panels
             // Create scenario name
             ScenarioName = new TextEntry();
             ScenarioName.Changed += ScenarioName_Changed;
-            ScenarioSettings.PackStart(new Label(Director.Locales.Language.ScenarioName));
+            ScenarioSettings.PackStart(new Label(Director.Properties.Resources.ScenarioName));
             ScenarioSettings.PackStart(ScenarioName);
             ScenarioSettings.PackStart(InvalidScenarioName);
 
             // Frequency settings
             ScenarioSettings.PackStart(new Label()
             {
-                Text = Director.Locales.Language.RunningPeriodicity
+                Text = Director.Properties.Resources.RunningPeriodicity
             });
             FrequencyRunning = new ComboBox();
             FrequencyHelper.FillComboBox(FrequencyRunning);

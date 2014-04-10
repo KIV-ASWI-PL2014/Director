@@ -122,7 +122,7 @@ namespace Director.Forms
             ScenarioBox = new ScenarioPage(this);
 
             /// Title and Initial size
-            Title = Director.Locales.Language.MainWindowTitle;
+            Title = Director.Properties.Resources.MainWindowTitle;
 
             // Set default size
             Width = 750;
@@ -196,7 +196,7 @@ namespace Director.Forms
             // Create server store box!
             CreateTreeItem(
                 null,
-                Director.Locales.Language.TreeStoreInformation,
+                Director.Properties.Resources.TreeStoreInformation,
                 Image.FromResource(DirectorImages.HELP_ICON),
                 DirectorHomepage
             );
@@ -309,13 +309,13 @@ namespace Director.Forms
             Menu menu = new Menu();
 
             // Create main menu item
-            MenuItem server = new MenuItem(Director.Locales.Language.MenuServer);
+            MenuItem server = new MenuItem(Director.Properties.Resources.MenuServer);
 
             // Prepare submenu
             server.SubMenu = new Menu();
 
             // Sub menu server
-            NewServer = new MenuItem(Director.Locales.Language.MenuNewServer)
+            NewServer = new MenuItem(Director.Properties.Resources.MenuNewServer)
             {
                 Image = Image.FromResource(DirectorImages.NEW_SERVER_ICON)
             };
@@ -323,7 +323,7 @@ namespace Director.Forms
             server.SubMenu.Items.Add(NewServer);
 
             // Scenario open
-            OpenScenarioMenu = new MenuItem(Director.Locales.Language.MenuOpenScenario)
+            OpenScenarioMenu = new MenuItem(Director.Properties.Resources.MenuOpenScenario)
             {
                 Image = Image.FromResource(DirectorImages.OPEN_SCENARIO_ICON)
             };
@@ -331,7 +331,7 @@ namespace Director.Forms
             server.SubMenu.Items.Add(OpenScenarioMenu);
 
             // Export scenario
-            SaveScenarioMenu = new MenuItem(Director.Locales.Language.MenuSaveScenario)
+            SaveScenarioMenu = new MenuItem(Director.Properties.Resources.MenuSaveScenario)
             { 
                 Image = Image.FromResource(DirectorImages.SAVE_SCENARIO_ICON)
             };
@@ -342,7 +342,7 @@ namespace Director.Forms
             server.SubMenu.Items.Add(new SeparatorMenuItem());
 
             // Sub menu exit
-            MenuItem _exit = new MenuItem(Director.Locales.Language.MenuExitProgram)
+            MenuItem _exit = new MenuItem(Director.Properties.Resources.MenuExitProgram)
             {
                 Image = Image.FromResource(DirectorImages.EXIT_ICON)
             };
@@ -360,7 +360,7 @@ namespace Director.Forms
             ServerMenu = new Menu();
 
             // Add scenario item
-            MenuItem MenuAddScenario = new MenuItem(Director.Locales.Language.MenuAddScenario)
+            MenuItem MenuAddScenario = new MenuItem(Director.Properties.Resources.MenuAddScenario)
             {
                 Image = Image.FromResource(DirectorImages.ADD_ICON)
             };
@@ -371,7 +371,7 @@ namespace Director.Forms
             ScenarioMenu = new Menu();
 
             // Add request menu
-            MenuItem MenuAddRequest = new MenuItem(Director.Locales.Language.ContextMenuAddRequest)
+            MenuItem MenuAddRequest = new MenuItem(Director.Properties.Resources.ContextMenuAddRequest)
             {
                 Image = Image.FromResource(DirectorImages.ADD_ICON)
             };
@@ -382,7 +382,7 @@ namespace Director.Forms
             ScenarioMenu.Items.Add(new SeparatorMenuItem());
 
             // Delete scenario menu
-            MenuItem MenuRemoveScenario = new MenuItem(Director.Locales.Language.ContextMenuRemoveScenario)
+            MenuItem MenuRemoveScenario = new MenuItem(Director.Properties.Resources.ContextMenuRemoveScenario)
             {
                 Image = Image.FromResource(DirectorImages.CROSS_ICON)
             };
@@ -391,7 +391,7 @@ namespace Director.Forms
 
             // Request menu
             RequestMenu = new Menu();
-            MenuItem MenuRemoveRequest = new MenuItem(Director.Locales.Language.ContextMenuRemoveRequest)
+            MenuItem MenuRemoveRequest = new MenuItem(Director.Properties.Resources.ContextMenuRemoveRequest)
             {
                 Image = Image.FromResource(DirectorImages.CROSS_ICON)
             };
@@ -405,7 +405,7 @@ namespace Director.Forms
         /// <param name="e"></param>
         private void OpenNewScenario(object sender, EventArgs e)
         {
-            OpenFileDialog dlg = new OpenFileDialog(Director.Locales.Language.DialogOpenScenario);
+            OpenFileDialog dlg = new OpenFileDialog(Director.Properties.Resources.DialogOpenScenario);
             dlg.Multiselect = false;
             dlg.Filters.Add(new FileDialogFilter("Director files", "*.dsce"));
             if (dlg.Run())
@@ -440,7 +440,7 @@ namespace Director.Forms
             if (s is Scenario)
             {
                 Scenario sc = (Scenario)s;
-                bool res = MessageDialog.Confirm(Director.Locales.Language.MessageBoxRemoveScenario, Command.Ok);
+                bool res = MessageDialog.Confirm(Director.Properties.Resources.MessageBoxRemoveScenario, Command.Ok);
                 if (res)
                 {
                     // Remove scenario
@@ -528,7 +528,7 @@ namespace Director.Forms
         private void CreateNewServer(object sender, EventArgs e)
         {
             // Create server
-            UServer = new Server(Director.Locales.Language.NewServerString, Director.Locales.Language.NewServerURL);
+            UServer = new Server(Director.Properties.Resources.NewServerString, Director.Properties.Resources.NewServerURL);
 
             // Add server to tree store
             ClearCurrentServerTree();
