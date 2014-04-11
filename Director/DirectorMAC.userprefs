@@ -1,16 +1,30 @@
-﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="10.4.2014 7:45:11">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug MAC" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Properties/Resources.resx">
+﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="11.4.2014 5:44:22">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug Linux" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Forms/Panels/ServerPage.cs">
     <Files>
-      <File FileName="Forms/MainWindow.cs" Line="539" Column="8" />
+      <File FileName="Forms/MainWindow.cs" Line="537" Column="19" />
       <File FileName="../XWT/Xwt.Mac/Xwt.Mac/TableViewBackend.cs" Line="1" Column="1" />
-      <File FileName="../XWT/Xwt.Mac/Xwt.Mac/WidgetView.cs" Line="1" Column="1" />
+      <File FileName="../XWT/Xwt.Mac/Xwt.Mac/WidgetView.cs" Line="81" Column="32" />
       <File FileName="DataStructures/Scenario.cs" Line="1" Column="1" />
-      <File FileName="Forms/Panels/ScenarioPage.cs" Line="97" Column="13" />
-      <File FileName="Forms/Panels/ServerPage.cs" Line="142" Column="52" />
-      <File FileName="Locales/Language.resx" Line="123" Column="36" />
-      <File FileName="Properties/Resources.resx" Line="124" Column="20" />
+      <File FileName="../XWT/Xwt.Mac/Xwt.Mac/LabelBackend.cs" Line="243" Column="2" />
+      <File FileName="Forms/Panels/ServerPage.cs" Line="256" Column="14" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="DirectorMAC" expanded="True">
+            <Node name="Forms" expanded="True">
+              <Node name="Panels" expanded="True">
+                <Node name="ServerPage.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+          <Node name="Xwt.Mac" expanded="True">
+            <Node name="Xwt.Mac" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

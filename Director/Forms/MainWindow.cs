@@ -126,7 +126,7 @@ namespace Director.Forms
 
             // Set default size
             Width = 750;
-            Height = 600;
+			Height = 630;
 
             // Center screen
             InitialLocation = WindowLocation.CenterScreen;

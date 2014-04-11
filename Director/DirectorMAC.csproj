@@ -28,9 +28,19 @@
     <EnablePackageSigning>false</EnablePackageSigning>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release MAC|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug Linux|AnyCPU' ">
     <Optimize>false</Optimize>
-    <OutputPath>bin\Release MAC</OutputPath>
+    <OutputPath>bin\Debug Linux</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <EnablePackageSigning>false</EnablePackageSigning>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug Mac|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug Mac</OutputPath>
     <WarningLevel>4</WarningLevel>
     <EnableCodeSigning>false</EnableCodeSigning>
     <CreatePackage>false</CreatePackage>
@@ -68,7 +78,6 @@
     <Compile Include="ParserLib\Parser.cs" />
     <Compile Include="ParserLib\ParserItem.cs" />
     <Compile Include="ParserLib\ParserResult.cs" />
-    <Compile Include="DataStructures\SupportStructures\EmailStore.cs" />
     <Compile Include="Forms\Controls\DirectorImages.cs" />
     <Compile Include="Forms\Controls\InfoBox.cs" />
     <Compile Include="Forms\Export\ExportWindow.cs" />

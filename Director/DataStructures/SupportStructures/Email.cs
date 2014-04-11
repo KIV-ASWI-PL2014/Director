@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xwt;
 
 namespace Director.DataStructures.SupportStructures
 {
@@ -20,5 +21,10 @@ namespace Director.DataStructures.SupportStructures
 
         [DisplayName("Erorr reports")]
         public bool Errors { get; set; }
+
+		/// <summary>
+		/// Position.
+		/// </summary>
+		public TreePosition Position { set; get; }
     }
 }

@@ -59,6 +59,12 @@ namespace Director.Forms.Panels
         private DataField<bool> Notifications { get; set; }
         private ListStore EmailAddressStore { get; set; }
 
+		/// <summary>
+		/// Context menu for Add/remove Email notification adresses!
+		/// </summary>
+		/// <value>The email contenxt menu.</value>
+		private Menu EmailContextMenu { get; set; }
+
         /// <summary>
         /// Invalid scenario name description.
         /// </summary>
@@ -239,17 +245,31 @@ namespace Director.Forms.Panels
             Errors = new DataField<bool>();
 
             // Big container
-            EmailAddressStore = new ListStore(EmailAddress, Notifications, Errors);
+			EmailAddressStore = new ListStore (EmailAddress, Notifications, Errors);
 
             // New store
-            EmailNotifications = new ListView();
-            EmailNotifications.DataSource = EmailAddressStore;
+			EmailNotifications = new ListView () {
+				DataSource = EmailAddressStore,
+				SelectionMode = SelectionMode.Single
+			};
+
+			// RIght click menu for emails
+			EmailContextMenu = new Menu ();
+			MenuItem EditEmail = new MenuItem ("Edit email") {
+				Image = Image.FromResource(DirectorImages.ADD_ICON)
+			};
+			MenuItem RemoveEmail = new MenuItem ("Remove email") {
+				Image = Image.FromResource (DirectorImages.CROSS_ICON)
+			};
+			EmailContextMenu.Items.Add (EditEmail);
+			EmailContextMenu.Items.Add (RemoveEmail);
+			EmailNotifications.ButtonPressed += EmailNotifications_Clicked;
 
             // Create columns
             EmailNotifications.Columns.Add(
                 new ListViewColumn(
                     Director.Properties.Resources.Email,
-                    new TextCellView { Editable = true, TextField = EmailAddress }
+					new TextCellView { Editable = false, TextField = EmailAddress }
                 )
             );
             EmailNotifications.Columns.Add(
@@ -264,9 +284,29 @@ namespace Director.Forms.Panels
                     new CheckBoxCellView { Editable = true, ActiveField = Notifications }
                 )
             );
-            EmailFrame.Content = EmailNotifications;
+			VBox EmailFrameContent = new VBox ();
+			EmailFrameContent.PackStart (EmailNotifications, expand: true, fill: true);
+			Button AddEmail = new Button (Image.FromResource (DirectorImages.ADD_ICON), "Add email");
+			EmailFrameContent.PackStart (AddEmail, expand: false, fill: false);
+			EmailFrame.Content = EmailFrameContent;
             PackStart(EmailFrame, expand: true, fill: true);
         }
+
+		/// <summary>
+		/// Handle right mouse click on Email Notifications tree view.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		private void EmailNotifications_Clicked(object sender, ButtonEventArgs e)
+		{
+			if (e.Button == PointerButton.Right) {
+				var row = EmailNotifications.GetRowAtPosition (e.X, e.Y);
+				if (row >= 0) {
+					EmailNotifications.SelectRow (row);
+					EmailContextMenu.Popup (EmailNotifications, e.X, e.Y);
+				}
+			}
+		}
 
         /// <summary>
         /// Change frequency selection.
@@ -322,7 +362,7 @@ namespace Director.Forms.Panels
                 ActiveServer.SetUrl(ServerURL.Text); 
                 InvalidServerURL.Visible = false;
             }
-            catch (Exception ex)
+			catch
             {
                 InvalidServerURL.Visible = true;
             }

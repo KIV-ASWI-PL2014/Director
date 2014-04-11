@@ -79,7 +79,6 @@
     <Compile Include="ParserLib\Parser.cs" />
     <Compile Include="ParserLib\ParserItem.cs" />
     <Compile Include="ParserLib\ParserResult.cs" />
-    <Compile Include="DataStructures\SupportStructures\EmailStore.cs" />
     <Compile Include="Forms\Controls\DirectorImages.cs" />
     <Compile Include="Forms\Controls\InfoBox.cs" />
     <Compile Include="Forms\Export\ExportWindow.cs" />

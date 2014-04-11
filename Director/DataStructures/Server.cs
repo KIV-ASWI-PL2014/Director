@@ -74,6 +74,10 @@ namespace Director.DataStructures
             Emails = new List<Email>();
 
             Emails.Add(new Email() { UserEmail = "parovka@gmail.com", Errors = true, Notifications = true });          
+			Emails.Add(new Email() { UserEmail = "parovka1@gmail.com", Errors = true, Notifications = true });          
+			Emails.Add(new Email() { UserEmail = "parovka2@gmail.com", Errors = false, Notifications = true });          
+			Emails.Add(new Email() { UserEmail = "parovka3@gmail.com", Errors = true, Notifications = true });          
+			Emails.Add(new Email() { UserEmail = "parovka4@gmail.com", Errors = true, Notifications = true });          
         }
 
         /// <summary>
