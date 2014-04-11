@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace UnitTestParser
 {
     [TestClass]
-    public class UnitTestParserResponse
+    public class TestResponse
     {
         public Boolean[] templateAll = { true, true, true, true, true };
         public Boolean[] templateRegexUvIp = { false, false, false, true, false };
