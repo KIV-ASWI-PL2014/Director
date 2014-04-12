@@ -1,4 +1,5 @@
 using Director.Forms;
+using RestSharp;
 using System;
 using Xwt;
 
@@ -12,6 +13,11 @@ namespace Director
         [STAThread]
         static void Main()
         {
+            //var client = new RestClient("http://test.cz");
+            //var request = new RestRequest("test/", Method.POST);
+            //RestResponse response = (RestResponse) client.Execute(request);
+            //Console.WriteLine(response.Content);
+
 			// Setapp type
 			Config.SetAppType(ToolkitType.Wpf); 
 
