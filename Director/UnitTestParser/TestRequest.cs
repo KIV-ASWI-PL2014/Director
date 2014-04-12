@@ -2,11 +2,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Director.ParserLib;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace UnitTestParser
 {
-
-
     [TestClass]
     public class TestRequest
     {
@@ -23,7 +22,7 @@ namespace UnitTestParser
             Assert.IsTrue(pr.isSuccess());
             result = pr.getResult().Replace(" ", "");
 
-            Assert.Equals(result, "{\"foo\":4}");
+            Assert.AreEqual(result, "{\"foo\":4}");
             
         }
 
@@ -63,7 +62,7 @@ namespace UnitTestParser
             Assert.IsTrue(pr.isSuccess());
             result = pr.getResult().Replace(" ", "");
 
-            Assert.Equals(result, "{\"foo\":a#b1d$e}");
+            Assert.AreEqual(result, "{\"foo\":a#b1d$e}");
 
         }
 
@@ -81,7 +80,8 @@ namespace UnitTestParser
             result = result.Replace("}", "");
 
             Assert.AreEqual(result.Length, "6.123456".Length);
-            Decimal dec = Convert.ToDecimal(result);
+
+            float dec = float.Parse(result, CultureInfo.InvariantCulture.NumberFormat);
             if (dec < 5 || dec > 7)
                 Assert.Fail("Value out of range");
         }
@@ -106,7 +106,7 @@ namespace UnitTestParser
             result = result.Replace("}", "");
 
             Assert.AreEqual(result, result.ToUpper());
-            if(result.Length != 8 || result.Length != 9)
+            if(result.Length != 8 && result.Length != 9)
                 Assert.Fail("Wrong length of generated string.");
         }
     }

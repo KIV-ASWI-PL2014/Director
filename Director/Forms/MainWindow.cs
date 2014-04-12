@@ -407,7 +407,7 @@ namespace Director.Forms
         {
             OpenFileDialog dlg = new OpenFileDialog(Director.Properties.Resources.DialogOpenScenario);
             dlg.Multiselect = false;
-            dlg.Filters.Add(new FileDialogFilter("Director files", "*.dsce"));
+            dlg.Filters.Add(new FileDialogFilter("Director files", "*.adfe"));
             if (dlg.Run())
                 MessageDialog.ShowMessage("Files: ", string.Join("\n", dlg.FileNames));
         }

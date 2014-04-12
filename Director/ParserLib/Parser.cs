@@ -319,7 +319,8 @@ namespace Director.ParserLib
                 index = value.IndexOf(VARIABLE_CHARACTER, index); // ... so, find all occurrences of variable characters in given string value
                 if (index != -1)
                 {
-                    if (value[index - 1] != ESCAPE_CHARACTER)
+                    // Strnadj: Pokud je to 1 znak, tzn 0, nemùže být escapována..
+                    if (index == 0 || value[index - 1] != ESCAPE_CHARACTER)
                         var_occurrences.Add(index);
                     index++;
                 }
@@ -334,7 +335,8 @@ namespace Director.ParserLib
                 index = value.IndexOf(MAIN_SYNTAX_CHARACTER, index); // ... so, find all occurrences of function characters in given string value
                 if (index != -1)
                 {
-                    if (value[index - 1] != ESCAPE_CHARACTER) 
+                    // Strnadj: Pokud je to 1 znak, tzn 0, nemùže být escapována..
+                    if (index == 0 || value[index - 1] != ESCAPE_CHARACTER) 
                         fn_occurrences.Add(index);
                     index++;
                 }

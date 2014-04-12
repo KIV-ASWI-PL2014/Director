@@ -110,7 +110,7 @@ namespace Director.Forms.Export
                     Multiselect = false, 
                     InitialFileName = ActiveServer.Name
                 };
-                dlg.Filters.Add(new FileDialogFilter("Director files", "*.dsce"));
+                dlg.Filters.Add(new FileDialogFilter("Director files", "*.adfe"));
                 if (dlg.Run() && dlg.FileNames.Count() == 1)
                     ExportPath.Text = dlg.FileName;
             };
