@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xwt;
 
 namespace Director.DataStructures.SupportStructures
 {
@@ -13,18 +12,41 @@ namespace Director.DataStructures.SupportStructures
     /// </summary>
     public class Email
     {
-        [DisplayName("Email address")]
+		/// <summary>
+		/// User email address.
+		/// </summary>
         public String UserEmail { get; set; }
 
-        [DisplayName("Information reports")]
+		/// <summary>
+		/// Information notifications?
+		/// </summary>
         public bool Notifications { get; set; }
 
-        [DisplayName("Erorr reports")]
+		/// <summary>
+		/// Error notifications?
+		/// </summary>
         public bool Errors { get; set; }
 
 		/// <summary>
 		/// Position.
 		/// </summary>
-		public TreePosition Position { set; get; }
+		public int Position { set; get; }
+
+
+		/// <summary>
+		/// Determines if is valid the specified email.
+		/// </summary>
+		/// <returns><c>true</c> if is valid the specified email; otherwise, <c>false</c>.</returns>
+		/// <param name="email">Email.</param>
+		public static bool IsValid(string email)
+		{
+			try {
+				new System.Net.Mail.MailAddress(email);
+				return true;
+			}
+			catch {
+				return false;
+			}
+		}
     }
 }

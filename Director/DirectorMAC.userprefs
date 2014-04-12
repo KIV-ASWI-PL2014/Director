@@ -1,26 +1,28 @@
-﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="11.4.2014 5:44:22">
+﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="12.4.2014 12:26:59">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug Linux" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Forms/Panels/ServerPage.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="../XWT/Xwt.Mac/Xwt.Mac/NSTableViewBackend.cs">
     <Files>
-      <File FileName="Forms/MainWindow.cs" Line="537" Column="19" />
-      <File FileName="../XWT/Xwt.Mac/Xwt.Mac/TableViewBackend.cs" Line="1" Column="1" />
-      <File FileName="../XWT/Xwt.Mac/Xwt.Mac/WidgetView.cs" Line="81" Column="32" />
-      <File FileName="DataStructures/Scenario.cs" Line="1" Column="1" />
-      <File FileName="../XWT/Xwt.Mac/Xwt.Mac/LabelBackend.cs" Line="243" Column="2" />
-      <File FileName="Forms/Panels/ServerPage.cs" Line="256" Column="14" />
+      <File FileName="Forms/MainWindow.cs" Line="1" Column="1" />
+      <File FileName="../XWT/Xwt.Mac/Xwt.Mac/NSTableViewBackend.cs" Line="33" Column="23" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="DirectorMAC" expanded="True">
+            <Node name="DataStructures" expanded="True">
+              <Node name="SupportStructures" expanded="True" />
+            </Node>
             <Node name="Forms" expanded="True">
-              <Node name="Panels" expanded="True">
-                <Node name="ServerPage.cs" selected="True" />
-              </Node>
+              <Node name="Panels" expanded="True" />
             </Node>
           </Node>
+          <Node name="Xwt" expanded="True">
+            <Node name="Xwt" expanded="True" />
+          </Node>
           <Node name="Xwt.Mac" expanded="True">
-            <Node name="Xwt.Mac" expanded="True" />
+            <Node name="Xwt.Mac" expanded="True">
+              <Node name="NSTableViewBackend.cs" selected="True" />
+            </Node>
           </Node>
         </State>
       </Pad>

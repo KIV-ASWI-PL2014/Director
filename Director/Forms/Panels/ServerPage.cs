@@ -128,15 +128,8 @@ namespace Director.Forms.Panels
             // Refresh data
             AuthRequired_Toggled(null, null);
 
-            EmailAddressStore.Clear();
-
-            // Emails
-            foreach (Email e in server.Emails) {
-                var i = EmailAddressStore.AddRow();
-                EmailAddressStore.SetValue(i, EmailAddress, e.UserEmail);
-                EmailAddressStore.SetValue(i, Errors, e.Errors);
-                EmailAddressStore.SetValue(i, Notifications, e.Notifications);
-            }
+			// Refresh data in server emails
+			RefreshServerEmails ();
 		}
 
         /// <summary>
@@ -190,7 +183,6 @@ namespace Director.Forms.Panels
             // Add Frame to server settings
             f.Content = ServerSettings;
             PackStart(f);
-
 
             // Authorization
             AuthRequired = new CheckBox(Director.Properties.Resources.Authorization);
@@ -261,7 +253,9 @@ namespace Director.Forms.Panels
 			MenuItem RemoveEmail = new MenuItem ("Remove email") {
 				Image = Image.FromResource (DirectorImages.CROSS_ICON)
 			};
+			RemoveEmail.Clicked += RemoveEmail_Clicked;
 			EmailContextMenu.Items.Add (EditEmail);
+			EmailContextMenu.Items.Add (new SeparatorMenuItem ());
 			EmailContextMenu.Items.Add (RemoveEmail);
 			EmailNotifications.ButtonPressed += EmailNotifications_Clicked;
 
@@ -286,11 +280,73 @@ namespace Director.Forms.Panels
             );
 			VBox EmailFrameContent = new VBox ();
 			EmailFrameContent.PackStart (EmailNotifications, expand: true, fill: true);
+
+			// New email address
 			Button AddEmail = new Button (Image.FromResource (DirectorImages.ADD_ICON), "Add email");
+			AddEmail.Clicked += delegate {
+				Dialog AddEmailDialog = new Dialog()
+				{	
+					Title = "Add new email",
+					Width = 300
+				};
+				AddEmailDialog.InitialLocation = WindowLocation.CenterParent;
+				VBox AddEmailDialogContent = new VBox();
+				AddEmailDialogContent.PackStart(new Label("Fill new email"), expand: false, fill: true);
+
+				TextEntry NewEmail = new TextEntry();
+				AddEmailDialogContent.PackStart(NewEmail, expand: false, fill: true);
+
+				AddEmailDialog.Content = AddEmailDialogContent;
+				AddEmailDialog.Buttons.Add (new DialogButton ("Cancel", Command.Cancel));
+				AddEmailDialog.Buttons.Add (new DialogButton ("Ok", Command.Ok));
+
+				Command result = AddEmailDialog.Run(this.ParentWindow);
+
+				while (result == Command.Ok && !Email.IsValid(NewEmail.Text)) {
+					MessageDialog.ShowError("Invalid email address!");
+					AddEmailDialog.Dispose();
+					result = AddEmailDialog.Run(this.ParentWindow);
+				}
+
+				AddEmailDialog.Dispose();
+
+				if (result == Command.Ok) {
+					ActiveServer.Emails.Add(new Email() { UserEmail = NewEmail.Text });
+					RefreshServerEmails();
+				}
+			};
+
+			// Add to frames
 			EmailFrameContent.PackStart (AddEmail, expand: false, fill: false);
 			EmailFrame.Content = EmailFrameContent;
             PackStart(EmailFrame, expand: true, fill: true);
         }
+
+		private void RemoveEmail_Clicked(object sender, EventArgs e)
+		{
+			int row = EmailNotifications.SelectedRow;
+			if (row >= 0) {
+				ActiveServer.Emails.RemoveAll (x => x.Position == row);
+				RefreshServerEmails ();
+			}
+		}
+
+		/// <summary>
+		/// Email address store in consistent status!
+		/// </summary>
+		private void RefreshServerEmails()
+		{
+			EmailAddressStore.Clear();
+
+			// Emails
+			foreach (Email e in ActiveServer.Emails) {
+				int i = EmailAddressStore.AddRow();
+				EmailAddressStore.SetValue(i, EmailAddress, e.UserEmail);
+				EmailAddressStore.SetValue(i, Errors, e.Errors);
+				EmailAddressStore.SetValue(i, Notifications, e.Notifications);
+				e.Position = i;
+			}
+		}
 
 		/// <summary>
 		/// Handle right mouse click on Email Notifications tree view.
