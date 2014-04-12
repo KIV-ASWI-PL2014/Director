@@ -64,6 +64,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\XWT\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\XWT\RestSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
@@ -115,7 +118,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="DataStructures\SupportStructures\EmailStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />

@@ -220,7 +220,6 @@ namespace Director.Forms.Export
         {
             // Intialize components
             ActiveServer = _server;
-            BackgroundColor = Colors.White;
 
             // Init
             _initializeComponents();
@@ -228,9 +227,6 @@ namespace Director.Forms.Export
             // Height
             HeightRequest = 270;
             MinHeight = 270;
-
-            // Margins
-            Margin = 10;
         }
 
         /// <summary>
