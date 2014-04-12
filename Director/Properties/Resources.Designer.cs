@@ -145,6 +145,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save scenario.
+        /// </summary>
+        internal static string DialogSaveScenario {
+            get {
+                return ResourceManager.GetString("DialogSaveScenario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
         internal static string Email {
@@ -264,7 +273,7 @@ namespace Director.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export scenario.
+        ///   Looks up a localized string similar to Export scenarios.
         /// </summary>
         internal static string ExportDialog {
             get {
@@ -429,6 +438,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please select at least one scenario to export!.
+        /// </summary>
+        internal static string NoScenarioSelected {
+            get {
+                return ResourceManager.GetString("NoScenarioSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Notification.
         /// </summary>
         internal static string Notification {
@@ -454,6 +472,15 @@ namespace Director.Properties {
             get {
                 object obj = ResourceManager.GetObject("open", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select output file!.
+        /// </summary>
+        internal static string OutputFileNotSelected {
+            get {
+                return ResourceManager.GetString("OutputFileNotSelected", resourceCulture);
             }
         }
         
@@ -555,6 +582,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        internal static string SaveServer {
+            get {
+                return ResourceManager.GetString("SaveServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap scenario {
@@ -598,6 +634,24 @@ namespace Director.Properties {
         internal static string ScenarioSettings {
             get {
                 return ResourceManager.GetString("ScenarioSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select all scenarios.
+        /// </summary>
+        internal static string SelectAll {
+            get {
+                return ResourceManager.GetString("SelectAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select scenarios to export.
+        /// </summary>
+        internal static string SelectScenarios {
+            get {
+                return ResourceManager.GetString("SelectScenarios", resourceCulture);
             }
         }
         

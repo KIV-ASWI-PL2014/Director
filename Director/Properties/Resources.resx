@@ -230,7 +230,7 @@
     <value>Every hour</value>
   </data>
   <data name="ExportDialog" xml:space="preserve">
-    <value>Export scenario</value>
+    <value>Export scenarios</value>
   </data>
   <data name="InvalidScenarioName" xml:space="preserve">
     <value>Invalid scnario name!</value>
@@ -312,5 +312,23 @@
   </data>
   <data name="Username" xml:space="preserve">
     <value>Username</value>
+  </data>
+  <data name="DialogSaveScenario" xml:space="preserve">
+    <value>Save scenario</value>
+  </data>
+  <data name="NoScenarioSelected" xml:space="preserve">
+    <value>Please select at least one scenario to export!</value>
+  </data>
+  <data name="OutputFileNotSelected" xml:space="preserve">
+    <value>Please select output file!</value>
+  </data>
+  <data name="SaveServer" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>Select all scenarios</value>
+  </data>
+  <data name="SelectScenarios" xml:space="preserve">
+    <value>Select scenarios to export</value>
   </data>
 </root>

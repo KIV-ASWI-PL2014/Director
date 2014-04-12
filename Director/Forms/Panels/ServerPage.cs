@@ -317,6 +317,9 @@ namespace Director.Forms.Panels
 			};
 
 			// Add to frames
+            HPaned p = new HPaned();
+            AddEmail.WidthRequest = 120;
+            AddEmail.HorizontalPlacement = WidgetPlacement.End;
 			EmailFrameContent.PackStart (AddEmail, expand: false, fill: false);
 			EmailFrame.Content = EmailFrameContent;
             PackStart(EmailFrame, expand: true, fill: true);
