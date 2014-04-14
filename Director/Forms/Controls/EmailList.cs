@@ -12,12 +12,27 @@ namespace Director
 		/// <summary>
 		/// Row height.
 		/// </summary>
-		public const int ROW_HEIGHT = 20;
+		public const int ROW_HEIGHT = 30;
 
 		/// <summary>
 		/// Email field width.
 		/// </summary>
 		public const int EMAIL_WIDTH = 150;
+
+        /// <summary>
+        /// Notification width.
+        /// </summary>
+        public const int NOTIFICATION_WIDTH = 80;
+
+        /// <summary>
+        /// Error checkbox width.
+        /// </summary>
+        public const int ERROR_WIDTH = 80;
+
+        /// <summary>
+        /// Destroy button field width.
+        /// </summary>
+        public const int BTN_WIDTH = 80;
 
 		/// <summary>
 		/// Current server instance.
@@ -66,13 +81,22 @@ namespace Director
 				MarginTop = 5
 			};
 			Label Errors = new Label ("Error") {
-				MinWidth =  40, WidthRequest = 40, ExpandVertical = false, VerticalPlacement = WidgetPlacement.Fill
+                MinWidth = ERROR_WIDTH,
+                WidthRequest = ERROR_WIDTH,
+                ExpandVertical = false,
+                VerticalPlacement = WidgetPlacement.Fill
 			};
 			Label Notif = new Label ("Notifications") {
-				MinWidth =  40, WidthRequest = 40, ExpandVertical = false, VerticalPlacement = WidgetPlacement.Fill
+                MinWidth = NOTIFICATION_WIDTH,
+                WidthRequest = NOTIFICATION_WIDTH,
+                ExpandVertical = false,
+                VerticalPlacement = WidgetPlacement.Fill
 			};			
 			Button NewEmail = new Button("Add") {
-				MinWidth =  40, WidthRequest = 40, ExpandVertical = false, VerticalPlacement = WidgetPlacement.Fill
+                MinWidth = BTN_WIDTH,
+                WidthRequest = BTN_WIDTH,
+                ExpandVertical = false,
+                VerticalPlacement = WidgetPlacement.Fill
 			};
 			NewEmail.Clicked += NewEmail_Clicked;
 			FirstLine.PackStart (EmailName, true, true);
@@ -82,15 +106,26 @@ namespace Director
 			PackStart (FirstLine);
 
 			// Create content
-			EmailListContent = new VBox () {
-				BackgroundColor =  Colors.White, ExpandVertical = true, ExpandHorizontal = false
-			};
+            EmailListContent = new VBox()
+            {
+                BackgroundColor = Colors.White,
+                ExpandVertical = true,
+                ExpandHorizontal = false
+            };
+
+            ScrollView EmailListScroll = new ScrollView()
+            {
+                HorizontalScrollPolicy = ScrollPolicy.Never,
+                VerticalScrollPolicy = ScrollPolicy.Automatic,
+                Content = EmailListContent,
+                BackgroundColor = Colors.LightGray
+            };
 
 			// Clear list
 			EmailItems.Clear ();
 
 			// Add item list
-			PackStart (EmailListContent, true, true);
+            PackStart(EmailListScroll, true, true);
 		}
 
 		/// <summary>
@@ -170,23 +205,62 @@ namespace Director
 		/// </summary>
 		public EmailListItem(EmailList parent, Email s)
 		{
+            // Set height
+            MinHeight = EmailList.ROW_HEIGHT;
+            HeightRequest = EmailList.ROW_HEIGHT;
+
+            // Set parent & active email
 			ListParent = parent;
 			ActiveEmail = s;
 			EmailText = new TextEntry () {
 				Text = s.UserEmail,
 				MinWidth = EmailList.EMAIL_WIDTH, WidthRequest = EmailList.EMAIL_WIDTH,
-				MinHeight = EmailList.ROW_HEIGHT, HeightRequest = EmailList.ROW_HEIGHT,
+				MinHeight = 20, HeightRequest = 20,
 				MarginLeft = 5,
 				HorizontalPlacement = WidgetPlacement.Center,
-				VerticalPlacement = WidgetPlacement.Start
+				VerticalPlacement = WidgetPlacement.Start,
+                MarginTop = 5,
+                ExpandVertical = true
 			};
+            EmailText.Changed += delegate
+            {
+                s.UserEmail = EmailText.Text;
+            };
 			PackStart (EmailText);
 
 			// Error
 			Errors = new CheckBox () {
-
+                State = (s.Errors) ? CheckBoxState.On : CheckBoxState.Off,
+                WidthRequest = EmailList.ERROR_WIDTH,
+                MinWidth = EmailList.ERROR_WIDTH,
+                HorizontalPlacement = WidgetPlacement.Center,
+                VerticalPlacement = WidgetPlacement.Center
 			};
+            Errors.Toggled += delegate
+            {
+                s.Errors = Errors.State == CheckBoxState.On;
+            };
+            PackStart(Errors);
 
+            // Notification
+            Notification = new CheckBox()
+            {
+                State = (s.Notifications) ? CheckBoxState.On : CheckBoxState.Off,
+                WidthRequest = EmailList.ERROR_WIDTH,
+                MinWidth = EmailList.ERROR_WIDTH,
+                HorizontalPlacement = WidgetPlacement.Center,
+                VerticalPlacement = WidgetPlacement.Center
+            };
+            Notification.Toggled += delegate
+            {
+                s.Notifications = Notification.State == CheckBoxState.On;
+            };
+            PackStart(Notification);
+
+            // Button
+
+
+            // Highlighting
 			MouseEntered += delegate(object sender, EventArgs e) {
 				BackgroundColor = Colors.LightBlue;
 			};
