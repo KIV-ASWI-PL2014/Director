@@ -60,6 +60,11 @@ namespace Director.Forms.Panels
         private ListStore EmailAddressStore { get; set; }
 
 		/// <summary>
+		/// Email list widget.
+		/// </summary>
+		private EmailList EmailWidget { get; set; }
+
+		/// <summary>
 		/// Context menu for Add/remove Email notification adresses!
 		/// </summary>
 		/// <value>The email contenxt menu.</value>
@@ -129,7 +134,7 @@ namespace Director.Forms.Panels
             AuthRequired_Toggled(null, null);
 
 			// Refresh data in server emails
-			RefreshServerEmails ();
+			EmailWidget.SetServer (ActiveServer);
 		}
 
         /// <summary>
@@ -223,6 +228,8 @@ namespace Director.Forms.Panels
             AuthRequired.Toggled += AuthRequired_Toggled;
 
 
+
+
             // Email settings
             Frame EmailFrame = new Frame()
             {
@@ -231,8 +238,12 @@ namespace Director.Forms.Panels
                 MinHeight = 180
             };
 
+			// Create EmailList widget
+			EmailWidget = new EmailList ();
+			EmailFrame.Content = EmailWidget;
+
             // Create containers
-            EmailAddress = new DataField<string>();
+			/**EmailAddress = new DataField<string>();
             Notifications = new DataField<bool>();
             Errors = new DataField<bool>();
 
@@ -314,14 +325,14 @@ namespace Director.Forms.Panels
 					ActiveServer.Emails.Add(new Email() { UserEmail = NewEmail.Text });
 					RefreshServerEmails();
 				}
-			};
+			};*/
 
 			// Add to frames
-            HPaned p = new HPaned();
+			/* HPaned p = new HPaned();
             AddEmail.WidthRequest = 120;
             AddEmail.HorizontalPlacement = WidgetPlacement.End;
 			EmailFrameContent.PackStart (AddEmail, expand: false, fill: false);
-			EmailFrame.Content = EmailFrameContent;
+			EmailFrame.Content = EmailFrameContent;*/
             PackStart(EmailFrame, expand: true, fill: true);
         }
 

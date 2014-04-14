@@ -131,8 +131,8 @@ namespace Director.Forms.Export
                 HorizontalPlacement = WidgetPlacement.End,
                 ExpandHorizontal = false,
                 ExpandVertical = false,
-                WidthRequest = 80,
-                MinWidth = 80,
+				WidthRequest = (Config.Cocoa) ? 95 : 80,
+				MinWidth = (Config.Cocoa) ? 95 : 80,
                 Image = Image.FromResource(DirectorImages.SAVE_SCENARIO_ICON)
             };
             SaveBtn.Clicked += SaveBtn_Clicked;
