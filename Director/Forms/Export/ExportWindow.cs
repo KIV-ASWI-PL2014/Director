@@ -196,7 +196,7 @@ namespace Director.Forms.Export
         /// Scroll bar.
         /// </summary>
         /// <param name="_server"></param>
-        private VScrollbar ListScrollBar { get; set; }
+        private ScrollView ListScrollBar { get; set; }
 
         /// <summary>
         /// Scenario checkboxes.
@@ -255,8 +255,16 @@ namespace Director.Forms.Export
                 CheckBoxes.Add(c);
             }
 
+            // Scroll view
+            ListScrollBar = new ScrollView()
+            {
+                VerticalScrollPolicy = ScrollPolicy.Automatic,
+                HorizontalScrollPolicy = ScrollPolicy.Never,
+                Content = ScenarioCheckboxList
+            };
+
             // Add as content
-            Content = ScenarioCheckboxList;
+            Content = ListScrollBar;
         }
 
         /// <summary>
