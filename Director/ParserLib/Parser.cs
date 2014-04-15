@@ -8,20 +8,27 @@ using System.Collections;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using System.Threading;
+using System.Globalization;
 
 namespace Director.ParserLib
 {
     public class Parser
     {
+        //
         // general syntactical characters
+        //
         private const char VARIABLE_CHARACTER = '$';
         private const char MAIN_SYNTAX_CHARACTER = '#';
         private const char ESCAPE_CHARACTER = '\\';
 
+        //
         // request specific constants
+        //
         private const char REQUEST_FN_LEFT_PARENTHESIS = '(';
         private const char REQUEST_FN_RIGHT_PARENTHESIS = ')';
         private const char REQUEST_FN_ARGUMENT_SEPARATOR = ',';
+
         private const string REQUEST_FN_RAND_INT = "randInt";
         private const string REQUEST_FN_RAND_FLOAT = "randFloat";
         private const string REQUEST_FN_RAND_STRING = "randString";
@@ -40,7 +47,39 @@ namespace Director.ParserLib
             "!@#$%^&*()_+-=[]{};':|,./<>?"
         };
 
+        //
+        // response specific constants
+        //
+        private const char RESPONSE_OPERATION_SEPARATOR = '_';
+
+        private const string RESPONSE_TYPE_STRING = "string";
+        private const string RESPONSE_TYPE_INTEGER = "integer";
+        private const string RESPONSE_TYPE_FLOAT = "real";
+        private const string RESPONSE_TYPE_BOOLEAN = "boolean";
+        private const string RESPONSE_TYPE_OBJECT = "object";
+        private const string RESPONSE_TYPE_ARRAY = "array";
+
+        private const string RESPONSE_OPERATION_EQUAL = "eq";
+        private static readonly string[] RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES = { RESPONSE_TYPE_STRING, RESPONSE_TYPE_INTEGER, RESPONSE_TYPE_FLOAT, RESPONSE_TYPE_BOOLEAN, RESPONSE_TYPE_OBJECT, RESPONSE_TYPE_ARRAY };
+        private const string RESPONSE_OPERATION_NOT_EQUAL = "ne";
+        private static readonly string[] RESPONSE_OPERATION_NOT_EQUAL_ALLOWED_TYPES = { RESPONSE_TYPE_STRING, RESPONSE_TYPE_INTEGER, RESPONSE_TYPE_FLOAT, RESPONSE_TYPE_BOOLEAN, RESPONSE_TYPE_OBJECT, RESPONSE_TYPE_ARRAY };
+        private const string RESPONSE_OPERATION_LESS_THAN = "lt";
+        private static readonly string[] RESPONSE_OPERATION_LESS_THAN_ALLOWED_TYPES = { RESPONSE_TYPE_STRING, RESPONSE_TYPE_INTEGER, RESPONSE_TYPE_FLOAT, RESPONSE_TYPE_ARRAY };
+        private const string RESPONSE_OPERATION_LESS_THAN_OR_EQUAL = "le";
+        private static readonly string[] RESPONSE_OPERATION_LESS_THAN_OR_EQUAL_ALLOWED_TYPES = { RESPONSE_TYPE_STRING, RESPONSE_TYPE_INTEGER, RESPONSE_TYPE_FLOAT, RESPONSE_TYPE_ARRAY };
+        private const string RESPONSE_OPERATION_GREATER_THAN = "gt";
+        private static readonly string[] RESPONSE_OPERATION_GREATER_THAN_ALLOWED_TYPES = { RESPONSE_TYPE_STRING, RESPONSE_TYPE_INTEGER, RESPONSE_TYPE_FLOAT, RESPONSE_TYPE_ARRAY };
+        private const string RESPONSE_OPERATION_GREATER_THAN_OR_EQUAL = "ge";
+        private static readonly string[] RESPONSE_OPERATION_GREATER_THAN_OR_EQUAL_ALLOWED_TYPES = { RESPONSE_TYPE_STRING, RESPONSE_TYPE_INTEGER, RESPONSE_TYPE_FLOAT, RESPONSE_TYPE_ARRAY };
+        private const string RESPONSE_OPERATION_MATCHING_REGEXP_PATTERN = "mp";
+        private static readonly string[] RESPONSE_OPERATION_MATCHING_REGEXP_PATTERN_ALLOWED_TYPES = { RESPONSE_TYPE_STRING };
+
+        private const string RESPONSE_OPERATION_MODIFIER_USE_VARIABLE = "uv";
+        private const string RESPONSE_OPERATION_MODIFIER_IF_PRESENT = "ip";
+
+        //
         // parser error messages
+        //
         private static readonly string ERR_MSG_MISSING_VARIABLE_CHARACTER = "Missing closing variable character (" + VARIABLE_CHARACTER + "). Either provide one or escape this one like " + ESCAPE_CHARACTER + VARIABLE_CHARACTER + " .";
         private static readonly string ERR_MSG_MISSING_MAIN_SYNTAX_CHARACTER = "Missing closing function character (" + MAIN_SYNTAX_CHARACTER + "). Either provide one or escape this one like " + ESCAPE_CHARACTER + MAIN_SYNTAX_CHARACTER + " .";
         private static readonly string ERR_MSG_UNKNOWN_CUSTOM_VARIABLE = "Variable \"{0}\" is not defined.";
@@ -57,8 +96,15 @@ namespace Director.ParserLib
         private static readonly string ERR_MSG_ARGUMENT_INVALID = "Argument \"{0}\" is invalid.";
         private static readonly string ERR_MSG_ARGUMENTS_WRONG_SIZED = "Argument no. {0} (\"{1}\") must be smaller than argument no. {2} (\"{3}\").";
         private static readonly string ERR_MSG_FN_INSIDE_VAR = "Illegal function definition inside variable name.";
+        private static readonly string ERR_MSG_UNKNOWN_OPERATION = "Unknown operation type \"{0}\".";
+        private static readonly string ERR_MSG_UNKNOWN_TYPE = "Unknown type \"{0}\".";
+        private static readonly string ERR_MSG_MISING_TYPE_FOR_OPERATION = "Missing type for operation. If you want to compare the value, type must be specified.";
+        private static readonly string ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE = "Operation \"{0}\" does not support \"{1}\" type.";
+        private static readonly string ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE = "Provided value \"{0}\" couldn't be converted to \"{1}\" type.";
 
+        //
         // global variables
+        //
         private Random random = new Random();
 
         public ParserResult generateRequest(string template, Dictionary<string, string> customVariables)
@@ -73,6 +119,7 @@ namespace Director.ParserLib
             // TODO: delete this after testing
             customVariables.Add("ca$u", "5");
             customVariables.Add("ahoj", "nazdarek");
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
 
             // try to deserialize JSON template into internal parser structures
             try
@@ -82,13 +129,13 @@ namespace Director.ParserLib
             catch (JsonException e)
             {
                 // an error occured during deserializon => basic syntax of json template is wrong
-                errors.Add(createError(e.Message));
+                errors.Add(createError(e.Message, "JSON template"));
                 // add error to the error list and return empty result
                 return new ParserResult(errors, null);
             }
 
             // parse inner syntax written in value of some tags (replace variables, evaluate functions etc...)
-            parseInnerSyntaxOfRequest(root, customVariables, errors);
+            parseInnerSyntaxOfRequestTemplate(root, customVariables, errors);
 
             // serialize JSON string back from modified internal parser structures
             string result = serialize(root);
@@ -99,15 +146,90 @@ namespace Director.ParserLib
 
         public ParserResult validateResponse(string template, Dictionary<string, string> customVariables)
         {
-            return null;
+            List<ParserError> errors = new List<ParserError>();
+            Dictionary<string, ParserItem> root = null; // top layer of internal parser structures of deserialized JSON template
+
+            // if no object with custom variables was passed, create new one
+            if (customVariables == null)
+                customVariables = new Dictionary<string, string>();
+
+            // TODO: delete this after testing
+            customVariables.Add("ca$u", "5");
+            customVariables.Add("ahoj", "nazdarek");
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
+
+            // try to deserialize JSON template into internal parser structures
+            try
+            {
+                root = deserialize(template);
+            }
+            catch (JsonException e)
+            {
+                // an error occured during deserializon => basic syntax of json template is wrong
+                errors.Add(createError(e.Message, "JSON template"));
+                // add error to the error list and return empty result
+                return new ParserResult(errors, null);
+            }
+
+            // parse inner syntax written in value of some tags in order to be able to compare this template with actual received result
+            parseInnerSyntaxOfResponseTemplate(root, customVariables, errors);
+
+            // return all possibly found errors
+            return new ParserResult(errors, null);
         }
 
         public ParserResult parseResponse(string template, string response, Dictionary<string, string> customVariables)
         {
-            return null;
+            List<ParserError> errors = new List<ParserError>();
+            Dictionary<string, ParserItem> template_root = null; // top layer of internal parser structures of deserialized JSON template
+            Dictionary<string, ParserItem> response_root = null; // top layer of internal parser structures of deserialized received JSON
+
+            // if no object with custom variables was passed, create new one
+            if (customVariables == null)
+                customVariables = new Dictionary<string, string>();
+
+            // TODO: delete this after testing
+            customVariables.Add("ca$u", "5");
+            customVariables.Add("ahoj", "nazdarek");
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
+
+            // try to deserialize JSON template into internal parser structures
+            try
+            {
+                template_root = deserialize(template);
+            }
+            catch (JsonException e)
+            {
+                // an error occured during deserializon => basic syntax of json template or received json is wrong
+                errors.Add(createError(e.Message, "JSON template"));
+                // add error to the error list and return empty result
+                return new ParserResult(errors, null);
+            }
+
+            // try to deserialize received JSON into internal parser structures
+            try
+            {
+                response_root = deserialize(response);
+            }
+            catch (JsonException e)
+            {
+                // an error occured during deserializon => basic syntax of json template or received json is wrong
+                errors.Add(createError(e.Message, "received JSON"));
+                // add error to the error list and return empty result
+                return new ParserResult(errors, null);
+            }
+
+            // parse inner syntax written in value of some tags in order to be able to compare this template with actual received result
+            parseInnerSyntaxOfResponseTemplate(template_root, customVariables, errors);
+
+            // compare received JSON with the rules defined in JSON template
+            compareResponseWithTemplate(template_root, response_root, customVariables, errors);
+
+            // return all possibly found errors
+            return new ParserResult(errors, null);
         }
 
-        private ParserError createError(string errorMessage)
+        private ParserError createError(string errorMessage, string location)
         {
             const string LINE_DEF = ", line ";
             const string POSITION_DEF = ", position ";
@@ -120,7 +242,7 @@ namespace Director.ParserLib
                 int position = Convert.ToInt32(Regex.Match(errorMessage.Substring(posPosition, errorMessage.Length - posPosition), @"\d+").Value);
                 return new ParserError(line, position, errorMessage.Substring(0, posPosition - LINE_DEF.Length - 1));
             }
-            return new ParserError(-1, -1, errorMessage);
+            return new ParserError(-1, -1, "Location: " + location + "\nMessage: " + errorMessage);
         }
 
         private Dictionary<string, object> resursiveDeserialization(string template)
@@ -270,7 +392,7 @@ namespace Director.ParserLib
             return sb.ToString();
         }
 
-        private void parseInnerSyntaxOfRequest(Dictionary<string, ParserItem> root, Dictionary<string, string> customVariables, List<ParserError> errors)
+        private void parseInnerSyntaxOfRequestTemplate(Dictionary<string, ParserItem> root, Dictionary<string, string> customVariables, List<ParserError> errors)
         {
             List<string> keys = new List<string>(root.Keys);
             foreach (string key in keys)
@@ -281,30 +403,364 @@ namespace Director.ParserLib
                     // replace variables, generate sequences, random values etc...
                     root[key] = applyFunctions(root[key], customVariables, errors);
                 }
-                if (root[key].value is Dictionary<string, ParserItem>) // Dictionary type means that original JSON had an array at this position
+                if (root[key].value is Dictionary<string, ParserItem>) // Dictionary type means that original JSON had an object at this position
                 {
                     // call the same function recursively for the entire sub-node
-                    parseInnerSyntaxOfRequest((Dictionary<string, ParserItem>)root[key].value, customVariables, errors);
+                    parseInnerSyntaxOfRequestTemplate((Dictionary<string, ParserItem>)root[key].value, customVariables, errors);
                 }
 
                 if (root[key].value is List<ParserItem>) // List type means that original JSON had an array at this position ...
                 {
                     List<ParserItem> list = (List<ParserItem>)root[key].value;
-                    foreach (ParserItem item in list) // ... in that case we will do the same thing as above - but for every item of that array
+                    for (int i = 0; i < list.Count; i++) // ... in that case we will do the same thing as above - but for every item of that array
                     {
-                        if (root[key].value is string)
+                        if (list[i].value is string)
                         {
                             // replace variables, generate sequences, random values etc...
-                            root[key] = applyFunctions(root[key], customVariables, errors);
+                            list[i] = applyFunctions(list[i], customVariables, errors);
                         }
-                        if (root[key].value is Dictionary<string, ParserItem>) // Dictionary type means that original JSON had an array at this position
+                        if (list[i].value is Dictionary<string, ParserItem>) // Dictionary type means that original JSON had an array at this position
                         {
                             // call the same function recursively for the entire sub-node
-                            parseInnerSyntaxOfRequest((Dictionary<string, ParserItem>)root[key].value, customVariables, errors);
+                            parseInnerSyntaxOfRequestTemplate((Dictionary<string, ParserItem>)list[i].value, customVariables, errors);
                         }
                     }
                 }
             }
+        }
+
+        private void parseInnerSyntaxOfResponseTemplate(Dictionary<string, ParserItem> root, Dictionary<string, string> customVariables, List<ParserError> errors)
+        {
+            List<string> keys = new List<string>(root.Keys);
+            ParserCompareDefinition pcd;
+            foreach (string key in keys)
+            {
+
+                if (root[key].value is string)
+                {
+                    // find out the exact comparing definiton from the value and save it along so we will be able to compare with actual received JSON response
+                    root[key] = parseCompareRules(root[key], customVariables, errors);
+                    continue;
+                }
+                
+                if (root[key].value is Dictionary<string, ParserItem>) // Dictionary type means that original JSON had an object at this position
+                {
+                    // call the same function recursively for the entire sub-node
+                    parseInnerSyntaxOfResponseTemplate((Dictionary<string, ParserItem>)root[key].value, customVariables, errors);
+                    continue;
+                }
+
+                if (root[key].value is List<ParserItem>) // List type means that original JSON had an array at this position ...
+                {
+                    List<ParserItem> list = (List<ParserItem>)root[key].value;
+                    if (list.Count > 0)
+                    {
+                        if (list[0].value is string) // if at least one item is present and it is string ...
+                            list[0] = parseCompareRules(list[0], customVariables, errors); // ... parse compare rules for entire array from this field
+                        // simple type
+                        // make parser compare definition for strict comparison and assingn it to this item
+                        pcd = new ParserCompareDefinition();
+                        pcd.type = list[0].value.GetType();
+                        pcd.value = list[0].value;
+                        list[0].comp_def = pcd;
+                    }
+                    continue;
+                }
+
+                // simple type
+                // make parser compare definition for strict comparison and assingn it to this item
+                pcd = new ParserCompareDefinition();
+                pcd.type = root[key].value.GetType();
+                pcd.value = root[key].value;
+                root[key].comp_def = pcd;
+            }
+        }
+
+        private void compareResponseWithTemplate(Dictionary<string, ParserItem> template_root, Dictionary<string, ParserItem> response_root, Dictionary<string, string> customVariables, List<ParserError> errors)
+        {
+        }
+
+        private ParserItem parseCompareRules(ParserItem item, Dictionary<string, string> customVariables, List<ParserError> errors)
+        {
+            string value = (string)item.value;
+            int original_error_count = errors.Count;
+
+            // find out all positions of MAIN_SYNTAX_CHARACTERs in the string value
+            List<int> occurrences = new List<int>();
+            int index = 0;
+            do
+            {
+                index = value.IndexOf(MAIN_SYNTAX_CHARACTER, index); // ... so, find all occurrences of function characters in given string value
+                if (index != -1)
+                {
+                    if (index == 0 || value[index - 1] != ESCAPE_CHARACTER) // either first character or unescaped one
+                        occurrences.Add(index);
+                    index++;
+                }
+            } while (index != -1);
+            List<int> original_occurrences = new List<int>(occurrences); // when we notify the user about parser error we want to refer to the positions from original template
+
+            // take care of possibility that we got a plain string without any MAIN_SYNTAX_CHARACTERs
+            if (occurrences.Count == 0)
+            {
+                item.comp_def = new ParserCompareDefinition();
+                item.comp_def.type = typeof(string);
+                item.comp_def.value = value;
+                return item;
+            }
+
+            // take care of possible errors
+            if (occurrences.Count < 5) // not enough MAIN_SYNTAX_CHARACTERs
+                errors.Add(new ParserError(item.line, item.position + original_occurrences.Last(), string.Format(ERR_MSG_EXPECTING_CHARACTER, MAIN_SYNTAX_CHARACTER)));
+            if (occurrences.Count > 5) // too many MAIN_SYNTAX_CHARACTERs
+                errors.Add(new ParserError(item.line, item.position + original_occurrences[5], string.Format(ERR_MSG_INVALID_CHARACTER, MAIN_SYNTAX_CHARACTER)));
+            if (occurrences.First() != 0) // illegal characters before first MAIN_SYNTAX_CHARACTER
+                errors.Add(new ParserError(item.line, item.position, string.Format(ERR_MSG_INVALID_CHARACTER, value[0])));
+            if (occurrences.Last() != value.Length - 1) // illegal characters after last MAIN_SYNTAX_CHARACTER
+                errors.Add(new ParserError(item.line, item.position + original_occurrences.Last(), string.Format(ERR_MSG_INVALID_CHARACTER, value[original_occurrences.Last() + 1])));
+
+            // if there are any new syntax errors we can't parse this item - return it without any change
+            if (errors.Count > original_error_count)
+                return item;
+
+            // now  we can replace all escaped MAIN_SYNTAX_CHARACTER for the real ones
+            // note: all concerned indices in occurrences list must be modified accordingly, since ESCAPE_CHARACTERs are being taken
+            // out from the original string
+            index = 0;
+            do
+            {
+                index = value.IndexOf("" + ESCAPE_CHARACTER + MAIN_SYNTAX_CHARACTER, index); // find escaped MAIN_SYNTAX_CHARACTER
+                if (index != -1)
+                {
+                    value = value.Remove(index, 1); // remove ESCAPE_CHARACTER from the string
+                    // all occurrences with further placement than index of escaped character must be corrected by one
+                    shift_occurrences(occurrences, index, -1);
+                    index++;
+                }
+            } while (index != -1);
+
+            //
+            // retrieve individual values between MAIN_SYNTAX_CHARACTERs and save them to the item structure
+            //
+            string type = value.Substring(occurrences[0] + 1, occurrences[1] - occurrences[0] - 1); // type
+            string[] ops = value.Substring(occurrences[1] + 1, occurrences[2] - occurrences[1] - 1).Split(RESPONSE_OPERATION_SEPARATOR); // operation with possible modifiers
+            string val = value.Substring(occurrences[2] + 1, occurrences[3] - occurrences[2] - 1); // value
+            string var = value.Substring(occurrences[3] + 1, occurrences[4] - occurrences[3] - 1); // variable
+            ParserCompareDefinition pcd = new ParserCompareDefinition();
+
+            // type
+            switch (type)
+            {
+                case RESPONSE_TYPE_STRING:
+                    pcd.type = typeof(string);
+                    break;
+                case RESPONSE_TYPE_INTEGER:
+                    pcd.type = typeof(int);
+                    break;
+                case RESPONSE_TYPE_FLOAT:
+                    pcd.type = typeof(float);
+                    break;
+                case RESPONSE_TYPE_BOOLEAN:
+                    pcd.type = typeof(bool);
+                    break;
+                case RESPONSE_TYPE_OBJECT:
+                    pcd.type = typeof(object);
+                    break;
+                case RESPONSE_TYPE_ARRAY:
+                    pcd.type = typeof(Array);
+                    break;
+                default: // urecognized type
+                    errors.Add(new ParserError(item.line, item.position + 1, string.Format(ERR_MSG_UNKNOWN_TYPE, type)));
+                    break;
+            }
+            
+            // operation + modifiers
+            bool use_var = false; // use variable modifier
+            bool if_present = false; // if present modifier
+            string op = null; // operation
+            if (ops.Length > 0)
+            {
+                foreach (string ops_item in ops)
+                {
+                    switch (ops_item)
+                    {
+                        case RESPONSE_OPERATION_MODIFIER_USE_VARIABLE:
+                            use_var = true;
+                            break;
+                        case RESPONSE_OPERATION_MODIFIER_IF_PRESENT:
+                            if_present = true;
+                            break;
+                        case RESPONSE_OPERATION_EQUAL:
+                            if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
+                                op = ops_item;
+                            else
+                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type)));
+                            break;
+                        case RESPONSE_OPERATION_NOT_EQUAL:
+                            if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
+                                op = ops_item;
+                            else
+                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type)));
+                            break;
+                        case RESPONSE_OPERATION_LESS_THAN:
+                            if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
+                                op = ops_item;
+                            else
+                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type)));
+                            break;
+                        case RESPONSE_OPERATION_LESS_THAN_OR_EQUAL:
+                            if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
+                                op = ops_item;
+                            else
+                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type)));
+                            break;
+                        case RESPONSE_OPERATION_GREATER_THAN:
+                            if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
+                                op = ops_item;
+                            else
+                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type)));
+                            break;
+                        case RESPONSE_OPERATION_GREATER_THAN_OR_EQUAL:
+                            if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
+                                op = ops_item;
+                            else
+                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type)));
+                            break;
+                        case RESPONSE_OPERATION_MATCHING_REGEXP_PATTERN:
+                            if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
+                                op = ops_item;
+                            else
+                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type)));
+                            break;
+                        default: // urecognized operation type
+                            errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_UNKNOWN_OPERATION, ops_item)));
+                            break;
+                    }
+                }
+
+                // if operation was specified, type must be also specified
+                if (pcd.type == null && pcd.operation != null)
+                    errors.Add(new ParserError(item.line, item.position + 1, ERR_MSG_MISING_TYPE_FOR_OPERATION));
+
+                // assign operation and modifiers into parser compare definition object
+                pcd.use_variable = use_var;
+                pcd.if_present = if_present;
+                pcd.operation = op;
+            }
+
+            // value
+            // try to convert parsed value to desired type; if that is not possible add an error
+            if (pcd.type == null)
+            {
+                // type was not provided => we will try to assume the closest type possible
+                try
+                {
+                    pcd.value = Convert.ToInt32(val); // is it integer?
+                }
+                catch (Exception)
+                {
+                    try
+                    {
+                        pcd.value = Convert.ToSingle(val); // is it float?
+                    }
+                    catch (Exception)
+                    {
+                        if (val == "true" || val == "false") // is it boolean?
+                        {
+                            if (val == "true")
+                                pcd.value = true;
+                            else
+                                pcd.value = false;
+                        }
+                        else
+                        {
+                            pcd.value = val; // let's assume that it's string
+                        }
+                    }
+                }
+
+            }
+            else if (pcd.type == typeof(string))
+            {
+                // we don't need to convert anything here, just assign the value
+                pcd.value = val;
+            }
+            else if (pcd.type == typeof(int) || pcd.type == typeof(Array))
+            {
+                // try to convert value to integer
+                try
+                {
+                    pcd.value = Convert.ToInt32(val);
+                }
+                catch (FormatException)
+                {
+                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_ARGUMENT_NOT_INTEGER, val)));
+                }
+                catch (OverflowException)
+                {
+                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_ARGUMENT_TOO_BIG, val)));
+                }
+            }
+            else if (pcd.type == typeof(float))
+            {
+                // try to convert value to float
+                try
+                {
+                    pcd.value = Convert.ToSingle(val);
+                }
+                catch (FormatException)
+                {
+                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_ARGUMENT_NOT_FLOAT, val)));
+                }
+                catch (OverflowException)
+                {
+                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_ARGUMENT_TOO_BIG, val)));
+                }
+            }
+            else if (pcd.type == typeof(bool))
+            {
+                if (val == "true" || val == "false")
+                {
+                    if (val == "true")
+                        pcd.value = true;
+                    else
+                        pcd.value = false;
+                }
+                else
+                {
+                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE, val, type)));
+                }
+            }
+            else if (pcd.type == typeof(object))
+            {
+                try
+                {
+                    pcd.value = deserialize(val);
+                }
+                catch (JsonException)
+                {
+                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE, val, type)));
+                }
+            }
+            else
+            {
+                errors.Add(new ParserError(item.line, item.position + 1, string.Format(ERR_MSG_UNKNOWN_TYPE, type)));
+            }
+            if (use_var && !customVariables.ContainsKey(val)) // search for desired custom variable and add error if it doesn't exist
+            {
+                errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_UNKNOWN_CUSTOM_VARIABLE, val)));
+            }
+
+            // variable
+            pcd.var_name = var;
+
+            // if there are any new syntax errors we can't parse this item - return it without any change
+            if (errors.Count > original_error_count)
+                return item;
+
+            // assign newly constructed parser compare definition object into item and return the item
+            item.comp_def = pcd;
+            return item;
         }
 
         private ParserItem applyFunctions(ParserItem item, Dictionary<string, string> customVariables, List<ParserError> errors)
@@ -319,8 +775,7 @@ namespace Director.ParserLib
                 index = value.IndexOf(VARIABLE_CHARACTER, index); // ... so, find all occurrences of variable characters in given string value
                 if (index != -1)
                 {
-                    // Strnadj: Pokud je to 1 znak, tzn 0, nemùže být escapována..
-                    if (index == 0 || value[index - 1] != ESCAPE_CHARACTER)
+                    if (index == 0 || value[index - 1] != ESCAPE_CHARACTER) // either first character or unescaped one
                         var_occurrences.Add(index);
                     index++;
                 }
@@ -335,8 +790,7 @@ namespace Director.ParserLib
                 index = value.IndexOf(MAIN_SYNTAX_CHARACTER, index); // ... so, find all occurrences of function characters in given string value
                 if (index != -1)
                 {
-                    // Strnadj: Pokud je to 1 znak, tzn 0, nemùže být escapována..
-                    if (index == 0 || value[index - 1] != ESCAPE_CHARACTER) 
+                    if (index == 0 || value[index - 1] != ESCAPE_CHARACTER) // either first character or unescaped one
                         fn_occurrences.Add(index);
                     index++;
                 }
