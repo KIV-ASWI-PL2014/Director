@@ -312,48 +312,12 @@ namespace Director.Forms
             MenuItem server = new MenuItem(Director.Properties.Resources.MenuServer);
 
             // Prepare submenu
-            server.SubMenu = new Menu();
+            server.SubMenu = _createServerMenu();
 
-            // Sub menu server
-            NewServer = new MenuItem(Director.Properties.Resources.MenuNewServer)
-            {
-                Image = Image.FromResource(DirectorImages.NEW_SERVER_ICON)
-            };
-            NewServer.Clicked += CreateNewServer;
-            server.SubMenu.Items.Add(NewServer);
-
-            // Scenario open
-            OpenScenarioMenu = new MenuItem(Director.Properties.Resources.MenuOpenScenario)
-            {
-                Image = Image.FromResource(DirectorImages.OPEN_SCENARIO_ICON)
-            };
-            OpenScenarioMenu.Clicked += OpenNewScenario;
-            server.SubMenu.Items.Add(OpenScenarioMenu);
-
-            // Export scenario
-            SaveScenarioMenu = new MenuItem(Director.Properties.Resources.MenuSaveScenario)
-            { 
-                Image = Image.FromResource(DirectorImages.SAVE_SCENARIO_ICON)
-            };
-            SaveScenarioMenu.Clicked += SaveScenario;
-            server.SubMenu.Items.Add(SaveScenarioMenu);
-
-            // Separator before exit
-            server.SubMenu.Items.Add(new SeparatorMenuItem());
-
-            // Sub menu exit
-            MenuItem _exit = new MenuItem(Director.Properties.Resources.MenuExitProgram)
-            {
-                Image = Image.FromResource(DirectorImages.EXIT_ICON)
-            };
-            _exit.Clicked += delegate
-            {
-                Application.Exit();
-            };
-            server.SubMenu.Items.Add(_exit);
+            // Add server menu to items
             menu.Items.Add(server);
 
-            // Set menu
+            // Set as main menu
             MainMenu = menu;
 
             // Create server menu
@@ -396,6 +360,54 @@ namespace Director.Forms
                 Image = Image.FromResource(DirectorImages.CROSS_ICON)
             };
             RequestMenu.Items.Add(MenuRemoveRequest);
+        }
+
+        /// <summary>
+        /// Create server menu.
+        /// </summary>
+        private Menu _createServerMenu()
+        {
+            Menu ServerMenu = new Menu();
+
+            // Sub menu server
+            NewServer = new MenuItem(Director.Properties.Resources.MenuNewServer)
+            {
+                Image = Image.FromResource(DirectorImages.NEW_SERVER_ICON)
+            };
+            NewServer.Clicked += CreateNewServer;
+            ServerMenu.Items.Add(NewServer);
+
+            // Scenario open
+            OpenScenarioMenu = new MenuItem(Director.Properties.Resources.MenuOpenScenario)
+            {
+                Image = Image.FromResource(DirectorImages.OPEN_SCENARIO_ICON)
+            };
+            OpenScenarioMenu.Clicked += OpenNewScenario;
+            ServerMenu.Items.Add(OpenScenarioMenu);
+
+            // Export scenario
+            SaveScenarioMenu = new MenuItem(Director.Properties.Resources.MenuSaveScenario)
+            {
+                Image = Image.FromResource(DirectorImages.SAVE_SCENARIO_ICON)
+            };
+            SaveScenarioMenu.Clicked += SaveScenario;
+            ServerMenu.Items.Add(SaveScenarioMenu);
+
+            // Separator before exit
+            ServerMenu.Items.Add(new SeparatorMenuItem());
+
+            // Sub menu exit
+            MenuItem _exit = new MenuItem(Director.Properties.Resources.MenuExitProgram)
+            {
+                Image = Image.FromResource(DirectorImages.EXIT_ICON)
+            };
+            _exit.Clicked += delegate
+            {
+                Application.Exit();
+            };
+            ServerMenu.Items.Add(_exit);
+
+            return ServerMenu;
         }
 
         /// <summary>

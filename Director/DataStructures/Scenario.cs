@@ -36,10 +36,23 @@ namespace Director.DataStructures
         /// </summary>
         public int RunningFrequency { get; set; }
 
+        /// <summary>
+        /// Private int.
+        /// </summary>
+        private int _TimeAfterPrevious;
+
 		/// <summary>
 		/// Time delay after previous scenario ends! [seconds]
 		/// </summary>
-		public int TimeAfterPrevious { get; set; }
+		public int TimeAfterPrevious {
+            get { return _TimeAfterPrevious; }
+            set
+            {
+                if (value < 0)
+                    throw new Exception("Value must be greather than 0");
+                _TimeAfterPrevious = value;
+            }
+        }
 
 		/// <summary>
 		/// Running by Running Frequency, otherwise scenario after scenario...

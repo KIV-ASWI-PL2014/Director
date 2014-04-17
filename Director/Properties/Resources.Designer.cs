@@ -89,6 +89,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose running option.
+        /// </summary>
+        internal static string ChooseRunningOptions {
+            get {
+                return ResourceManager.GetString("ChooseRunningOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add request.
         /// </summary>
         internal static string ContextMenuAddRequest {
@@ -282,6 +291,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Frequency.
+        /// </summary>
+        internal static string FrequencyLabel {
+            get {
+                return ResourceManager.GetString("FrequencyLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap help {
@@ -325,6 +343,15 @@ namespace Director.Properties {
         internal static string InvalidServerURL {
             get {
                 return ResourceManager.GetString("InvalidServerURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time delay must be a number and greather or equal to 0!.
+        /// </summary>
+        internal static string InvalidTimeDelay {
+            get {
+                return ResourceManager.GetString("InvalidTimeDelay", resourceCulture);
             }
         }
         
@@ -563,6 +590,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Running options.
+        /// </summary>
+        internal static string RunningOptionsLabel {
+            get {
+                return ResourceManager.GetString("RunningOptionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default running periodicity.
         /// </summary>
         internal static string RunningPeriodicity {
@@ -620,11 +656,29 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scenario.
+        /// </summary>
+        internal static string ScenarioLabel {
+            get {
+                return ResourceManager.GetString("ScenarioLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         internal static string ScenarioName {
             get {
                 return ResourceManager.GetString("ScenarioName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scenario overview.
+        /// </summary>
+        internal static string ScenarioOverview {
+            get {
+                return ResourceManager.GetString("ScenarioOverview", resourceCulture);
             }
         }
         
@@ -698,6 +752,24 @@ namespace Director.Properties {
         internal static string ServerURL {
             get {
                 return ResourceManager.GetString("ServerURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time delay in seconds.
+        /// </summary>
+        internal static string TimeDelayInSeconds {
+            get {
+                return ResourceManager.GetString("TimeDelayInSeconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time delay after previous scenario.
+        /// </summary>
+        internal static string TimeDelayLabel {
+            get {
+                return ResourceManager.GetString("TimeDelayLabel", resourceCulture);
             }
         }
         

@@ -331,4 +331,28 @@
   <data name="SelectScenarios" xml:space="preserve">
     <value>Select scenarios to export</value>
   </data>
+  <data name="ChooseRunningOptions" xml:space="preserve">
+    <value>Choose running option</value>
+  </data>
+  <data name="FrequencyLabel" xml:space="preserve">
+    <value>Frequency</value>
+  </data>
+  <data name="InvalidTimeDelay" xml:space="preserve">
+    <value>Time delay must be a number and greather or equal to 0!</value>
+  </data>
+  <data name="RunningOptionsLabel" xml:space="preserve">
+    <value>Running options</value>
+  </data>
+  <data name="ScenarioLabel" xml:space="preserve">
+    <value>Scenario</value>
+  </data>
+  <data name="ScenarioOverview" xml:space="preserve">
+    <value>Scenario overview</value>
+  </data>
+  <data name="TimeDelayInSeconds" xml:space="preserve">
+    <value>Time delay in seconds</value>
+  </data>
+  <data name="TimeDelayLabel" xml:space="preserve">
+    <value>Time delay after previous scenario</value>
+  </data>
 </root>

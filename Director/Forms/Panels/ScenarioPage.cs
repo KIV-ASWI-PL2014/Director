@@ -34,6 +34,18 @@ namespace Director.Forms.Panels
         };
 
         /// <summary>
+        /// Invalid time delay.
+        /// </summary>
+        private Label InvalidTimeDelay = new Label()
+        {
+            Markup = "<b>" + Director.Properties.Resources.InvalidTimeDelay + "</b>",
+            Visible = false,
+            TextColor = Colors.Red,
+            TextAlignment = Alignment.End,
+            MarginRight = 10
+        };
+
+        /// <summary>
         /// Scenario name.
         /// </summary>
         private TextEntry ScenarioName { get; set; }
@@ -57,6 +69,11 @@ namespace Director.Forms.Panels
 		/// Time Delay running.
 		/// </summary>
 		private RadioButton TimeDelayRunning { get; set; }
+
+        /// <summary>
+        /// Scenario information message.
+        /// </summary>
+        private MarkdownView ScenarioInformationMessage { get; set; }
 
         /// <summary>
         /// Default constructor.
@@ -90,6 +107,9 @@ namespace Director.Forms.Panels
 			// Running type
 			PeriodicityRunning.Active = ActiveScenario.PeriodicityRunning;
 			ChangeFrequencyOption (null, null);
+
+            // Markdown summary
+            ScenarioInformationMessage.Markdown = GetScenarioSummary();
         }
 
         /// <summary>
@@ -99,7 +119,7 @@ namespace Director.Forms.Panels
         {
             Frame f = new Frame()
             {
-				Label = "Scenario",
+				Label = Director.Properties.Resources.ScenarioLabel,
 				Padding = 10
             };
             VBox ScenarioSettings = new VBox();
@@ -114,7 +134,7 @@ namespace Director.Forms.Panels
 			PackStart(f);
 
 			Frame h = new Frame () {
-				Label =  "Running options",
+				Label =  Director.Properties.Resources.RunningOptionsLabel,
 				Padding = 10
 			};
 			VBox RunningOptionsSettings = new VBox ();
@@ -122,10 +142,10 @@ namespace Director.Forms.Panels
 			// Select scenario run
 			RunningOptionsSettings.PackStart(new Label()
 				{
-					Text = "Choose running options"
+					Text = Director.Properties.Resources.RunningOptionsLabel
 				});
-			PeriodicityRunning = new RadioButton ("Frequency");
-			TimeDelayRunning = new RadioButton ("Time delay after previous scenario");
+			PeriodicityRunning = new RadioButton (Director.Properties.Resources.FrequencyLabel);
+			TimeDelayRunning = new RadioButton (Director.Properties.Resources.TimeDelayLabel);
 			PeriodicityRunning.Group = TimeDelayRunning.Group;
 			RunningOptionsSettings.PackStart (PeriodicityRunning);
 			RunningOptionsSettings.PackStart (TimeDelayRunning);
@@ -145,16 +165,66 @@ namespace Director.Forms.Panels
 			// Time delay settings
 			RunningOptionsSettings.PackStart(new Label()
 				{
-					Text = "Time delay in seconds"
+					Text = Director.Properties.Resources.TimeDelayInSeconds
 				});
 			TimeDelay = new TextEntry () {
 				Text =  "0"
 			};
+            TimeDelay.Changed += delegate
+            {
+                try
+                {
+                    ActiveScenario.TimeAfterPrevious = int.Parse(TimeDelay.Text);
+
+                    InvalidTimeDelay.Visible = false;
+                }
+                catch (Exception e)
+                {
+                    InvalidTimeDelay.Visible = true;
+                }
+            };
 			RunningOptionsSettings.PackStart (TimeDelay);
+            RunningOptionsSettings.PackStart(InvalidTimeDelay);
 
             // Add to form
 			h.Content = RunningOptionsSettings;
 			PackStart (h);
+
+
+            // Scenario information
+            Frame si = new Frame()
+            {
+                Label = Director.Properties.Resources.ScenarioOverview,
+                Padding = 10
+            };
+
+            ScrollView ScenarioInformationScrollView = new ScrollView()
+            {
+                VerticalScrollPolicy = ScrollPolicy.Automatic
+            };
+
+            ScenarioInformationMessage = new MarkdownView();
+            ScenarioInformationScrollView.Content = ScenarioInformationMessage;
+            si.Content = ScenarioInformationScrollView;
+            PackStart(si, true, true);
+        }
+
+        /// <summary>
+        /// Return markdown scenario summary.
+        /// </summary>
+        /// <returns></returns>
+        private String GetScenarioSummary()
+        {
+            string ret = "";
+
+            // List of requests
+            ret += "## Requests\n";
+
+            // Collect al request names
+            foreach (Request i in ActiveScenario.Requests) {
+                ret += "- " + i.Name + "\n";
+            }
+            return ret;
         }
 
 		/// <summary>

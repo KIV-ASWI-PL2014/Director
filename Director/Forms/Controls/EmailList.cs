@@ -18,7 +18,7 @@ namespace Director
 		/// <summary>
 		/// Email field width.
 		/// </summary>
-		public const int EMAIL_WIDTH = 150;
+		public const int EMAIL_WIDTH = 200;
 
         /// <summary>
         /// Notification width.
@@ -70,34 +70,31 @@ namespace Director
 		{
 			// Create first line with informations
 			HBox FirstLine = new HBox ();
-			Label EmailName = new Label ("Email") {
-				MinWidth = EMAIL_WIDTH + 50, 
-				WidthRequest = EMAIL_WIDTH + 50, 
-				HeightRequest = 20, 
-				MinHeight =  20,
-				ExpandVertical = true, 
+			Label EmailName = new Label (Director.Properties.Resources.Email) {
 				VerticalPlacement = WidgetPlacement.Start,
 				HorizontalPlacement = WidgetPlacement.Center,
 				MarginLeft = 10,
-				MarginTop = 5
+				MarginTop = 5,
+                ExpandHorizontal = true,
+                ExpandVertical = false
 			};
-			Label Errors = new Label ("Error") {
+			Label Errors = new Label (Director.Properties.Resources.Errors) {
                 MinWidth = ERROR_WIDTH,
                 WidthRequest = ERROR_WIDTH,
                 ExpandVertical = false,
                 VerticalPlacement = WidgetPlacement.Fill
 			};
-			Label Notif = new Label ("Notifications") {
+			Label Notif = new Label (Director.Properties.Resources.Notification) {
                 MinWidth = NOTIFICATION_WIDTH,
                 WidthRequest = NOTIFICATION_WIDTH,
                 ExpandVertical = false,
                 VerticalPlacement = WidgetPlacement.Fill
 			};			
-			Button NewEmail = new Button("Add") {
-                MinWidth = BTN_WIDTH,
-                WidthRequest = BTN_WIDTH,
-                ExpandVertical = false,
-                VerticalPlacement = WidgetPlacement.Fill
+			Button NewEmail = new Button(Image.FromResource(DirectorImages.ADD_ICON)) {
+                MinWidth = 30,
+                WidthRequest = 30,
+                TooltipText = "Add new email",
+                MarginRight = 30
 			};
 			NewEmail.Clicked += NewEmail_Clicked;
 			FirstLine.PackStart (EmailName, true, true);
@@ -117,7 +114,7 @@ namespace Director
             ScrollView EmailListScroll = new ScrollView()
             {
                 HorizontalScrollPolicy = ScrollPolicy.Never,
-                VerticalScrollPolicy = ScrollPolicy.Automatic,
+                VerticalScrollPolicy = ScrollPolicy.Always,
                 Content = EmailListContent,
                 BackgroundColor = Colors.LightGray
             };
@@ -172,7 +169,11 @@ namespace Director
 			// Add all emails from Server
 			int x = 0;
 			foreach (Email i in ActiveServer.Emails) {
-				var tmp = new EmailListItem (this, i, (x%2 == 0) ? Colors.White : Colors.LightGray);
+                var tmp = new EmailListItem(this, i, (x % 2 == 0) ? Colors.White : Colors.LightGray);
+                if (!Email.IsValid(i.UserEmail))
+                {
+                    tmp.BackgroundColor = Colors.Red;
+                }
 				EmailListContent.PackStart (tmp);
 				EmailItems.Add (tmp);
 				x++;
@@ -185,7 +186,6 @@ namespace Director
 		/// <summary>
 		/// Email text entry.
 		/// </summary>
-		/// <value>The email text.</value>
 		public TextEntry EmailText { get; set; }
 
 		/// <summary>
@@ -217,7 +217,6 @@ namespace Director
 		/// <summary>
 		/// Default color.
 		/// </summary>
-		/// <value>The default color.</value>
 		public Color DefaultColor { get; set; }
 
 		/// <summary>
@@ -296,7 +295,6 @@ namespace Director
 			RemoveEmail = new Button (Image.FromResource (DirectorImages.CROSS_ICON)) {
 				HorizontalPlacement = WidgetPlacement.Center,
 				VerticalPlacement = WidgetPlacement.Center,
-				Style =  ButtonStyle.Borderless,
 				MarginRight = 20
 			};
 			RemoveEmail.Clicked += delegate {
