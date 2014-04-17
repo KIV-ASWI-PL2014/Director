@@ -232,17 +232,24 @@ namespace Director
 			// Set background color
 			BackgroundColor = DefaultColor = bgColor;
 
+			// Self expand horizontal and vertical
+			ExpandHorizontal = true;
+			ExpandVertical = true;
+
+			// No margin at all
+			Margin = 0;
+
             // Set parent & active email
 			ListParent = parent;
 			ActiveEmail = s;
 			EmailText = new TextEntry () {
 				Text = s.UserEmail,
-				MinWidth = EmailList.EMAIL_WIDTH,
 				MarginLeft = 5,
-				HorizontalPlacement = WidgetPlacement.Center,
-				VerticalPlacement = WidgetPlacement.Start,
-				MarginTop = 5,
-                ExpandVertical = true
+				HorizontalPlacement = WidgetPlacement.Fill,
+				VerticalPlacement = WidgetPlacement.Center,
+				MarginTop = 1,
+				ExpandHorizontal = true,
+				ExpandVertical =  false
 			};
             EmailText.Changed += delegate
             {
@@ -253,7 +260,7 @@ namespace Director
 					BackgroundColor = Colors.Red;
 				}
             };
-			PackStart (EmailText);
+			PackStart (EmailText, true, true);
 
 			// Error
 			Errors = new CheckBox () {
@@ -261,7 +268,8 @@ namespace Director
                 WidthRequest = EmailList.ERROR_WIDTH,
                 MinWidth = EmailList.ERROR_WIDTH,
                 HorizontalPlacement = WidgetPlacement.Center,
-                VerticalPlacement = WidgetPlacement.Center
+				VerticalPlacement = WidgetPlacement.Center,
+				MarginLeft = 25
 			};
             Errors.Toggled += delegate
             {
@@ -288,7 +296,8 @@ namespace Director
 			RemoveEmail = new Button (Image.FromResource (DirectorImages.CROSS_ICON)) {
 				HorizontalPlacement = WidgetPlacement.Center,
 				VerticalPlacement = WidgetPlacement.Center,
-				Style =  ButtonStyle.Borderless
+				Style =  ButtonStyle.Borderless,
+				MarginRight = 20
 			};
 			RemoveEmail.Clicked += delegate {
 				parent.RemoveEmail(ActiveEmail);

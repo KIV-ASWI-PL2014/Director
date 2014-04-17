@@ -36,6 +36,16 @@ namespace Director.DataStructures
         /// </summary>
         public int RunningFrequency { get; set; }
 
+		/// <summary>
+		/// Time delay after previous scenario ends! [seconds]
+		/// </summary>
+		public int TimeAfterPrevious { get; set; }
+
+		/// <summary>
+		/// Running by Running Frequency, otherwise scenario after scenario...
+		/// </summary>
+		public Boolean PeriodicityRunning { get; set; }
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -53,6 +63,11 @@ namespace Director.DataStructures
             Id = id;
             Name = name;
             Requests = new List<Request>();
+
+			// Set default values
+			RunningFrequency = 0;
+			TimeAfterPrevious = 10;
+			PeriodicityRunning = false;
         }
 
         /// <summary>

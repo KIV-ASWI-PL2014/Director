@@ -43,6 +43,21 @@ namespace Director.Forms.Panels
         /// </summary>
         private ComboBox FrequencyRunning { get; set; }
 
+		/// <summary>
+		/// Time delay in seconds from previous scenario running.
+		/// </summary>
+		private TextEntry TimeDelay { get; set; }
+
+		/// <summary>
+		/// Run by frequency.
+		/// </summary>
+		private RadioButton PeriodicityRunning { get; set; }
+
+		/// <summary>
+		/// Time Delay running.
+		/// </summary>
+		private RadioButton TimeDelayRunning { get; set; }
+
         /// <summary>
         /// Default constructor.
         /// </summary>
@@ -68,6 +83,13 @@ namespace Director.Forms.Panels
 
             // Runing frequency
             FrequencyRunning.SelectedIndex = ActiveScenario.RunningFrequency;
+
+			// Time dealay time
+			TimeDelay.Text = ActiveScenario.TimeAfterPrevious + "";
+
+			// Running type
+			PeriodicityRunning.Active = ActiveScenario.PeriodicityRunning;
+			ChangeFrequencyOption (null, null);
         }
 
         /// <summary>
@@ -77,33 +99,74 @@ namespace Director.Forms.Panels
         {
             Frame f = new Frame()
             {
-                Label = Director.Properties.Resources.ScenarioSettings,
-                Padding = 10
+				Label = "Scenario",
+				Padding = 10
             };
             VBox ScenarioSettings = new VBox();
 
             // Create scenario name
             ScenarioName = new TextEntry();
             ScenarioName.Changed += ScenarioName_Changed;
-            ScenarioSettings.PackStart(new Label(Director.Properties.Resources.ScenarioName));
+			ScenarioSettings.PackStart(new Label(Director.Properties.Resources.ScenarioName));
             ScenarioSettings.PackStart(ScenarioName);
             ScenarioSettings.PackStart(InvalidScenarioName);
+			f.Content = ScenarioSettings;
+			PackStart(f);
+
+			Frame h = new Frame () {
+				Label =  "Running options",
+				Padding = 10
+			};
+			VBox RunningOptionsSettings = new VBox ();
+
+			// Select scenario run
+			RunningOptionsSettings.PackStart(new Label()
+				{
+					Text = "Choose running options"
+				});
+			PeriodicityRunning = new RadioButton ("Frequency");
+			TimeDelayRunning = new RadioButton ("Time delay after previous scenario");
+			PeriodicityRunning.Group = TimeDelayRunning.Group;
+			RunningOptionsSettings.PackStart (PeriodicityRunning);
+			RunningOptionsSettings.PackStart (TimeDelayRunning);
+			PeriodicityRunning.Group.ActiveRadioButtonChanged += ChangeFrequencyOption;
 
             // Frequency settings
-            ScenarioSettings.PackStart(new Label()
+			RunningOptionsSettings.PackStart(new Label()
             {
                 Text = Director.Properties.Resources.RunningPeriodicity
             });
             FrequencyRunning = new ComboBox();
             FrequencyHelper.FillComboBox(FrequencyRunning);
-            ScenarioSettings.PackStart(FrequencyRunning);
+			RunningOptionsSettings.PackStart(FrequencyRunning);
             FrequencyRunning.SelectedIndex = 0;
             FrequencyRunning.SelectionChanged += FrequencyRunning_SelectionChanged;
 
+			// Time delay settings
+			RunningOptionsSettings.PackStart(new Label()
+				{
+					Text = "Time delay in seconds"
+				});
+			TimeDelay = new TextEntry () {
+				Text =  "0"
+			};
+			RunningOptionsSettings.PackStart (TimeDelay);
+
             // Add to form
-            f.Content = ScenarioSettings;
-            PackStart(f);
+			h.Content = RunningOptionsSettings;
+			PackStart (h);
         }
+
+		/// <summary>
+		/// Change radio button frequency running options.
+		/// </summary>
+		void ChangeFrequencyOption(object sender, EventArgs e)
+		{
+			bool periodicity = PeriodicityRunning.Group.ActiveRadioButton == PeriodicityRunning;
+			ActiveScenario.PeriodicityRunning = periodicity;
+			FrequencyRunning.Sensitive = periodicity;
+			TimeDelay.Sensitive = !periodicity;
+		}
 
         /// <summary>
         /// Handle changing running frequencíes.
