@@ -492,7 +492,6 @@ namespace Director.ParserLib
         private void compareResponseWithTemplate(Dictionary<string, ParserItem> template_root, Dictionary<string, ParserItem> response_root, Dictionary<string, string> customVariables, List<ParserError> errors, bool ignoreUndefinedKeys)
         {
             List<string> template_keys = new List<string>(template_root.Keys);
-            List<string> response_keys = new List<string>(response_root.Keys);
             List<string> remaining_response_keys = new List<string>(response_root.Keys); // checklist for the response keys; every found match with template keys get one item deleted
 
             foreach (string template_key in template_keys)
@@ -560,14 +559,27 @@ namespace Director.ParserLib
 
         private bool compareParserItems(ParserItem template_item, ParserItem response_item, Dictionary<string, string> customVariables, List<ParserError> errors)
         {
+            // preprocess some types (arrays and string type codes needs to be measured by their length)
+            if (template_item.comp_def.type == typeof(Array))
+            {
+                template_item.comp_def.value = ((List<ParserItem>)template_item.comp_def.value).Count;
+                response_item.value = ((List<ParserItem>)response_item.value).Count;
+            }
+            if (template_item.comp_def.type == typeof(string) && template_item.comp_def.operation != RESPONSE_OPERATION_EQUAL && template_item.comp_def.operation != RESPONSE_OPERATION_NOT_EQUAL && template_item.comp_def.operation != null)
+                template_item.comp_def.value = ((string)template_item.comp_def.value).Length;
+
+            // store value in custom variable if requested
+            if (template_item.comp_def.var_name != null)
+                customVariables[template_item.comp_def.var_name] = Convert.ToString(response_item.value);
+
             // strict comparison
             if (template_item.comp_def.type == null && template_item.comp_def.operation == null && template_item.comp_def.value != null)
             {
-                if (template_item.value.Equals(response_item.value))
+                if (template_item.comp_def.value.Equals(response_item.value))
                     return true;
                 else
                 {
-                    errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_COMPARE_VALUES, template_item.value, response_item.value), SOURCE_TEMPLATE));
+                    errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_COMPARE_VALUES, template_item.comp_def.value, response_item.value), SOURCE_TEMPLATE));
                     return false;
                 }
             }
@@ -587,14 +599,14 @@ namespace Director.ParserLib
             // combined comparison (strict + type)
             if (template_item.comp_def.type != null && template_item.comp_def.operation == null && template_item.comp_def.value != null)
             {
-                if ((template_item.value.Equals(response_item.value)) && (template_item.comp_def.type == response_item.value.GetType()))
+                if ((template_item.comp_def.value.Equals(response_item.value)) && (template_item.comp_def.type == response_item.value.GetType()))
                     return true;
                 else
                 {
-                    if (template_item.value.Equals(response_item.value))
-                        errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_COMPARE_VALUES, template_item.value, response_item.value), SOURCE_TEMPLATE));
-                    else
+                    if (template_item.comp_def.value.Equals(response_item.value))
                         errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_COMPARE_TYPES, template_item.comp_def.type, response_item.value.GetType()), SOURCE_TEMPLATE));
+                    else
+                        errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_COMPARE_VALUES, template_item.comp_def.value, response_item.value), SOURCE_TEMPLATE));
                     return false;
                 }
             }
@@ -602,7 +614,63 @@ namespace Director.ParserLib
             // specific comparison (operation)
             if (template_item.comp_def.type != null && template_item.comp_def.operation != null && template_item.comp_def.value != null)
             {
+                // check if type of both items is the same
+                if (!template_item.comp_def.value.Equals(response_item.value))
+                {
+                    errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_COMPARE_TYPES, template_item.comp_def.type, response_item.value.GetType()), SOURCE_TEMPLATE));
+                    return false;
+                }
 
+                // evaluate comparison with desired operator
+                bool result = false;
+                switch (template_item.comp_def.operation)
+                {
+                    case RESPONSE_OPERATION_EQUAL:
+                        result = template_item.comp_def.value.Equals(response_item.value);
+                        break;
+                    case RESPONSE_OPERATION_NOT_EQUAL:
+                        result = !template_item.comp_def.value.Equals(response_item.value);
+                        break;
+                    case RESPONSE_OPERATION_LESS_THAN:
+                        if (template_item.value is float)
+                            result = (float)response_item.value < (float)template_item.comp_def.value;
+                        else
+                            result = (int)response_item.value < (int)template_item.comp_def.value;
+                        break;
+                    case RESPONSE_OPERATION_LESS_THAN_OR_EQUAL:
+                        if (template_item.value is float)
+                            result = (float)response_item.value <= (float)template_item.comp_def.value;
+                        else
+                            result = (int)response_item.value <= (int)template_item.comp_def.value;
+                        break;
+                    case RESPONSE_OPERATION_GREATER_THAN:
+                        if (template_item.value is float)
+                            result = (float)response_item.value > (float)template_item.comp_def.value;
+                        else
+                            result = (int)response_item.value > (int)template_item.comp_def.value;
+                        break;
+                    case RESPONSE_OPERATION_GREATER_THAN_OR_EQUAL:
+                        if (template_item.value is float)
+                            result = (float)response_item.value >= (float)template_item.comp_def.value;
+                        else
+                            result = (int)response_item.value >= (int)template_item.comp_def.value;
+                        break;
+                    case RESPONSE_OPERATION_MATCHING_REGEXP_PATTERN:
+                        result = Regex.Match((string)response_item.value, (string)template_item.comp_def.value).Success;
+                        break;
+                    default: // urecognized operation type
+                        errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_UNKNOWN_OPERATION, template_item.comp_def.operation), SOURCE_TEMPLATE));
+                        break;
+                }
+
+                // evaluate result after comparison
+                if (result)
+                    return true;
+                else
+                {
+                    errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_COMPARE_OPERATION, response_item.value, template_item.comp_def.operation, template_item.comp_def.value), SOURCE_TEMPLATE));
+                    return false;
+                }
             }
 
             return false;
@@ -671,7 +739,7 @@ namespace Director.ParserLib
             // retrieve individual values between MAIN_SYNTAX_CHARACTERs and save them to the item structure
             //
             string type = value.Substring(occurrences[0] + 1, occurrences[1] - occurrences[0] - 1); // type
-            string[] ops = value.Substring(occurrences[1] + 1, occurrences[2] - occurrences[1] - 1).Split(RESPONSE_OPERATION_SEPARATOR); // operation with possible modifiers
+            string[] ops = value.Substring(occurrences[1] + 1, occurrences[2] - occurrences[1] - 1).Split(new char[] {RESPONSE_OPERATION_SEPARATOR}, StringSplitOptions.RemoveEmptyEntries); // operation with possible modifiers
             string val = value.Substring(occurrences[2] + 1, occurrences[3] - occurrences[2] - 1); // value
             string var = value.Substring(occurrences[3] + 1, occurrences[4] - occurrences[3] - 1); // variable
             ParserCompareDefinition pcd = new ParserCompareDefinition();
