@@ -4,6 +4,7 @@ using Director.DataStructures;
 using Xwt.Drawing;
 using System.Collections.Generic;
 using Director.DataStructures.SupportStructures;
+using Director.Forms.Controls;
 
 namespace Director
 {
@@ -135,7 +136,8 @@ namespace Director
 		{
 			var _new = new Email ();
 			ActiveServer.Emails.Add (_new);
-			var tmp = new EmailListItem (this, _new);
+			int size = ActiveServer.Emails.Count + 1;
+			var tmp = new EmailListItem (this, _new, (size % 2 == 0) ? Colors.White : Colors.LightGray);
 			EmailItems.Add (tmp);
 			EmailListContent.PackStart (tmp);
 		}
@@ -157,11 +159,12 @@ namespace Director
 			EmailListContent.Clear ();
 
 			// Add all emails from Server
+			int x = 0;
 			foreach (Email i in ActiveServer.Emails) {
-				var tmp = new EmailListItem (this, i);
+				var tmp = new EmailListItem (this, i, (x%2 == 0) ? Colors.White : Colors.LightGray);
 				EmailListContent.PackStart (tmp);
 				EmailItems.Add (tmp);
-				Console.WriteLine (i.UserEmail);
+				x++;
 			}
 		}
 	}
@@ -203,23 +206,25 @@ namespace Director
 		/// <summary>
 		/// Create list item with specific conditions.
 		/// </summary>
-		public EmailListItem(EmailList parent, Email s)
+		public EmailListItem(EmailList parent, Email s, Color bgColor)
 		{
             // Set height
             MinHeight = EmailList.ROW_HEIGHT;
             HeightRequest = EmailList.ROW_HEIGHT;
+
+			// Set background color
+			BackgroundColor = bgColor;
 
             // Set parent & active email
 			ListParent = parent;
 			ActiveEmail = s;
 			EmailText = new TextEntry () {
 				Text = s.UserEmail,
-				MinWidth = EmailList.EMAIL_WIDTH, WidthRequest = EmailList.EMAIL_WIDTH,
-				MinHeight = 20, HeightRequest = 20,
+				MinWidth = EmailList.EMAIL_WIDTH,
 				MarginLeft = 5,
 				HorizontalPlacement = WidgetPlacement.Center,
 				VerticalPlacement = WidgetPlacement.Start,
-                MarginTop = 5,
+				MarginTop = 5,
                 ExpandVertical = true
 			};
             EmailText.Changed += delegate
@@ -240,7 +245,7 @@ namespace Director
             {
                 s.Errors = Errors.State == CheckBoxState.On;
             };
-            PackStart(Errors);
+			PackStart(Errors);
 
             // Notification
             Notification = new CheckBox()
@@ -255,19 +260,14 @@ namespace Director
             {
                 s.Notifications = Notification.State == CheckBoxState.On;
             };
-            PackStart(Notification);
+			PackStart(Notification);
 
             // Button
-
-
-            // Highlighting
-			MouseEntered += delegate(object sender, EventArgs e) {
-				BackgroundColor = Colors.LightBlue;
+			RemoveEmail = new Button (Image.FromResource (DirectorImages.CROSS_ICON)) {
+				HorizontalPlacement = WidgetPlacement.Center,
+				VerticalPlacement = WidgetPlacement.Center
 			};
-
-			MouseExited += delegate(object sender, EventArgs e) {
-				BackgroundColor = Colors.White;
-			};
+			PackStart (RemoveEmail);
 		}
 	}
 }
