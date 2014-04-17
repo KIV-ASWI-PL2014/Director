@@ -230,7 +230,10 @@ namespace Xwt.Mac
 				ctype = NSCursor.ResizeUpDownCursor;
 			else
 				ctype = NSCursor.ArrowCursor;
-			// TODO: assign the cursor
+
+			Widget.DiscardCursorRects();
+			Widget.AddCursorRect(Widget.Bounds, ctype);
+			Widget.CursorUpdate(new NSEvent());
 		}
 		
 		~ViewBackend ()

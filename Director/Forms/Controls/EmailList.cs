@@ -137,9 +137,20 @@ namespace Director
 			var _new = new Email ();
 			ActiveServer.Emails.Add (_new);
 			int size = ActiveServer.Emails.Count + 1;
-			var tmp = new EmailListItem (this, _new, (size % 2 == 0) ? Colors.White : Colors.LightGray);
+			var tmp = new EmailListItem (this, _new, (size % 2 == 0) ? Colors.White : Colors.LightGray) {
+				BackgroundColor = Colors.Red
+			};
 			EmailItems.Add (tmp);
 			EmailListContent.PackStart (tmp);
+		}
+
+		/// <summary>
+		/// Remove active email.
+		/// </summary>
+		public void RemoveEmail(Email email)
+		{
+			ActiveServer.Emails.Remove (email);
+			SetServer (ActiveServer);
 		}
 
 
@@ -204,6 +215,12 @@ namespace Director
 		public Button RemoveEmail { get; set; }
 
 		/// <summary>
+		/// Default color.
+		/// </summary>
+		/// <value>The default color.</value>
+		public Color DefaultColor { get; set; }
+
+		/// <summary>
 		/// Create list item with specific conditions.
 		/// </summary>
 		public EmailListItem(EmailList parent, Email s, Color bgColor)
@@ -213,7 +230,7 @@ namespace Director
             HeightRequest = EmailList.ROW_HEIGHT;
 
 			// Set background color
-			BackgroundColor = bgColor;
+			BackgroundColor = DefaultColor = bgColor;
 
             // Set parent & active email
 			ListParent = parent;
@@ -230,6 +247,11 @@ namespace Director
             EmailText.Changed += delegate
             {
                 s.UserEmail = EmailText.Text;
+				if (Email.IsValid(EmailText.Text)) {
+					BackgroundColor = DefaultColor;
+				} else {
+					BackgroundColor = Colors.Red;
+				}
             };
 			PackStart (EmailText);
 
@@ -254,7 +276,7 @@ namespace Director
                 WidthRequest = EmailList.ERROR_WIDTH,
                 MinWidth = EmailList.ERROR_WIDTH,
                 HorizontalPlacement = WidgetPlacement.Center,
-                VerticalPlacement = WidgetPlacement.Center
+				VerticalPlacement = WidgetPlacement.Center
             };
             Notification.Toggled += delegate
             {
@@ -265,7 +287,11 @@ namespace Director
             // Button
 			RemoveEmail = new Button (Image.FromResource (DirectorImages.CROSS_ICON)) {
 				HorizontalPlacement = WidgetPlacement.Center,
-				VerticalPlacement = WidgetPlacement.Center
+				VerticalPlacement = WidgetPlacement.Center,
+				Style =  ButtonStyle.Borderless
+			};
+			RemoveEmail.Clicked += delegate {
+				parent.RemoveEmail(ActiveEmail);
 			};
 			PackStart (RemoveEmail);
 		}
