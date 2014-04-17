@@ -44,7 +44,7 @@ namespace UnitTestParser
                 if (useTemplate[i - 1] == false)
                     continue;
                 template = generateTemplate(i);
-                pr = parser.parseResponse(template, response, customVariables);
+                pr = parser.parseResponse(template, response, customVariables, true);
                 
                 Assert.IsNotNull(pr);
                 if (positive)

@@ -13,11 +13,14 @@ namespace Director.ParserLib
         public int line;
         public int position;
 
+        public ParserCompareDefinition comp_def { get; set; }
+
         public ParserItem(int line, int position, object value)
         {
             this.line = line;
             this.position = position;
             this.value = value;
+            this.comp_def = null;
         }
     }
 }

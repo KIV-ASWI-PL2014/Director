@@ -79,6 +79,7 @@
     <Compile Include="DataStructures\SupportStructures\Frequency.cs" />
     <Compile Include="ExportLib\Export.cs" />
     <Compile Include="Forms\Controls\EmailList.cs" />
+    <Compile Include="ParserLib\ParserCompareDefinition.cs" />
     <Compile Include="ParserLib\ParserError.cs" />
     <Compile Include="ParserLib\Parser.cs" />
     <Compile Include="ParserLib\ParserItem.cs" />
