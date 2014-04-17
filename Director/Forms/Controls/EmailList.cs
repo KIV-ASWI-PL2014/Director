@@ -71,8 +71,8 @@ namespace Director
 			// Create first line with informations
 			HBox FirstLine = new HBox ();
 			Label EmailName = new Label ("Email") {
-				MinWidth = EMAIL_WIDTH, 
-				WidthRequest = EMAIL_WIDTH, 
+				MinWidth = EMAIL_WIDTH + 50, 
+				WidthRequest = EMAIL_WIDTH + 50, 
 				HeightRequest = 20, 
 				MinHeight =  20,
 				ExpandVertical = true, 

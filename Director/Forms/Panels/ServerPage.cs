@@ -227,9 +227,6 @@ namespace Director.Forms.Panels
             // Change value
             AuthRequired.Toggled += AuthRequired_Toggled;
 
-
-
-
             // Email settings
             Frame EmailFrame = new Frame()
             {
