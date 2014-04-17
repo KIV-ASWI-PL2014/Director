@@ -549,7 +549,7 @@ namespace UnitTestParser
                 {"var", "-10.2"},
             };
 
-            ParserResult pr = parser.parseResponse("{ a : \"#float#ip_gt#var#res#\", b: \"#float#ip_gt#0##\"  }", "{ b: 1 }", customVar);
+            ParserResult pr = parser.parseResponse("{ a : \"#float#ip_gt#var#res#\", b: \"#float#ip_gt#0##\"  }", "{ b: 1 }", customVar, true);
             Assert.IsNotNull(pr);
             Assert.IsTrue(pr.isSuccess());
 
@@ -574,7 +574,7 @@ namespace UnitTestParser
             };
             String template = "\"foo\": [\"#array#uv_ge#a#res#\", \"#integer#uv_ge#b##\"] ";
             String response = "foo: [10,20,30]";
-            ParserResult pr = parser.parseResponse(template, response, customVar);
+            ParserResult pr = parser.parseResponse(template, response, customVar, true);
             
             Assert.IsNotNull(pr);
             Assert.IsTrue(pr.isSuccess());
@@ -593,7 +593,7 @@ namespace UnitTestParser
             };
             String template = "\"foo\": [\"#string#uv_ne#a##\"";
             String response = "foo: [\"ab\", \"abcd\"]";
-            ParserResult pr = parser.parseResponse(template, response, customVar);
+            ParserResult pr = parser.parseResponse(template, response, customVar, true);
 
             Assert.IsNotNull(pr);
             Assert.IsTrue(pr.isSuccess());

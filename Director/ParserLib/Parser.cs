@@ -22,6 +22,9 @@ namespace Director.ParserLib
         private const char MAIN_SYNTAX_CHARACTER = '#';
         private const char ESCAPE_CHARACTER = '\\';
 
+        private const string SOURCE_TEMPLATE = "template";
+        private const string SOURCE_RESPONSE = "response";
+
         //
         // request specific constants
         //
@@ -77,6 +80,9 @@ namespace Director.ParserLib
         private const string RESPONSE_OPERATION_MODIFIER_USE_VARIABLE = "uv";
         private const string RESPONSE_OPERATION_MODIFIER_IF_PRESENT = "ip";
 
+        private const string RESPONSE_BOOLEAN_CONVERSION_TYPE_DEFINITION_TRUE = "true";
+        private const string RESPONSE_BOOLEAN_CONVERSION_TYPE_DEFINITION_FALSE = "false";
+
         //
         // parser error messages
         //
@@ -101,6 +107,12 @@ namespace Director.ParserLib
         private static readonly string ERR_MSG_MISING_TYPE_FOR_OPERATION = "Missing type for operation. If you want to compare the value, type must be specified.";
         private static readonly string ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE = "Operation \"{0}\" does not support \"{1}\" type.";
         private static readonly string ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE = "Provided value \"{0}\" couldn't be converted to \"{1}\" type.";
+        private static readonly string ERR_MSG_ILLEGAL_KEY_IN_RESPONSE = "Response JSON contains \"{0}\" key, that is not defined in the template.";
+        private static readonly string ERR_MSG_MISSING_KEY_IN_RESPONSE = "Response JSON does not contain \"{0}\" key, that is defined as mandatory in the template.";
+        private static readonly string ERR_MSG_VALUES_DIFFER_IN_TYPE = "Values for matched key \"{0}\" differ in their type (\"{1}\" and \"{2}\").";
+        private static readonly string ERR_MSG_COMPARE_VALUES = "Values \"{0}\" defined in template and \"{1}\" received in response don't match.";
+        private static readonly string ERR_MSG_COMPARE_TYPES = "Types \"{0}\" defined in template and \"{1}\" received in response don't match.";
+        private static readonly string ERR_MSG_COMPARE_OPERATION = "Operation \"{0} {1} {2}\" returned false.";
 
         //
         // global variables
@@ -129,7 +141,7 @@ namespace Director.ParserLib
             catch (JsonException e)
             {
                 // an error occured during deserializon => basic syntax of json template is wrong
-                errors.Add(createError(e.Message, "JSON template"));
+                errors.Add(createError(e.Message, SOURCE_TEMPLATE));
                 // add error to the error list and return empty result
                 return new ParserResult(errors, null);
             }
@@ -166,7 +178,7 @@ namespace Director.ParserLib
             catch (JsonException e)
             {
                 // an error occured during deserializon => basic syntax of json template is wrong
-                errors.Add(createError(e.Message, "JSON template"));
+                errors.Add(createError(e.Message, SOURCE_TEMPLATE));
                 // add error to the error list and return empty result
                 return new ParserResult(errors, null);
             }
@@ -178,7 +190,7 @@ namespace Director.ParserLib
             return new ParserResult(errors, null);
         }
 
-        public ParserResult parseResponse(string template, string response, Dictionary<string, string> customVariables)
+        public ParserResult parseResponse(string template, string response, Dictionary<string, string> customVariables, bool ignoreUndefinedKeys)
         {
             List<ParserError> errors = new List<ParserError>();
             Dictionary<string, ParserItem> template_root = null; // top layer of internal parser structures of deserialized JSON template
@@ -200,8 +212,8 @@ namespace Director.ParserLib
             }
             catch (JsonException e)
             {
-                // an error occured during deserializon => basic syntax of json template or received json is wrong
-                errors.Add(createError(e.Message, "JSON template"));
+                // an error occured during deserializon => basic syntax of json template is wrong
+                errors.Add(createError(e.Message, SOURCE_TEMPLATE));
                 // add error to the error list and return empty result
                 return new ParserResult(errors, null);
             }
@@ -213,8 +225,8 @@ namespace Director.ParserLib
             }
             catch (JsonException e)
             {
-                // an error occured during deserializon => basic syntax of json template or received json is wrong
-                errors.Add(createError(e.Message, "received JSON"));
+                // an error occured during deserializon => basic syntax of received json is wrong
+                errors.Add(createError(e.Message, SOURCE_RESPONSE));
                 // add error to the error list and return empty result
                 return new ParserResult(errors, null);
             }
@@ -222,14 +234,15 @@ namespace Director.ParserLib
             // parse inner syntax written in value of some tags in order to be able to compare this template with actual received result
             parseInnerSyntaxOfResponseTemplate(template_root, customVariables, errors);
 
-            // compare received JSON with the rules defined in JSON template
-            compareResponseWithTemplate(template_root, response_root, customVariables, errors);
+            // if everything went smoothly so far, compare received JSON with the rules defined in JSON template
+            if (errors.Count == 0)
+                compareResponseWithTemplate(template_root, response_root, customVariables, errors, ignoreUndefinedKeys);
 
             // return all possibly found errors
             return new ParserResult(errors, null);
         }
 
-        private ParserError createError(string errorMessage, string location)
+        private ParserError createError(string errorMessage, string source)
         {
             const string LINE_DEF = ", line ";
             const string POSITION_DEF = ", position ";
@@ -240,9 +253,9 @@ namespace Director.ParserLib
             {
                 int line = Convert.ToInt32(Regex.Match(errorMessage.Substring(posLine, posPosition - posLine), @"\d+").Value);
                 int position = Convert.ToInt32(Regex.Match(errorMessage.Substring(posPosition, errorMessage.Length - posPosition), @"\d+").Value);
-                return new ParserError(line, position, errorMessage.Substring(0, posPosition - LINE_DEF.Length - 1));
+                return new ParserError(line, position, errorMessage.Substring(0, posPosition - LINE_DEF.Length - 1), source);
             }
-            return new ParserError(-1, -1, "Location: " + location + "\nMessage: " + errorMessage);
+            return new ParserError(-1, -1, "\nMessage: " + errorMessage, source);
         }
 
         private Dictionary<string, object> resursiveDeserialization(string template)
@@ -476,8 +489,123 @@ namespace Director.ParserLib
             }
         }
 
-        private void compareResponseWithTemplate(Dictionary<string, ParserItem> template_root, Dictionary<string, ParserItem> response_root, Dictionary<string, string> customVariables, List<ParserError> errors)
+        private void compareResponseWithTemplate(Dictionary<string, ParserItem> template_root, Dictionary<string, ParserItem> response_root, Dictionary<string, string> customVariables, List<ParserError> errors, bool ignoreUndefinedKeys)
         {
+            List<string> template_keys = new List<string>(template_root.Keys);
+            List<string> response_keys = new List<string>(response_root.Keys);
+            List<string> remaining_response_keys = new List<string>(response_root.Keys); // checklist for the response keys; every found match with template keys get one item deleted
+
+            foreach (string template_key in template_keys)
+            {
+                if (response_root.ContainsKey(template_key))
+                {
+                    // we got a match between template key and response key; are their values of the same type?
+                    if (response_root[template_key].value.GetType() == template_root[template_key].comp_def.value.GetType())
+                    {
+                        // values are of the same type
+                        if (response_root[template_key].value is Dictionary<string, ParserItem>) // object
+                        {
+                            // call this method recursively in order to compare both sub-objects
+                            compareResponseWithTemplate((Dictionary<string, ParserItem>)template_root[template_key].value, (Dictionary<string, ParserItem>)response_root[template_key].value, customVariables, errors, ignoreUndefinedKeys);
+                        }
+                        else if (response_root[template_key].value is List<ParserItem>) // array
+                        {
+                            if (template_root[template_key].comp_def.type == typeof(Array))
+                            {
+                                // we are going to compare number of items in the array with definition in template
+                                int array_length = ((List<ParserItem>)response_root[template_key].value).Count;
+                                compareParserItems(template_root[template_key], new ParserItem(response_root[template_key].line, response_root[template_key].position, array_length), customVariables, errors);
+                            }
+                            else
+                            {
+                                // we are going to compare each item in the array with definition in template
+                                foreach (ParserItem item in (List<ParserItem>)response_root[template_key].value)
+                                {
+                                    compareParserItems(template_root[template_key], item, customVariables, errors);
+                                }
+                            }
+                        }
+                        else // simple type
+                        {
+                            compareParserItems(template_root[template_key], response_root[template_key], customVariables, errors);
+                        }
+                    }
+                    else
+                    {
+                        // values are not of the same type => create error
+                        errors.Add(new ParserError(template_root[template_key].line, template_root[template_key].position, string.Format(ERR_MSG_VALUES_DIFFER_IN_TYPE, template_key, response_root[template_key].value.GetType().ToString(),template_root[template_key].comp_def.value.GetType().ToString()), SOURCE_TEMPLATE));
+                    }
+                    remaining_response_keys.Remove(template_key); // remove matched key from remaining response keys
+                }
+                else
+                {
+                    // response does not contain this key - is this key defined as mandatory?
+                    if (!template_root[template_key].comp_def.if_present)
+                    {
+                        // key is defined as mandatory and it is missing in the response => create error
+                        errors.Add(new ParserError(template_root[template_key].line, template_root[template_key].position, string.Format(ERR_MSG_MISSING_KEY_IN_RESPONSE, template_key), SOURCE_TEMPLATE));
+                    }
+                }
+            }
+
+            // if corresponding flag is set to false every remaining unpaired keys in response are a problem => create errors
+            if (!ignoreUndefinedKeys)
+            {
+                foreach (string response_key in remaining_response_keys)
+                {
+                    errors.Add(new ParserError(response_root[response_key].line, response_root[response_key].position, string.Format(ERR_MSG_ILLEGAL_KEY_IN_RESPONSE, response_key), SOURCE_RESPONSE));
+                }
+            }
+        }
+
+        private bool compareParserItems(ParserItem template_item, ParserItem response_item, Dictionary<string, string> customVariables, List<ParserError> errors)
+        {
+            // strict comparison
+            if (template_item.comp_def.type == null && template_item.comp_def.operation == null && template_item.comp_def.value != null)
+            {
+                if (template_item.value.Equals(response_item.value))
+                    return true;
+                else
+                {
+                    errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_COMPARE_VALUES, template_item.value, response_item.value), SOURCE_TEMPLATE));
+                    return false;
+                }
+            }
+
+            // type comparison
+            if (template_item.comp_def.type != null && template_item.comp_def.operation == null && template_item.comp_def.value == null)
+            {
+                if (template_item.comp_def.type == response_item.value.GetType())
+                    return true;
+                else
+                {
+                    errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_COMPARE_TYPES, template_item.comp_def.type, response_item.value.GetType()), SOURCE_TEMPLATE));
+                    return false;
+                }
+            }
+
+            // combined comparison (strict + type)
+            if (template_item.comp_def.type != null && template_item.comp_def.operation == null && template_item.comp_def.value != null)
+            {
+                if ((template_item.value.Equals(response_item.value)) && (template_item.comp_def.type == response_item.value.GetType()))
+                    return true;
+                else
+                {
+                    if (template_item.value.Equals(response_item.value))
+                        errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_COMPARE_VALUES, template_item.value, response_item.value), SOURCE_TEMPLATE));
+                    else
+                        errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_COMPARE_TYPES, template_item.comp_def.type, response_item.value.GetType()), SOURCE_TEMPLATE));
+                    return false;
+                }
+            }
+
+            // specific comparison (operation)
+            if (template_item.comp_def.type != null && template_item.comp_def.operation != null && template_item.comp_def.value != null)
+            {
+
+            }
+
+            return false;
         }
 
         private ParserItem parseCompareRules(ParserItem item, Dictionary<string, string> customVariables, List<ParserError> errors)
@@ -511,13 +639,13 @@ namespace Director.ParserLib
 
             // take care of possible errors
             if (occurrences.Count < 5) // not enough MAIN_SYNTAX_CHARACTERs
-                errors.Add(new ParserError(item.line, item.position + original_occurrences.Last(), string.Format(ERR_MSG_EXPECTING_CHARACTER, MAIN_SYNTAX_CHARACTER)));
+                errors.Add(new ParserError(item.line, item.position + original_occurrences.Last(), string.Format(ERR_MSG_EXPECTING_CHARACTER, MAIN_SYNTAX_CHARACTER), SOURCE_TEMPLATE));
             if (occurrences.Count > 5) // too many MAIN_SYNTAX_CHARACTERs
-                errors.Add(new ParserError(item.line, item.position + original_occurrences[5], string.Format(ERR_MSG_INVALID_CHARACTER, MAIN_SYNTAX_CHARACTER)));
+                errors.Add(new ParserError(item.line, item.position + original_occurrences[5], string.Format(ERR_MSG_INVALID_CHARACTER, MAIN_SYNTAX_CHARACTER), SOURCE_TEMPLATE));
             if (occurrences.First() != 0) // illegal characters before first MAIN_SYNTAX_CHARACTER
-                errors.Add(new ParserError(item.line, item.position, string.Format(ERR_MSG_INVALID_CHARACTER, value[0])));
+                errors.Add(new ParserError(item.line, item.position, string.Format(ERR_MSG_INVALID_CHARACTER, value[0]), SOURCE_TEMPLATE));
             if (occurrences.Last() != value.Length - 1) // illegal characters after last MAIN_SYNTAX_CHARACTER
-                errors.Add(new ParserError(item.line, item.position + original_occurrences.Last(), string.Format(ERR_MSG_INVALID_CHARACTER, value[original_occurrences.Last() + 1])));
+                errors.Add(new ParserError(item.line, item.position + original_occurrences.Last(), string.Format(ERR_MSG_INVALID_CHARACTER, value[original_occurrences.Last() + 1]), SOURCE_TEMPLATE));
 
             // if there are any new syntax errors we can't parse this item - return it without any change
             if (errors.Count > original_error_count)
@@ -549,31 +677,34 @@ namespace Director.ParserLib
             ParserCompareDefinition pcd = new ParserCompareDefinition();
 
             // type
-            switch (type)
+            if (type.Length > 0)
             {
-                case RESPONSE_TYPE_STRING:
-                    pcd.type = typeof(string);
-                    break;
-                case RESPONSE_TYPE_INTEGER:
-                    pcd.type = typeof(int);
-                    break;
-                case RESPONSE_TYPE_FLOAT:
-                    pcd.type = typeof(float);
-                    break;
-                case RESPONSE_TYPE_BOOLEAN:
-                    pcd.type = typeof(bool);
-                    break;
-                case RESPONSE_TYPE_OBJECT:
-                    pcd.type = typeof(object);
-                    break;
-                case RESPONSE_TYPE_ARRAY:
-                    pcd.type = typeof(Array);
-                    break;
-                default: // urecognized type
-                    errors.Add(new ParserError(item.line, item.position + 1, string.Format(ERR_MSG_UNKNOWN_TYPE, type)));
-                    break;
+                switch (type)
+                {
+                    case RESPONSE_TYPE_STRING:
+                        pcd.type = typeof(string);
+                        break;
+                    case RESPONSE_TYPE_INTEGER:
+                        pcd.type = typeof(int);
+                        break;
+                    case RESPONSE_TYPE_FLOAT:
+                        pcd.type = typeof(float);
+                        break;
+                    case RESPONSE_TYPE_BOOLEAN:
+                        pcd.type = typeof(bool);
+                        break;
+                    case RESPONSE_TYPE_OBJECT:
+                        pcd.type = typeof(object);
+                        break;
+                    case RESPONSE_TYPE_ARRAY:
+                        pcd.type = typeof(Array);
+                        break;
+                    default: // urecognized type
+                        errors.Add(new ParserError(item.line, item.position + 1, string.Format(ERR_MSG_UNKNOWN_TYPE, type), SOURCE_TEMPLATE));
+                        break;
+                }
             }
-            
+
             // operation + modifiers
             bool use_var = false; // use variable modifier
             bool if_present = false; // if present modifier
@@ -594,53 +725,53 @@ namespace Director.ParserLib
                             if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
                                 op = ops_item;
                             else
-                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type)));
+                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type), SOURCE_TEMPLATE));
                             break;
                         case RESPONSE_OPERATION_NOT_EQUAL:
                             if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
                                 op = ops_item;
                             else
-                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type)));
+                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type), SOURCE_TEMPLATE));
                             break;
                         case RESPONSE_OPERATION_LESS_THAN:
                             if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
                                 op = ops_item;
                             else
-                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type)));
+                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type), SOURCE_TEMPLATE));
                             break;
                         case RESPONSE_OPERATION_LESS_THAN_OR_EQUAL:
                             if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
                                 op = ops_item;
                             else
-                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type)));
+                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type), SOURCE_TEMPLATE));
                             break;
                         case RESPONSE_OPERATION_GREATER_THAN:
                             if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
                                 op = ops_item;
                             else
-                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type)));
+                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type), SOURCE_TEMPLATE));
                             break;
                         case RESPONSE_OPERATION_GREATER_THAN_OR_EQUAL:
                             if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
                                 op = ops_item;
                             else
-                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type)));
+                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type), SOURCE_TEMPLATE));
                             break;
                         case RESPONSE_OPERATION_MATCHING_REGEXP_PATTERN:
                             if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
                                 op = ops_item;
                             else
-                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type)));
+                                errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type), SOURCE_TEMPLATE));
                             break;
                         default: // urecognized operation type
-                            errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_UNKNOWN_OPERATION, ops_item)));
+                            errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_UNKNOWN_OPERATION, ops_item), SOURCE_TEMPLATE));
                             break;
                     }
                 }
 
                 // if operation was specified, type must be also specified
                 if (pcd.type == null && pcd.operation != null)
-                    errors.Add(new ParserError(item.line, item.position + 1, ERR_MSG_MISING_TYPE_FOR_OPERATION));
+                    errors.Add(new ParserError(item.line, item.position + 1, ERR_MSG_MISING_TYPE_FOR_OPERATION, SOURCE_TEMPLATE));
 
                 // assign operation and modifiers into parser compare definition object
                 pcd.use_variable = use_var;
@@ -649,106 +780,20 @@ namespace Director.ParserLib
             }
 
             // value
-            // try to convert parsed value to desired type; if that is not possible add an error
-            if (pcd.type == null)
+            if (use_var) // do we want to replace variable name in value field by it's actual value?
             {
-                // type was not provided => we will try to assume the closest type possible
-                try
+                if (customVariables.ContainsKey(val)) // search for desired custom variable ...
                 {
-                    pcd.value = Convert.ToInt32(val); // is it integer?
+                    // try to convert value of parsed variable name to desired type; if that is not possible add an error
+                    pcd.value = convertToDesiredType(pcd.type, customVariables[val], item, errors, original_occurrences);
                 }
-                catch (Exception)
-                {
-                    try
-                    {
-                        pcd.value = Convert.ToSingle(val); // is it float?
-                    }
-                    catch (Exception)
-                    {
-                        if (val == "true" || val == "false") // is it boolean?
-                        {
-                            if (val == "true")
-                                pcd.value = true;
-                            else
-                                pcd.value = false;
-                        }
-                        else
-                        {
-                            pcd.value = val; // let's assume that it's string
-                        }
-                    }
-                }
-
-            }
-            else if (pcd.type == typeof(string))
-            {
-                // we don't need to convert anything here, just assign the value
-                pcd.value = val;
-            }
-            else if (pcd.type == typeof(int) || pcd.type == typeof(Array))
-            {
-                // try to convert value to integer
-                try
-                {
-                    pcd.value = Convert.ToInt32(val);
-                }
-                catch (FormatException)
-                {
-                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_ARGUMENT_NOT_INTEGER, val)));
-                }
-                catch (OverflowException)
-                {
-                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_ARGUMENT_TOO_BIG, val)));
-                }
-            }
-            else if (pcd.type == typeof(float))
-            {
-                // try to convert value to float
-                try
-                {
-                    pcd.value = Convert.ToSingle(val);
-                }
-                catch (FormatException)
-                {
-                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_ARGUMENT_NOT_FLOAT, val)));
-                }
-                catch (OverflowException)
-                {
-                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_ARGUMENT_TOO_BIG, val)));
-                }
-            }
-            else if (pcd.type == typeof(bool))
-            {
-                if (val == "true" || val == "false")
-                {
-                    if (val == "true")
-                        pcd.value = true;
-                    else
-                        pcd.value = false;
-                }
-                else
-                {
-                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE, val, type)));
-                }
-            }
-            else if (pcd.type == typeof(object))
-            {
-                try
-                {
-                    pcd.value = deserialize(val);
-                }
-                catch (JsonException)
-                {
-                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE, val, type)));
-                }
+                else // ... and add error if it doesn't exist
+                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_UNKNOWN_CUSTOM_VARIABLE, val), SOURCE_TEMPLATE));
             }
             else
             {
-                errors.Add(new ParserError(item.line, item.position + 1, string.Format(ERR_MSG_UNKNOWN_TYPE, type)));
-            }
-            if (use_var && !customVariables.ContainsKey(val)) // search for desired custom variable and add error if it doesn't exist
-            {
-                errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_UNKNOWN_CUSTOM_VARIABLE, val)));
+                // try to convert parsed value to desired type; if that is not possible add an error
+                pcd.value = convertToDesiredType(pcd.type, val, item, errors, original_occurrences);
             }
 
             // variable
@@ -761,6 +806,110 @@ namespace Director.ParserLib
             // assign newly constructed parser compare definition object into item and return the item
             item.comp_def = pcd;
             return item;
+        }
+
+        private object convertToDesiredType(System.Type desired_type, string value, ParserItem item, List<ParserError> errors, List<int> original_occurrences)
+        {
+            object result = null;
+
+            if (desired_type == null)
+            {
+                // type was not provided => we will try to assume the closest type possible
+                try
+                {
+                    result = Convert.ToInt32(value); // is it integer?
+                }
+                catch (Exception)
+                {
+                    try
+                    {
+                        result = Convert.ToSingle(value); // is it float?
+                    }
+                    catch (Exception)
+                    {
+                        if (value == RESPONSE_BOOLEAN_CONVERSION_TYPE_DEFINITION_TRUE || value == RESPONSE_BOOLEAN_CONVERSION_TYPE_DEFINITION_FALSE) // is it boolean?
+                        {
+                            if (value == RESPONSE_BOOLEAN_CONVERSION_TYPE_DEFINITION_TRUE)
+                                result = true;
+                            else
+                                result = false;
+                        }
+                        else
+                        {
+                            result = value; // let's assume that it's string
+                        }
+                    }
+                }
+
+            }
+            else if (desired_type == typeof(string))
+            {
+                // we don't need to convert anything here, just assign the value
+                result = value;
+            }
+            else if (desired_type == typeof(int) || desired_type == typeof(Array))
+            {
+                // try to convert value to integer
+                try
+                {
+                    result = Convert.ToInt32(value);
+                }
+                catch (FormatException)
+                {
+                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_ARGUMENT_NOT_INTEGER, value), SOURCE_TEMPLATE));
+                }
+                catch (OverflowException)
+                {
+                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_ARGUMENT_TOO_BIG, value), SOURCE_TEMPLATE));
+                }
+            }
+            else if (desired_type == typeof(float))
+            {
+                // try to convert value to float
+                try
+                {
+                    result = Convert.ToSingle(value);
+                }
+                catch (FormatException)
+                {
+                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_ARGUMENT_NOT_FLOAT, value), SOURCE_TEMPLATE));
+                }
+                catch (OverflowException)
+                {
+                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_ARGUMENT_TOO_BIG, value), SOURCE_TEMPLATE));
+                }
+            }
+            else if (desired_type == typeof(bool))
+            {
+                if (value == RESPONSE_BOOLEAN_CONVERSION_TYPE_DEFINITION_TRUE || value == RESPONSE_BOOLEAN_CONVERSION_TYPE_DEFINITION_FALSE)
+                {
+                    if (value == RESPONSE_BOOLEAN_CONVERSION_TYPE_DEFINITION_TRUE)
+                        result = true;
+                    else
+                        result = false;
+                }
+                else
+                {
+                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE, value, desired_type), SOURCE_TEMPLATE));
+                }
+            }
+            else if (desired_type == typeof(object))
+            {
+                try
+                {
+                    result = deserialize(value);
+                }
+                catch (JsonException)
+                {
+                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE, value, desired_type), SOURCE_TEMPLATE));
+                }
+            }
+            else
+            {
+                errors.Add(new ParserError(item.line, item.position + 1, string.Format(ERR_MSG_UNKNOWN_TYPE, desired_type), SOURCE_TEMPLATE));
+            }
+
+            return result;
         }
 
         private ParserItem applyFunctions(ParserItem item, Dictionary<string, string> customVariables, List<ParserError> errors)
@@ -800,14 +949,14 @@ namespace Director.ParserLib
             if (var_occurrences.Count % 2 != 0)
             {
                 // last VARIABLE_CHARACTER is missing it's pair ...
-                errors.Add(new ParserError(item.line, item.position + original_var_occurrences.Last(), ERR_MSG_MISSING_VARIABLE_CHARACTER)); // ... notify the user ...
+                errors.Add(new ParserError(item.line, item.position + original_var_occurrences.Last(), ERR_MSG_MISSING_VARIABLE_CHARACTER, SOURCE_TEMPLATE)); // ... notify the user ...
                 var_occurrences.RemoveAt(var_occurrences.Count - 1); // ... and do not try to replace this one in future
             }
 
             if (fn_occurrences.Count % 2 != 0)
             {
                 // last MAIN_SYNTAX_CHARACTER is missing it's pair ...
-                errors.Add(new ParserError(item.line, item.position + original_fn_occurrences.Last(), ERR_MSG_MISSING_MAIN_SYNTAX_CHARACTER)); // ... notify the user ...
+                errors.Add(new ParserError(item.line, item.position + original_fn_occurrences.Last(), ERR_MSG_MISSING_MAIN_SYNTAX_CHARACTER, SOURCE_TEMPLATE)); // ... notify the user ...
                 fn_occurrences.RemoveAt(fn_occurrences.Count - 1); // ... and do not try to replace this one in future
             }
 
@@ -870,7 +1019,7 @@ namespace Director.ParserLib
                         if (inside_var && !inside_fn)
                         {
                             // there is MAIN_SYNTAX_CHARACTER inside VARIABLE_CHARACTERs pair - raise an error
-                            errors.Add(new ParserError(item.line, item.position + fn_occurrences[fn_list_position], ERR_MSG_FN_INSIDE_VAR));
+                            errors.Add(new ParserError(item.line, item.position + fn_occurrences[fn_list_position], ERR_MSG_FN_INSIDE_VAR, SOURCE_TEMPLATE));
                             // this syntax error is too serious for evaluation to continue - return original item without any change
                             return item;
                         }
@@ -900,7 +1049,7 @@ namespace Director.ParserLib
                 else
                 {
                     // create new error
-                    errors.Add(new ParserError(item.line, item.position + original_var_occurrences[i], string.Format(ERR_MSG_UNKNOWN_CUSTOM_VARIABLE, variable_name)));
+                    errors.Add(new ParserError(item.line, item.position + original_var_occurrences[i], string.Format(ERR_MSG_UNKNOWN_CUSTOM_VARIABLE, variable_name), SOURCE_TEMPLATE));
                 }
             }
 
@@ -914,19 +1063,19 @@ namespace Director.ParserLib
 
                 // handle all possible syntactical errors
                 if (left_parenthesis_position == -1) // no left parenthesis
-                    errors.Add(new ParserError(item.line, item.position + fn_occurrences[i], string.Format(ERR_MSG_EXPECTING_CHARACTER, REQUEST_FN_LEFT_PARENTHESIS)));
+                    errors.Add(new ParserError(item.line, item.position + fn_occurrences[i], string.Format(ERR_MSG_EXPECTING_CHARACTER, REQUEST_FN_LEFT_PARENTHESIS), SOURCE_TEMPLATE));
                 if (right_parenthesis_position == -1) // no right parenthesis
-                    errors.Add(new ParserError(item.line, item.position + fn_occurrences[i], string.Format(ERR_MSG_EXPECTING_CHARACTER, REQUEST_FN_RIGHT_PARENTHESIS)));
+                    errors.Add(new ParserError(item.line, item.position + fn_occurrences[i], string.Format(ERR_MSG_EXPECTING_CHARACTER, REQUEST_FN_RIGHT_PARENTHESIS), SOURCE_TEMPLATE));
                 if (left_parenthesis_position != -1 && function_string.IndexOf(REQUEST_FN_LEFT_PARENTHESIS, left_parenthesis_position) == -1) // too many left parentheses
-                    errors.Add(new ParserError(item.line, item.position + fn_occurrences[i] + left_parenthesis_position, string.Format(ERR_MSG_INVALID_CHARACTER, REQUEST_FN_LEFT_PARENTHESIS)));
+                    errors.Add(new ParserError(item.line, item.position + fn_occurrences[i] + left_parenthesis_position, string.Format(ERR_MSG_INVALID_CHARACTER, REQUEST_FN_LEFT_PARENTHESIS), SOURCE_TEMPLATE));
                 if (right_parenthesis_position != -1 && function_string.IndexOf(REQUEST_FN_RIGHT_PARENTHESIS, right_parenthesis_position) == -1) // too many right parentheses
-                    errors.Add(new ParserError(item.line, item.position + fn_occurrences[i] + right_parenthesis_position, string.Format(ERR_MSG_INVALID_CHARACTER, REQUEST_FN_RIGHT_PARENTHESIS)));
+                    errors.Add(new ParserError(item.line, item.position + fn_occurrences[i] + right_parenthesis_position, string.Format(ERR_MSG_INVALID_CHARACTER, REQUEST_FN_RIGHT_PARENTHESIS), SOURCE_TEMPLATE));
                 if (left_parenthesis_position == 0) // no function name before left parenthesis
-                    errors.Add(new ParserError(item.line, item.position + fn_occurrences[i], ERR_MSG_MISSING_FN_NAME));
+                    errors.Add(new ParserError(item.line, item.position + fn_occurrences[i], ERR_MSG_MISSING_FN_NAME, SOURCE_TEMPLATE));
                 if (right_parenthesis_position != function_string.Length - 1) // aditional characters after right parenthesis
-                    errors.Add(new ParserError(item.line, item.position + fn_occurrences[i] + right_parenthesis_position, ERR_MSG_UNRECOGNIZED_CHARS_AFTER_FN));
+                    errors.Add(new ParserError(item.line, item.position + fn_occurrences[i] + right_parenthesis_position, ERR_MSG_UNRECOGNIZED_CHARS_AFTER_FN, SOURCE_TEMPLATE));
                 if (left_parenthesis_position > right_parenthesis_position) // swapped parentheses
-                    errors.Add(new ParserError(item.line, item.position + fn_occurrences[i] + right_parenthesis_position, ERR_MSG_SWAPPED_PARENTHESES));
+                    errors.Add(new ParserError(item.line, item.position + fn_occurrences[i] + right_parenthesis_position, ERR_MSG_SWAPPED_PARENTHESES, SOURCE_TEMPLATE));
 
                 // if all basic syntactical conditions are met, we can continue
                 if (left_parenthesis_position > 0 && left_parenthesis_position < right_parenthesis_position && right_parenthesis_position == function_string.Length - 1)
@@ -960,7 +1109,7 @@ namespace Director.ParserLib
                                 type_result = true; // we will type the result to integer
                             break;
                         default:
-                            errors.Add(new ParserError(item.line, item.position + fn_occurrences[i], ERR_MSG_UNRECOGNIZED_FN));
+                            errors.Add(new ParserError(item.line, item.position + fn_occurrences[i], ERR_MSG_UNRECOGNIZED_FN, SOURCE_TEMPLATE));
                             break;
                     }
 
@@ -1035,11 +1184,11 @@ namespace Director.ParserLib
             }
             catch (FormatException)
             {
-                errors.Add(new ParserError(item.line, item.position + parsing_offset, string.Format(ERR_MSG_ARGUMENT_NOT_INTEGER, argument)));
+                errors.Add(new ParserError(item.line, item.position + parsing_offset, string.Format(ERR_MSG_ARGUMENT_NOT_INTEGER, argument), SOURCE_TEMPLATE));
             }
             catch (OverflowException)
             {
-                errors.Add(new ParserError(item.line, item.position + parsing_offset, string.Format(ERR_MSG_ARGUMENT_TOO_BIG, argument)));
+                errors.Add(new ParserError(item.line, item.position + parsing_offset, string.Format(ERR_MSG_ARGUMENT_TOO_BIG, argument), SOURCE_TEMPLATE));
             }
             return result;
         }
@@ -1061,11 +1210,11 @@ namespace Director.ParserLib
             }
             catch (FormatException)
             {
-                errors.Add(new ParserError(item.line, item.position + parsing_offset, string.Format(ERR_MSG_ARGUMENT_NOT_FLOAT, argument)));
+                errors.Add(new ParserError(item.line, item.position + parsing_offset, string.Format(ERR_MSG_ARGUMENT_NOT_FLOAT, argument), SOURCE_TEMPLATE));
             }
             catch (OverflowException)
             {
-                errors.Add(new ParserError(item.line, item.position + parsing_offset, string.Format(ERR_MSG_ARGUMENT_TOO_BIG, argument)));
+                errors.Add(new ParserError(item.line, item.position + parsing_offset, string.Format(ERR_MSG_ARGUMENT_TOO_BIG, argument), SOURCE_TEMPLATE));
             }
             return result;
         }
@@ -1083,7 +1232,7 @@ namespace Director.ParserLib
             // check number of arguments
             if (function_arguments.Length != 2)
             {
-                errors.Add(new ParserError(item.line, item.position + parsing_offset, ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS));
+                errors.Add(new ParserError(item.line, item.position + parsing_offset, ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS, SOURCE_TEMPLATE));
                 return null;
             }
 
@@ -1097,7 +1246,7 @@ namespace Director.ParserLib
             // check whether first arg. is smaller or equal that the second one
             if (min_range > max_range)
             {
-                errors.Add(new ParserError(item.line, item.position + parsing_offset, string.Format(ERR_MSG_ARGUMENTS_WRONG_SIZED, 1, function_arguments[1], 2, function_arguments[2])));
+                errors.Add(new ParserError(item.line, item.position + parsing_offset, string.Format(ERR_MSG_ARGUMENTS_WRONG_SIZED, 1, function_arguments[1], 2, function_arguments[2]), SOURCE_TEMPLATE));
                 return null;
             }
 
@@ -1118,7 +1267,7 @@ namespace Director.ParserLib
             // check number of arguments
             if (function_arguments.Length != 3)
             {
-                errors.Add(new ParserError(item.line, item.position + parsing_offset, ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS));
+                errors.Add(new ParserError(item.line, item.position + parsing_offset, ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS, SOURCE_TEMPLATE));
                 return null;
             }
 
@@ -1133,7 +1282,7 @@ namespace Director.ParserLib
             // check whether first arg. is smaller or equal that the second one
             if (min_range > max_range)
             {
-                errors.Add(new ParserError(item.line, item.position + parsing_offset, string.Format(ERR_MSG_ARGUMENTS_WRONG_SIZED, 1, function_arguments[1], 2, function_arguments[2])));
+                errors.Add(new ParserError(item.line, item.position + parsing_offset, string.Format(ERR_MSG_ARGUMENTS_WRONG_SIZED, 1, function_arguments[1], 2, function_arguments[2]), SOURCE_TEMPLATE));
                 return null;
             }
 
@@ -1156,7 +1305,7 @@ namespace Director.ParserLib
             // check number of arguments
             if (function_arguments.Length != 3)
             {
-                errors.Add(new ParserError(item.line, item.position + parsing_offset, ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS));
+                errors.Add(new ParserError(item.line, item.position + parsing_offset, ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS, SOURCE_TEMPLATE));
                 return null;
             }
 
@@ -1169,7 +1318,7 @@ namespace Director.ParserLib
                 if (!REQUEST_FN_RAND_STRING_GROUP_SYMBOLS.Contains(ch)) // each character of third argument must be recognized as symbol for group of characters
                 {
                     // symbol for group of characters was not recognized - add an error
-                    errors.Add(new ParserError(item.line, item.position + parsing_offset, String.Format(ERR_MSG_ARGUMENT_INVALID, function_arguments[2])));
+                    errors.Add(new ParserError(item.line, item.position + parsing_offset, String.Format(ERR_MSG_ARGUMENT_INVALID, function_arguments[2]), SOURCE_TEMPLATE));
                     break;
                 }
                 else
@@ -1184,7 +1333,7 @@ namespace Director.ParserLib
             // check whether first arg. is smaller or equal that the second one
             if (min_length > max_length)
             {
-                errors.Add(new ParserError(item.line, item.position + parsing_offset, string.Format(ERR_MSG_ARGUMENTS_WRONG_SIZED, 1, function_arguments[1], 2, function_arguments[2])));
+                errors.Add(new ParserError(item.line, item.position + parsing_offset, string.Format(ERR_MSG_ARGUMENTS_WRONG_SIZED, 1, function_arguments[1], 2, function_arguments[2]), SOURCE_TEMPLATE));
                 return null;
             }
 
@@ -1213,7 +1362,7 @@ namespace Director.ParserLib
             // check number of arguments
             if (function_arguments.Length != 4)
             {
-                errors.Add(new ParserError(item.line, item.position + parsing_offset, ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS));
+                errors.Add(new ParserError(item.line, item.position + parsing_offset, ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS, SOURCE_TEMPLATE));
                 return null;
             }
 
