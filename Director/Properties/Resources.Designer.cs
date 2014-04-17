@@ -320,6 +320,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Request name is invalid!.
+        /// </summary>
+        internal static string InvalidRequestName {
+            get {
+                return ResourceManager.GetString("InvalidRequestName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid scnario name!.
         /// </summary>
         internal static string InvalidScenarioName {
@@ -566,6 +575,42 @@ namespace Director.Properties {
         internal static string RequestInfoBox {
             get {
                 return ResourceManager.GetString("RequestInfoBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request name.
+        /// </summary>
+        internal static string RequestName {
+            get {
+                return ResourceManager.GetString("RequestName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request specification.
+        /// </summary>
+        internal static string RequestRequest {
+            get {
+                return ResourceManager.GetString("RequestRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response specification.
+        /// </summary>
+        internal static string RequestResponse {
+            get {
+                return ResourceManager.GetString("RequestResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request settings.
+        /// </summary>
+        internal static string RequestSettings {
+            get {
+                return ResourceManager.GetString("RequestSettings", resourceCulture);
             }
         }
         

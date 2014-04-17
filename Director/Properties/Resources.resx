@@ -337,8 +337,23 @@
   <data name="FrequencyLabel" xml:space="preserve">
     <value>Frequency</value>
   </data>
+  <data name="InvalidRequestName" xml:space="preserve">
+    <value>Request name is invalid!</value>
+  </data>
   <data name="InvalidTimeDelay" xml:space="preserve">
     <value>Time delay must be a number and greather or equal to 0!</value>
+  </data>
+  <data name="RequestName" xml:space="preserve">
+    <value>Request name</value>
+  </data>
+  <data name="RequestRequest" xml:space="preserve">
+    <value>Request specification</value>
+  </data>
+  <data name="RequestResponse" xml:space="preserve">
+    <value>Response specification</value>
+  </data>
+  <data name="RequestSettings" xml:space="preserve">
+    <value>Request settings</value>
   </data>
   <data name="RunningOptionsLabel" xml:space="preserve">
     <value>Running options</value>

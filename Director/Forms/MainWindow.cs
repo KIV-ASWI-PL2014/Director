@@ -47,7 +47,7 @@ namespace Director.Forms
         /// <summary>
         /// Request page.
         /// </summary>
-        private RequestPage RequestBox = new RequestPage();
+        private RequestPage RequestBox;
 
         /// <summary>
         /// Current server sumary.
@@ -120,6 +120,7 @@ namespace Director.Forms
             // Prepare boxes
             ServerBox = new ServerPage(this);
             ScenarioBox = new ScenarioPage(this);
+            RequestBox = new RequestPage(this);
 
             /// Title and Initial size
             Title = Director.Properties.Resources.MainWindowTitle;
@@ -182,6 +183,7 @@ namespace Director.Forms
             // Set content to main box
             Content = MainBox;
 
+            // TODO: Remove in release!
             CreateNewServer(null, null);
         }
 
@@ -228,18 +230,20 @@ namespace Director.Forms
                 if (s is Server)
                 {
                     SetContentBoxControl(ServerBox);
-                    ServerBox.SetServer((Server)s);
                     ServerBox.ActualPosition = CurrentServer.SelectedRow;
+                    ServerBox.SetServer((Server)s);
                 }
                 else if (s is Scenario)
                 {
                     SetContentBoxControl(ScenarioBox);
-                    ScenarioBox.SetScenario((Scenario)s);
                     ScenarioBox.ActualPosition = CurrentServer.SelectedRow;
+                    ScenarioBox.SetScenario((Scenario)s);
                 }
                 else if (s is Request)
                 {
                     SetContentBoxControl(RequestBox);
+                    RequestBox.ActualPosition = CurrentServer.SelectedRow;
+                    RequestBox.SetRequest((Request)s);
                 }
                 else if (s is Homepage)
                 {

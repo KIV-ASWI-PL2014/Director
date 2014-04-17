@@ -52,13 +52,6 @@ namespace Director.Forms.Panels
         /// </summary>
         private Frame Authentication { get; set; }
 
-        private ListView EmailNotifications { get; set; }
-
-        private DataField<string> EmailAddress { get; set; }
-        private DataField<bool> Errors { get; set; }
-        private DataField<bool> Notifications { get; set; }
-        private ListStore EmailAddressStore { get; set; }
-
 		/// <summary>
 		/// Email list widget.
 		/// </summary>

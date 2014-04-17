@@ -248,6 +248,11 @@ namespace Director.Forms.Panels
             ActiveScenario.RunningFrequency = FrequencyRunning.SelectedIndex;
         }
 
+        /// <summary>
+        /// Change scenario name - save to server and change tree view description.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void ScenarioName_Changed(object sender, EventArgs e)
         {
             ActiveScenario.Name = ScenarioName.Text;
