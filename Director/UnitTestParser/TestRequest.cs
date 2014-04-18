@@ -79,7 +79,7 @@ namespace UnitTestParser
             result = result.Substring(result.IndexOf(":") + 1);
             result = result.Replace("}", "");
 
-            Assert.AreEqual(result.Length, "6.123456".Length);
+            Assert.IsTrue(result.Length <= "6.123456".Length);
 
             float dec = float.Parse(result, CultureInfo.InvariantCulture.NumberFormat);
             if (dec < 5 || dec > 7)
