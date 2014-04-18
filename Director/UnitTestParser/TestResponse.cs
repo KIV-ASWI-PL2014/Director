@@ -8,9 +8,8 @@ namespace UnitTestParser
     [TestClass]
     public class TestResponse
     {
-        public Boolean[] templateAllExComp =    { false, false, true, true, true };
+        public Boolean[] templateAllExComp =    { false, false, false, true, true };
         public Boolean[] templateAllExType =    { true, true, true, true, false };
-        public Boolean[] templateAllExTyCo =    { false, false, true, true, false };
         public Boolean[] templateAll =          { true, true, true, true, true };
         public Boolean[] templateFullNotation = { false, false, false, true, false };
 
@@ -52,7 +51,6 @@ namespace UnitTestParser
             {
                 {"10", "10"},
                 {"-60", "-60"}, 
-                {"0", "0"},
                 {"0", "-0"},
                 {"-1", "-1"}
             };
@@ -79,11 +77,11 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"1.0", "1.0"},
-                {"0", "0"},
-                {"-0", "0"},
+                {"0.0", "0.0"},
+                {"-0.0", "0.0"},
                 {"-1.0", "-1.0"} 
             };
-            Scenario sc = new Scenario(values, "float", "eq", parser, templateAll, null);
+            Scenario sc = new Scenario(values, "real", "eq", parser, templateAll, null);
             sc.Test(true);
         }
 
@@ -101,7 +99,7 @@ namespace UnitTestParser
                 {"ABC", "abc"},
                 {"abcd", "ABCD"}
             };
-            Scenario sc = new Scenario(values, "string", "ne", parser, templateAllExTyCo, null);
+            Scenario sc = new Scenario(values, "string", "ne", parser, templateFullNotation, null);
             sc.Test(true);
         }
 
@@ -116,7 +114,7 @@ namespace UnitTestParser
                 {"-0", "2"},
                 {"1", "2"}
             };
-            Scenario sc = new Scenario(values, "integer", "ne", parser, templateAllExTyCo, null);
+            Scenario sc = new Scenario(values, "integer", "ne", parser, templateFullNotation, null);
             sc.Test(true);
         }
 
@@ -128,7 +126,7 @@ namespace UnitTestParser
                 {"true", "false"},
                 {"false", "true"} 
             };
-            Scenario sc = new Scenario(values, "boolean", "ne", parser, templateAllExTyCo, null);
+            Scenario sc = new Scenario(values, "boolean", "ne", parser, templateFullNotation, null);
             sc.Test(true);
         }
 
@@ -139,11 +137,11 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"1.0", "-1.0"},
-                {"0.1", "-0"}, 
-                {"-0", "10"}, 
+                {"0.1", "-0.0"}, 
+                {"-0.0", "10.0"}, 
                 {"-1.0", "1.0"} 
             };
-            Scenario sc = new Scenario(values, "float", "ne", parser, templateAllExTyCo, null);
+            Scenario sc = new Scenario(values, "real", "ne", parser, templateFullNotation, null);
             sc.Test(true);
         }
 
@@ -187,11 +185,11 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"-1.0", "1.0"},
-                {"0.0", "1"}, 
-                {"0", "10"}, 
+                {"0.0", "1.0"}, 
+                {"0.0", "10.0"}, 
                 {"-2.0", "-1.0"}
             };
-            Scenario sc = new Scenario(values, "float", "lt", parser, templateAllExComp, null);
+            Scenario sc = new Scenario(values, "real", "lt", parser, templateAllExComp, null);
             sc.Test(true);
         }
 
@@ -243,14 +241,14 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"-1.1", "1.0"},
-                {"0", "1"}, 
-                {"8", "10"}, 
+                {"0.2", "1.0"}, 
+                {"8.0", "10.0"}, 
                 {"-2.0", "-1.0"},
                 {"1.0", "1.0"},
-                {"0.0", "0"}, 
+                {"0.0", "0.0"}, 
                 {"-1.0", "-1.0"} 
             };
-            Scenario sc = new Scenario(values, "float", "le", parser, templateAllExComp, null);
+            Scenario sc = new Scenario(values, "real", "le", parser, templateAllExComp, null);
             sc.Test(true);
         }
 
@@ -300,11 +298,11 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"1.0", "-1.0"},
-                {"1", "0"}, 
-                {"10", "0"}, 
+                {"1.0", "0.0"}, 
+                {"10.0", "0.0"}, 
                 {"-1.0", "-2.0"}
             };
-            Scenario sc = new Scenario(values, "float", "gt", parser, templateAllExComp, null);
+            Scenario sc = new Scenario(values, "real", "gt", parser, templateAllExComp, null);
             sc.Test(true);
         }
         
@@ -363,7 +361,7 @@ namespace UnitTestParser
                 {"0", "0"}, 
                 {"-1.01", "-1.01"} 
             };
-            Scenario sc = new Scenario(values, "float", "ge", parser, templateAllExComp, null);
+            Scenario sc = new Scenario(values, "real", "ge", parser, templateAllExComp, null);
             sc.Test(true);
         }
 
@@ -486,10 +484,10 @@ namespace UnitTestParser
                 {"20", "c"},
                 {"1.23", "d"}
             };
-            Scenario sc = new Scenario(values, "float", "uv_gt", parser, templateFullNotation, customVar);
+            Scenario sc = new Scenario(values, "real", "uv_gt", parser, templateFullNotation, customVar);
             sc.Test(true);
 
-            sc = new Scenario(values, "float", "uv_ge", parser, templateFullNotation, customVar);
+            sc = new Scenario(values, "real", "uv_ge", parser, templateFullNotation, customVar);
             sc.Test(true);
         }
 
@@ -555,7 +553,7 @@ namespace UnitTestParser
                 {"var", "-10.2"},
             };
 
-            ParserResult pr = parser.parseResponse("{ a : \"#float#ip_gt#5#res#\", b: \"#float#ip_gt#0#res#\"  }", "{ b: 1 }", customVar, true);
+            ParserResult pr = parser.parseResponse("{ a : \"#real#ip_gt#5#res#\", b: \"#real#ip_gt#0#res#\"  }", "{ b: 1.0 }", customVar, true);
             Assert.IsNotNull(pr);
             Assert.IsTrue(pr.isSuccess());
 
