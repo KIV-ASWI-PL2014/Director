@@ -34,7 +34,7 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"text1", "text1"},
-                {"123", "123"}, 
+                {"123x", "123x"}, 
                 {"", ""},
                 {" ", " "}
             };
@@ -92,7 +92,7 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"text1", "text1 "},
-                {" 123", "123"}, 
+                {"1.2.3", " 1.2.3"}, 
                 {"ABC", "abc"},
                 {"abcd", "ABCD"}
             };
@@ -152,7 +152,7 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"text1", "teyt1 "},
-                {"123", "124"}, 
+                {"123x", "124y"}, 
                 {"Abc", "abc"},
                 {"1abcd", "1b"}
             };
@@ -200,11 +200,11 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"text1", "teyt1 "},
-                {"123", "124"}, 
+                {"123a", "124b"}, 
                 {"Abc", "abc"},
                 {"1abcd", "1b"},
                 {"teXt1", "teXt1"},
-                {"1234", "1234"}, 
+                {"1234a", "1234a"}, 
                 {"", ""},
                 {" ", " "}
             };
@@ -265,7 +265,7 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"teyt1 ", "text1"},
-                {"124", "123"}, 
+                {"124ED", "123ddgd"}, 
                 {"abc", "Abc"},
                 {"1b", "1abcd"}
             };
@@ -313,11 +313,11 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"teyt1 ", "text1"},
-                {"124", "123"}, 
+                {"124x", "123x"}, 
                 {"abc", "Abc"},
                 {"1b", "1abcd"},
                 {"text1", "text1"},
-                {"123", "123"}, 
+                {"123x", "123x"}, 
                 {"", ""},
                 {" ", " "}
             };
@@ -372,13 +372,14 @@ namespace UnitTestParser
         {
             Dictionary<string, string> values = new Dictionary<string, string>
             {
-                {"teyt1 ", "*"},
+                {"teyt1 ", ".*"},
                 {"c", "."}, 
                 {"AZ123", "[A-Z0-9]*"},
                 {"3", "[A-Z0-9]*"},
                 {"text1", "text1"},
                 {"123", "123"}, 
-                {"te*xt1", "te24dsxt1"}
+                {"teeeeeext1", "te*xt1"},
+                {"ahoj", "ah*oj"}
             };
             Scenario sc = new Scenario(values, "string", "mp", parser, templateRegexUvIp, null);
             sc.Test(true);
@@ -395,15 +396,15 @@ namespace UnitTestParser
             {
                 {"a", "text1"},
                 {"b", "123"}, 
-                {"c", ""},
-                {"d", " "}
+                {"c", "1.###3"},
+                {"d", "2,\\\\48"}
             };
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"text1", "a"},
                 {"123", "b"}, 
-                {"", "c"},
-                {" ", "d"}
+                {"1.###3", "c"},
+                {"2,\\\\48", "d"}
             };
             Scenario sc = new Scenario(values, "string", "uv_eq", parser, templateRegexUvIp, customVar);
             sc.Test(true);

@@ -73,7 +73,7 @@ namespace UnitTestParser
         public void WrongVariableType() 
         {
             ParserResult pr;
-            String template = "\"foo\": [\"#integer#eq#ahoj##\"";
+            String template = "\"foo\": \"#integer#uv_eq#ahoj##\"";
 
             Dictionary<string, string> customVar = new Dictionary<string, string>
             {

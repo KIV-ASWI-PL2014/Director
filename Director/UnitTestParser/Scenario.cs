@@ -10,7 +10,8 @@ namespace UnitTestParser
 {
     class Scenario
     {
-        public const String template1 = "\"{0}\"";
+        public const String template1 = "{0}";
+        public const String template1_quot = "\"{0}\"";
         public const String template2 = "\"###{0}##\"";
         public const String template3 = "\"#{0}##{1}##\"";
         public const String template4 = "\"#{0}#{1}#{2}##\"";
@@ -91,7 +92,10 @@ namespace UnitTestParser
                 switch (templateConst) 
                 { 
                     case 1:
-                        tmp = template1;
+                        if (type.Equals("string"))
+                            tmp = template1_quot;
+                        else
+                            tmp = template1;
                         tmp = String.Format(tmp, item.Value);
                         break;
                     case 2:
