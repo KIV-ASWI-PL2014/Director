@@ -256,28 +256,6 @@ namespace Director.ParserLib
             return new ParserError(-1, -1, "\nMessage: " + errorMessage, source);
         }
 
-        private Dictionary<string, object> resursiveDeserialization(string template)
-        {
-            Dictionary<string, object> result;
-
-            // try to deserialize JSON string
-            result = JsonConvert.DeserializeObject<Dictionary<string, object>>(template);
-
-            List<string> keys = new List<string>(result.Keys);
-            foreach (string key in keys)
-            {
-                //Type obj_type = result[key].GetType();
-                //Console.WriteLine(obj_type.FullName);
-
-                if (result[key] is JObject)
-                {
-                    result[key] = resursiveDeserialization(result[key].ToString());
-                }
-            }
-
-            return result;
-        }
-
         private Dictionary<string, ParserItem> deserialize(string template)
         {
             Dictionary<string, ParserItem> result = new Dictionary<string, ParserItem>();
@@ -468,12 +446,6 @@ namespace Director.ParserLib
                     {
                         if (list[0].value is string) // if at least one item is present and it is string ...
                             root[key] = parseCompareRules(list[0], customVariables, errors); // ... parse compare rules for entire array from this field
-                        // simple type
-                        // make parser compare definition for strict comparison and assingn it to this item
-                        //pcd = new ParserCompareDefinition();
-                        //pcd.type = list[0].value.GetType();
-                        //pcd.value = list[0].value;
-                        //list[0].comp_def = pcd;
                     }
                     continue;
                 }
