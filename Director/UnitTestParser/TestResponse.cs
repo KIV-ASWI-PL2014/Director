@@ -154,10 +154,10 @@ namespace UnitTestParser
         {
             Dictionary<string, string> values = new Dictionary<string, string>
             {
-                {"text1", "teyt1 "},
-                {"123x", "124y"}, 
-                {"Abc", "abc"},
-                {"1abcd", "1b"}
+                {"tex1", "teyt1 "},
+                {"12x", "124y"}, 
+                {"Ac", "abc"},
+                {"1abd", "1hjkhkjhb"}
             };
             Scenario sc = new Scenario(values, "string", "lt", parser, templateAllExComp, null);
             sc.Test(true);
@@ -205,11 +205,11 @@ namespace UnitTestParser
                 {"text1", "teyt1 "},
                 {"123a", "124b"}, 
                 {"Abc", "abc"},
-                {"1abcd", "1b"},
+                {"d", "1b"},
                 {"teXt1", "teXt1"},
                 {"1234a", "1234a"}, 
                 {"", ""},
-                {" ", " "}
+                {" ", "  "}
             };
             Scenario sc = new Scenario(values, "string", "le", parser, templateAllExComp, null);
             sc.Test(true);
@@ -269,8 +269,8 @@ namespace UnitTestParser
             {
                 {"teyt1 ", "text1"},
                 {"124ED", "123ddgd"}, 
-                {"abc", "Abc"},
-                {"1b", "1abcd"}
+                {"abc ", "Abc"},
+                {"1abcd1abcd", "1abcd"}
             };
             Scenario sc = new Scenario(values, "string", "gt", parser, templateAllExComp, null);
             sc.Test(true);
@@ -315,14 +315,13 @@ namespace UnitTestParser
         {
             Dictionary<string, string> values = new Dictionary<string, string>
             {
-                {"teyt1 ", "text1"},
+                {"aaaaaa", "bbb"},
                 {"124x", "123x"}, 
-                {"abc", "Abc"},
-                {"1b", "1abcd"},
-                {"text1", "text1"},
+                {"abc ", "Abc"},
+                {"abaa", "1d"},
+                {"tegjggxt1", "abaa"},
                 {"123x", "123x"}, 
-                {"", ""},
-                {" ", " "}
+                {"   ", " "}
             };
             Scenario sc = new Scenario(values, "string", "ge", parser, templateAllExComp, null);
             sc.Test(true);
@@ -555,8 +554,8 @@ namespace UnitTestParser
                 {"a", "3"},
                 {"b", "10"}
             };
-            String template = "\"foo\": [\"#array#uv_ge#a#res#\", \"#integer#uv_ge#b##\"] ";
-            String response = "foo: [10,20,30]";
+            String template = "{\"foo\": [\"#array#uv_ge#a#res#\", \"#integer#uv_ge#b##\"] }";
+            String response = "{\"foo\": [10,20,30] }";
             ParserResult pr = parser.parseResponse(template, response, customVar, true);
             
             Assert.IsNotNull(pr);
@@ -574,8 +573,8 @@ namespace UnitTestParser
             {
                 {"a", "abc"}
             };
-            String template = "\"foo\": [\"#string#uv_ne#a##\"";
-            String response = "foo: [\"ab\", \"abcd\"]";
+            String template = "{\"foo\": [\"#string#uv_ne#a##\"] }";
+            String response = "{\"foo\": [\"ab\", \"abcd\"] } ";
             ParserResult pr = parser.parseResponse(template, response, customVar, true);
 
             Assert.IsNotNull(pr);

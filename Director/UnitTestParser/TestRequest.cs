@@ -57,12 +57,11 @@ namespace UnitTestParser
         {
             ParserResult pr;
             String result;
-            pr = parser.generateRequest("{ \"foo\": \"a\\\\#b#randInt(1, 1)#d\\\\$e\" }", null);
+            pr = parser.generateRequest("{ \"foo\": \"ab#randInt(1, 1)#de\" }", null);
             Assert.IsNotNull(pr);
             Assert.IsTrue(pr.isSuccess());
             result = pr.getResult().Replace(" ", "");
-
-            Assert.AreEqual(result, "{\"foo\":a\\#b1d$e}");
+            Assert.AreEqual(result, "{\"foo\":\"ab1de\"}");
 
         }
 
