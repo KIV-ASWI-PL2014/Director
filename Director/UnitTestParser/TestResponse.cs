@@ -102,7 +102,7 @@ namespace UnitTestParser
                 {"abcd", "ABCD"}
             };
             Scenario sc = new Scenario(values, "string", "ne", parser, templateAllExTyCo, null);
-            sc.Test(false);
+            sc.Test(true);
         }
 
         [TestMethod]
@@ -117,7 +117,7 @@ namespace UnitTestParser
                 {"1", "2"}
             };
             Scenario sc = new Scenario(values, "integer", "ne", parser, templateAllExTyCo, null);
-            sc.Test(false);
+            sc.Test(true);
         }
 
         [TestMethod]
@@ -129,7 +129,7 @@ namespace UnitTestParser
                 {"false", "true"} 
             };
             Scenario sc = new Scenario(values, "boolean", "ne", parser, templateAllExTyCo, null);
-            sc.Test(false);
+            sc.Test(true);
         }
 
 
@@ -144,7 +144,7 @@ namespace UnitTestParser
                 {"-1.0", "1.0"} 
             };
             Scenario sc = new Scenario(values, "float", "ne", parser, templateAllExTyCo, null);
-            sc.Test(false);
+            sc.Test(true);
         }
 
         //####################################
