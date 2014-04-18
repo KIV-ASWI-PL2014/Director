@@ -400,14 +400,14 @@ namespace UnitTestParser
                 {"a", "text1"},
                 {"b", "123"}, 
                 {"c", "1.###3"},
-                {"d", "2,\\\\48"}
+                {"d", "2,48"}
             };
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"text1", "a"},
                 {"123", "b"}, 
                 {"1.###3", "c"},
-                {"2,\\\\48", "d"}
+                {"2,48", "d"}
             };
             Scenario sc = new Scenario(values, "string", "uv_eq", parser, templateFullNotation, customVar);
             sc.Test(true);
@@ -499,66 +499,45 @@ namespace UnitTestParser
         [TestMethod]
         public void IpEqualString()
         {
-            Dictionary<string, string> customVar = new Dictionary<string, string>
+
+            Dictionary<string, string> values = new Dictionary<string, string>
             {
-                {"a", "text1"},
-                {"b", "123"}, 
+                {"text1", "text1"},
+                {"123", "123"}, 
                 {"c", ""},
                 {"d", " "}
             };
-            Dictionary<string, string> values = new Dictionary<string, string>
-            {
-                {"text1", "a"},
-                {"123", "b"}, 
-                {"", "c"},
-                {" ", "d"}
-            };
-            Scenario sc = new Scenario(values, "string", "ip_eq", parser, templateFullNotation, customVar);
+
+            Scenario sc = new Scenario(values, "string", "ip_eq", parser, templateFullNotation, null);
             sc.Test(true);
 
-            sc = new Scenario(values, "string", "ip_le", parser, templateFullNotation, customVar);
+            sc = new Scenario(values, "string", "ip_le", parser, templateFullNotation, null);
             sc.Test(true);
 
-            sc = new Scenario(values, "string", "ip_ge", parser, templateFullNotation, customVar);
+            sc = new Scenario(values, "string", "ip_ge", parser, templateFullNotation, null);
             sc.Test(true);
         }
 
         [TestMethod]
         public void IpNotEqualInteger()
         { 
-            Dictionary<string, string> customVar = new Dictionary<string, string>
-            {
-                {"a", "-10"},
-                {"b", "-1"}, 
-                {"c", "0"},
-                {"d", "1"}
-            };
             Dictionary<string, string> values = new Dictionary<string, string>
             {
-                {"-1", "a"},
-                {"1", "b"}, 
-                {"20", "c"},
-                {"11", "d"}
+                {"-1", "10"},
+                {"1", "12"}, 
+                {"20", "-5"},
+                {"11", "1"}
             };
-            Scenario sc = new Scenario(values, "integer", "ip_ne", parser, templateFullNotation, customVar);
+            Scenario sc = new Scenario(values, "integer", "ip_ne", parser, templateFullNotation, null);
             sc.Test(true);
         }
 
         [TestMethod]
         public void IpGreaterThanFloat()
         {
-            String result; 
-            Dictionary<string, string> customVar = new Dictionary<string, string>
-            {
-                {"var", "-10.2"},
-            };
-
-            ParserResult pr = parser.parseResponse("{ a : \"#real#ip_gt#5#res#\", b: \"#real#ip_gt#0#res#\"  }", "{ b: 1.0 }", customVar, true);
+            ParserResult pr = parser.parseResponse("{ a : \"#real#ip_gt#5##\", b: \"#real#ip_gt#0##\"  }", "{ b: 1.0 }", null, true);
             Assert.IsNotNull(pr);
             Assert.IsTrue(pr.isSuccess());
-
-            Assert.IsTrue(customVar.TryGetValue("res", out result));
-            Assert.AreEqual(result, "1");
 
         }
 
