@@ -185,7 +185,7 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"-1.0", "1.0"},
-                {"0.0", "1.0"}, 
+                {"0.1", "1.0"}, 
                 {"0.0", "10.0"}, 
                 {"-2.0", "-1.0"}
             };
@@ -298,7 +298,7 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"1.0", "-1.0"},
-                {"1.0", "0.0"}, 
+                {"1.1", "0.0"}, 
                 {"10.0", "0.0"}, 
                 {"-1.0", "-2.0"}
             };
