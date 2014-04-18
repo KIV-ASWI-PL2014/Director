@@ -8,9 +8,11 @@ namespace UnitTestParser
     [TestClass]
     public class TestResponse
     {
-        public Boolean[] templateExComp = { false, false, true, true, true };
-        public Boolean[] templateAll = { true, true, true, true, true };
-        public Boolean[] templateRegexUvIp = { false, false, false, true, false };
+        public Boolean[] templateAllExComp =    { false, false, true, true, true };
+        public Boolean[] templateAllExType =    { true, true, true, true, false };
+        public Boolean[] templateAllExTyCo =    { false, false, true, true, false };
+        public Boolean[] templateAll =          { true, true, true, true, true };
+        public Boolean[] templateFullNotation = { false, false, false, true, false };
 
         Parser parser = new Parser();
         
@@ -51,6 +53,7 @@ namespace UnitTestParser
                 {"10", "10"},
                 {"-60", "-60"}, 
                 {"0", "0"},
+                {"0", "-0"},
                 {"-1", "-1"}
             };
             Scenario sc = new Scenario(values, "integer", "eq", parser, templateAll, null);
@@ -76,7 +79,8 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"1.0", "1.0"},
-                {"0", "0"}, 
+                {"0", "0"},
+                {"-0", "0"},
                 {"-1.0", "-1.0"} 
             };
             Scenario sc = new Scenario(values, "float", "eq", parser, templateAll, null);
@@ -97,7 +101,7 @@ namespace UnitTestParser
                 {"ABC", "abc"},
                 {"abcd", "ABCD"}
             };
-            Scenario sc = new Scenario(values, "string", "ne", parser, templateAll, null);
+            Scenario sc = new Scenario(values, "string", "ne", parser, templateAllExTyCo, null);
             sc.Test(false);
         }
 
@@ -108,11 +112,11 @@ namespace UnitTestParser
             {
                 {"10", "-10"},
                 {"-60", "60"}, 
-                {"0", "-0"},
-                {"-0", "0"},
+                {"0", "-10"},
+                {"-0", "2"},
                 {"1", "2"}
             };
-            Scenario sc = new Scenario(values, "integer", "ne", parser, templateAll, null);
+            Scenario sc = new Scenario(values, "integer", "ne", parser, templateAllExTyCo, null);
             sc.Test(false);
         }
 
@@ -124,7 +128,7 @@ namespace UnitTestParser
                 {"true", "false"},
                 {"false", "true"} 
             };
-            Scenario sc = new Scenario(values, "boolean", "ne", parser, templateAll, null);
+            Scenario sc = new Scenario(values, "boolean", "ne", parser, templateAllExTyCo, null);
             sc.Test(false);
         }
 
@@ -135,11 +139,11 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"1.0", "-1.0"},
-                {"0", "-0"}, 
-                {"-0", "0"}, 
+                {"0.1", "-0"}, 
+                {"-0", "10"}, 
                 {"-1.0", "1.0"} 
             };
-            Scenario sc = new Scenario(values, "float", "ne", parser, templateAll, null);
+            Scenario sc = new Scenario(values, "float", "ne", parser, templateAllExTyCo, null);
             sc.Test(false);
         }
 
@@ -157,7 +161,7 @@ namespace UnitTestParser
                 {"Abc", "abc"},
                 {"1abcd", "1b"}
             };
-            Scenario sc = new Scenario(values, "string", "lt", parser, templateExComp, null);
+            Scenario sc = new Scenario(values, "string", "lt", parser, templateAllExComp, null);
             sc.Test(true);
         }
 
@@ -172,7 +176,7 @@ namespace UnitTestParser
                 {"1", "11"},
                 {"-1", "1"}
             };
-            Scenario sc = new Scenario(values, "integer", "lt", parser, templateExComp, null);
+            Scenario sc = new Scenario(values, "integer", "lt", parser, templateAllExComp, null);
             sc.Test(true);
         }
 
@@ -187,7 +191,7 @@ namespace UnitTestParser
                 {"0", "10"}, 
                 {"-2.0", "-1.0"}
             };
-            Scenario sc = new Scenario(values, "float", "lt", parser, templateExComp, null);
+            Scenario sc = new Scenario(values, "float", "lt", parser, templateAllExComp, null);
             sc.Test(true);
         }
 
@@ -209,7 +213,7 @@ namespace UnitTestParser
                 {"", ""},
                 {" ", " "}
             };
-            Scenario sc = new Scenario(values, "string", "le", parser, templateExComp, null);
+            Scenario sc = new Scenario(values, "string", "le", parser, templateAllExComp, null);
             sc.Test(true);
         }
 
@@ -228,7 +232,7 @@ namespace UnitTestParser
                 {"0", "0"},
                 {"-1", "-1"}
             };
-            Scenario sc = new Scenario(values, "integer", "le", parser, templateExComp, null);
+            Scenario sc = new Scenario(values, "integer", "le", parser, templateAllExComp, null);
             sc.Test(true);
         }
 
@@ -246,7 +250,7 @@ namespace UnitTestParser
                 {"0.0", "0"}, 
                 {"-1.0", "-1.0"} 
             };
-            Scenario sc = new Scenario(values, "float", "le", parser, templateExComp, null);
+            Scenario sc = new Scenario(values, "float", "le", parser, templateAllExComp, null);
             sc.Test(true);
         }
 
@@ -270,7 +274,7 @@ namespace UnitTestParser
                 {"abc", "Abc"},
                 {"1b", "1abcd"}
             };
-            Scenario sc = new Scenario(values, "string", "gt", parser, templateExComp, null);
+            Scenario sc = new Scenario(values, "string", "gt", parser, templateAllExComp, null);
             sc.Test(true);
         }
 
@@ -285,7 +289,7 @@ namespace UnitTestParser
                 {"111", "11"},
                 {"10", "-1"}
             };
-            Scenario sc = new Scenario(values, "integer", "gt", parser, templateExComp, null);
+            Scenario sc = new Scenario(values, "integer", "gt", parser, templateAllExComp, null);
             sc.Test(true);
         }
 
@@ -300,7 +304,7 @@ namespace UnitTestParser
                 {"10", "0"}, 
                 {"-1.0", "-2.0"}
             };
-            Scenario sc = new Scenario(values, "float", "gt", parser, templateExComp, null);
+            Scenario sc = new Scenario(values, "float", "gt", parser, templateAllExComp, null);
             sc.Test(true);
         }
         
@@ -322,7 +326,7 @@ namespace UnitTestParser
                 {"", ""},
                 {" ", " "}
             };
-            Scenario sc = new Scenario(values, "string", "ge", parser, templateExComp, null);
+            Scenario sc = new Scenario(values, "string", "ge", parser, templateAllExComp, null);
             sc.Test(true);
         }
 
@@ -341,7 +345,7 @@ namespace UnitTestParser
                 {"0", "0"},
                 {"-1", "-1"}
             };
-            Scenario sc = new Scenario(values, "integer", "ge", parser, templateExComp, null);
+            Scenario sc = new Scenario(values, "integer", "ge", parser, templateAllExComp, null);
             sc.Test(true);
         }
 
@@ -359,7 +363,7 @@ namespace UnitTestParser
                 {"0", "0"}, 
                 {"-1.01", "-1.01"} 
             };
-            Scenario sc = new Scenario(values, "float", "ge", parser, templateExComp, null);
+            Scenario sc = new Scenario(values, "float", "ge", parser, templateAllExComp, null);
             sc.Test(true);
         }
 
@@ -382,7 +386,7 @@ namespace UnitTestParser
                 {"teeeeeext1", "te*xt1"},
                 {"ahoj", "ah*oj"}
             };
-            Scenario sc = new Scenario(values, "string", "mp", parser, templateRegexUvIp, null);
+            Scenario sc = new Scenario(values, "string", "mp", parser, templateFullNotation, null);
             sc.Test(true);
         }
 
@@ -407,13 +411,13 @@ namespace UnitTestParser
                 {"1.###3", "c"},
                 {"2,\\\\48", "d"}
             };
-            Scenario sc = new Scenario(values, "string", "uv_eq", parser, templateRegexUvIp, customVar);
+            Scenario sc = new Scenario(values, "string", "uv_eq", parser, templateFullNotation, customVar);
             sc.Test(true);
 
-            sc = new Scenario(values, "string", "uv_le", parser, templateRegexUvIp, customVar);
+            sc = new Scenario(values, "string", "uv_le", parser, templateFullNotation, customVar);
             sc.Test(true);
 
-            sc = new Scenario(values, "string", "uv_ge", parser, templateRegexUvIp, customVar);
+            sc = new Scenario(values, "string", "uv_ge", parser, templateFullNotation, customVar);
             sc.Test(true);
         }
 
@@ -434,13 +438,13 @@ namespace UnitTestParser
                 {"0", "c"},
                 {"1", "d"}
             };
-            Scenario sc = new Scenario(values, "integer", "uv_eq", parser, templateRegexUvIp, customVar);
+            Scenario sc = new Scenario(values, "integer", "uv_eq", parser, templateFullNotation, customVar);
             sc.Test(true);
 
-            sc = new Scenario(values, "integer", "uv_le", parser, templateRegexUvIp, customVar);
+            sc = new Scenario(values, "integer", "uv_le", parser, templateFullNotation, customVar);
             sc.Test(true);
 
-            sc = new Scenario(values, "integer", "uv_ge", parser, templateRegexUvIp, customVar);
+            sc = new Scenario(values, "integer", "uv_ge", parser, templateFullNotation, customVar);
             sc.Test(true);
         }
 
@@ -461,7 +465,7 @@ namespace UnitTestParser
                 {"20", "c"},
                 {"11", "d"}
             };
-            Scenario sc = new Scenario(values, "integer", "uv_ne", parser, templateRegexUvIp, customVar);
+            Scenario sc = new Scenario(values, "integer", "uv_ne", parser, templateFullNotation, customVar);
             sc.Test(true);
         }
 
@@ -482,10 +486,10 @@ namespace UnitTestParser
                 {"20", "c"},
                 {"1.23", "d"}
             };
-            Scenario sc = new Scenario(values, "float", "uv_gt", parser, templateRegexUvIp, customVar);
+            Scenario sc = new Scenario(values, "float", "uv_gt", parser, templateFullNotation, customVar);
             sc.Test(true);
 
-            sc = new Scenario(values, "float", "uv_ge", parser, templateRegexUvIp, customVar);
+            sc = new Scenario(values, "float", "uv_ge", parser, templateFullNotation, customVar);
             sc.Test(true);
         }
 
@@ -511,13 +515,13 @@ namespace UnitTestParser
                 {"", "c"},
                 {" ", "d"}
             };
-            Scenario sc = new Scenario(values, "string", "ip_eq", parser, templateRegexUvIp, customVar);
+            Scenario sc = new Scenario(values, "string", "ip_eq", parser, templateFullNotation, customVar);
             sc.Test(true);
 
-            sc = new Scenario(values, "string", "ip_le", parser, templateRegexUvIp, customVar);
+            sc = new Scenario(values, "string", "ip_le", parser, templateFullNotation, customVar);
             sc.Test(true);
 
-            sc = new Scenario(values, "string", "ip_ge", parser, templateRegexUvIp, customVar);
+            sc = new Scenario(values, "string", "ip_ge", parser, templateFullNotation, customVar);
             sc.Test(true);
         }
 
@@ -538,7 +542,7 @@ namespace UnitTestParser
                 {"20", "c"},
                 {"11", "d"}
             };
-            Scenario sc = new Scenario(values, "integer", "ip_ne", parser, templateRegexUvIp, customVar);
+            Scenario sc = new Scenario(values, "integer", "ip_ne", parser, templateFullNotation, customVar);
             sc.Test(true);
         }
 
@@ -551,12 +555,12 @@ namespace UnitTestParser
                 {"var", "-10.2"},
             };
 
-            ParserResult pr = parser.parseResponse("{ a : \"#float#ip_gt#var#res#\", b: \"#float#ip_gt#0##\"  }", "{ b: 1 }", customVar, true);
+            ParserResult pr = parser.parseResponse("{ a : \"#float#ip_gt#5#res#\", b: \"#float#ip_gt#0#res#\"  }", "{ b: 1 }", customVar, true);
             Assert.IsNotNull(pr);
             Assert.IsTrue(pr.isSuccess());
 
             Assert.IsTrue(customVar.TryGetValue("res", out result));
-            Assert.AreEqual(result, "-10.2");
+            Assert.AreEqual(result, "1");
 
         }
 
