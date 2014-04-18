@@ -9,6 +9,7 @@ using Xwt.Drawing;
 using Director.Forms.Controls;
 using Director.DataStructures;
 using Director.Forms.Export;
+using Director.Forms.Inputs;
 
 namespace Director.Forms
 {
@@ -359,11 +360,49 @@ namespace Director.Forms
 
             // Request menu
             RequestMenu = new Menu();
+            MenuItem MenuEditRequest = new MenuItem(Director.Properties.Resources.MenuEditRequest)
+            {
+                Image = Image.FromResource(DirectorImages.EDIT_ICON)
+            };
+            MenuEditRequest.Clicked += MenuEditRequest_Clicked;
+            RequestMenu.Items.Add(MenuEditRequest);
             MenuItem MenuRemoveRequest = new MenuItem(Director.Properties.Resources.ContextMenuRemoveRequest)
             {
                 Image = Image.FromResource(DirectorImages.CROSS_ICON)
             };
             RequestMenu.Items.Add(MenuRemoveRequest);
+        }
+
+        /// <summary>
+        /// Edit request data.
+        /// </summary>
+        void MenuEditRequest_Clicked(object sender, EventArgs e)
+        {
+            // Get actual Request
+            TreePosition tmp = CurrentServer.SelectedRow;
+
+            if (tmp == null)
+                return;
+
+            var s = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+
+            if (s is Request)
+            {
+                // Create edit window
+                EditWindow editWindow = new EditWindow(this, (Request) s);
+                
+                // Disable main window
+                Opacity = 0.5;
+
+                // Dispozed window opacity to 1
+                editWindow.Closed += delegate
+                {
+                    Opacity = 1;
+                };
+
+                // Show
+                editWindow.Show();
+            }
         }
 
         /// <summary>

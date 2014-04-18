@@ -98,6 +98,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm.
+        /// </summary>
+        internal static string Confirm {
+            get {
+                return ResourceManager.GetString("Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add request.
         /// </summary>
         internal static string ContextMenuAddRequest {
@@ -159,6 +168,16 @@ namespace Director.Properties {
         internal static string DialogSaveScenario {
             get {
                 return ResourceManager.GetString("DialogSaveScenario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap edit {
+            get {
+                object obj = ResourceManager.GetObject("edit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -379,6 +398,15 @@ namespace Director.Properties {
         internal static string MenuAddScenario {
             get {
                 return ResourceManager.GetString("MenuAddScenario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit request.
+        /// </summary>
+        internal static string MenuEditRequest {
+            get {
+                return ResourceManager.GetString("MenuEditRequest", resourceCulture);
             }
         }
         

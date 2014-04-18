@@ -79,6 +79,8 @@
     <Compile Include="DataStructures\SupportStructures\Frequency.cs" />
     <Compile Include="ExportLib\Export.cs" />
     <Compile Include="Forms\Controls\EmailList.cs" />
+    <Compile Include="Forms\Inputs\EditWindow.cs" />
+    <Compile Include="Forms\Inputs\SetWindow.cs" />
     <Compile Include="ParserLib\ParserCompareDefinition.cs" />
     <Compile Include="ParserLib\ParserError.cs" />
     <Compile Include="ParserLib\Parser.cs" />
@@ -256,6 +258,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\save.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\edit.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

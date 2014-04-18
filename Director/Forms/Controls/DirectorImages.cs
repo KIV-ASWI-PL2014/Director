@@ -24,5 +24,6 @@ namespace Director.Forms.Controls
         public const string REQUEST_IMAGE = "Director.Resources.request_page.png";
         public const string OPEN_SCENARIO_ICON = "Director.Resources.open.png";
         public const string SAVE_SCENARIO_ICON = "Director.Resources.save.png";
+        public const string EDIT_ICON = "Director.Resources.edit.png";
     }
 }
