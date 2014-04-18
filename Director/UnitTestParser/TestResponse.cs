@@ -268,7 +268,7 @@ namespace UnitTestParser
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                 {"teyt1 ", "text1"},
-                {"124ED", "123ddgd"}, 
+                {"123ddgd", "sdfs"}, 
                 {"abc ", "Abc"},
                 {"1abcd1abcd", "1abcd"}
             };
@@ -503,8 +503,8 @@ namespace UnitTestParser
             {
                 {"text1", "text1"},
                 {"123", "123"}, 
-                {"c", ""},
-                {"d", " "}
+                {"c", "c"},
+                {"d", "d"}
             };
 
             Scenario sc = new Scenario(values, "string", "ip_eq", parser, templateFullNotation, null);
