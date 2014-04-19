@@ -468,17 +468,20 @@ namespace Director.ParserLib
                 if (response_root.ContainsKey(template_key))
                 {
                     // we got a match between template key and response key
-                    Type response_type = response_root[template_key].value.GetType();
                     Type template_type = null;
+                    Type response_type = null;
+                    response_type = response_root[template_key].value.GetType();
                     if (template_root[template_key].comp_def.value != null)
                         template_type = template_root[template_key].comp_def.value.GetType();
                     else
                         template_type = template_root[template_key].comp_def.type;
-                    // are their values of the same type or in the same type family? or is a response value of ingere type thus still comparable to float template type?
-                    if (response_type == template_type ||
-                        (RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(response_type) && RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(template_type)) ||
-                        (RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(response_type) && RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(template_type)) ||
-                        (RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(response_type) && RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(template_type))
+
+                    // are the items comparable?
+                    if (response_type == template_type || // values are of the same type
+                        (RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(response_type) && RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(template_type)) || // comparable integers
+                        (RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(response_type) && RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(template_type)) || // comparable floats
+                        (RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(response_type) && RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(template_type)) || // recieved integer comparable to wanted float (JSON spec. does not distinguis between ints and floats)
+                        response_type == typeof(List<ParserItem>) // comparing to an array
                     )
                     {
                         // values are of the same type
@@ -539,12 +542,7 @@ namespace Director.ParserLib
 
         private bool compareParserItems(ParserItem template_item, ParserItem response_item, Dictionary<string, string> customVariables, List<ParserError> errors)
         {
-            // preprocess some types (arrays and string type codes needs to be measured by their length)
-            if (template_item.comp_def.type == typeof(Array))
-            {
-                template_item.comp_def.value = ((List<ParserItem>)template_item.comp_def.value).Count;
-                response_item.value = ((List<ParserItem>)response_item.value).Count;
-            }
+            // preprocess string type which might need to be measured by it's length
             if (template_item.comp_def.type == typeof(string) && template_item.comp_def.operation != RESPONSE_OPERATION_EQUAL && template_item.comp_def.operation != RESPONSE_OPERATION_NOT_EQUAL && template_item.comp_def.operation != RESPONSE_OPERATION_MATCHING_REGEXP_PATTERN && template_item.comp_def.operation != null)
             {
                 template_item.comp_def.value = template_item.comp_def.value != null ? ((string)template_item.comp_def.value).Length : 0;
