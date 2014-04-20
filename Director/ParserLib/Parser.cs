@@ -83,6 +83,9 @@ namespace Director.ParserLib
         private const string RESPONSE_BOOLEAN_CONVERSION_TYPE_DEFINITION_TRUE = "true";
         private const string RESPONSE_BOOLEAN_CONVERSION_TYPE_DEFINITION_FALSE = "false";
 
+        private static readonly Type[] RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS = { typeof(System.Int16), typeof(System.Int32), typeof(System.Int64) };
+        private static readonly Type[] RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS = { typeof(System.Single), typeof(System.Double) };
+
         //
         // parser error messages
         //
@@ -113,6 +116,7 @@ namespace Director.ParserLib
         private static readonly string ERR_MSG_COMPARE_VALUES = "Values \"{0}\" defined in template and \"{1}\" received in response don't match.";
         private static readonly string ERR_MSG_COMPARE_TYPES = "Types \"{0}\" defined in template and \"{1}\" received in response don't match.";
         private static readonly string ERR_MSG_COMPARE_OPERATION = "Operation \"{0} {1} {2}\" returned false.";
+        private static readonly string ERR_MSG_REGEX_PARSER = "Regular expression parser raised following exception: {0}";
 
         //
         // global variables
@@ -129,8 +133,6 @@ namespace Director.ParserLib
                 customVariables = new Dictionary<string, string>();
 
             // TODO: delete this after testing
-            customVariables.Add("ca$u", "5");
-            customVariables.Add("ahoj", "nazdarek");
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
 
             // try to deserialize JSON template into internal parser structures
@@ -166,8 +168,6 @@ namespace Director.ParserLib
                 customVariables = new Dictionary<string, string>();
 
             // TODO: delete this after testing
-            customVariables.Add("ca$u", "5");
-            customVariables.Add("ahoj", "nazdarek");
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
 
             // try to deserialize JSON template into internal parser structures
@@ -201,8 +201,6 @@ namespace Director.ParserLib
                 customVariables = new Dictionary<string, string>();
 
             // TODO: delete this after testing
-            customVariables.Add("ca$u", "5");
-            customVariables.Add("ahoj", "nazdarek");
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
 
             // try to deserialize JSON template into internal parser structures
@@ -256,28 +254,6 @@ namespace Director.ParserLib
                 return new ParserError(line, position, errorMessage.Substring(0, posPosition - LINE_DEF.Length - 1), source);
             }
             return new ParserError(-1, -1, "\nMessage: " + errorMessage, source);
-        }
-
-        private Dictionary<string, object> resursiveDeserialization(string template)
-        {
-            Dictionary<string, object> result;
-
-            // try to deserialize JSON string
-            result = JsonConvert.DeserializeObject<Dictionary<string, object>>(template);
-
-            List<string> keys = new List<string>(result.Keys);
-            foreach (string key in keys)
-            {
-                //Type obj_type = result[key].GetType();
-                //Console.WriteLine(obj_type.FullName);
-
-                if (result[key] is JObject)
-                {
-                    result[key] = resursiveDeserialization(result[key].ToString());
-                }
-            }
-
-            return result;
         }
 
         private Dictionary<string, ParserItem> deserialize(string template)
@@ -469,13 +445,7 @@ namespace Director.ParserLib
                     if (list.Count > 0)
                     {
                         if (list[0].value is string) // if at least one item is present and it is string ...
-                            list[0] = parseCompareRules(list[0], customVariables, errors); // ... parse compare rules for entire array from this field
-                        // simple type
-                        // make parser compare definition for strict comparison and assingn it to this item
-                        pcd = new ParserCompareDefinition();
-                        pcd.type = list[0].value.GetType();
-                        pcd.value = list[0].value;
-                        list[0].comp_def = pcd;
+                            root[key] = parseCompareRules(list[0], customVariables, errors); // ... parse compare rules for entire array from this field
                     }
                     continue;
                 }
@@ -483,7 +453,6 @@ namespace Director.ParserLib
                 // simple type
                 // make parser compare definition for strict comparison and assingn it to this item
                 pcd = new ParserCompareDefinition();
-                pcd.type = root[key].value.GetType();
                 pcd.value = root[key].value;
                 root[key].comp_def = pcd;
             }
@@ -498,8 +467,22 @@ namespace Director.ParserLib
             {
                 if (response_root.ContainsKey(template_key))
                 {
-                    // we got a match between template key and response key; are their values of the same type?
-                    if (response_root[template_key].value.GetType() == template_root[template_key].comp_def.value.GetType())
+                    // we got a match between template key and response key
+                    Type template_type = null;
+                    Type response_type = null;
+                    response_type = response_root[template_key].value.GetType();
+                    if (template_root[template_key].comp_def.value != null)
+                        template_type = template_root[template_key].comp_def.value.GetType();
+                    else
+                        template_type = template_root[template_key].comp_def.type;
+
+                    // are the items comparable?
+                    if (response_type == template_type || // values are of the same type
+                        (RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(response_type) && RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(template_type)) || // comparable integers
+                        (RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(response_type) && RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(template_type)) || // comparable floats
+                        (RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(response_type) && RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(template_type)) || // recieved integer comparable to wanted float (JSON spec. does not distinguis between ints and floats)
+                        response_type == typeof(List<ParserItem>) // comparing to an array
+                    )
                     {
                         // values are of the same type
                         if (response_root[template_key].value is Dictionary<string, ParserItem>) // object
@@ -559,14 +542,36 @@ namespace Director.ParserLib
 
         private bool compareParserItems(ParserItem template_item, ParserItem response_item, Dictionary<string, string> customVariables, List<ParserError> errors)
         {
-            // preprocess some types (arrays and string type codes needs to be measured by their length)
-            if (template_item.comp_def.type == typeof(Array))
+            // preprocess string type which might need to be measured by it's length
+            if (template_item.comp_def.type == typeof(string) && template_item.comp_def.operation != RESPONSE_OPERATION_EQUAL && template_item.comp_def.operation != RESPONSE_OPERATION_NOT_EQUAL && template_item.comp_def.operation != RESPONSE_OPERATION_MATCHING_REGEXP_PATTERN && template_item.comp_def.operation != null)
             {
-                template_item.comp_def.value = ((List<ParserItem>)template_item.comp_def.value).Count;
-                response_item.value = ((List<ParserItem>)response_item.value).Count;
+                template_item.comp_def.value = template_item.comp_def.value != null ? ((string)template_item.comp_def.value).Length : 0;
+                response_item.value = ((string)response_item.value).Length;
             }
-            if (template_item.comp_def.type == typeof(string) && template_item.comp_def.operation != RESPONSE_OPERATION_EQUAL && template_item.comp_def.operation != RESPONSE_OPERATION_NOT_EQUAL && template_item.comp_def.operation != null)
-                template_item.comp_def.value = ((string)template_item.comp_def.value).Length;
+
+            // unify values of int and float family type members on the same type
+            if (template_item.comp_def.value != null && RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(template_item.comp_def.value.GetType()))
+                template_item.comp_def.value = Convert.ToInt32(template_item.comp_def.value);
+            if (response_item.value != null && RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(response_item.value.GetType()))
+                response_item.value = Convert.ToInt32(response_item.value);
+            if (template_item.comp_def.value != null && RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(template_item.comp_def.value.GetType()))
+                template_item.comp_def.value = Convert.ToSingle(template_item.comp_def.value);
+            if (response_item.value != null && RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(response_item.value.GetType()))
+                response_item.value = Convert.ToSingle(response_item.value);
+
+            // response value might have been parsed as integer type, but we still want to be able to compare it with float type template value
+            if (RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(response_item.value.GetType()) &&
+                (
+                    (
+                        template_item.comp_def.value != null && 
+                        RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(template_item.comp_def.value.GetType())
+                    ) ||
+                    RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(template_item.comp_def.type)
+                )
+            )
+            {
+                response_item.value = Convert.ToSingle(response_item.value);
+            }
 
             // store value in custom variable if requested
             if (template_item.comp_def.var_name != null)
@@ -615,7 +620,7 @@ namespace Director.ParserLib
             if (template_item.comp_def.type != null && template_item.comp_def.operation != null && template_item.comp_def.value != null)
             {
                 // check if type of both items is the same
-                if (!template_item.comp_def.value.Equals(response_item.value))
+                if (template_item.comp_def.value.GetType() != response_item.value.GetType())
                 {
                     errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_COMPARE_TYPES, template_item.comp_def.type, response_item.value.GetType()), SOURCE_TEMPLATE));
                     return false;
@@ -632,31 +637,40 @@ namespace Director.ParserLib
                         result = !template_item.comp_def.value.Equals(response_item.value);
                         break;
                     case RESPONSE_OPERATION_LESS_THAN:
-                        if (template_item.value is float)
+                        if (template_item.comp_def.value is float)
                             result = (float)response_item.value < (float)template_item.comp_def.value;
                         else
                             result = (int)response_item.value < (int)template_item.comp_def.value;
                         break;
                     case RESPONSE_OPERATION_LESS_THAN_OR_EQUAL:
-                        if (template_item.value is float)
+                        if (template_item.comp_def.value is float)
                             result = (float)response_item.value <= (float)template_item.comp_def.value;
                         else
                             result = (int)response_item.value <= (int)template_item.comp_def.value;
                         break;
                     case RESPONSE_OPERATION_GREATER_THAN:
-                        if (template_item.value is float)
+                        if (template_item.comp_def.value is float)
                             result = (float)response_item.value > (float)template_item.comp_def.value;
                         else
                             result = (int)response_item.value > (int)template_item.comp_def.value;
                         break;
                     case RESPONSE_OPERATION_GREATER_THAN_OR_EQUAL:
-                        if (template_item.value is float)
+                        if (template_item.comp_def.value is float)
                             result = (float)response_item.value >= (float)template_item.comp_def.value;
                         else
                             result = (int)response_item.value >= (int)template_item.comp_def.value;
                         break;
                     case RESPONSE_OPERATION_MATCHING_REGEXP_PATTERN:
-                        result = Regex.Match((string)response_item.value, (string)template_item.comp_def.value).Success;
+                        try
+                        {
+                            // try to match regular expression
+                            Match match = Regex.Match((string)response_item.value, (string)template_item.comp_def.value);
+                            result = match.Success;
+                        }
+                        catch (Exception e)
+                        {
+                            errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_REGEX_PARSER, e.Message), SOURCE_TEMPLATE));
+                        }
                         break;
                     default: // urecognized operation type
                         errors.Add(new ParserError(template_item.line, template_item.position, string.Format(ERR_MSG_UNKNOWN_OPERATION, template_item.comp_def.operation), SOURCE_TEMPLATE));
@@ -837,35 +851,46 @@ namespace Director.ParserLib
                     }
                 }
 
-                // if operation was specified, type must be also specified
-                if (pcd.type == null && pcd.operation != null)
-                    errors.Add(new ParserError(item.line, item.position + 1, ERR_MSG_MISING_TYPE_FOR_OPERATION, SOURCE_TEMPLATE));
-
                 // assign operation and modifiers into parser compare definition object
                 pcd.use_variable = use_var;
                 pcd.if_present = if_present;
                 pcd.operation = op;
+
+                // if operation was specified, type must be also specified
+                if (pcd.type == null && pcd.operation != null)
+                    errors.Add(new ParserError(item.line, item.position + 1, ERR_MSG_MISING_TYPE_FOR_OPERATION, SOURCE_TEMPLATE));
+
             }
 
             // value
-            if (use_var) // do we want to replace variable name in value field by it's actual value?
+            if (val.Length > 0)
             {
-                if (customVariables.ContainsKey(val)) // search for desired custom variable ...
+                if (use_var) // do we want to replace variable name in value field by it's actual value?
                 {
-                    // try to convert value of parsed variable name to desired type; if that is not possible add an error
-                    pcd.value = convertToDesiredType(pcd.type, customVariables[val], item, errors, original_occurrences);
+                    if (customVariables.ContainsKey(val)) // search for desired custom variable ...
+                    {
+                        // try to convert value of parsed variable name to desired type; if that is not possible add an error
+                        pcd.value = convertToDesiredType(pcd.type, customVariables[val], item, errors, original_occurrences);
+                    }
+                    else // ... and add error if it doesn't exist
+                        errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_UNKNOWN_CUSTOM_VARIABLE, val), SOURCE_TEMPLATE));
                 }
-                else // ... and add error if it doesn't exist
-                    errors.Add(new ParserError(item.line, item.position + original_occurrences[2] + 1, string.Format(ERR_MSG_UNKNOWN_CUSTOM_VARIABLE, val), SOURCE_TEMPLATE));
+                else
+                {
+                    // try to convert parsed value to desired type; if that is not possible add an error
+                    pcd.value = convertToDesiredType(pcd.type, val, item, errors, original_occurrences);
+                }
             }
             else
             {
-                // try to convert parsed value to desired type; if that is not possible add an error
-                pcd.value = convertToDesiredType(pcd.type, val, item, errors, original_occurrences);
+                // in case that every part of possible information from syntax string is missing, let's presume empty string
+                if (occurrences[4] - occurrences[0] == 4)
+                    pcd.value = "";
             }
 
             // variable
-            pcd.var_name = var;
+            if (var.Length > 0)
+                pcd.var_name = var;
 
             // if there are any new syntax errors we can't parse this item - return it without any change
             if (errors.Count > original_error_count)
@@ -1457,7 +1482,7 @@ namespace Director.ParserLib
             int next_sequence_number;
             if (new_sequence)
             {
-                customVariables.Add(function_arguments[3], Convert.ToString(start));
+                customVariables[function_arguments[3]] = Convert.ToString(start);
                 next_sequence_number = start;
             }
             else
