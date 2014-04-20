@@ -140,10 +140,6 @@ namespace Director.Forms.Panels
 			VBox RunningOptionsSettings = new VBox ();
 
 			// Select scenario run
-			RunningOptionsSettings.PackStart(new Label()
-				{
-					Text = Director.Properties.Resources.RunningOptionsLabel
-				});
 			PeriodicityRunning = new RadioButton (Director.Properties.Resources.FrequencyLabel);
 			TimeDelayRunning = new RadioButton (Director.Properties.Resources.TimeDelayLabel);
 			PeriodicityRunning.Group = TimeDelayRunning.Group;

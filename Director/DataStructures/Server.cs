@@ -53,6 +53,11 @@ namespace Director.DataStructures
         /// </summary>
         public String AuthPassword { get; set; }
 
+		/// <summary>
+		/// Default headers for requests!
+		/// </summary>
+		public List<Header> DefaultHeaders = new List<Header> ();
+
         /// <summary>
         /// Default constructor for serialization purposes.
         /// </summary>
@@ -118,7 +123,9 @@ namespace Director.DataStructures
                 _scenarioId = Scenarios.Max(x => x.Id) + 1;
 
             // Create a new one
-            Scenario NewScenario = new Scenario(_scenarioId, Scenarios.Count, Director.Properties.Resources.NewScenarioName);
+			Scenario NewScenario = new Scenario (_scenarioId, Scenarios.Count, Director.Properties.Resources.NewScenarioName) {
+				ParentServer = this
+			};
 
             // Add to list
             Scenarios.Add(NewScenario);
@@ -126,17 +133,6 @@ namespace Director.DataStructures
             // Return scenario
             return NewScenario;
         }
-
-        public List<int> GetScenarioIds()
-        {
-            List<int> _idList = new List<int>();
-
-            foreach (Scenario s in Scenarios)
-                _idList.Add(s.Id);
-
-            return _idList;
-        }
-
 
 		/// <summary>
 		/// Remove scenario item.
