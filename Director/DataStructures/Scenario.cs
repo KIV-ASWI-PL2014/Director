@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace Director.DataStructures
@@ -10,6 +13,7 @@ namespace Director.DataStructures
     /// <summary>
     /// Scenario representing class.
     /// </summary>
+    [Serializable]
     public class Scenario
     {
 		/// <summary>
@@ -134,6 +138,25 @@ namespace Director.DataStructures
 
 			// Return request
 			return ret;
+        }
+
+        /// <summary>
+        /// Get clone of myself.
+        /// </summary>
+        /// <returns></returns>
+        public Scenario Clone()
+        {
+            XmlSerializer ser = new XmlSerializer(typeof(Scenario));
+            StringBuilder sb = new StringBuilder();
+            TextWriter writer = new StringWriter(sb);
+            ser.Serialize(writer, this);
+            TextReader reader = new StringReader(sb.ToString());
+            Scenario t = (Scenario) ser.Deserialize(reader);
+            t.ParentServer = this.ParentServer;
+            foreach (var r in t.Requests)
+                r.ParentScenario = t;
+
+            return t;
         }
     }
 }

@@ -5,9 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Director.DataStructures.Exceptions;
+using System.IO;
 
 namespace Director.DataStructures
 {
+    /// <summary>
+    /// Request representation class.
+    /// </summary>
+    [Serializable]
     public class Request
     {
 		/// <summary>
@@ -98,5 +103,21 @@ namespace Director.DataStructures
 			else
 				throw new InvalidUrlException();
 		}
+
+        /// <summary>
+        /// Get clone of myself.
+        /// </summary>
+        /// <returns></returns>
+        public Request Clone()
+        {
+            XmlSerializer ser = new XmlSerializer(typeof(Request));
+            StringBuilder sb = new StringBuilder();
+            TextWriter writer = new StringWriter(sb);
+            ser.Serialize(writer, this);
+            TextReader reader = new StringReader(sb.ToString());
+            Request t = (Request)ser.Deserialize(reader);
+            t.ParentScenario = this.ParentScenario;
+            return t;
+        }
     }
 }
