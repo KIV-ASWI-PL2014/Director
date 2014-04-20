@@ -25,5 +25,8 @@ namespace Director.Forms.Controls
         public const string OPEN_SCENARIO_ICON = "Director.Resources.open.png";
         public const string SAVE_SCENARIO_ICON = "Director.Resources.save.png";
         public const string EDIT_ICON = "Director.Resources.edit.png";
+        public const string DEFAULT_HEADERS_ICON = "Director.Resources.default_headers.png";
+        public const string COPY_ICON = "Director.Resources.page_copy.png";
+        public const string PASTE_ICON = "Director.Resources.page_paste.png";
     }
 }

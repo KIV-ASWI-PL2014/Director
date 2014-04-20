@@ -154,6 +154,16 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap default_headers {
+            get {
+                object obj = ResourceManager.GetObject("default_headers", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select scenario file.
         /// </summary>
         internal static string DialogOpenScenario {
@@ -402,6 +412,33 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy request.
+        /// </summary>
+        internal static string MenuCopyRequest {
+            get {
+                return ResourceManager.GetString("MenuCopyRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy scenario.
+        /// </summary>
+        internal static string MenuCopyScenario {
+            get {
+                return ResourceManager.GetString("MenuCopyScenario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit default headers.
+        /// </summary>
+        internal static string MenuEditDefaultHeaders {
+            get {
+                return ResourceManager.GetString("MenuEditDefaultHeaders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit request.
         /// </summary>
         internal static string MenuEditRequest {
@@ -434,6 +471,24 @@ namespace Director.Properties {
         internal static string MenuOpenScenario {
             get {
                 return ResourceManager.GetString("MenuOpenScenario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paste request.
+        /// </summary>
+        internal static string MenuPasteRequest {
+            get {
+                return ResourceManager.GetString("MenuPasteRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paste scenario.
+        /// </summary>
+        internal static string MenuPasteScenario {
+            get {
+                return ResourceManager.GetString("MenuPasteScenario", resourceCulture);
             }
         }
         
@@ -545,6 +600,26 @@ namespace Director.Properties {
         internal static string OutputFileNotSelected {
             get {
                 return ResourceManager.GetString("OutputFileNotSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap page_copy {
+            get {
+                object obj = ResourceManager.GetObject("page_copy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap page_paste {
+            get {
+                object obj = ResourceManager.GetObject("page_paste", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

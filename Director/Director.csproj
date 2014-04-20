@@ -49,6 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon %282%29.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\XWT\Newtonsoft.Json.dll</HintPath>
@@ -118,6 +121,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Forms\Controls\HeaderList.cs" />
+    <Compile Include="DataStructures\SupportStructures\Header.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -160,9 +165,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Locales\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Resources\homepage.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -263,6 +266,14 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\edit.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon %282%29.ico" />
+    <EmbeddedResource Include="Resources\page_paste.png" />
+    <EmbeddedResource Include="Resources\page_copy.png" />
+    <EmbeddedResource Include="Resources\default_headers.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

@@ -106,6 +106,37 @@ namespace Director.Forms
         private MenuItem SaveScenarioMenu;
 
         /// <summary>
+        /// Scenario clipboard.
+        /// </summary>
+        private Scenario ScenarioClipboard { get; set; }
+
+        /// <summary>
+        /// Request clipboard.
+        /// </summary>
+        private Request RequestClipboard { get; set; }
+
+        /// <summary>
+        /// Copy scenario menu item.
+        /// </summary>
+        private MenuItem CopyScenario { get; set; }
+
+        /// <summary>
+        /// Paste scenario menu item.
+        /// </summary>
+        private MenuItem PasteScenario { get; set; }
+
+        /// <summary>
+        /// Copy request menu item.
+        /// </summary>
+        private MenuItem CopyRequest { get; set; }
+
+        /// <summary>
+        /// Paste request menu item.
+        /// </summary>
+        private MenuItem PasteRequest { get; set; }
+
+
+        /// <summary>
         /// Default constructor initiate components!
         /// </summary>
         public MainWindow()
@@ -336,6 +367,24 @@ namespace Director.Forms
             ServerMenu.Items.Add(MenuAddScenario);
             MenuAddScenario.Clicked += AddScenario;
 
+            // Menu paste scenario
+            PasteScenario = new MenuItem(Director.Properties.Resources.MenuPasteScenario)
+            {
+                Image = Image.FromResource(DirectorImages.PASTE_ICON),
+                Sensitive = false
+            };
+            ServerMenu.Items.Add(PasteScenario);
+
+            // Separator
+            ServerMenu.Items.Add(new SeparatorMenuItem());
+
+            // Edit default headers
+            MenuItem MenuEditDefaultHeaders = new MenuItem(Director.Properties.Resources.MenuEditDefaultHeaders)
+            {
+                Image = Image.FromResource(DirectorImages.DEFAULT_HEADERS_ICON)
+            };
+            ServerMenu.Items.Add(MenuEditDefaultHeaders);
+
             // Create Scenario menu
             ScenarioMenu = new Menu();
 
@@ -347,6 +396,22 @@ namespace Director.Forms
             MenuAddRequest.Clicked += AddRequest;
             ScenarioMenu.Items.Add(MenuAddRequest);
 
+            // Paste request
+            PasteRequest = new MenuItem(Director.Properties.Resources.MenuPasteRequest)
+            {
+                Image = Image.FromResource(DirectorImages.PASTE_ICON),
+                Sensitive = false
+            };
+            PasteRequest.Clicked += PasteRequest_Clicked;
+            ScenarioMenu.Items.Add(PasteRequest);
+
+            // Copy scenario
+            CopyScenario = new MenuItem(Director.Properties.Resources.MenuCopyScenario)
+            {
+                Image = Image.FromResource(DirectorImages.COPY_ICON)
+            };
+            CopyScenario.Clicked += CopyScenario_Clicked;
+            ScenarioMenu.Items.Add(CopyScenario);
             // Separator
             ScenarioMenu.Items.Add(new SeparatorMenuItem());
 
@@ -366,11 +431,118 @@ namespace Director.Forms
             };
             MenuEditRequest.Clicked += MenuEditRequest_Clicked;
             RequestMenu.Items.Add(MenuEditRequest);
+
+            CopyRequest = new MenuItem(Director.Properties.Resources.MenuCopyRequest)
+            {
+                Image = Image.FromResource(DirectorImages.COPY_ICON)
+            };
+            CopyRequest.Clicked += CopyRequest_Clicked;
+            RequestMenu.Items.Add(CopyRequest);
+
+            // Separator
+            RequestMenu.Items.Add(new SeparatorMenuItem());
+
+            // Remove
             MenuItem MenuRemoveRequest = new MenuItem(Director.Properties.Resources.ContextMenuRemoveRequest)
             {
                 Image = Image.FromResource(DirectorImages.CROSS_ICON)
             };
             RequestMenu.Items.Add(MenuRemoveRequest);
+        }
+
+        /// <summary>
+        /// Copy request click.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void CopyRequest_Clicked(object sender, EventArgs e)
+        {
+            TreePosition tmp = CurrentServer.SelectedRow;
+            if (tmp == null)
+                return;
+            var r = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+            if (r is Request)
+            {
+                RequestClipboard = (Request)r;
+                PasteRequest.Clicked += PasteRequest_Clicked;
+                PasteRequest.Sensitive = true;
+            }
+        }
+
+        /// <summary>
+        /// Paste request into scenario.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void PasteRequest_Clicked(object sender, EventArgs e)
+        {
+            TreePosition tmp = CurrentServer.SelectedRow;
+            if (tmp == null || RequestClipboard == null)
+                return;
+            var s = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+            if (s is Scenario)
+            {
+                // Copy
+                Request NewRequest = RequestClipboard.Clone();
+
+                // Modify name
+                NewRequest.Name += "#copy";
+
+                // Add to scenario
+                ((Scenario)s).Requests.Add(NewRequest);
+
+                // Refresh tree view
+                CreateTreeItem(tmp, NewRequest.Name, RequestImage, NewRequest);
+            }
+        }
+
+        /// <summary>
+        /// Paste scenario on server position.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void PasteScenario_Clicked(object sender, EventArgs e)
+        {
+            TreePosition tmp = CurrentServer.SelectedRow;
+            if (tmp == null || ScenarioClipboard == null)
+                return;
+            var s = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+            if (s is Server)
+            {
+                // Copy
+                Scenario NewScenario = ScenarioClipboard.Clone();
+
+                // Modify name
+                NewScenario.Name += "#copy";
+
+                // Add to server
+                UServer.Scenarios.Add(NewScenario);
+
+                // Refresh tree view
+                tmp = CreateTreeItem(tmp, NewScenario.Name, ScenarioImage, NewScenario);
+
+                foreach (Request req in NewScenario.Requests)
+                    CreateTreeItem(tmp, req.Name, RequestImage, req);
+            }
+        }
+
+        /// <summary>
+        /// Copy scenario into clipboard.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void CopyScenario_Clicked(object sender, EventArgs e)
+        {
+            TreePosition tmp = CurrentServer.SelectedRow;
+            if (tmp == null)
+                return;
+            var s = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+            if (s is Scenario)
+            {
+                ScenarioClipboard = (Scenario)s;
+                PasteScenario.Clicked += PasteScenario_Clicked;
+                PasteScenario.Sensitive = true;
+            }
         }
 
         /// <summary>
@@ -498,6 +670,14 @@ namespace Director.Forms
                 bool res = MessageDialog.Confirm(Director.Properties.Resources.MessageBoxRemoveScenario, Command.Ok);
                 if (res)
                 {
+                    // If scenario is in clipboard remove too!
+                    if (ScenarioClipboard == (Scenario)s)
+                    {
+                        ScenarioClipboard = null;
+                        PasteScenario.Clicked -= PasteScenario_Clicked;
+                        PasteScenario.Sensitive = false;
+                    }
+
                     // Remove scenario
                     UServer.RemoveScenario(sc);
 
