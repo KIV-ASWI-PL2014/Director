@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Director.DataStructures
 {
@@ -11,6 +12,12 @@ namespace Director.DataStructures
     /// </summary>
     public class Scenario
     {
+		/// <summary>
+		/// Parent server of this scenario list.
+		/// </summary>
+		[XmlIgnore]
+		public Server ParentServer { get; set; }
+
         /// <summary>
         /// Request list.
         /// </summary>
@@ -109,7 +116,20 @@ namespace Director.DataStructures
                 _requestId = Requests.Max(x => x.Id) + 1;
 
             // Create request
-			Request ret = new Request (_requestId, Requests.Count, "New request");
+			Request ret = new Request (_requestId, Requests.Count, "New request") {
+				ParentScenario = this,
+				Url = ParentServer.GetUrl(),
+				Authentication = ParentServer.Authentication,
+				AuthName = ParentServer.AuthName,
+				AuthPassword = ParentServer.AuthPassword
+			};
+
+			// Copy Server Headers
+			// TODO: Use marshalling for that!
+			foreach (var h in ParentServer.DefaultHeaders)
+				ret.Headers.Add (new Header (h));
+
+			// Add new request
 			Requests.Add(ret);
 
 			// Return request
