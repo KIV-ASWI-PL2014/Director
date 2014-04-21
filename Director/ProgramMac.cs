@@ -33,9 +33,9 @@ namespace Director
 			Request test = sc.CreateNewRequest ();
 			test.ParentScenario = sc;
 
-			EditWindow _mainWindow = new EditWindow (null, test);
+			//EditWindow _mainWindow = new EditWindow (null, test);
 
-			//MainWindow _mainWindow = new MainWindow();
+			MainWindow _mainWindow = new MainWindow();
 
 			// Close window handlers
 			_mainWindow.Closed += delegate {
