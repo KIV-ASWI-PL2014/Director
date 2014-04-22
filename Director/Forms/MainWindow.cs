@@ -580,23 +580,30 @@ namespace Director.Forms
             var s = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
 
             if (s is Request)
+                OpenEditRequest((Request)s);
+        }
+
+        /// <summary>
+        /// Open edit request window and wait until finish!
+        /// </summary>
+        /// <param name="request"></param>
+        public void OpenEditRequest(Request request)
+        {
+            // Create edit window
+            EditWindow editWindow = new EditWindow(this, request);
+
+            // Disable main window
+            Opacity = 0.5;
+
+            // Dispozed window opacity to 1
+            editWindow.Closed += delegate
             {
-                // Create edit window
-                EditWindow editWindow = new EditWindow(this, (Request) s);
-                
-                // Disable main window
-                Opacity = 0.5;
+                Opacity = 1;
+                UpdateControlView(null, null);
+            };
 
-                // Dispozed window opacity to 1
-                editWindow.Closed += delegate
-                {
-                    Opacity = 1;
-                    UpdateControlView(null, null);
-                };
-
-                // Show
-                editWindow.Show();
-            }
+            // Show
+            editWindow.Show();
         }
 
         /// <summary>

@@ -33,10 +33,11 @@ namespace Director
             Request test = sc.CreateNewRequest();
             test.ParentScenario = sc;
 
+            String tsest = "<FlowDocument xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"><Paragraph><Bold><Run>Method</Run></Bold><Run> </Run><List><ListItem><Paragraph><Run>GET</Run></Paragraph></ListItem></List></Paragraph></FlowDocument>";
+            //FlowDocument doc = (FlowDocument) XamlReader.Parse(test);
 
             //EditWindow _mainWindow = new EditWindow(null, test);
 
-            //
             MainWindow _mainWindow = new MainWindow();
             _mainWindow.Show();
             _mainWindow.Closed += delegate

@@ -319,6 +319,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expected status code:.
+        /// </summary>
+        internal static string ExpectedStatusCode {
+            get {
+                return ResourceManager.GetString("ExpectedStatusCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap export {
@@ -334,6 +343,33 @@ namespace Director.Properties {
         internal static string ExportDialog {
             get {
                 return ResourceManager.GetString("ExportDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File name.
+        /// </summary>
+        internal static string FileName {
+            get {
+                return ResourceManager.GetString("FileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This name of file already exists!.
+        /// </summary>
+        internal static string FileNameAlreadyExists {
+            get {
+                return ResourceManager.GetString("FileNameAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File path.
+        /// </summary>
+        internal static string FilePath {
+            get {
+                return ResourceManager.GetString("FilePath", resourceCulture);
             }
         }
         

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Director.DataStructures.Exceptions;
 using System.IO;
+using Director.DataStructures.SupportStructures;
 
 namespace Director.DataStructures
 {
@@ -48,6 +49,16 @@ namespace Director.DataStructures
 		/// </summary>
 		public List<Header> Headers = new List<Header> ();
 
+        /// <summary>
+        /// Files.
+        /// </summary>
+        public List<FileItem> Files { get; set; }
+
+        /// <summary>
+        /// Expected response code.
+        /// </summary>
+        public int ExpectedStatusCode { get; set; }
+
 		/// <summary>
 		/// Authentication name.
 		/// </summary>
@@ -67,8 +78,22 @@ namespace Director.DataStructures
 		/// <summary>
 		/// Request Method (POST|GET|PUT)
 		/// </summary>
-		/// <value>The HTT p_ METHO.</value>
 		public String HTTP_METHOD { get; set; }
+
+        /// <summary>
+        /// Request String template.
+        /// </summary>
+        public String RequestTemplate { get; set; }
+
+        /// <summary>
+        /// Response string template.
+        /// </summary>
+        public String ResponseTemplate { get; set; }
+
+        /// <summary>
+        /// Custom variables for parser.
+        /// </summary>
+        public Dictionary<string, string> customVariables { get; set; }
 
         /// <summary>
         /// Empty constructor for XML serialization!
@@ -87,6 +112,7 @@ namespace Director.DataStructures
             Position = position;
             Name = name;
 			HTTP_METHOD = "GET";
+            Files = new List<FileItem>();
         }
 
 		/// <summary>

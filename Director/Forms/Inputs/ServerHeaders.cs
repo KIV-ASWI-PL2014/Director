@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Xwt;
 using Xwt.Drawing;
 
-namespace Director.Forms
+namespace Director.Forms.Inputs
 {
     class ServerHeaders : Window
     {

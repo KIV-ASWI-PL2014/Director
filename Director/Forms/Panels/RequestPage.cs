@@ -105,6 +105,19 @@ namespace Director.Forms.Panels
             };
             RRPanel.PackStart(RequestFrame, true, true);
 
+            // Add edit button
+            Button EditBtn = new Button(Image.FromResource(DirectorImages.EDIT_ICON), Director.Properties.Resources.MenuEditRequest)
+            {
+                WidthRequest = 150,
+                ExpandHorizontal = false,
+                ExpandVertical = false
+            };
+            EditBtn.Clicked += delegate
+            {
+                CurrentMainWindow.OpenEditRequest(ActiveRequest);
+            };
+            RRPanel.PackStart(EditBtn, expand: false, hpos: WidgetPlacement.End);
+
             // Response
             Frame ResponseFrame = new Frame()
             {

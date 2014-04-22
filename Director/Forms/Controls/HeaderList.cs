@@ -119,7 +119,6 @@ namespace Director
             // New header event
             NewHeader.Clicked += NewHeader_Clicked;
 
-
             // Create header list box
 			HeaderListBox = new VBox () {
 				BackgroundColor = Colors.White,

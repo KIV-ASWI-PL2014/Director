@@ -17,9 +17,9 @@ namespace Director.Forms.Panels
 			get
 			{
 				return @"
-# Director - Rest Scenario Tester
-
 Project Site: http://director.strnadj.eu/
+
+Icons from: http://www.fatcow.com/
 
 # Overview
 

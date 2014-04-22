@@ -85,7 +85,7 @@ namespace Director.Forms.Inputs
             {
 				Label = Director.Properties.Resources.RequestInfoBox, 
 				Padding = 10,
-				HeightRequest = 140
+				MinHeight = 140
             };
 			VBox RequestUrlContent = new VBox ();
             RequestUrlContent.PackStart(new Label(Director.Properties.Resources.RequestUrl));
@@ -169,9 +169,9 @@ namespace Director.Forms.Inputs
         { 
 			RequestSettings.Add (new OverviewWidget(ActiveRequest), Director.Properties.Resources.RequestOverview);
 			RequestSettings.Add (new HeaderList (ActiveRequest.Headers), Director.Properties.Resources.RequestHeaders);
-            RequestSettings.Add (new Label("Files"), Director.Properties.Resources.RequestFiles);
-			RequestSettings.Add (new RequestWidget(ActiveRequest), Director.Properties.Resources.RequestTab);
-			RequestSettings.Add (new Label ("A"), Director.Properties.Resources.RequestResponse);
+            RequestSettings.Add (new FileList(ActiveRequest.Files), Director.Properties.Resources.RequestFiles);
+            RequestSettings.Add(new RequestWidget(ActiveRequest), Director.Properties.Resources.RequestTab);
+			RequestSettings.Add (new ResponseWidget(ActiveRequest), Director.Properties.Resources.RequestResponse);
         }
     }
 
@@ -227,34 +227,5 @@ namespace Director.Forms.Inputs
 		{
 			Overview.Markdown = ActiveRequest.GetMarkdownInfo();
 		}
-	}
-
-    public class RequestWidget : VBox
-	{
-		/// <summary>
-		/// Type.
-		/// </summary>
-		/// <value>The type of the request.</value>
-		public ComboBox RequestType { get; set; }
-
-		/// <summary>
-		/// Method.
-		/// </summary>
-		/// <value>The request method.</value>
-		public ComboBox RequestMethod { get; set; }
-
-        /// <summary>
-        /// Active request.
-        /// </summary>
-		private Request ActiveRequest;
-
-        public RequestWidget(Request _request)
-        {
-            // Set request
-            ActiveRequest = _request;
-
-            // Set margin
-            Margin = 10;
-        }
 	}
 }
