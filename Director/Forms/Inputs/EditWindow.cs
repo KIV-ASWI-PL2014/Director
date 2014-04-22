@@ -243,6 +243,9 @@ namespace Director.Forms.Inputs
 		/// <value>The request method.</value>
 		public ComboBox RequestMethod { get; set; }
 
+        /// <summary>
+        /// Active request.
+        /// </summary>
 		private Request ActiveRequest;
 
         public RequestWidget(Request _request)

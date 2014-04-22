@@ -383,6 +383,7 @@ namespace Director.Forms
             {
                 Image = Image.FromResource(DirectorImages.DEFAULT_HEADERS_ICON)
             };
+            MenuEditDefaultHeaders.Clicked += MenuEditDefaultHeaders_Clicked;
             ServerMenu.Items.Add(MenuEditDefaultHeaders);
 
             // Create Scenario menu
@@ -447,6 +448,22 @@ namespace Director.Forms
                 Image = Image.FromResource(DirectorImages.CROSS_ICON)
             };
             RequestMenu.Items.Add(MenuRemoveRequest);
+        }
+
+        /// <summary>
+        /// Edit default server headers!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void MenuEditDefaultHeaders_Clicked(object sender, EventArgs e)
+        {
+            ServerHeaders ServerHeadersWindow = new ServerHeaders(this, UServer);
+            ServerHeadersWindow.Show();
+            Opacity = 0.1;
+            ServerHeadersWindow.Closed += delegate
+            {
+                Opacity = 1;
+            };
         }
 
         /// <summary>
@@ -740,6 +757,7 @@ namespace Director.Forms
                 Scenario s = (Scenario)data;
                 Request NewRequest = s.CreateNewRequest();
                 CreateTreeItem(tmp, NewRequest.Name, RequestImage, NewRequest);
+                UpdateControlView(sender, e);
             }
         }
 

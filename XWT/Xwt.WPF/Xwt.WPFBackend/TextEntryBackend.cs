@@ -52,6 +52,12 @@ namespace Xwt.WPFBackend
             TextBox.VerticalContentAlignment = VerticalAlignment.Center;
         }
 
+        public int TabIndex
+        {
+            get { return TextBox.TabIndex; }
+            set { TextBox.TabIndex = value; }
+        }
+
         void TextBox_Loaded(object sender, RoutedEventArgs e)
         {
             var layer = AdornerLayer.GetAdornerLayer(TextBox);

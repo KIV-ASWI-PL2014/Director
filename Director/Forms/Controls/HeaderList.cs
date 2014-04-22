@@ -13,6 +13,20 @@ namespace Director
 		/// </summary>
 		public const int ROW_HEIGHT = 30;
 
+        /// <summary>
+        /// Tab indexes.
+        /// </summary>
+        private int _TabIndex = 0;
+
+        /// <summary>
+        /// Tab indexes mngment.
+        /// </summary>
+        public int TAB_INDEX
+        {
+            get { return _TabIndex++; }
+            set { _TabIndex = value; }
+        }
+
 		/// <summary>
 		/// Current map with headers.
 		/// </summary>
@@ -53,6 +67,7 @@ namespace Director
 		{
 			HeaderListBox.Clear ();
 			int x = 0;
+            TAB_INDEX = 0;
 			foreach (var h in Headers) {
                 HeaderListItem tmp = new HeaderListItem(this, h, (x % 2 == 0) ? Colors.White : Colors.LightGray);
 				HeaderListBox.PackStart (tmp);
@@ -266,7 +281,8 @@ namespace Director
                 MarginLeft = 5,
                 VerticalPlacement = WidgetPlacement.Center,
                 HorizontalPlacement = WidgetPlacement.Fill,
-                HelpStrings = MostUsedHeaders
+                HelpStrings = MostUsedHeaders,
+                TabIndex = ParentList.TAB_INDEX
             };
             Types.Changed += delegate
             {
@@ -288,7 +304,8 @@ namespace Director
                 MarginLeft = 5,
                 VerticalPlacement = WidgetPlacement.Center,
                 HorizontalPlacement = WidgetPlacement.Fill,
-                HelpStrings = MostUsedValues
+                HelpStrings = MostUsedValues,
+                TabIndex = ParentList.TAB_INDEX
 			};
             Values.Changed += delegate
             {

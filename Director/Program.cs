@@ -36,6 +36,7 @@ namespace Director
 
             //EditWindow _mainWindow = new EditWindow(null, test);
 
+            //
             MainWindow _mainWindow = new MainWindow();
             _mainWindow.Show();
             _mainWindow.Closed += delegate

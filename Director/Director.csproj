@@ -85,6 +85,7 @@
     <Compile Include="Forms\Controls\TextEntryHelper.cs" />
     <Compile Include="Forms\Inputs\EditWindow.cs" />
     <Compile Include="Forms\Inputs\SetWindow.cs" />
+    <Compile Include="Forms\ServerHeaders.cs" />
     <Compile Include="ParserLib\ParserCompareDefinition.cs" />
     <Compile Include="ParserLib\ParserError.cs" />
     <Compile Include="ParserLib\Parser.cs" />
@@ -213,7 +214,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\add.png" />
+    <EmbeddedResource Include="Resources\add.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\help.png">
@@ -272,8 +275,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon %282%29.ico" />
-    <EmbeddedResource Include="Resources\page_paste.png" />
-    <EmbeddedResource Include="Resources\page_copy.png" />
+    <EmbeddedResource Include="Resources\settings.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\page_paste.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\page_copy.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\default_headers.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>

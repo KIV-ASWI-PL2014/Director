@@ -70,7 +70,13 @@ namespace Xwt
 		ITextEntryBackend Backend {
 			get { return (ITextEntryBackend) BackendHost.Backend; }
 		}
-		
+
+        public int TabIndex
+        {
+            get { return Backend.TabIndex; }
+            set { Backend.TabIndex = value; }
+        }
+
 		[DefaultValue ("")]
 		public string Text {
 			get { return Backend.Text; }

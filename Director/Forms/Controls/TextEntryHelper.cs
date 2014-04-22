@@ -8,7 +8,7 @@ using Xwt;
 namespace Director.Forms.Controls
 {
     /// <summary>
-    /// Text entry helper.
+    /// Text entry helper widget.
     /// </summary>
     class TextEntryHelper : Widget
     {
@@ -36,7 +36,7 @@ namespace Director.Forms.Controls
         /// <summary>
         /// Text entry instance.
         /// </summary>
-        private TextEntry InnerTextEntry = new TextEntry();
+        private TextEntry InnerTextEntry { get; set; }
 
         /// <summary>
         /// Scroll view.
@@ -129,15 +129,32 @@ namespace Director.Forms.Controls
         }
 
         /// <summary>
+        /// Use tab indexes!
+        /// </summary>
+        public int TabIndex
+        {
+            set { InnerTextEntry.TabIndex = value; }
+            get { return InnerTextEntry.TabIndex; }
+        }
+
+        /// <summary>
+        /// Helper visited.
+        /// </summary>
+        public Boolean HelperVisited = false;
+
+        /// <summary>
         /// Constructor.
         /// </summary>
         public TextEntryHelper()
         {
-            // Self changed - show menu
-            Changed += TextEntryHelper_Changed;
+            // Create text entry
+            InnerTextEntry = new TextEntry();
 
             // Default bind
             InnerTextEntry.Changed += InnerTextEntry_Changed;
+
+            // Self changed - show menu
+            Changed += TextEntryHelper_Changed;
 
             // Hide tree items
             LostFocus += InnerTextEntry_LostFocus;
@@ -166,7 +183,8 @@ namespace Director.Forms.Controls
                 DataSource = HelperStore,
                 SelectionMode = SelectionMode.Single
             };
-            HelperListView.Columns.Add("Name", Values, Values);
+            HelperListView.Columns.Add("Name", Values);
+            HelperListView.LostFocus += HelperListView_LostFocus;
 
             // Helper list view clicked
             AddHelperListHandler();
@@ -183,6 +201,21 @@ namespace Director.Forms.Controls
         }
 
         /// <summary>
+        /// Lost focus when helper was visited.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void HelperListView_LostFocus(object sender, EventArgs e)
+        {
+            if (HelperVisited)
+            {
+                HideListHelper(sender, e);
+                hide_helper(sender, e);
+                HelperVisited = false;
+            }
+        }
+
+        /// <summary>
         /// Click event!
         /// </summary>
         /// <param name="sender"></param>
@@ -193,6 +226,7 @@ namespace Director.Forms.Controls
             changed(sender, e);
             ShowListHelper(sender, e);
             show_helper(sender, e);
+            HelperVisited = true;
         }
 
         /// <summary>
@@ -292,8 +326,11 @@ namespace Director.Forms.Controls
         /// </summary>
         void TextEntryHelper_Changed(object sender, EventArgs e)
         {
-            List<String> searchedItems = HelpStrings.FindAll(n => n.IndexOf(InnerTextEntry.Text, StringComparison.InvariantCultureIgnoreCase) >= 0);
-            SetItems(searchedItems);
+            if (HelpStrings != null && InnerTextEntry != null)
+            {
+                List<String> searchedItems = HelpStrings.FindAll(n => n.IndexOf(InnerTextEntry.Text, StringComparison.InvariantCultureIgnoreCase) >= 0);
+                SetItems(searchedItems);
+            }
         }
 
         /// <summary>
@@ -317,7 +354,9 @@ namespace Director.Forms.Controls
         /// </summary>
         private void SetItems(List<String> items)
         {
+            RemoveHelperListHandler();
             ActiveList = new Dictionary<int, String>();
+            HelperListView.UnselectAll();
             HelperStore.Clear();
             foreach (var s in items)
             {
@@ -325,9 +364,11 @@ namespace Director.Forms.Controls
                 HelperStore.SetValue(row, Values, s);
                 ActiveList.Add(row, s);
             }
-            RemoveHelperListHandler();
+            
+
             if (items.Count > 0)
-                HelperListView.SelectRow(1);
+                HelperListView.SelectRow(0);
+
             AddHelperListHandler();
         }
 

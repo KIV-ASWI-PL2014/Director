@@ -35,6 +35,7 @@ namespace Xwt.Backends
 		bool ReadOnly { get; set; }
 		bool ShowFrame { get; set; }
 		bool MultiLine { get; set; }
+        int TabIndex { get; set; }
 	}
 	
 	public interface ITextEntryEventSink: IWidgetEventSink

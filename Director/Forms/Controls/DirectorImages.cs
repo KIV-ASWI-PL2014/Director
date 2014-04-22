@@ -28,5 +28,6 @@ namespace Director.Forms.Controls
         public const string DEFAULT_HEADERS_ICON = "Director.Resources.default_headers.png";
         public const string COPY_ICON = "Director.Resources.page_copy.png";
         public const string PASTE_ICON = "Director.Resources.page_paste.png";
+        public const string SETTINGS_IMAGE = "Director.Resources.settings.png";
     }
 }

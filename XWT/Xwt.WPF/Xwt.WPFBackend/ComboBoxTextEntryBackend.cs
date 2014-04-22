@@ -71,6 +71,12 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+        public int TabIndex
+        {
+            get { return combobox.TabIndex; }
+            set { combobox.TabIndex = value; }
+        }
+
 		public bool ReadOnly
 		{
 			get { return this.combobox.IsReadOnly; }

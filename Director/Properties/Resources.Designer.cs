@@ -164,6 +164,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default headers.
+        /// </summary>
+        internal static string DefaultServerHeaders {
+            get {
+                return ResourceManager.GetString("DefaultServerHeaders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select scenario file.
         /// </summary>
         internal static string DialogOpenScenario {
@@ -999,6 +1008,16 @@ namespace Director.Properties {
         internal static string ServerURL {
             get {
                 return ResourceManager.GetString("ServerURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap settings {
+            get {
+                object obj = ResourceManager.GetObject("settings", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
