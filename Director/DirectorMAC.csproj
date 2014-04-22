@@ -275,4 +275,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon %282%29.ico" />
+    <EmbeddedResource Include="Resources\page_paste.png" />
+    <EmbeddedResource Include="Resources\page_copy.png" />
+    <EmbeddedResource Include="Resources\default_headers.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

@@ -30,12 +30,17 @@ namespace Director.Forms.Inputs
         /// </summary>
         public Notebook RequestSettings { get; set; }
 
+        /// <summary>
+        /// Request method.
+        /// </summary>
+        public ComboBox RequestHttpMethod { get; set; }
+
 		/// <summary>
 		/// Invalid scenario name description.
 		/// </summary>
 		private Label InvalidRequestUrl = new Label()
 		{
-			Markup = "<b>Invalid request URL!</b>",
+			Markup = "<b>" + Director.Properties.Resources.InvalidServerURL + "</b>",
 			Visible = false,
 			TextColor = Colors.Red,
 			TextAlignment = Alignment.End,
@@ -50,8 +55,8 @@ namespace Director.Forms.Inputs
         public EditWindow(MainWindow _window, Request _request)
         {
             // Set default size
-            Width = 450;
-            Height = 500;
+            Width = 790;
+            Height = 750;
 
             // This window can not be maximalized
 			Resizable = true;
@@ -78,16 +83,43 @@ namespace Director.Forms.Inputs
             // Request URL in frame
             Frame RequestUrl = new Frame()
             {
-				Label = "Request URL", 
+				Label = Director.Properties.Resources.RequestInfoBox, 
 				Padding = 10,
-				HeightRequest = 70
+				HeightRequest = 140
             };
 			VBox RequestUrlContent = new VBox ();
+            RequestUrlContent.PackStart(new Label(Director.Properties.Resources.RequestUrl));
 			TextEntry RequestUrlField = new TextEntry() {
 				Text = ActiveRequest.Url
 			};
 			RequestUrlContent.PackStart (RequestUrlField, expand: true, fill: true);
 			RequestUrlContent.PackStart (InvalidRequestUrl, vpos: WidgetPlacement.End);
+
+            // Method
+            RequestUrlContent.PackStart(new Label(Director.Properties.Resources.RequestMethod));
+            RequestHttpMethod = new ComboBox();
+            RequestHttpMethod.Items.Add(1, "GET");
+            RequestHttpMethod.Items.Add(2, "HEAD");
+            RequestHttpMethod.Items.Add(3, "POST");
+            RequestHttpMethod.Items.Add(4, "PUT");
+            RequestHttpMethod.Items.Add(5, "PATCH");
+            RequestHttpMethod.Items.Add(6, "DELETE");
+            try
+            {
+                RequestHttpMethod.SelectedText = ActiveRequest.HTTP_METHOD;
+            }
+            catch (Exception e)
+            {
+                RequestHttpMethod.SelectedText = ActiveRequest.HTTP_METHOD = "GET";
+            }
+            RequestUrlContent.PackStart(RequestHttpMethod);
+            RequestHttpMethod.SelectionChanged += delegate
+            {
+                ActiveRequest.HTTP_METHOD = RequestHttpMethod.SelectedText;
+                if (RequestSettings.CurrentTab.Child is OverviewWidget)
+                    ((OverviewWidget)RequestSettings.CurrentTab.Child).RefreshOverview();
+            };
+
 			RequestUrl.Content = RequestUrlContent;
 			ParentContent.PackStart(RequestUrl, expand: false, fill: true);
 
@@ -120,6 +152,10 @@ namespace Director.Forms.Inputs
                 ExpandHorizontal = false,
                 ExpandVertical = false
             };
+            ConfirmButton.Clicked += delegate
+            {
+                Close();
+            };
             ParentContent.PackStart(ConfirmButton, expand: false, hpos: WidgetPlacement.End);
 
             // Set content
@@ -131,10 +167,11 @@ namespace Director.Forms.Inputs
 		/// </summary>
         private void _initializeTabs()
         { 
-			RequestSettings.Add (new OverviewWidget(ActiveRequest), "Overview");
-			RequestSettings.Add (new HeaderList (ActiveRequest.Headers), "Headers");
-			RequestSettings.Add (new RequestWidget(ActiveRequest), "Request");
-			RequestSettings.Add (new Label ("A"), "Response");
+			RequestSettings.Add (new OverviewWidget(ActiveRequest), Director.Properties.Resources.RequestOverview);
+			RequestSettings.Add (new HeaderList (ActiveRequest.Headers), Director.Properties.Resources.RequestHeaders);
+            RequestSettings.Add (new Label("Files"), Director.Properties.Resources.RequestFiles);
+			RequestSettings.Add (new RequestWidget(ActiveRequest), Director.Properties.Resources.RequestTab);
+			RequestSettings.Add (new Label ("A"), Director.Properties.Resources.RequestResponse);
         }
     }
 
@@ -152,6 +189,11 @@ namespace Director.Forms.Inputs
 		/// <value>The overview.</value>
 		private MarkdownView Overview { get; set; }
 
+        /// <summary>
+        /// Scroll overview.
+        /// </summary>
+        private ScrollView ScrollOverview { get; set; }
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Director.Forms.Inputs.OverviewWidget"/> class.
 		/// </summary>
@@ -168,7 +210,11 @@ namespace Director.Forms.Inputs
 
 			// Create markdown
 			Overview = new MarkdownView ();
-			PackStart (Overview, expand: true, fill: true);
+            ScrollOverview = new ScrollView()
+            {
+                Content = Overview
+            };
+            PackStart(ScrollOverview, expand: true, fill: true);
 
 			// Refresh
 			RefreshOverview ();
@@ -179,24 +225,11 @@ namespace Director.Forms.Inputs
 		/// </summary>
 		public void RefreshOverview()
 		{
-			string text = "";
-
-			// Request method
-			text += "### Method\n";
-			if (ActiveRequest.HTTP_METHOD == null) {
-				text += "* Not set\n";
-			} else
-				text += "* " + ActiveRequest.HTTP_METHOD + "\n";
-
-			// Headers
-			text += "### Headers\n";
-
-			// Set text
-			Overview.Markdown = text;
+			Overview.Markdown = ActiveRequest.GetMarkdownInfo();
 		}
 	}
 
-	public class RequestWidget : VBox
+    public class RequestWidget : VBox
 	{
 		/// <summary>
 		/// Type.
@@ -212,31 +245,13 @@ namespace Director.Forms.Inputs
 
 		private Request ActiveRequest;
 
-		public RequestWidget(Request _request)
-		{
-			// Set request
-			ActiveRequest = _request;
+        public RequestWidget(Request _request)
+        {
+            // Set request
+            ActiveRequest = _request;
 
-			// Set margin
-			Margin = 10;
-
-			// Set default GET method
-			if (ActiveRequest.HTTP_METHOD == null || ActiveRequest.HTTP_METHOD.Length == 0)
-				ActiveRequest.HTTP_METHOD = "GET";
-
-			PackStart (new Label ("Type: "));
-
-			RequestMethod = new ComboBox ();
-			RequestMethod.Items.Add (1, "GET");
-			RequestMethod.Items.Add (2, "POST");
-			RequestMethod.Items.Add (3, "PUT");
-			try {
-				RequestMethod.SelectedText = ActiveRequest.HTTP_METHOD;
-			} catch {
-				RequestMethod.SelectedText = "GET";
-				ActiveRequest.HTTP_METHOD = "GET";
-			}
-			PackStart (RequestMethod);
-		}
+            // Set margin
+            Margin = 10;
+        }
 	}
 }

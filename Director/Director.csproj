@@ -82,6 +82,7 @@
     <Compile Include="DataStructures\SupportStructures\Frequency.cs" />
     <Compile Include="ExportLib\Export.cs" />
     <Compile Include="Forms\Controls\EmailList.cs" />
+    <Compile Include="Forms\Controls\TextEntryHelper.cs" />
     <Compile Include="Forms\Inputs\EditWindow.cs" />
     <Compile Include="Forms\Inputs\SetWindow.cs" />
     <Compile Include="ParserLib\ParserCompareDefinition.cs" />

@@ -98,7 +98,7 @@ namespace Director.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm.
+        ///   Looks up a localized string similar to Close.
         /// </summary>
         internal static string Confirm {
             get {
@@ -206,6 +206,15 @@ namespace Director.Properties {
         internal static string EmailNotifications {
             get {
                 return ResourceManager.GetString("EmailNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid request URL!.
+        /// </summary>
+        internal static string ErroInvalidRequest {
+            get {
+                return ResourceManager.GetString("ErroInvalidRequest", resourceCulture);
             }
         }
         
@@ -325,6 +334,24 @@ namespace Director.Properties {
         internal static string FrequencyLabel {
             get {
                 return ResourceManager.GetString("FrequencyLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type:.
+        /// </summary>
+        internal static string HeaderHeaderType {
+            get {
+                return ResourceManager.GetString("HeaderHeaderType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value:.
+        /// </summary>
+        internal static string HeaderHeaderValue {
+            get {
+                return ResourceManager.GetString("HeaderHeaderValue", resourceCulture);
             }
         }
         
@@ -557,6 +584,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not set.
+        /// </summary>
+        internal static string NoRequestMethod {
+            get {
+                return ResourceManager.GetString("NoRequestMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select at least one scenario to export!.
         /// </summary>
         internal static string NoScenarioSelected {
@@ -673,6 +709,24 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Files.
+        /// </summary>
+        internal static string RequestFiles {
+            get {
+                return ResourceManager.GetString("RequestFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Headers.
+        /// </summary>
+        internal static string RequestHeaders {
+            get {
+                return ResourceManager.GetString("RequestHeaders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request.
         /// </summary>
         internal static string RequestInfoBox {
@@ -682,11 +736,29 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Method.
+        /// </summary>
+        internal static string RequestMethod {
+            get {
+                return ResourceManager.GetString("RequestMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request name.
         /// </summary>
         internal static string RequestName {
             get {
                 return ResourceManager.GetString("RequestName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overview.
+        /// </summary>
+        internal static string RequestOverview {
+            get {
+                return ResourceManager.GetString("RequestOverview", resourceCulture);
             }
         }
         
@@ -714,6 +786,33 @@ namespace Director.Properties {
         internal static string RequestSettings {
             get {
                 return ResourceManager.GetString("RequestSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request.
+        /// </summary>
+        internal static string RequestTab {
+            get {
+                return ResourceManager.GetString("RequestTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL.
+        /// </summary>
+        internal static string RequestUrl {
+            get {
+                return ResourceManager.GetString("RequestUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response.
+        /// </summary>
+        internal static string ResposneTab {
+            get {
+                return ResourceManager.GetString("ResposneTab", resourceCulture);
             }
         }
         

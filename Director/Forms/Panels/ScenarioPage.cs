@@ -214,7 +214,7 @@ namespace Director.Forms.Panels
             string ret = "";
 
             // List of requests
-            ret += "## Requests\n";
+            ret += "# Requests\n";
 
             // Collect al request names
             foreach (Request i in ActiveScenario.Requests) {

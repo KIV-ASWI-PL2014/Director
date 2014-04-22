@@ -119,5 +119,36 @@ namespace Director.DataStructures
             t.ParentScenario = this.ParentScenario;
             return t;
         }
+
+        /// <summary>
+        /// Get string markdown info.
+        /// </summary>
+        public String GetMarkdownInfo()
+        {
+            string text = "";
+
+            // Request method
+            text += "# " + Director.Properties.Resources.RequestMethod + "\n";
+            if (HTTP_METHOD == null)
+            {
+                text += "* " + Director.Properties.Resources.NoRequestMethod + "\n\n";
+            }
+            else
+                text += "* " + HTTP_METHOD + "\n\n";
+
+            // Headers
+            if (Headers.Count > 0)
+            {
+                text += "# " + Director.Properties.Resources.RequestHeaders + "\n";
+
+                // Get all headers
+                foreach (var h in Headers)
+                {
+                    text += "* " + h.Name + " - " + h.Value + "\n";
+                }
+            }
+
+            return text;
+        }
     }
 }

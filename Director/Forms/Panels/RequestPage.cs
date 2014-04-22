@@ -15,7 +15,6 @@ namespace Director.Forms.Panels
 	/// </summary>
     class RequestPage : PanelBase
 	{
-
         /// <summary>
         /// Current request.
         /// </summary>
@@ -25,6 +24,11 @@ namespace Director.Forms.Panels
         /// Request name.
         /// </summary>
         private TextEntry RequestName { get; set; }
+
+        /// <summary>
+        /// Request overview.
+        /// </summary>
+        private MarkdownView RequestOverview { get; set; }
 
         /// <summary>
         /// Invalid request name description.
@@ -42,7 +46,6 @@ namespace Director.Forms.Panels
         /// <summary>
         /// Default constructor.
         /// </summary>
-        /// <param name="_window"></param>
         public RequestPage(MainWindow _window)
             : base(_window, Director.Properties.Resources.RequestInfoBox, DirectorImages.REQUEST_IMAGE)
 		{
@@ -59,6 +62,7 @@ namespace Director.Forms.Panels
             RequestName.Changed -= RequestName_Changed;
             RequestName.Text = request.Name;
             RequestName.Changed += RequestName_Changed;
+            RequestOverview.Markdown = ActiveRequest.GetMarkdownInfo();
         }
 
         /// <summary>
@@ -93,9 +97,11 @@ namespace Director.Forms.Panels
                 Label = Director.Properties.Resources.RequestRequest,
                 Padding = 10
             };
-            RequestFrame.Content = new RichTextView()
+            RequestOverview = new MarkdownView();
+            RequestFrame.Content = new ScrollView()
             {
-                ExpandHorizontal = true, ExpandVertical = true
+                ExpandHorizontal = true, ExpandVertical = true,
+                Content = RequestOverview
             };
             RRPanel.PackStart(RequestFrame, true, true);
 

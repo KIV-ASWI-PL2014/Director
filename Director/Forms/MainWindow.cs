@@ -402,7 +402,6 @@ namespace Director.Forms
                 Image = Image.FromResource(DirectorImages.PASTE_ICON),
                 Sensitive = false
             };
-            PasteRequest.Clicked += PasteRequest_Clicked;
             ScenarioMenu.Items.Add(PasteRequest);
 
             // Copy scenario
@@ -463,8 +462,11 @@ namespace Director.Forms
             var r = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
             if (r is Request)
             {
+                if (RequestClipboard == null)
+                {
+                    PasteRequest.Clicked += PasteRequest_Clicked;
+                }
                 RequestClipboard = (Request)r;
-                PasteRequest.Clicked += PasteRequest_Clicked;
                 PasteRequest.Sensitive = true;
             }
         }
@@ -539,8 +541,10 @@ namespace Director.Forms
             var s = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
             if (s is Scenario)
             {
+                if (ScenarioClipboard == null)
+                    PasteScenario.Clicked += PasteScenario_Clicked;
+
                 ScenarioClipboard = (Scenario)s;
-                PasteScenario.Clicked += PasteScenario_Clicked;
                 PasteScenario.Sensitive = true;
             }
         }
@@ -570,6 +574,7 @@ namespace Director.Forms
                 editWindow.Closed += delegate
                 {
                     Opacity = 1;
+                    UpdateControlView(null, null);
                 };
 
                 // Show

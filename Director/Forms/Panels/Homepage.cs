@@ -21,16 +21,16 @@ namespace Director.Forms.Panels
 
 Project Site: http://director.strnadj.eu/
 
-## Overview
+# Overview
 
 Director is project for testing REST APIs by scenarios.
 
-## Contact
+# Contact
 
 - Email: jan.strnadek@gmail.com
 - Webpage: http://director.strnadj.eu/
 
-## Changelog
+# Changelog
 
 - Mac OS X View optimalization
 

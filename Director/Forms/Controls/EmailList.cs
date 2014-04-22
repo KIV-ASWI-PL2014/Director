@@ -93,7 +93,6 @@ namespace Director
 			Button NewEmail = new Button(Image.FromResource(DirectorImages.ADD_ICON)) {
                 MinWidth = 30,
                 WidthRequest = 30,
-                TooltipText = "Add new email",
                 MarginRight = 30
 			};
 			NewEmail.Clicked += NewEmail_Clicked;
@@ -257,6 +256,7 @@ namespace Director
 					BackgroundColor = DefaultColor;
 				} else {
 					BackgroundColor = Colors.Red;
+                    EmailText.SetFocus();
 				}
             };
 			PackStart (EmailText, true, true);
