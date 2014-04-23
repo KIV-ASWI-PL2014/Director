@@ -10,38 +10,36 @@ using Director.Forms.Inputs;
 
 namespace Director
 {
-    static class ProgramMac
+    internal static class ProgramMac
     {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
-			// Set toolkit type
-			Config.SetAppType (ToolkitType.Cocoa); 
+            // Set toolkit type
+            Config.SetAppType(ToolkitType.Cocoa);
 
-			Application.Initialize(Config.GetAppType());
+            Application.Initialize(Config.GetAppType());
 
-			// Todo: Remove
-			Server s = new Server () { Name = "OCR" };
-			s.DefaultHeaders.Add (new Header () { Name = "content/type", Value = "application/json" });
-			s.SetUrl ("http://localhost:3000/api/");
-			Scenario sc = s.CreateNewScenario ();
-			sc.Name = "test";
-			sc.ParentServer = s;
-			Request test = sc.CreateNewRequest ();
-			test.ParentScenario = sc;
+            // Todo: Remove
+            Server s = new Server() {Name = "OCR"};
+            s.DefaultHeaders.Add(new Header() {Name = "content/type", Value = "application/json"});
+            s.SetUrl("http://localhost:3000/api/");
+            Scenario sc = s.CreateNewScenario();
+            sc.Name = "test";
+            sc.ParentServer = s;
+            Request test = sc.CreateNewRequest();
+            test.ParentScenario = sc;
 
 
-			//EditWindow _mainWindow = new EditWindow (null, test);
+            //EditWindow _mainWindow = new EditWindow (null, test);
 
-			MainWindow _mainWindow = new MainWindow();
+            MainWindow _mainWindow = new MainWindow();
 
-			// Close window handlers
-			_mainWindow.Closed += delegate {
-				Application.Exit();
-			};
+            // Close window handlers
+            _mainWindow.Closed += delegate { Application.Exit(); };
 
             _mainWindow.Show();
             Application.Run();

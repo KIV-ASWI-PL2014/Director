@@ -11,11 +11,11 @@ using Director.DataStructures.SupportStructures;
 
 namespace Director.Forms.Panels
 {
-	/// <summary>
-	/// Scenario description.
-	/// </summary>
-	class ScenarioPage : PanelBase
-	{
+    /// <summary>
+    /// Scenario description.
+    /// </summary>
+    internal class ScenarioPage : PanelBase
+    {
         /// <summary>
         /// Active scenario.
         /// </summary>
@@ -55,20 +55,20 @@ namespace Director.Forms.Panels
         /// </summary>
         private ComboBox FrequencyRunning { get; set; }
 
-		/// <summary>
-		/// Time delay in seconds from previous scenario running.
-		/// </summary>
-		private TextEntry TimeDelay { get; set; }
+        /// <summary>
+        /// Time delay in seconds from previous scenario running.
+        /// </summary>
+        private TextEntry TimeDelay { get; set; }
 
-		/// <summary>
-		/// Run by frequency.
-		/// </summary>
-		private RadioButton PeriodicityRunning { get; set; }
+        /// <summary>
+        /// Run by frequency.
+        /// </summary>
+        private RadioButton PeriodicityRunning { get; set; }
 
-		/// <summary>
-		/// Time Delay running.
-		/// </summary>
-		private RadioButton TimeDelayRunning { get; set; }
+        /// <summary>
+        /// Time Delay running.
+        /// </summary>
+        private RadioButton TimeDelayRunning { get; set; }
 
         /// <summary>
         /// Scenario information message.
@@ -81,9 +81,8 @@ namespace Director.Forms.Panels
         /// <param name="_window"></param>
         public ScenarioPage(MainWindow _window)
             : base(_window, Director.Properties.Resources.ScenarioInfoBox, DirectorImages.SCENARIO_IMAGE)
-		{
-
-		}
+        {
+        }
 
         /// <summary>
         /// Set scenario and other properties.
@@ -101,12 +100,12 @@ namespace Director.Forms.Panels
             // Runing frequency
             FrequencyRunning.SelectedIndex = ActiveScenario.RunningFrequency;
 
-			// Time dealay time
-			TimeDelay.Text = ActiveScenario.TimeAfterPrevious + "";
+            // Time dealay time
+            TimeDelay.Text = ActiveScenario.TimeAfterPrevious + "";
 
-			// Running type
-			PeriodicityRunning.Active = ActiveScenario.PeriodicityRunning;
-			ChangeFrequencyOption (null, null);
+            // Running type
+            PeriodicityRunning.Active = ActiveScenario.PeriodicityRunning;
+            ChangeFrequencyOption(null, null);
 
             // Markdown summary
             ScenarioInformationMessage.Markdown = GetScenarioSummary();
@@ -119,53 +118,55 @@ namespace Director.Forms.Panels
         {
             Frame f = new Frame()
             {
-				Label = Director.Properties.Resources.ScenarioLabel,
-				Padding = 10
+                Label = Director.Properties.Resources.ScenarioLabel,
+                Padding = 10
             };
             VBox ScenarioSettings = new VBox();
 
             // Create scenario name
             ScenarioName = new TextEntry();
             ScenarioName.Changed += ScenarioName_Changed;
-			ScenarioSettings.PackStart(new Label(Director.Properties.Resources.ScenarioName));
+            ScenarioSettings.PackStart(new Label(Director.Properties.Resources.ScenarioName));
             ScenarioSettings.PackStart(ScenarioName);
             ScenarioSettings.PackStart(InvalidScenarioName);
-			f.Content = ScenarioSettings;
-			PackStart(f);
+            f.Content = ScenarioSettings;
+            PackStart(f);
 
-			Frame h = new Frame () {
-				Label =  Director.Properties.Resources.RunningOptionsLabel,
-				Padding = 10
-			};
-			VBox RunningOptionsSettings = new VBox ();
+            Frame h = new Frame()
+            {
+                Label = Director.Properties.Resources.RunningOptionsLabel,
+                Padding = 10
+            };
+            VBox RunningOptionsSettings = new VBox();
 
-			// Select scenario run
-			PeriodicityRunning = new RadioButton (Director.Properties.Resources.FrequencyLabel);
-			TimeDelayRunning = new RadioButton (Director.Properties.Resources.TimeDelayLabel);
-			PeriodicityRunning.Group = TimeDelayRunning.Group;
-			RunningOptionsSettings.PackStart (PeriodicityRunning);
-			RunningOptionsSettings.PackStart (TimeDelayRunning);
-			PeriodicityRunning.Group.ActiveRadioButtonChanged += ChangeFrequencyOption;
+            // Select scenario run
+            PeriodicityRunning = new RadioButton(Director.Properties.Resources.FrequencyLabel);
+            TimeDelayRunning = new RadioButton(Director.Properties.Resources.TimeDelayLabel);
+            PeriodicityRunning.Group = TimeDelayRunning.Group;
+            RunningOptionsSettings.PackStart(PeriodicityRunning);
+            RunningOptionsSettings.PackStart(TimeDelayRunning);
+            PeriodicityRunning.Group.ActiveRadioButtonChanged += ChangeFrequencyOption;
 
             // Frequency settings
-			RunningOptionsSettings.PackStart(new Label()
+            RunningOptionsSettings.PackStart(new Label()
             {
                 Text = Director.Properties.Resources.RunningPeriodicity
             });
             FrequencyRunning = new ComboBox();
             FrequencyHelper.FillComboBox(FrequencyRunning);
-			RunningOptionsSettings.PackStart(FrequencyRunning);
+            RunningOptionsSettings.PackStart(FrequencyRunning);
             FrequencyRunning.SelectedIndex = 0;
             FrequencyRunning.SelectionChanged += FrequencyRunning_SelectionChanged;
 
-			// Time delay settings
-			RunningOptionsSettings.PackStart(new Label()
-				{
-					Text = Director.Properties.Resources.TimeDelayInSeconds
-				});
-			TimeDelay = new TextEntry () {
-				Text =  "0"
-			};
+            // Time delay settings
+            RunningOptionsSettings.PackStart(new Label()
+            {
+                Text = Director.Properties.Resources.TimeDelayInSeconds
+            });
+            TimeDelay = new TextEntry()
+            {
+                Text = "0"
+            };
             TimeDelay.Changed += delegate
             {
                 try
@@ -179,12 +180,12 @@ namespace Director.Forms.Panels
                     InvalidTimeDelay.Visible = true;
                 }
             };
-			RunningOptionsSettings.PackStart (TimeDelay);
+            RunningOptionsSettings.PackStart(TimeDelay);
             RunningOptionsSettings.PackStart(InvalidTimeDelay);
 
             // Add to form
-			h.Content = RunningOptionsSettings;
-			PackStart (h);
+            h.Content = RunningOptionsSettings;
+            PackStart(h);
 
 
             // Scenario information
@@ -217,29 +218,30 @@ namespace Director.Forms.Panels
             ret += "# Requests\n";
 
             // Collect al request names
-            foreach (Request i in ActiveScenario.Requests) {
+            foreach (Request i in ActiveScenario.Requests)
+            {
                 ret += "- " + i.Name + "\n";
             }
             return ret;
         }
 
-		/// <summary>
-		/// Change radio button frequency running options.
-		/// </summary>
-		void ChangeFrequencyOption(object sender, EventArgs e)
-		{
-			bool periodicity = PeriodicityRunning.Group.ActiveRadioButton == PeriodicityRunning;
-			ActiveScenario.PeriodicityRunning = periodicity;
-			FrequencyRunning.Sensitive = periodicity;
-			TimeDelay.Sensitive = !periodicity;
-		}
+        /// <summary>
+        /// Change radio button frequency running options.
+        /// </summary>
+        private void ChangeFrequencyOption(object sender, EventArgs e)
+        {
+            bool periodicity = PeriodicityRunning.Group.ActiveRadioButton == PeriodicityRunning;
+            ActiveScenario.PeriodicityRunning = periodicity;
+            FrequencyRunning.Sensitive = periodicity;
+            TimeDelay.Sensitive = !periodicity;
+        }
 
         /// <summary>
         /// Handle changing running frequencíes.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void FrequencyRunning_SelectionChanged(object sender, EventArgs e)
+        private void FrequencyRunning_SelectionChanged(object sender, EventArgs e)
         {
             ActiveScenario.RunningFrequency = FrequencyRunning.SelectedIndex;
         }
@@ -249,7 +251,7 @@ namespace Director.Forms.Panels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void ScenarioName_Changed(object sender, EventArgs e)
+        private void ScenarioName_Changed(object sender, EventArgs e)
         {
             ActiveScenario.Name = ScenarioName.Text;
             bool invalid = ScenarioName.Text.Length == 0;
@@ -258,5 +260,5 @@ namespace Director.Forms.Panels
                 ScenarioName.SetFocus();
             CurrentMainWindow.UpdateTreeStoreText(ActualPosition, ActiveScenario.Name);
         }
-	}
+    }
 }

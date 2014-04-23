@@ -8,7 +8,7 @@ using Xwt;
 
 namespace Director.Forms.Controls
 {
-    class ResponseWidget : VBox
+    internal class ResponseWidget : VBox
     {
         /// <summary>
         /// Expected response status code.
@@ -42,9 +42,8 @@ namespace Director.Forms.Controls
         /// <summary>
         /// Expected status code validation.
         /// </summary>
-        void ExpectedStatusCode_Changed(object sender, EventArgs e)
+        private void ExpectedStatusCode_Changed(object sender, EventArgs e)
         {
-           
         }
     }
 }

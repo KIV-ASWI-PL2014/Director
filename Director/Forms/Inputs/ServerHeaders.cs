@@ -10,7 +10,7 @@ using Xwt.Drawing;
 
 namespace Director.Forms.Inputs
 {
-    class ServerHeaders : Window
+    internal class ServerHeaders : Window
     {
         /// <summary>
         /// Main window.
@@ -52,7 +52,8 @@ namespace Director.Forms.Inputs
             };
 
             // Info window
-            InfoBox MainInfoBox = new InfoBox(Director.Properties.Resources.DefaultServerHeaders, DirectorImages.SETTINGS_IMAGE);
+            InfoBox MainInfoBox = new InfoBox(Director.Properties.Resources.DefaultServerHeaders,
+                DirectorImages.SETTINGS_IMAGE);
             MainContent.PackStart(MainInfoBox);
 
             // Add header list
@@ -64,20 +65,17 @@ namespace Director.Forms.Inputs
 
             // Add button
             // Close btn
-            Button ConfirmButton = new Button(Image.FromResource(DirectorImages.OK_ICON), Director.Properties.Resources.Confirm)
+            Button ConfirmButton = new Button(Image.FromResource(DirectorImages.OK_ICON),
+                Director.Properties.Resources.Confirm)
             {
                 WidthRequest = 150,
                 ExpandHorizontal = false,
                 ExpandVertical = false
             };
-            ConfirmButton.Clicked += delegate
-            {
-                Close();
-            };
+            ConfirmButton.Clicked += delegate { Close(); };
             MainContent.PackStart(ConfirmButton, expand: false, hpos: WidgetPlacement.End);
 
             Content = MainContent;
         }
-
     }
 }

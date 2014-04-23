@@ -14,13 +14,13 @@ namespace Director.Forms.Panels
     /// <summary>
     /// Server description.
     /// </summary>
-    class ServerPage : PanelBase
+    internal class ServerPage : PanelBase
     {
-		/// <summary>
-		/// Current server instance.
-		/// </summary>
-		/// <value>The active server.</value>
-		private Server ActiveServer { get; set; }
+        /// <summary>
+        /// Current server instance.
+        /// </summary>
+        /// <value>The active server.</value>
+        private Server ActiveServer { get; set; }
 
         /// <summary>
         /// Current server name entry.
@@ -52,16 +52,16 @@ namespace Director.Forms.Panels
         /// </summary>
         private Frame Authentication { get; set; }
 
-		/// <summary>
-		/// Email list widget.
-		/// </summary>
-		private EmailList EmailWidget { get; set; }
+        /// <summary>
+        /// Email list widget.
+        /// </summary>
+        private EmailList EmailWidget { get; set; }
 
-		/// <summary>
-		/// Context menu for Add/remove Email notification adresses!
-		/// </summary>
-		/// <value>The email contenxt menu.</value>
-		private Menu EmailContextMenu { get; set; }
+        /// <summary>
+        /// Context menu for Add/remove Email notification adresses!
+        /// </summary>
+        /// <value>The email contenxt menu.</value>
+        private Menu EmailContextMenu { get; set; }
 
         /// <summary>
         /// Invalid scenario name description.
@@ -97,18 +97,17 @@ namespace Director.Forms.Panels
         /// </summary>
         public ServerPage(MainWindow _mainWindow)
             : base(_mainWindow, Director.Properties.Resources.ServerInfoBox, DirectorImages.SERVER_IMAGE)
-		{
+        {
+        }
 
-		}
-
-		/// <summary>
-		/// Set server instance.
-		/// </summary>
-		/// <param name="server">Server.</param>
-		public void SetServer(Server server)
-		{
-			// Fill columns
-			ActiveServer = server;
+        /// <summary>
+        /// Set server instance.
+        /// </summary>
+        /// <param name="server">Server.</param>
+        public void SetServer(Server server)
+        {
+            // Fill columns
+            ActiveServer = server;
 
             // SKip change event
             ServerName.Changed -= ServerName_Changed;
@@ -118,7 +117,7 @@ namespace Director.Forms.Panels
             AuthUserName.Text = server.AuthName;
             AuthUserPassword.Password = server.AuthPassword;
             AuthRequired.State = (server.Authentication) ? CheckBoxState.On : CheckBoxState.Off;
-            
+
             // Set frequency running
             if (server.RunningFrequency >= 0)
                 FrequencyRunning.SelectedIndex = server.RunningFrequency;
@@ -126,15 +125,15 @@ namespace Director.Forms.Panels
             // Refresh data
             AuthRequired_Toggled(null, null);
 
-			// Refresh data in server emails
-			EmailWidget.SetServer (ActiveServer);
-		}
+            // Refresh data in server emails
+            EmailWidget.SetServer(ActiveServer);
+        }
 
         /// <summary>
         /// Initialize window.
         /// </summary>
         public override void _initializeComponents()
-        { 
+        {
             // Server Name + URL + Periodicity window
             Frame f = new Frame();
             f.Label = Director.Properties.Resources.ServerSettings;
@@ -142,7 +141,7 @@ namespace Director.Forms.Panels
 
             // Create VBOX
             VBox ServerSettings = new VBox();
-            
+
             // Prepare text box
             ServerSettings.PackStart(new Label()
             {
@@ -228,9 +227,9 @@ namespace Director.Forms.Panels
                 MinHeight = 180
             };
 
-			// Create EmailList widget
-			EmailWidget = new EmailList ();
-			EmailFrame.Content = EmailWidget;
+            // Create EmailList widget
+            EmailWidget = new EmailList();
+            EmailFrame.Content = EmailWidget;
             PackStart(EmailFrame, expand: true, fill: true);
         }
 
@@ -239,7 +238,7 @@ namespace Director.Forms.Panels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void FrequencyRunning_SelectionChanged(object sender, EventArgs e)
+        private void FrequencyRunning_SelectionChanged(object sender, EventArgs e)
         {
             ActiveServer.RunningFrequency = FrequencyRunning.SelectedIndex;
         }
@@ -249,7 +248,7 @@ namespace Director.Forms.Panels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void AuthRequired_Toggled(object sender, EventArgs e)
+        private void AuthRequired_Toggled(object sender, EventArgs e)
         {
             bool active = (AuthRequired.State == CheckBoxState.On);
             ActiveServer.Authentication = active;
@@ -261,9 +260,9 @@ namespace Director.Forms.Panels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void AuthUserPassword_Changed(object sender, EventArgs e)
+        private void AuthUserPassword_Changed(object sender, EventArgs e)
         {
-            ActiveServer.AuthPassword = AuthUserPassword.Password; 
+            ActiveServer.AuthPassword = AuthUserPassword.Password;
         }
 
         /// <summary>
@@ -271,7 +270,7 @@ namespace Director.Forms.Panels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void AuthUserName_Changed(object sender, EventArgs e)
+        private void AuthUserName_Changed(object sender, EventArgs e)
         {
             ActiveServer.AuthName = AuthUserName.Text;
         }
@@ -281,14 +280,14 @@ namespace Director.Forms.Panels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void ServerURL_Changed(object sender, EventArgs e)
+        private void ServerURL_Changed(object sender, EventArgs e)
         {
             try
             {
-                ActiveServer.SetUrl(ServerURL.Text); 
+                ActiveServer.SetUrl(ServerURL.Text);
                 InvalidServerURL.Visible = false;
             }
-			catch
+            catch
             {
                 InvalidServerURL.Visible = true;
             }
@@ -299,7 +298,7 @@ namespace Director.Forms.Panels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void ServerName_Changed(object sender, EventArgs e)
+        private void ServerName_Changed(object sender, EventArgs e)
         {
             ActiveServer.Name = ServerName.Text;
             bool invalid = ServerName.Text.Length == 0;

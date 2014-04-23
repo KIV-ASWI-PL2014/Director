@@ -22,7 +22,7 @@ namespace Director.DataStructures.SupportStructures
     }
 
     public class FrequencyHelper
-    { 
+    {
         /// <summary>
         /// Add Frequency item to combo box.
         /// </summary>

@@ -16,12 +16,12 @@ namespace Director.DataStructures
     [Serializable]
     public class Request
     {
-		/// <summary>
-		/// Parent scenario (non serialized - cycles)
-		/// </summary>
-		/// <value>The parent scenario.</value>
-		[XmlIgnore]
-		public Scenario ParentScenario { get; set; }
+        /// <summary>
+        /// Parent scenario (non serialized - cycles)
+        /// </summary>
+        /// <value>The parent scenario.</value>
+        [XmlIgnore]
+        public Scenario ParentScenario { get; set; }
 
         /// <summary>
         /// Request ID in scenario list.
@@ -38,16 +38,16 @@ namespace Director.DataStructures
         /// </summary>
         public String Name { get; set; }
 
-		/// <summary>
-		/// Requests url address.
-		/// </summary>
-		/// <value>The URL.</value>
-		public String Url { get; set; }
+        /// <summary>
+        /// Requests url address.
+        /// </summary>
+        /// <value>The URL.</value>
+        public String Url { get; set; }
 
-		/// <summary>
-		/// HTTP headers.
-		/// </summary>
-		public List<Header> Headers = new List<Header> ();
+        /// <summary>
+        /// HTTP headers.
+        /// </summary>
+        public List<Header> Headers = new List<Header>();
 
         /// <summary>
         /// Files.
@@ -59,26 +59,26 @@ namespace Director.DataStructures
         /// </summary>
         public int ExpectedStatusCode { get; set; }
 
-		/// <summary>
-		/// Authentication name.
-		/// </summary>
-		public String AuthName { get; set; }
+        /// <summary>
+        /// Authentication name.
+        /// </summary>
+        public String AuthName { get; set; }
 
-		/// <summary>
-		/// Authentication password.
-		/// </summary>
-		/// <value>The auth password.</value>
-		public String AuthPassword { get; set; }
+        /// <summary>
+        /// Authentication password.
+        /// </summary>
+        /// <value>The auth password.</value>
+        public String AuthPassword { get; set; }
 
-		/// <summary>
-		/// Use http authentication.
-		/// </summary>
-		public Boolean Authentication { get; set; }
+        /// <summary>
+        /// Use http authentication.
+        /// </summary>
+        public Boolean Authentication { get; set; }
 
-		/// <summary>
-		/// Request Method (POST|GET|PUT)
-		/// </summary>
-		public String HTTP_METHOD { get; set; }
+        /// <summary>
+        /// Request Method (POST|GET|PUT)
+        /// </summary>
+        public String HTTP_METHOD { get; set; }
 
         /// <summary>
         /// Request String template.
@@ -98,7 +98,9 @@ namespace Director.DataStructures
         /// <summary>
         /// Empty constructor for XML serialization!
         /// </summary>
-        public Request() : this(0, 0, "") { }
+        public Request() : this(0, 0, "")
+        {
+        }
 
         /// <summary>
         /// Parametrize contructor for manually creating request.
@@ -111,24 +113,24 @@ namespace Director.DataStructures
             Id = id;
             Position = position;
             Name = name;
-			HTTP_METHOD = "GET";
+            HTTP_METHOD = "GET";
             Files = new List<FileItem>();
         }
 
-		/// <summary>
-		/// Url settings
-		/// </summary>
-		/// <param name="url"></param>
-		public void SetUrl(String url)
-		{
-			Uri _newUri;
+        /// <summary>
+        /// Url settings
+        /// </summary>
+        /// <param name="url"></param>
+        public void SetUrl(String url)
+        {
+            Uri _newUri;
 
-			// Uri validation
-			if (Uri.TryCreate(url, UriKind.Absolute, out _newUri))
-				this.Url = _newUri.AbsoluteUri;
-			else
-				throw new InvalidUrlException();
-		}
+            // Uri validation
+            if (Uri.TryCreate(url, UriKind.Absolute, out _newUri))
+                this.Url = _newUri.AbsoluteUri;
+            else
+                throw new InvalidUrlException();
+        }
 
         /// <summary>
         /// Get clone of myself.
@@ -136,12 +138,12 @@ namespace Director.DataStructures
         /// <returns></returns>
         public Request Clone()
         {
-            XmlSerializer ser = new XmlSerializer(typeof(Request));
+            XmlSerializer ser = new XmlSerializer(typeof (Request));
             StringBuilder sb = new StringBuilder();
             TextWriter writer = new StringWriter(sb);
             ser.Serialize(writer, this);
             TextReader reader = new StringReader(sb.ToString());
-            Request t = (Request)ser.Deserialize(reader);
+            Request t = (Request) ser.Deserialize(reader);
             t.ParentScenario = this.ParentScenario;
             return t;
         }

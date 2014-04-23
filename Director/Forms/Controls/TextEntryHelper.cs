@@ -10,7 +10,7 @@ namespace Director.Forms.Controls
     /// <summary>
     /// Text entry helper widget.
     /// </summary>
-    class TextEntryHelper : Widget
+    internal class TextEntryHelper : Widget
     {
         /// <summary>
         /// Internal private field.
@@ -22,10 +22,7 @@ namespace Director.Forms.Controls
         /// </summary>
         public List<String> HelpStrings
         {
-            get
-            {
-                return helpStrings;
-            }
+            get { return helpStrings; }
             set
             {
                 helpStrings = value;
@@ -41,7 +38,7 @@ namespace Director.Forms.Controls
         /// <summary>
         /// Scroll view.
         /// </summary>
-        private ScrollView HelperScrollView  { get; set; }
+        private ScrollView HelperScrollView { get; set; }
 
         /// <summary>
         /// Helper list view.
@@ -66,66 +63,42 @@ namespace Director.Forms.Controls
         /// <summary>
         /// Return actual text.
         /// </summary>
-        public String Text { 
-            get { 
-                return InnerTextEntry.Text; 
-            }
-            set
-            {
-                InnerTextEntry.Text = value;
-            }
+        public String Text
+        {
+            get { return InnerTextEntry.Text; }
+            set { InnerTextEntry.Text = value; }
         }
 
         /// <summary>
         /// Changed event handler
         /// </summary>
-        EventHandler changed, show_helper, hide_helper;
+        private EventHandler changed, got_focus;
 
         /// <summary>
         /// Changed event.
         /// </summary>
         public event EventHandler Changed
         {
-            add
-            {
-                changed += value;
-            }
-            remove
-            {
-                changed -= value;
-            }
+            add { changed += value; }
+            remove { changed -= value; }
         }
 
-
         /// <summary>
-        /// Show helper event.
+        /// Got item focus.
         /// </summary>
-        public event EventHandler ShowHelper
+        public event EventHandler GotFocus
         {
-            add
-            {
-                show_helper += value;
-            }
-            remove
-            {
-                show_helper -= value;
-            }
+            add { got_focus += value; }
+            remove { got_focus -= value; }
         }
 
-
         /// <summary>
-        /// Changed event.
+        /// Show and hide helper visibility.
         /// </summary>
-        public event EventHandler HideHelper
+        public Boolean HelperVisibility
         {
-            add
-            {
-                hide_helper += value;
-            }
-            remove
-            {
-                hide_helper -= value;
-            }
+            get { return HelperListView.Visible; }
+            set { HelperListView.Visible = value; }
         }
 
         /// <summary>
@@ -136,11 +109,6 @@ namespace Director.Forms.Controls
             set { InnerTextEntry.TabIndex = value; }
             get { return InnerTextEntry.TabIndex; }
         }
-
-        /// <summary>
-        /// Helper visited.
-        /// </summary>
-        public Boolean HelperVisited = false;
 
         /// <summary>
         /// Constructor.
@@ -156,12 +124,6 @@ namespace Director.Forms.Controls
             // Self changed - show menu
             Changed += TextEntryHelper_Changed;
 
-            // Hide tree items
-            LostFocus += InnerTextEntry_LostFocus;
-
-            // Show tree items
-            InnerTextEntry.GotFocus += InnerTextEntry_GotFocus;
-
             // Key binding events
             InnerTextEntry.KeyReleased += InnerTextEntry_KeyPressed;
 
@@ -176,7 +138,7 @@ namespace Director.Forms.Controls
             // Create helper list view
             HelperListView = new ListView()
             {
-                MinHeight = 75, 
+                MinHeight = 75,
                 HeightRequest = 75,
                 Visible = false,
                 HeadersVisible = false,
@@ -184,11 +146,10 @@ namespace Director.Forms.Controls
                 SelectionMode = SelectionMode.Single
             };
             HelperListView.Columns.Add("Name", Values);
-            HelperListView.LostFocus += HelperListView_LostFocus;
 
-            // Helper list view clicked
-            AddHelperListHandler();
-            
+            // Click selection
+            HelperListView.ButtonReleased += HelperListView_ButtonPressed;
+
             // Scroll view to
             EntryHelper.PackStart(HelperListView, true, true);
 
@@ -198,57 +159,36 @@ namespace Director.Forms.Controls
 
             // Set as content
             Content = EntryHelper;
+
+            // Show tree items
+            InnerTextEntry.GotFocus += GotFocusHandler;
         }
 
         /// <summary>
-        /// Lost focus when helper was visited.
+        /// Got focus handler!
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void HelperListView_LostFocus(object sender, EventArgs e)
+        private void GotFocusHandler(object sender, EventArgs e)
         {
-            if (HelperVisited)
+            HelperVisibility = true;
+            got_focus(sender, e);
+        }
+
+        /// <summary>
+        /// Click on specific item in list view.
+        /// </summary>
+        private void HelperListView_ButtonPressed(object sender, ButtonEventArgs e)
+        {
+            if (e.Button == PointerButton.Left)
             {
-                HideListHelper(sender, e);
-                hide_helper(sender, e);
-                HelperVisited = false;
+                InnerTextEntry.Text = ActiveList[HelperListView.SelectedRow];
+                changed(sender, e);
             }
-        }
-
-        /// <summary>
-        /// Click event!
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void HelperListView_SelectionChanged(object sender, EventArgs e)
-        {
-            InnerTextEntry.Text = ActiveList[HelperListView.SelectedRow];
-            changed(sender, e);
-            ShowListHelper(sender, e);
-            show_helper(sender, e);
-            HelperVisited = true;
-        }
-
-        /// <summary>
-        /// Add handler.
-        /// </summary>
-        void AddHelperListHandler()
-        {
-            HelperListView.SelectionChanged += HelperListView_SelectionChanged;
-        }
-
-        /// <summary>
-        /// Remove handler.
-        /// </summary>
-        void RemoveHelperListHandler()
-        {
-            HelperListView.SelectionChanged -= HelperListView_SelectionChanged;
         }
 
         /// <summary>
         /// Key events!
         /// </summary>
-        void InnerTextEntry_KeyPressed(object sender, KeyEventArgs e)
+        private void InnerTextEntry_KeyPressed(object sender, KeyEventArgs e)
         {
             switch (e.Key)
             {
@@ -261,8 +201,11 @@ namespace Director.Forms.Controls
                     break;
 
                 case Key.Return:
-                    InnerTextEntry.Text = ActiveList[HelperListView.SelectedRow];
-                    changed(sender, e);
+                    if (HelperListView.SelectedRow >= 0)
+                    {
+                        InnerTextEntry.Text = ActiveList[HelperListView.SelectedRow];
+                        changed(sender, e);
+                    }
                     break;
             }
         }
@@ -275,9 +218,7 @@ namespace Director.Forms.Controls
             int row = HelperListView.SelectedRow - 1;
             if (ActiveList.ContainsKey(row))
             {
-                RemoveHelperListHandler();
                 HelperListView.SelectRow(row);
-                AddHelperListHandler();
 
                 if (HelperListView.VerticalScrollControl.Value - HelperListView.VerticalScrollControl.StepIncrement >= 0)
                     HelperListView.VerticalScrollControl.Value -= HelperListView.VerticalScrollControl.StepIncrement;
@@ -292,61 +233,27 @@ namespace Director.Forms.Controls
             int row = HelperListView.SelectedRow + 1;
             if (ActiveList.ContainsKey(row))
             {
-                RemoveHelperListHandler();
                 HelperListView.SelectRow(row);
-                AddHelperListHandler();
 
-                if (HelperListView.VerticalScrollControl.Value + HelperListView.VerticalScrollControl.StepIncrement < HelperListView.VerticalScrollControl.UpperValue)
+                if (HelperListView.VerticalScrollControl.Value + HelperListView.VerticalScrollControl.StepIncrement <
+                    HelperListView.VerticalScrollControl.UpperValue)
                     HelperListView.VerticalScrollControl.Value += HelperListView.VerticalScrollControl.StepIncrement;
             }
         }
 
-        /// <summary>
-        /// Draw list.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void InnerTextEntry_GotFocus(object sender, EventArgs e)
-        {
-            ShowListHelper(sender, e);
-            show_helper(sender, e);
-        }
-
-        /// <summary>
-        /// Hide text entry.
-        /// </summary>
-        void InnerTextEntry_LostFocus(object sender, EventArgs e)
-        {
-            HideListHelper(sender, e);
-            hide_helper(sender, e);
-        }
 
         /// <summary>
         /// Self changed display list.
         /// </summary>
-        void TextEntryHelper_Changed(object sender, EventArgs e)
+        private void TextEntryHelper_Changed(object sender, EventArgs e)
         {
             if (HelpStrings != null && InnerTextEntry != null)
             {
-                List<String> searchedItems = HelpStrings.FindAll(n => n.IndexOf(InnerTextEntry.Text, StringComparison.InvariantCultureIgnoreCase) >= 0);
+                List<String> searchedItems =
+                    HelpStrings.FindAll(
+                        n => n.IndexOf(InnerTextEntry.Text, StringComparison.InvariantCultureIgnoreCase) >= 0);
                 SetItems(searchedItems);
             }
-        }
-
-        /// <summary>
-        /// Show helper.
-        /// </summary>
-        public void ShowListHelper(object sender, EventArgs e)
-        {
-            HelperListView.Visible = true;
-        }
-
-        /// <summary>
-        /// Hide helpers.
-        /// </summary>
-        public void HideListHelper(object sender, EventArgs e)
-        {
-            HelperListView.Visible = false; 
         }
 
         /// <summary>
@@ -354,7 +261,6 @@ namespace Director.Forms.Controls
         /// </summary>
         private void SetItems(List<String> items)
         {
-            RemoveHelperListHandler();
             ActiveList = new Dictionary<int, String>();
             HelperListView.UnselectAll();
             HelperStore.Clear();
@@ -364,12 +270,10 @@ namespace Director.Forms.Controls
                 HelperStore.SetValue(row, Values, s);
                 ActiveList.Add(row, s);
             }
-            
+
 
             if (items.Count > 0)
                 HelperListView.SelectRow(0);
-
-            AddHelperListHandler();
         }
 
         /// <summary>
@@ -377,7 +281,7 @@ namespace Director.Forms.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void InnerTextEntry_Changed(object sender, EventArgs e)
+        private void InnerTextEntry_Changed(object sender, EventArgs e)
         {
             changed(sender, e);
         }

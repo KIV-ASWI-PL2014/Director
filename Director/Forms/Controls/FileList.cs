@@ -10,7 +10,7 @@ using Xwt.Drawing;
 
 namespace Director.Forms.Controls
 {
-    class FileList : VBox
+    internal class FileList : VBox
     {
         /// <summary>
         /// Active file request.
@@ -50,7 +50,7 @@ namespace Director.Forms.Controls
             int x = 0;
             foreach (var h in ActiveFiles)
             {
-                FileListItem tmp = new FileListItem(this, h, (x % 2 == 0) ? Colors.White : Colors.LightGray);
+                FileListItem tmp = new FileListItem(this, h, (x%2 == 0) ? Colors.White : Colors.LightGray);
                 FileListContent.PackStart(tmp);
                 x++;
             }
@@ -117,11 +117,12 @@ namespace Director.Forms.Controls
         /// <summary>
         /// Add new file.
         /// </summary>
-        void NewFile_Clicked(object sender, EventArgs e)
+        private void NewFile_Clicked(object sender, EventArgs e)
         {
             FileItem NewFileItem = new FileItem();
             ActiveFiles.Add(NewFileItem);
-            var tmp = new FileListItem(this, NewFileItem, ((ActiveFiles.Count - 1) % 2 == 0) ? Colors.White : Colors.LightGray);
+            var tmp = new FileListItem(this, NewFileItem,
+                ((ActiveFiles.Count - 1)%2 == 0) ? Colors.White : Colors.LightGray);
             FileListContent.PackStart(tmp);
         }
 
@@ -135,18 +136,18 @@ namespace Director.Forms.Controls
         }
     }
 
-    class FileListItem : HBox
+    internal class FileListItem : HBox
     {
         /// <summary>
         /// Parent list for destroying.
         /// </summary>
         private FileList ParentList { get; set; }
 
-		/// <summary>
-		/// Default background color.
-		/// </summary>
-		/// <value>The default background.</value>
-		private Color DefaultColor { get; set; }
+        /// <summary>
+        /// Default background color.
+        /// </summary>
+        /// <value>The default background.</value>
+        private Color DefaultColor { get; set; }
 
         /// <summary>
         /// File item.
@@ -208,10 +209,7 @@ namespace Director.Forms.Controls
                 VerticalPlacement = WidgetPlacement.Center,
                 HorizontalPlacement = WidgetPlacement.Fill
             };
-            FileName.Changed += delegate
-            {
-                ActiveFileItem.FileName = FileName.Text;
-            };
+            FileName.Changed += delegate { ActiveFileItem.FileName = FileName.Text; };
             FileName.LostFocus += FileName_LostFocus;
             PackStart(FileName, true, true);
 
@@ -223,10 +221,7 @@ namespace Director.Forms.Controls
                 VerticalPlacement = WidgetPlacement.Center,
                 HorizontalPlacement = WidgetPlacement.Fill
             };
-            FilePath.Changed += delegate
-            {
-                ActiveFileItem.FilePath = FilePath.Text;
-            };
+            FilePath.Changed += delegate { ActiveFileItem.FilePath = FilePath.Text; };
             PackStart(FilePath, true, true);
 
             // Select file BTN
@@ -257,7 +252,7 @@ namespace Director.Forms.Controls
         /// <summary>
         /// Validate if this content already exists.
         /// </summary>
-        void FileName_LostFocus(object sender, EventArgs e)
+        private void FileName_LostFocus(object sender, EventArgs e)
         {
             int count = ParentList.ActiveFiles.Count(n => (n.FileName == FileName.Text && n != ActiveFileItem));
             if (count > 0)
@@ -269,7 +264,7 @@ namespace Director.Forms.Controls
         /// <summary>
         /// Remove file.
         /// </summary>
-        void RemoveFile_Clicked(object sender, EventArgs e)
+        private void RemoveFile_Clicked(object sender, EventArgs e)
         {
             ParentList.RemoveFileItem(ActiveFileItem);
         }
@@ -277,7 +272,7 @@ namespace Director.Forms.Controls
         /// <summary>
         /// Select file.
         /// </summary>
-        void SelectFile_Clicked(object sender, EventArgs e)
+        private void SelectFile_Clicked(object sender, EventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog(Director.Properties.Resources.DialogOpenScenario);
             dlg.Multiselect = false;
@@ -285,6 +280,5 @@ namespace Director.Forms.Controls
             if (dlg.Run())
                 FilePath.Text = dlg.FileName;
         }
-
     }
 }

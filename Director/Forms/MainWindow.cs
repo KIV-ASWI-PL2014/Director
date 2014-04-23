@@ -13,7 +13,7 @@ using Director.Forms.Inputs;
 
 namespace Director.Forms
 {
-    class MainWindow : Window
+    internal class MainWindow : Window
     {
         /// <summary>
         /// Default box
@@ -69,6 +69,7 @@ namespace Director.Forms
         /// Data fields describing server - save to TreeStore.
         /// </summary>
         private DataField<Image> ColumnImage = new DataField<Image>();
+
         private DataField<String> ColumnName = new DataField<string>();
         private DataField<Object> ColumnType = new DataField<object>();
 
@@ -76,6 +77,7 @@ namespace Director.Forms
         /// Default images for Server tree.
         /// </summary>
         private Image ServerImage = Image.FromResource(DirectorImages.ROOT_ICON);
+
         private Image ScenarioImage = Image.FromResource(DirectorImages.SCENARIO_ICON);
         private Image RequestImage = Image.FromResource(DirectorImages.REQUEST_ICON);
         private Image ProcessingImage = Image.FromResource(DirectorImages.PROCESSING_ICON);
@@ -159,7 +161,7 @@ namespace Director.Forms
 
             // Set default size
             Width = 750;
-			Height = 630;
+            Height = 630;
 
             // Center screen
             InitialLocation = WindowLocation.CenterScreen;
@@ -169,7 +171,40 @@ namespace Director.Forms
 
             // Initialize content
             _intializeBoxes();
+
+            // Initialize D&D actions for TreeView
+            _initializeDaD();
         }
+
+        /// <summary>
+        /// Init drag and drop for tree.
+        /// </summary>
+        private void _initializeDaD()
+        {
+            CurrentServer.ButtonPressed += CurrentServer_ButtonPressed;
+            CurrentServer.MouseMoved += CurrentServer_MouseMoved;
+            CurrentServer.DragDropCheck += CurrentServer_DragDropCheck;
+        }
+
+        private void CurrentServer_MouseMoved(object sender, MouseMovedEventArgs e)
+        {
+        }
+
+        private Point _lastMouseDown { get; set; }
+
+        private void CurrentServer_ButtonPressed(object sender, ButtonEventArgs e)
+        {
+            if (e.Button == PointerButton.Left)
+            {
+                _lastMouseDown = new Point(e.X, e.Y);
+            }
+        }
+
+        private void CurrentServer_DragDropCheck(object sender, DragCheckEventArgs e)
+        {
+            Console.WriteLine("DD check");
+        }
+
         /// <summary>
         /// Initialize whole layout!
         /// </summary>
@@ -233,7 +268,7 @@ namespace Director.Forms
                 Director.Properties.Resources.TreeStoreInformation,
                 Image.FromResource(DirectorImages.HELP_ICON),
                 DirectorHomepage
-            );
+                );
         }
 
         /// <summary>
@@ -263,19 +298,19 @@ namespace Director.Forms
                 {
                     SetContentBoxControl(ServerBox);
                     ServerBox.ActualPosition = CurrentServer.SelectedRow;
-                    ServerBox.SetServer((Server)s);
+                    ServerBox.SetServer((Server) s);
                 }
                 else if (s is Scenario)
                 {
                     SetContentBoxControl(ScenarioBox);
                     ScenarioBox.ActualPosition = CurrentServer.SelectedRow;
-                    ScenarioBox.SetScenario((Scenario)s);
+                    ScenarioBox.SetScenario((Scenario) s);
                 }
                 else if (s is Request)
                 {
                     SetContentBoxControl(RequestBox);
                     RequestBox.ActualPosition = CurrentServer.SelectedRow;
-                    RequestBox.SetRequest((Request)s);
+                    RequestBox.SetRequest((Request) s);
                 }
                 else if (s is Homepage)
                 {
@@ -455,15 +490,12 @@ namespace Director.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void MenuEditDefaultHeaders_Clicked(object sender, EventArgs e)
+        private void MenuEditDefaultHeaders_Clicked(object sender, EventArgs e)
         {
             ServerHeaders ServerHeadersWindow = new ServerHeaders(this, UServer);
             ServerHeadersWindow.Show();
             Opacity = 0.1;
-            ServerHeadersWindow.Closed += delegate
-            {
-                Opacity = 1;
-            };
+            ServerHeadersWindow.Closed += delegate { Opacity = 1; };
         }
 
         /// <summary>
@@ -471,7 +503,7 @@ namespace Director.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void CopyRequest_Clicked(object sender, EventArgs e)
+        private void CopyRequest_Clicked(object sender, EventArgs e)
         {
             TreePosition tmp = CurrentServer.SelectedRow;
             if (tmp == null)
@@ -483,7 +515,7 @@ namespace Director.Forms
                 {
                     PasteRequest.Clicked += PasteRequest_Clicked;
                 }
-                RequestClipboard = (Request)r;
+                RequestClipboard = (Request) r;
                 PasteRequest.Sensitive = true;
             }
         }
@@ -493,7 +525,7 @@ namespace Director.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void PasteRequest_Clicked(object sender, EventArgs e)
+        private void PasteRequest_Clicked(object sender, EventArgs e)
         {
             TreePosition tmp = CurrentServer.SelectedRow;
             if (tmp == null || RequestClipboard == null)
@@ -508,7 +540,7 @@ namespace Director.Forms
                 NewRequest.Name += "#copy";
 
                 // Add to scenario
-                ((Scenario)s).Requests.Add(NewRequest);
+                ((Scenario) s).Requests.Add(NewRequest);
 
                 // Refresh tree view
                 CreateTreeItem(tmp, NewRequest.Name, RequestImage, NewRequest);
@@ -520,7 +552,7 @@ namespace Director.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void PasteScenario_Clicked(object sender, EventArgs e)
+        private void PasteScenario_Clicked(object sender, EventArgs e)
         {
             TreePosition tmp = CurrentServer.SelectedRow;
             if (tmp == null || ScenarioClipboard == null)
@@ -550,7 +582,7 @@ namespace Director.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void CopyScenario_Clicked(object sender, EventArgs e)
+        private void CopyScenario_Clicked(object sender, EventArgs e)
         {
             TreePosition tmp = CurrentServer.SelectedRow;
             if (tmp == null)
@@ -561,7 +593,7 @@ namespace Director.Forms
                 if (ScenarioClipboard == null)
                     PasteScenario.Clicked += PasteScenario_Clicked;
 
-                ScenarioClipboard = (Scenario)s;
+                ScenarioClipboard = (Scenario) s;
                 PasteScenario.Sensitive = true;
             }
         }
@@ -569,7 +601,7 @@ namespace Director.Forms
         /// <summary>
         /// Edit request data.
         /// </summary>
-        void MenuEditRequest_Clicked(object sender, EventArgs e)
+        private void MenuEditRequest_Clicked(object sender, EventArgs e)
         {
             // Get actual Request
             TreePosition tmp = CurrentServer.SelectedRow;
@@ -580,7 +612,7 @@ namespace Director.Forms
             var s = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
 
             if (s is Request)
-                OpenEditRequest((Request)s);
+                OpenEditRequest((Request) s);
         }
 
         /// <summary>
@@ -645,10 +677,7 @@ namespace Director.Forms
             {
                 Image = Image.FromResource(DirectorImages.EXIT_ICON)
             };
-            _exit.Clicked += delegate
-            {
-                Application.Exit();
-            };
+            _exit.Clicked += delegate { Application.Exit(); };
             ServerMenu.Items.Add(_exit);
 
             return ServerMenu;
@@ -695,12 +724,12 @@ namespace Director.Forms
 
             if (s is Scenario)
             {
-                Scenario sc = (Scenario)s;
+                Scenario sc = (Scenario) s;
                 bool res = MessageDialog.Confirm(Director.Properties.Resources.MessageBoxRemoveScenario, Command.Ok);
                 if (res)
                 {
                     // If scenario is in clipboard remove too!
-                    if (ScenarioClipboard == (Scenario)s)
+                    if (ScenarioClipboard == (Scenario) s)
                     {
                         ScenarioClipboard = null;
                         PasteScenario.Clicked -= PasteScenario_Clicked;
@@ -735,7 +764,7 @@ namespace Director.Forms
 
             if (data is Server)
             {
-                Server s = (Server)data;
+                Server s = (Server) data;
 
                 // Add new scenario
                 Scenario NewScenario = s.CreateNewScenario();
@@ -761,7 +790,7 @@ namespace Director.Forms
 
             if (data is Scenario)
             {
-                Scenario s = (Scenario)data;
+                Scenario s = (Scenario) data;
                 Request NewRequest = s.CreateNewRequest();
                 CreateTreeItem(tmp, NewRequest.Name, RequestImage, NewRequest);
                 UpdateControlView(sender, e);
@@ -779,10 +808,10 @@ namespace Director.Forms
         private TreePosition CreateTreeItem(TreePosition pos, string name, Image icon, Object item)
         {
             return ServerStore.AddNode(pos)
-                              .SetValue(ColumnName, name)
-                              .SetValue(ColumnImage, icon)
-                              .SetValue(ColumnType, item)
-                              .CurrentPosition;
+                .SetValue(ColumnName, name)
+                .SetValue(ColumnImage, icon)
+                .SetValue(ColumnType, item)
+                .CurrentPosition;
         }
 
         /// <summary>
@@ -793,7 +822,8 @@ namespace Director.Forms
         private void CreateNewServer(object sender, EventArgs e)
         {
             // Create server
-            UServer = new Server(Director.Properties.Resources.NewServerString, Director.Properties.Resources.NewServerURL);
+            UServer = new Server(Director.Properties.Resources.NewServerString,
+                Director.Properties.Resources.NewServerURL);
 
             // Add server to tree store
             ClearCurrentServerTree();

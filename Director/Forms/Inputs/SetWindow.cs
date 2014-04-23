@@ -12,7 +12,7 @@ namespace Director.Forms.Inputs
     /// <summary>
     /// Class window.
     /// </summary>
-    class SetWindow : Window
+    internal class SetWindow : Window
     {
         /// <summary>
         /// Text input.
@@ -45,7 +45,6 @@ namespace Director.Forms.Inputs
             // Prepare input
             ScrollView ScrollTextInput = new ScrollView()
             {
-
                 Content = TextInput = new RichTextView()
             };
             InputArea.PackStart(new Label("Add input:"));
@@ -58,9 +57,10 @@ namespace Director.Forms.Inputs
                 Content = FormatInput = new Label()
             };
             InputArea.PackStart(ScrollTextOutput, true, true);
-            
+
             // Btn
-            Button ConfirmButton = new Button(Image.FromResource(DirectorImages.OK_ICON), Director.Properties.Resources.Confirm)
+            Button ConfirmButton = new Button(Image.FromResource(DirectorImages.OK_ICON),
+                Director.Properties.Resources.Confirm)
             {
                 WidthRequest = 150,
                 ExpandHorizontal = false,

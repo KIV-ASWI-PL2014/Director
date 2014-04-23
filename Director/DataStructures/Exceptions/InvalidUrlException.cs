@@ -10,11 +10,10 @@ namespace Director.DataStructures.Exceptions
     /// Invalid URL exception
     /// </summary>
     [Serializable]
-    class InvalidUrlException : Exception
+    internal class InvalidUrlException : Exception
     {
         public InvalidUrlException() : base("Invalid URL")
-        { 
-            
+        {
         }
     }
 }
