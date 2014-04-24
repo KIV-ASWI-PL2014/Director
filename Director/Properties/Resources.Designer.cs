@@ -71,6 +71,26 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_down {
+            get {
+                object obj = ResourceManager.GetObject("arrow_down", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap arrow_up {
+            get {
+                object obj = ResourceManager.GetObject("arrow_up", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authorization.
         /// </summary>
         internal static string Authorization {
@@ -583,6 +603,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to remove this request?.
+        /// </summary>
+        internal static string MessageBoxRemoveRequest {
+            get {
+                return ResourceManager.GetString("MessageBoxRemoveRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to remove this scenario?.
         /// </summary>
         internal static string MessageBoxRemoveScenario {
@@ -672,6 +701,24 @@ namespace Director.Properties {
             get {
                 object obj = ResourceManager.GetObject("open", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DOWN.
+        /// </summary>
+        internal static string OrderDOWN {
+            get {
+                return ResourceManager.GetString("OrderDOWN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UP.
+        /// </summary>
+        internal static string OrderUP {
+            get {
+                return ResourceManager.GetString("OrderUP", resourceCulture);
             }
         }
         

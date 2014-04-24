@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using Xwt;
 
 namespace Director.DataStructures
 {
@@ -21,6 +22,12 @@ namespace Director.DataStructures
         /// </summary>
         [XmlIgnore]
         public Server ParentServer { get; set; }
+
+        /// <summary>
+        /// Tree position - set when creating.
+        /// </summary>
+        [XmlIgnore]
+        public TreePosition TreePosition { get; set; }
 
         /// <summary>
         /// Request list.
@@ -116,14 +123,17 @@ namespace Director.DataStructures
         public Request CreateNewRequest()
         {
             // Get max ID
-            int _requestId = 1;
+            int _requestId = 1, _position = 1;
 
             // There are some members of request in list (get Max)
             if (Requests.Count > 0)
+            {
                 _requestId = Requests.Max(x => x.Id) + 1;
+                _position = Requests.Max(x => x.Position) + 1;
+            }
 
             // Create request
-            Request ret = new Request(_requestId, Requests.Count, "New request")
+            Request ret = new Request(_requestId, _position, "New request")
             {
                 ParentScenario = this,
                 Url = ParentServer.GetUrl(),
@@ -160,7 +170,74 @@ namespace Director.DataStructures
             foreach (var r in t.Requests)
                 r.ParentScenario = t;
 
+            // Set new position
+            t.Position = this.ParentServer.Scenarios.Max(n => n.Position) + 1;
+
+            // Tree position is set by GUI
+
             return t;
+        }
+
+        /// <summary>
+        /// Move request up
+        /// </summary>
+        /// <param name="_request"></param>
+        /// <returns></returns>
+        internal Request MoveRequestDown(Request _request)
+        {
+            // Get max position ID
+            int _maxPosition = Requests.Max(n => n.Position);
+
+            if (_maxPosition == _request.Position)
+                return null;
+
+            // Find scenario after
+            for (int i = _request.Position + 1; i <= _maxPosition; i++)
+            {
+                var _newRequest = Requests.First(n => n.Position == i);
+                if (_newRequest != null)
+                {
+                    _newRequest.Position = _request.Position;
+                    _request.Position = i;
+                    return _newRequest;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Move request up
+        /// </summary>
+        /// <param name="_request"></param>
+        /// <returns></returns>
+        internal Request MoveRequestUp(Request _request)
+        {
+            // Get max position ID
+            int _minPosition = Requests.Min(n => n.Position);
+
+            if (_minPosition == _request.Position)
+                return null;
+
+            // Find scenario after
+            for (int i = _request.Position - 1; i >= _minPosition; i--)
+            {
+                var _newRequest = Requests.First(n => n.Position == i);
+                if (_newRequest != null)
+                {
+                    _newRequest.Position = _request.Position;
+                    _request.Position = i;
+                    return _newRequest;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Remove request.
+        /// </summary>
+        public void RemoveRequest(Request req)
+        {
+            Requests.Remove(req);
         }
     }
 }
