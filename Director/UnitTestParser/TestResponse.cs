@@ -8,9 +8,12 @@ namespace UnitTestParser
     [TestClass]
     public class TestResponse
     {
+        //templates exept compare
         public Boolean[] templateAllExComp =    { false, false, false, true, true };
+        //templates exept type check
         public Boolean[] templateAllExType =    { true, true, true, true, false };
         public Boolean[] templateAll =          { true, true, true, true, true };
+        //only template with all fields
         public Boolean[] templateFullNotation = { false, false, false, true, false };
 
         Parser parser = new Parser();

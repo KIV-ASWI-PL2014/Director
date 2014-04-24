@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
+using Xwt;
 
 namespace Director.DataStructures
 {
@@ -17,6 +19,12 @@ namespace Director.DataStructures
         /// Scenario list.
         /// </summary>
         public List<Scenario> Scenarios { get; set; }
+
+        /// <summary>
+        /// Tree position.
+        /// </summary>
+        [XmlIgnore]
+        public TreePosition TreePosition { get; set; }
 
         /// <summary>
         /// List of server email list.
@@ -112,14 +120,17 @@ namespace Director.DataStructures
         public Scenario CreateNewScenario()
         {
             // Id and position is actual scenario list size
-            int _scenarioId = 1;
+            int _scenarioId = 1, _position = 1;
 
             // There are some members of scenario in list
             if (Scenarios.Count > 0)
+            {
                 _scenarioId = Scenarios.Max(x => x.Id) + 1;
+                _position = Scenarios.Max(x => x.Position) + 1;
+            }
 
             // Create a new one
-            var newScenario = new Scenario(_scenarioId, Scenarios.Count, Director.Properties.Resources.NewScenarioName)
+            var newScenario = new Scenario(_scenarioId, _position, Director.Properties.Resources.NewScenarioName)
             {
                 ParentServer = this
             };
@@ -138,6 +149,56 @@ namespace Director.DataStructures
         public void RemoveScenario(Scenario sc)
         {
             Scenarios.Remove(sc);
+        }
+
+        /// <summary>
+        /// Switch scenario with scenario after.
+        /// </summary>
+        public Scenario MoveScenarioDown(Scenario _scenario)
+        {
+            // Get max position ID
+            int _maxPosition = Scenarios.Max(n => n.Position);
+
+            if (_maxPosition == _scenario.Position)
+                return null;
+
+            // Find scenario after
+            for (int i = _scenario.Position + 1; i <= _maxPosition; i++)
+            {
+                var _newScenario = Scenarios.First(n => n.Position == i);
+                if (_newScenario != null)
+                {
+                    _newScenario.Position = _scenario.Position;
+                    _scenario.Position = i;
+                    return _newScenario;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Switch scenario with scenario before.
+        /// </summary>
+        public Scenario MoveScenarioUp(Scenario _scenario)
+        {
+            // Get max position ID
+            int _minPosition = Scenarios.Min(n => n.Position);
+
+            if (_minPosition == _scenario.Position)
+                return null;
+
+            // Find scenario after
+            for (int i = _scenario.Position - 1; i >= _minPosition; i--)
+            {
+                var _newScenario = Scenarios.First(n => n.Position == i);
+                if (_newScenario != null)
+                {
+                    _newScenario.Position = _scenario.Position;
+                    _scenario.Position = i;
+                    return _newScenario;
+                }
+            }
+            return null;
         }
     }
 }

@@ -52,6 +52,7 @@
   <PropertyGroup>
     <ApplicationIcon>favicon %282%29.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\XWT\Newtonsoft.Json.dll</HintPath>
@@ -81,12 +82,15 @@
     <Compile Include="DataStructures\SupportStructures\Email.cs" />
     <Compile Include="DataStructures\SupportStructures\FileItem.cs" />
     <Compile Include="DataStructures\SupportStructures\Frequency.cs" />
+    <Compile Include="ExportLib\Deserialization.cs" />
     <Compile Include="ExportLib\Export.cs" />
+    <Compile Include="ExportLib\Serialization.cs" />
     <Compile Include="Forms\Controls\EmailList.cs" />
     <Compile Include="Forms\Controls\FileList.cs" />
     <Compile Include="Forms\Controls\RequestWidget.cs" />
     <Compile Include="Forms\Controls\ResponseWidget.cs" />
     <Compile Include="Forms\Controls\TextEntryHelper.cs" />
+    <Compile Include="DataStructures\CustomVariableItem.cs" />
     <Compile Include="Forms\Inputs\EditWindow.cs" />
     <Compile Include="Forms\Inputs\SetWindow.cs" />
     <Compile Include="Forms\Inputs\ServerHeaders.cs" />
@@ -279,6 +283,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon %282%29.ico" />
+    <EmbeddedResource Include="Resources\arrow_up.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\arrow_down.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\settings.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
