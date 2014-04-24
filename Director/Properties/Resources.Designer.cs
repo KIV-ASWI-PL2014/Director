@@ -73,6 +73,16 @@ namespace Director.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap add_content {
+            get {
+                object obj = ResourceManager.GetObject("add_content", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap arrow_down {
             get {
                 object obj = ResourceManager.GetObject("arrow_down", resourceCulture);
@@ -226,6 +236,15 @@ namespace Director.Properties {
             get {
                 object obj = ResourceManager.GetObject("edit", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set content.
+        /// </summary>
+        internal static string EditContent {
+            get {
+                return ResourceManager.GetString("EditContent", resourceCulture);
             }
         }
         
@@ -828,6 +847,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Request content:.
+        /// </summary>
+        internal static string RequestContent {
+            get {
+                return ResourceManager.GetString("RequestContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Files.
         /// </summary>
         internal static string RequestFiles {
@@ -1118,6 +1146,15 @@ namespace Director.Properties {
         internal static string ServerURL {
             get {
                 return ResourceManager.GetString("ServerURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set request or response.
+        /// </summary>
+        internal static string SetContentTitle {
+            get {
+                return ResourceManager.GetString("SetContentTitle", resourceCulture);
             }
         }
         

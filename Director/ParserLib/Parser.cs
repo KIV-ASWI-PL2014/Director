@@ -256,7 +256,7 @@ namespace Director.ParserLib
             return new ParserError(-1, -1, "\nMessage: " + errorMessage, source);
         }
 
-        private Dictionary<string, ParserItem> deserialize(string template)
+        public Dictionary<string, ParserItem> deserialize(string template)
         {
             Dictionary<string, ParserItem> result = new Dictionary<string, ParserItem>();
             JsonTextReader reader = new JsonTextReader(new StringReader(template));

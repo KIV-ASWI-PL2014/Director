@@ -987,6 +987,10 @@ namespace Director.Forms
         private void SaveServer(object sender, EventArgs e)
         {
             ExportWindow ew = new ExportWindow(UServer);
+            Content.Sensitive = false;
+            ew.Closed += delegate {
+                Content.Sensitive = true;
+            };
             ew.Show();
         }
 

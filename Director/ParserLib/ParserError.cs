@@ -8,37 +8,56 @@ namespace Director.ParserLib
 {
     public class ParserError
     {
-        private int line;
-        private int position;
-        private string message;
-        private string source;
+        public int Line
+        {
+            get;
+            private set;
+        }
+
+        public int Position
+        {
+            get;
+            private set;
+        }
+
+        public string Source
+        {
+            get;
+            private set;
+        }
+
+        public string Message
+        {
+            get;
+            private set;
+        }
 
         public ParserError(int line, int position, string message, string source)
         {
-            this.line = line;
-            this.position = position;
-            this.message = message;
-            this.source = source;
+            Line = line;
+            Position = position;
+            Message = message;
+            Source = source;
         }
 
         public int getLine()
         {
-            return line;
+            return Line;
         }
 
         public int getPosition()
         {
-            return position;
+            return Position;
         }
 
         public string getMessage()
         {
-            return message;
+            return Message;
         }
 
         public string getSource()
         {
-            return source;
+            return Source;
         }
     }
 }

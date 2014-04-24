@@ -31,5 +31,6 @@ namespace Director.Forms.Controls
         public const string SETTINGS_IMAGE = "Director.Resources.settings.png";
         public const string UP_ICON = "Director.Resources.arrow_up.png";
         public const string DOWN_ICON = "Director.Resources.arrow_down.png";
+        public const string EDIT_CONTENT_ICON = "Director.Resources.add_content.png";
     }
 }

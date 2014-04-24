@@ -34,5 +34,23 @@ namespace Director.ParserLib
         {
             return result;
         }
+
+        public string GetMarkdownReport()
+        {
+            if (isSuccess())
+                return "";
+
+            string ret = "";
+
+            ret += "# Errors found\n";
+            ret += "- " + errors.Count + "\n\n";
+
+            ret += "# Problems\n";
+
+            foreach (var i in errors)
+                ret += String.Format("- [{0}, {1}] - {2}\n", i.Line, i.Position, i.Message);
+
+            return ret;
+        }
     }
 }
