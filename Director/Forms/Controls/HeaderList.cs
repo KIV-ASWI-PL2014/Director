@@ -6,12 +6,12 @@ using Director.Forms.Controls;
 
 namespace Director
 {
-	public class HeaderList : VBox
-	{
-		/// <summary>
-		/// Default row height.
-		/// </summary>
-		public const int ROW_HEIGHT = 30;
+    public class HeaderList : VBox
+    {
+        /// <summary>
+        /// Default row height.
+        /// </summary>
+        public const int ROW_HEIGHT = 30;
 
         /// <summary>
         /// Tab indexes.
@@ -27,53 +27,63 @@ namespace Director
             set { _TabIndex = value; }
         }
 
-		/// <summary>
-		/// Current map with headers.
-		/// </summary>
-		public List<Header> Headers { get; set; }
+        /// <summary>
+        /// Current map with headers.
+        /// </summary>
+        public List<Header> Headers { get; set; }
 
-		/// <summary>
-		/// Header list vbox.
-		/// </summary>
-		/// <value>The header list box.</value>
-		private VBox HeaderListBox { get; set; }
+        /// <summary>
+        /// Header list vbox.
+        /// </summary>
+        /// <value>The header list box.</value>
+        private VBox HeaderListBox { get; set; }
 
-		/// <summary>
-		/// Create header list.
-		/// </summary>
-		public HeaderList (List<Header> headers)
-		{
-			// Set headers
-			Headers = headers;
+        /// <summary>
+        /// Header list items.
+        /// </summary>
+        public List<HeaderListItem> HeaderListItems { get; set; }
 
-			// Expand
-			ExpandHorizontal = true;
-			ExpandVertical = true;
+        /// <summary>
+        /// Create header list.
+        /// </summary>
+        public HeaderList(List<Header> headers)
+        {
+            // Set headers
+            Headers = headers;
 
-			// Margins
-			Margin = 10;
+            // Expand
+            ExpandHorizontal = true;
+            ExpandVertical = true;
 
-			// Prepare
-			_initializeComponents ();
+            // Margins
+            Margin = 10;
 
-			// Refresh headers
-			RefreshHeaderList ();
-		}
+            // Header list items
+            HeaderListItems = new List<HeaderListItem>();
 
-		/// <summary>
-		/// Refresh header list items.
-		/// </summary>
-		public void RefreshHeaderList()
-		{
-			HeaderListBox.Clear ();
-			int x = 0;
+            // Prepare
+            _initializeComponents();
+
+            // Refresh headers
+            RefreshHeaderList();
+        }
+
+        /// <summary>
+        /// Refresh header list items.
+        /// </summary>
+        public void RefreshHeaderList()
+        {
+            HeaderListBox.Clear();
+            var x = 0;
             TAB_INDEX = 0;
-			foreach (var h in Headers) {
-                HeaderListItem tmp = new HeaderListItem(this, h, (x % 2 == 0) ? Colors.White : Colors.LightGray);
-				HeaderListBox.PackStart (tmp);
-				x++;
-			}
-		}
+            foreach (var h in Headers)
+            {
+                var tmp = new HeaderListItem(this, h, (x%2 == 0) ? Colors.White : Colors.LightGray);
+                HeaderListBox.PackStart(tmp);
+                HeaderListItems.Add(tmp);
+                x++;
+            }
+        }
 
         /// <summary>
         /// Remove header.
@@ -85,12 +95,12 @@ namespace Director
             RefreshHeaderList();
         }
 
-		/// <summary>
-		/// Initializes the components.
-		/// </summary>
-		private void _initializeComponents()
-		{
-			// Create first header line
+        /// <summary>
+        /// Initializes the components.
+        /// </summary>
+        private void _initializeComponents()
+        {
+            // Create first header line
             HBox FirstLine = new HBox();
             Label HeaderType = new Label(Director.Properties.Resources.HeaderHeaderType)
             {
@@ -120,23 +130,24 @@ namespace Director
             NewHeader.Clicked += NewHeader_Clicked;
 
             // Create header list box
-			HeaderListBox = new VBox () {
-				BackgroundColor = Colors.White,
-				ExpandVertical = true,
-				ExpandHorizontal = false
-			};
+            HeaderListBox = new VBox()
+            {
+                BackgroundColor = Colors.White,
+                ExpandVertical = true,
+                ExpandHorizontal = false
+            };
 
-			ScrollView HeaderListScroll = new ScrollView()
-			{
-				HorizontalScrollPolicy = ScrollPolicy.Never,
-				VerticalScrollPolicy = ScrollPolicy.Always,
-				Content = HeaderListBox,
-				BackgroundColor = Colors.LightGray
-			};
-					
-			// Add item list
-			PackStart(HeaderListScroll, true, true);
-		}
+            ScrollView HeaderListScroll = new ScrollView()
+            {
+                HorizontalScrollPolicy = ScrollPolicy.Never,
+                VerticalScrollPolicy = ScrollPolicy.Always,
+                Content = HeaderListBox,
+                BackgroundColor = Colors.LightGray
+            };
+
+            // Add item list
+            PackStart(HeaderListScroll, true, true);
+        }
 
 
         /// <summary>
@@ -144,50 +155,52 @@ namespace Director
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void NewHeader_Clicked(object sender, EventArgs e)
+        private void NewHeader_Clicked(object sender, EventArgs e)
         {
             Header NewHeader = new Header();
             Headers.Add(NewHeader);
-            HeaderListItem NewHeaderListItem = new HeaderListItem(this, NewHeader, ((Headers.Count - 1) % 2 == 0) ? Colors.White : Colors.LightGray);
+            HeaderListItem NewHeaderListItem = new HeaderListItem(this, NewHeader,
+                ((Headers.Count - 1)%2 == 0) ? Colors.White : Colors.LightGray);
             HeaderListBox.PackStart(NewHeaderListItem);
+            HeaderListItems.Add(NewHeaderListItem);
         }
-	}
+    }
 
-	/// <summary>
-	/// Header list items.
-	/// </summary>
-	public class HeaderListItem : HBox
-	{
-		/// <summary>
-		/// Active header - for changing values.
-		/// </summary>
-		private Header ActiveHeader { get; set; }
+    /// <summary>
+    /// Header list items.
+    /// </summary>
+    public class HeaderListItem : HBox
+    {
+        /// <summary>
+        /// Active header - for changing values.
+        /// </summary>
+        private Header ActiveHeader { get; set; }
 
-		/// <summary>
-		/// Parent.
-		/// </summary>
-		private HeaderList ParentList { get; set; }
+        /// <summary>
+        /// Parent.
+        /// </summary>
+        private HeaderList ParentList { get; set; }
 
-		/// <summary>
-		/// Default background color.
-		/// </summary>
-		/// <value>The default background.</value>
-		private Color DefaultColor { get; set; }
+        /// <summary>
+        /// Default background color.
+        /// </summary>
+        /// <value>The default background.</value>
+        private Color DefaultColor { get; set; }
 
-		/// <summary>
-		/// Types.
-		/// </summary>
+        /// <summary>
+        /// Types.
+        /// </summary>
         private TextEntryHelper Types { get; set; }
 
-		/// <summary>
-		/// Values.
-		/// </summary>
+        /// <summary>
+        /// Values.
+        /// </summary>
         private TextEntryHelper Values { get; set; }
 
-		/// <summary>
-		/// Remove button.
-		/// </summary>
-		private Button RemoveBtn { get; set; }
+        /// <summary>
+        /// Remove button.
+        /// </summary>
+        private Button RemoveBtn { get; set; }
 
         /// <summary>
         /// Most used headers.
@@ -195,35 +208,35 @@ namespace Director
         private List<String> MostUsedHeaders = new List<String>
         {
             "Accept",
-            "Accept-Charset", 
+            "Accept-Charset",
             "Accept-Encoding",
             "Accept-Language",
             "Accept-Datetime",
-            "Authorization", 
-            "Cache-Control", 
+            "Authorization",
+            "Cache-Control",
             "Connection",
             "Cookie",
             "Content-Length",
             "Content-MD5",
             "Content-Type",
-            "Date", 
-            "Expect", 
+            "Date",
+            "Expect",
             "From",
             "Host",
-            "If-Match", 
-            "If-Modified-Since", 
-            "If-None-Match", 
-            "If-Range", 
-            "If-Unmodified-Since", 
-            "Max-Forwards", 
-            "Origin", 
-            "Pragma", 
-            "Proxy-Authorization", 
+            "If-Match",
+            "If-Modified-Since",
+            "If-None-Match",
+            "If-Range",
+            "If-Unmodified-Since",
+            "Max-Forwards",
+            "Origin",
+            "Pragma",
+            "Proxy-Authorization",
             "Range",
-            "Referer", 
-            "TE", 
+            "Referer",
+            "TE",
             "User-Agent",
-            "Via", 
+            "Via",
             "Warning"
         };
 
@@ -241,16 +254,16 @@ namespace Director
             "utf-8"
         };
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Director.HeaderListItem"/> class.
-		/// </summary>
-		/// <param name="_parent">_parent.</param>
-		/// <param name="_header">_header.</param>
-		/// <param name="_color">_color.</param>
-		public HeaderListItem(HeaderList _parent, Header _header, Color _color)
-		{
-			ActiveHeader = _header;
-			ParentList = _parent;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Director.HeaderListItem"/> class.
+        /// </summary>
+        /// <param name="_parent">_parent.</param>
+        /// <param name="_header">_header.</param>
+        /// <param name="_color">_color.</param>
+        public HeaderListItem(HeaderList _parent, Header _header, Color _color)
+        {
+            ActiveHeader = _header;
+            ParentList = _parent;
 
             // Set background color
             BackgroundColor = DefaultColor = _color;
@@ -266,13 +279,13 @@ namespace Director
 
             // Init component
             _initializeComponents();
-		}
+        }
 
-		/// <summary>
-		/// Intialize hbox components.
-		/// </summary>
-        private void _initializeComponents() 
-		{
+        /// <summary>
+        /// Intialize hbox components.
+        /// </summary>
+        private void _initializeComponents()
+        {
             // Type
             Types = new TextEntryHelper()
             {
@@ -283,41 +296,21 @@ namespace Director
                 HelpStrings = MostUsedHeaders,
                 TabIndex = ParentList.TAB_INDEX
             };
-            Types.Changed += delegate
-            {
-                ActiveHeader.Name = Types.Text;
-            };
-            Types.ShowHelper += delegate
-            {
-                Values.ShowListHelper(null, null);
-            };
-            Types.HideHelper += delegate
-            {
-                Values.HideListHelper(null, null);
-            };
+            Types.Changed += delegate { ActiveHeader.Name = Types.Text; };
+            Types.GotFocus += GotChildFocusHandler;
 
             // Value
             Values = new TextEntryHelper()
             {
-				Text = ActiveHeader.Value,
+                Text = ActiveHeader.Value,
                 MarginLeft = 5,
                 VerticalPlacement = WidgetPlacement.Center,
                 HorizontalPlacement = WidgetPlacement.Fill,
                 HelpStrings = MostUsedValues,
                 TabIndex = ParentList.TAB_INDEX
-			};
-            Values.Changed += delegate
-            {
-                ActiveHeader.Value = Values.Text;
             };
-            Values.ShowHelper += delegate
-            {
-                Types.ShowListHelper(null, null);
-            };
-            Values.HideHelper += delegate
-            {
-                Types.HideListHelper(null, null);
-            };
+            Values.Changed += delegate { ActiveHeader.Value = Values.Text; };
+            Values.GotFocus += GotChildFocusHandler;
 
             // Remove button
             RemoveBtn = new Button(Image.FromResource(DirectorImages.CROSS_ICON))
@@ -330,20 +323,39 @@ namespace Director
             };
             RemoveBtn.Clicked += RemoveBtn_Clicked;
 
-			PackStart (Types, expand: true);
+            PackStart(Types, expand: true);
             PackStart(Values, expand: true);
             PackStart(RemoveBtn, expand: false, fill: false);
-		}
+        }
+
+        /// <summary>
+        /// Hide all other children helpers.
+        /// </summary>
+        private void GotChildFocusHandler(object sender, EventArgs e)
+        {
+            foreach (HeaderListItem it in ParentList.HeaderListItems)
+            {
+                if (it == this)
+                {
+                    it.Values.HelperVisibility = true;
+                    it.Types.HelperVisibility = true;
+                }
+                else
+                {
+                    it.Values.HelperVisibility = false;
+                    it.Types.HelperVisibility = false;
+                }
+            }
+        }
 
         /// <summary>
         /// Remove email from list.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void RemoveBtn_Clicked(object sender, EventArgs e)
+        private void RemoveBtn_Clicked(object sender, EventArgs e)
         {
             ParentList.RemoveHeader(ActiveHeader);
         }
-	}
+    }
 }
-

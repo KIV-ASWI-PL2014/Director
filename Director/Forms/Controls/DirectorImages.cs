@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Director.Forms.Controls
 {
-    class DirectorImages
+    internal class DirectorImages
     {
         public const string CROSS_ICON = "Director.Resources.cross.png";
         public const string EXIT_ICON = "Director.Resources.exit.png";
@@ -18,7 +18,7 @@ namespace Director.Forms.Controls
         public const string PROCESSING_ICON = "Director.Resources.processing.gif";
         public const string ADD_ICON = "Director.Resources.add.png";
         public const string HOMEPAGE_IMAGE = "Director.Resources.homepage.png";
-		public const string HELP_ICON = "Director.Resources.help.png";
+        public const string HELP_ICON = "Director.Resources.help.png";
         public const string SERVER_IMAGE = "Director.Resources.server_page.png";
         public const string SCENARIO_IMAGE = "Director.Resources.scenario_page.png";
         public const string REQUEST_IMAGE = "Director.Resources.request_page.png";

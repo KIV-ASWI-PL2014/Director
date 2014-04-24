@@ -16,11 +16,11 @@ namespace Director.DataStructures
     [Serializable]
     public class Scenario
     {
-		/// <summary>
-		/// Parent server of this scenario list.
-		/// </summary>
-		[XmlIgnore]
-		public Server ParentServer { get; set; }
+        /// <summary>
+        /// Parent server of this scenario list.
+        /// </summary>
+        [XmlIgnore]
+        public Server ParentServer { get; set; }
 
         /// <summary>
         /// Request list.
@@ -52,10 +52,11 @@ namespace Director.DataStructures
         /// </summary>
         private int _TimeAfterPrevious;
 
-		/// <summary>
-		/// Time delay after previous scenario ends! [seconds]
-		/// </summary>
-		public int TimeAfterPrevious {
+        /// <summary>
+        /// Time delay after previous scenario ends! [seconds]
+        /// </summary>
+        public int TimeAfterPrevious
+        {
             get { return _TimeAfterPrevious; }
             set
             {
@@ -65,15 +66,17 @@ namespace Director.DataStructures
             }
         }
 
-		/// <summary>
-		/// Running by Running Frequency, otherwise scenario after scenario...
-		/// </summary>
-		public Boolean PeriodicityRunning { get; set; }
+        /// <summary>
+        /// Running by Running Frequency, otherwise scenario after scenario...
+        /// </summary>
+        public Boolean PeriodicityRunning { get; set; }
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        public Scenario() : this(0, 0, "") { }
+        public Scenario() : this(0, 0, "")
+        {
+        }
 
         /// <summary>
         /// Constructor wiht ID and position, name.
@@ -88,10 +91,10 @@ namespace Director.DataStructures
             Name = name;
             Requests = new List<Request>();
 
-			// Set default values
-			RunningFrequency = 0;
-			TimeAfterPrevious = 10;
-			PeriodicityRunning = false;
+            // Set default values
+            RunningFrequency = 0;
+            TimeAfterPrevious = 10;
+            PeriodicityRunning = false;
         }
 
         /// <summary>
@@ -110,7 +113,7 @@ namespace Director.DataStructures
         /// <summary>
         /// Create new empty request in list.
         /// </summary>
-		public Request CreateNewRequest()
+        public Request CreateNewRequest()
         {
             // Get max ID
             int _requestId = 1;
@@ -120,24 +123,25 @@ namespace Director.DataStructures
                 _requestId = Requests.Max(x => x.Id) + 1;
 
             // Create request
-			Request ret = new Request (_requestId, Requests.Count, "New request") {
-				ParentScenario = this,
-				Url = ParentServer.GetUrl(),
-				Authentication = ParentServer.Authentication,
-				AuthName = ParentServer.AuthName,
-				AuthPassword = ParentServer.AuthPassword
-			};
+            Request ret = new Request(_requestId, Requests.Count, "New request")
+            {
+                ParentScenario = this,
+                Url = ParentServer.GetUrl(),
+                Authentication = ParentServer.Authentication,
+                AuthName = ParentServer.AuthName,
+                AuthPassword = ParentServer.AuthPassword
+            };
 
-			// Copy Server Headers
-			// TODO: Use marshalling for that!
-			foreach (var h in ParentServer.DefaultHeaders)
-				ret.Headers.Add (new Header (h));
+            // Copy Server Headers
+            // TODO: Use marshalling for that!
+            foreach (var h in ParentServer.DefaultHeaders)
+                ret.Headers.Add(new Header(h));
 
-			// Add new request
-			Requests.Add(ret);
+            // Add new request
+            Requests.Add(ret);
 
-			// Return request
-			return ret;
+            // Return request
+            return ret;
         }
 
         /// <summary>
@@ -146,7 +150,7 @@ namespace Director.DataStructures
         /// <returns></returns>
         public Scenario Clone()
         {
-            XmlSerializer ser = new XmlSerializer(typeof(Scenario));
+            XmlSerializer ser = new XmlSerializer(typeof (Scenario));
             StringBuilder sb = new StringBuilder();
             TextWriter writer = new StringWriter(sb);
             ser.Serialize(writer, this);

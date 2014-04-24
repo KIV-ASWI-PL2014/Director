@@ -8,7 +8,7 @@ using Xwt;
 
 namespace Director.Forms.Controls
 {
-    class RequestWidget : VBox
+    internal class RequestWidget : VBox
     {
         /// <summary>
         /// Type.

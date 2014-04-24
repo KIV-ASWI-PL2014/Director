@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Director.ExportLib
 {
-    class Export
+    internal class Export
     {
     }
 }

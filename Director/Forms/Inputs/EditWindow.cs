@@ -13,7 +13,7 @@ namespace Director.Forms.Inputs
     /// <summary>
     /// Class edit window for 
     /// </summary>
-    class EditWindow : Window
+    internal class EditWindow : Window
     {
         /// <summary>
         /// Active window.
@@ -35,17 +35,17 @@ namespace Director.Forms.Inputs
         /// </summary>
         public ComboBox RequestHttpMethod { get; set; }
 
-		/// <summary>
-		/// Invalid scenario name description.
-		/// </summary>
-		private Label InvalidRequestUrl = new Label()
-		{
-			Markup = "<b>" + Director.Properties.Resources.InvalidServerURL + "</b>",
-			Visible = false,
-			TextColor = Colors.Red,
-			TextAlignment = Alignment.End,
-			MarginRight = 10
-		};
+        /// <summary>
+        /// Invalid scenario name description.
+        /// </summary>
+        private Label InvalidRequestUrl = new Label()
+        {
+            Markup = "<b>" + Director.Properties.Resources.InvalidServerURL + "</b>",
+            Visible = false,
+            TextColor = Colors.Red,
+            TextAlignment = Alignment.End,
+            MarginRight = 10
+        };
 
         /// <summary>
         /// Create window instance.
@@ -59,10 +59,10 @@ namespace Director.Forms.Inputs
             Height = 750;
 
             // This window can not be maximalized
-			Resizable = true;
+            Resizable = true;
 
-			// Set title
-			Title = "Request: " + _request.Name;
+            // Set title
+            Title = "Request: " + _request.Name;
 
             // Center screen
             InitialLocation = WindowLocation.CenterScreen;
@@ -76,24 +76,25 @@ namespace Director.Forms.Inputs
         }
 
         private void _initializeComponents()
-        { 
+        {
             // Parent Vbox
             VBox ParentContent = new VBox();
 
             // Request URL in frame
             Frame RequestUrl = new Frame()
             {
-				Label = Director.Properties.Resources.RequestInfoBox, 
-				Padding = 10,
-				MinHeight = 140
+                Label = Director.Properties.Resources.RequestInfoBox,
+                Padding = 10,
+                MinHeight = 140
             };
-			VBox RequestUrlContent = new VBox ();
+            VBox RequestUrlContent = new VBox();
             RequestUrlContent.PackStart(new Label(Director.Properties.Resources.RequestUrl));
-			TextEntry RequestUrlField = new TextEntry() {
-				Text = ActiveRequest.Url
-			};
-			RequestUrlContent.PackStart (RequestUrlField, expand: true, fill: true);
-			RequestUrlContent.PackStart (InvalidRequestUrl, vpos: WidgetPlacement.End);
+            TextEntry RequestUrlField = new TextEntry()
+            {
+                Text = ActiveRequest.Url
+            };
+            RequestUrlContent.PackStart(RequestUrlField, expand: true, fill: true);
+            RequestUrlContent.PackStart(InvalidRequestUrl, vpos: WidgetPlacement.End);
 
             // Method
             RequestUrlContent.PackStart(new Label(Director.Properties.Resources.RequestMethod));
@@ -117,115 +118,120 @@ namespace Director.Forms.Inputs
             {
                 ActiveRequest.HTTP_METHOD = RequestHttpMethod.SelectedText;
                 if (RequestSettings.CurrentTab.Child is OverviewWidget)
-                    ((OverviewWidget)RequestSettings.CurrentTab.Child).RefreshOverview();
+                    ((OverviewWidget) RequestSettings.CurrentTab.Child).RefreshOverview();
             };
 
-			RequestUrl.Content = RequestUrlContent;
-			ParentContent.PackStart(RequestUrl, expand: false, fill: true);
+            RequestUrl.Content = RequestUrlContent;
+            ParentContent.PackStart(RequestUrl, expand: false, fill: true);
 
-			// Change request URL field
-			RequestUrlField.Changed += delegate {
-				try {
-					ActiveRequest.SetUrl(RequestUrlField.Text);
-					InvalidRequestUrl.Hide();
-				} catch (Exception e) {
-					InvalidRequestUrl.Show();
-				}
-			};
+            // Change request URL field
+            RequestUrlField.Changed += delegate
+            {
+                try
+                {
+                    ActiveRequest.SetUrl(RequestUrlField.Text);
+                    InvalidRequestUrl.Hide();
+                }
+                catch (Exception e)
+                {
+                    InvalidRequestUrl.Show();
+                }
+            };
 
             // Create Notebook
             RequestSettings = new Notebook()
             {
-                ExpandHorizontal = true, ExpandVertical = true, TabOrientation = NotebookTabOrientation.Top
+                ExpandHorizontal = true,
+                ExpandVertical = true,
+                TabOrientation = NotebookTabOrientation.Top
             };
             _initializeTabs();
-			RequestSettings.CurrentTabChanged += delegate {
-				if (RequestSettings.CurrentTab.Child is OverviewWidget)
-					((OverviewWidget) RequestSettings.CurrentTab.Child).RefreshOverview();
-			};
+            RequestSettings.CurrentTabChanged += delegate
+            {
+                if (RequestSettings.CurrentTab.Child is OverviewWidget)
+                    ((OverviewWidget) RequestSettings.CurrentTab.Child).RefreshOverview();
+            };
             ParentContent.PackStart(RequestSettings, true, true);
 
             // Close btn
-            Button ConfirmButton = new Button(Image.FromResource(DirectorImages.OK_ICON), Director.Properties.Resources.Confirm)
+            Button ConfirmButton = new Button(Image.FromResource(DirectorImages.OK_ICON),
+                Director.Properties.Resources.Confirm)
             {
                 WidthRequest = 150,
                 ExpandHorizontal = false,
                 ExpandVertical = false
             };
-            ConfirmButton.Clicked += delegate
-            {
-                Close();
-            };
+            ConfirmButton.Clicked += delegate { Close(); };
             ParentContent.PackStart(ConfirmButton, expand: false, hpos: WidgetPlacement.End);
 
             // Set content
             Content = ParentContent;
         }
 
-		/// <summary>
-		/// Create tabs.
-		/// </summary>
+        /// <summary>
+        /// Create tabs.
+        /// </summary>
         private void _initializeTabs()
-        { 
-			RequestSettings.Add (new OverviewWidget(ActiveRequest), Director.Properties.Resources.RequestOverview);
-			RequestSettings.Add (new HeaderList (ActiveRequest.Headers), Director.Properties.Resources.RequestHeaders);
-            RequestSettings.Add (new FileList(ActiveRequest.Files), Director.Properties.Resources.RequestFiles);
+        {
+            RequestSettings.Add(new OverviewWidget(ActiveRequest), Director.Properties.Resources.RequestOverview);
+            RequestSettings.Add(new HeaderList(ActiveRequest.Headers), Director.Properties.Resources.RequestHeaders);
+            RequestSettings.Add(new FileList(ActiveRequest.Files), Director.Properties.Resources.RequestFiles);
             RequestSettings.Add(new RequestWidget(ActiveRequest), Director.Properties.Resources.RequestTab);
-			RequestSettings.Add (new ResponseWidget(ActiveRequest), Director.Properties.Resources.RequestResponse);
+            RequestSettings.Add(new ResponseWidget(ActiveRequest), Director.Properties.Resources.RequestResponse);
         }
     }
 
-	public class OverviewWidget : VBox
-	{
-		/// <summary>
-		/// Request.
-		/// </summary>
-		/// <value>The active request.</value>
-		private Request ActiveRequest { get; set; }
+    public class OverviewWidget : VBox
+    {
+        /// <summary>
+        /// Request.
+        /// </summary>
+        /// <value>The active request.</value>
+        private Request ActiveRequest { get; set; }
 
-		/// <summary>
-		/// Overview widget.
-		/// </summary>
-		/// <value>The overview.</value>
-		private MarkdownView Overview { get; set; }
+        /// <summary>
+        /// Overview widget.
+        /// </summary>
+        /// <value>The overview.</value>
+        private MarkdownView Overview { get; set; }
 
         /// <summary>
         /// Scroll overview.
         /// </summary>
         private ScrollView ScrollOverview { get; set; }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Director.Forms.Inputs.OverviewWidget"/> class.
-		/// </summary>
-		/// <param name="request">Request.</param>
-		public OverviewWidget(Request request)
-		{
-			// Set active request
-			ActiveRequest = request;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Director.Forms.Inputs.OverviewWidget"/> class.
+        /// </summary>
+        /// <param name="request">Request.</param>
+        public OverviewWidget(Request request)
+        {
+            // Set active request
+            ActiveRequest = request;
 
-			// Set margin
-			Margin = 10;
-			ExpandHorizontal = true;
-			ExpandVertical = true;
+            // Set margin
+            Margin = 10;
+            ExpandHorizontal = true;
+            ExpandVertical = true;
 
-			// Create markdown
-			Overview = new MarkdownView ();
+            // Create markdown
+            Overview = new MarkdownView();
             ScrollOverview = new ScrollView()
             {
                 Content = Overview
             };
             PackStart(ScrollOverview, expand: true, fill: true);
 
-			// Refresh
-			RefreshOverview ();
-		}
+            // Refresh
+            RefreshOverview();
+        }
 
-		/// <summary>
-		/// Refresh overview summary.
-		/// </summary>
-		public void RefreshOverview()
-		{
-			Overview.Markdown = ActiveRequest.GetMarkdownInfo();
-		}
-	}
+        /// <summary>
+        /// Refresh overview summary.
+        /// </summary>
+        public void RefreshOverview()
+        {
+            Overview.Markdown = ActiveRequest.GetMarkdownInfo();
+        }
+    }
 }

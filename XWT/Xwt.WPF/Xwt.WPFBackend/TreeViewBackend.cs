@@ -57,6 +57,7 @@ namespace Xwt.WPFBackend
 			Tree.Resources.MergedDictionaries.Add (TreeResourceDictionary);
 			Tree.ItemTemplate = new HierarchicalDataTemplate { ItemsSource = new Binding ("Children") };
 			Tree.SetValue (VirtualizingStackPanel.IsVirtualizingProperty, true);
+            Tree.AllowDrop = true;
 		}
 
 		public ScrollViewer ScrollViewer {

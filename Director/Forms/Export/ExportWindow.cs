@@ -22,7 +22,7 @@ namespace Director.Forms.Export
     /// <summary>
     /// Export window.
     /// </summary>
-    class ExportWindow : Window
+    internal class ExportWindow : Window
     {
         /// <summary>
         /// Active server.
@@ -96,18 +96,22 @@ namespace Director.Forms.Export
             // Add Export path
             ExportPath = new TextEntry()
             {
-                Sensitive = false, HorizontalPlacement = WidgetPlacement.Fill
+                Sensitive = false,
+                HorizontalPlacement = WidgetPlacement.Fill
             };
 
             // Button for selecting path
             Button SelectPath = new Button("...")
             {
-                WidthRequest = 35, MinWidth = 35, HorizontalPlacement = WidgetPlacement.End
+                WidthRequest = 35,
+                MinWidth = 35,
+                HorizontalPlacement = WidgetPlacement.End
             };
             SelectPath.Clicked += delegate
             {
-                SaveFileDialog dlg = new SaveFileDialog(Director.Properties.Resources.DialogSaveScenario) {
-                    Multiselect = false, 
+                SaveFileDialog dlg = new SaveFileDialog(Director.Properties.Resources.DialogSaveScenario)
+                {
+                    Multiselect = false,
                     InitialFileName = ActiveServer.Name
                 };
                 dlg.Filters.Add(new FileDialogFilter("Director files", "*.adfe"));
@@ -126,13 +130,13 @@ namespace Director.Forms.Export
             _contentBox.PackStart(save);
 
             // Save button
-            Button SaveBtn = new Button(Director.Properties.Resources.SaveServer) 
-            { 
+            Button SaveBtn = new Button(Director.Properties.Resources.SaveServer)
+            {
                 HorizontalPlacement = WidgetPlacement.End,
                 ExpandHorizontal = false,
                 ExpandVertical = false,
-				WidthRequest = (Config.Cocoa) ? 95 : 80,
-				MinWidth = (Config.Cocoa) ? 95 : 80,
+                WidthRequest = (Config.Cocoa) ? 95 : 80,
+                MinWidth = (Config.Cocoa) ? 95 : 80,
                 Image = Image.FromResource(DirectorImages.SAVE_SCENARIO_ICON)
             };
             SaveBtn.Clicked += SaveBtn_Clicked;
@@ -150,13 +154,14 @@ namespace Director.Forms.Export
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void SaveBtn_Clicked(object sender, EventArgs e)
+        private void SaveBtn_Clicked(object sender, EventArgs e)
         {
             // Items
             List<CheckBoxListItem> items = ScenarioListWidget.SelectedScenarios;
 
             // Pre-save validations
-            if (items.Count() == 0) {
+            if (items.Count() == 0)
+            {
                 MessageDialog.ShowError(Director.Properties.Resources.NoScenarioSelected);
             }
             else if (ExportPath.Text.Length == 0)
@@ -167,7 +172,8 @@ namespace Director.Forms.Export
             {
                 // List
                 String infoList = "Scenario list to export: ";
-                foreach (var i in items) {
+                foreach (var i in items)
+                {
                     infoList += i.ScenarioInstance.Name + ", ";
                 }
                 MessageDialog.ShowMessage(infoList);
@@ -175,7 +181,7 @@ namespace Director.Forms.Export
         }
     }
 
-    class ScenarioList : Widget
+    internal class ScenarioList : Widget
     {
         /// <summary>
         /// Server
@@ -206,10 +212,9 @@ namespace Director.Forms.Export
         /// <summary>
         /// Selected scenarios.
         /// </summary>
-        public List<CheckBoxListItem> SelectedScenarios {
-            get {
-                return CheckBoxes.FindAll(s => s.ScenarioCheckBox.State == CheckBoxState.On);
-            }
+        public List<CheckBoxListItem> SelectedScenarios
+        {
+            get { return CheckBoxes.FindAll(s => s.ScenarioCheckBox.State == CheckBoxState.On); }
         }
 
         /// <summary>
@@ -272,7 +277,7 @@ namespace Director.Forms.Export
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void SelectAll_Toggled(object sender, EventArgs e)
+        private void SelectAll_Toggled(object sender, EventArgs e)
         {
             foreach (CheckBoxListItem it in CheckBoxes)
             {
@@ -285,12 +290,13 @@ namespace Director.Forms.Export
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void ScenarioList_Clicked(object sender, EventArgs e)
+        private void ScenarioList_Clicked(object sender, EventArgs e)
         {
             if (sender is CheckBox)
             {
-                CheckBox tmp = (CheckBox)sender;
-                if (SelectAll.State == CheckBoxState.On && tmp.State == CheckBoxState.Off) {
+                CheckBox tmp = (CheckBox) sender;
+                if (SelectAll.State == CheckBoxState.On && tmp.State == CheckBoxState.Off)
+                {
                     SelectAll.Toggled -= SelectAll_Toggled;
                     SelectAll.State = CheckBoxState.Off;
                     SelectAll.Toggled += SelectAll_Toggled;

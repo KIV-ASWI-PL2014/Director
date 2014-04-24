@@ -10,11 +10,11 @@ using Xwt.Drawing;
 
 namespace Director.Forms.Panels
 {
-	/// <summary>
-	/// Request description.
-	/// </summary>
-    class RequestPage : PanelBase
-	{
+    /// <summary>
+    /// Request description.
+    /// </summary>
+    internal class RequestPage : PanelBase
+    {
         /// <summary>
         /// Current request.
         /// </summary>
@@ -48,9 +48,8 @@ namespace Director.Forms.Panels
         /// </summary>
         public RequestPage(MainWindow _window)
             : base(_window, Director.Properties.Resources.RequestInfoBox, DirectorImages.REQUEST_IMAGE)
-		{
-
-		}
+        {
+        }
 
         /// <summary>
         /// Set request.
@@ -100,22 +99,21 @@ namespace Director.Forms.Panels
             RequestOverview = new MarkdownView();
             RequestFrame.Content = new ScrollView()
             {
-                ExpandHorizontal = true, ExpandVertical = true,
+                ExpandHorizontal = true,
+                ExpandVertical = true,
                 Content = RequestOverview
             };
             RRPanel.PackStart(RequestFrame, true, true);
 
             // Add edit button
-            Button EditBtn = new Button(Image.FromResource(DirectorImages.EDIT_ICON), Director.Properties.Resources.MenuEditRequest)
+            Button EditBtn = new Button(Image.FromResource(DirectorImages.EDIT_ICON),
+                Director.Properties.Resources.MenuEditRequest)
             {
                 WidthRequest = 150,
                 ExpandHorizontal = false,
                 ExpandVertical = false
             };
-            EditBtn.Clicked += delegate
-            {
-                CurrentMainWindow.OpenEditRequest(ActiveRequest);
-            };
+            EditBtn.Clicked += delegate { CurrentMainWindow.OpenEditRequest(ActiveRequest); };
             RRPanel.PackStart(EditBtn, expand: false, hpos: WidgetPlacement.End);
 
             // Response
@@ -138,7 +136,7 @@ namespace Director.Forms.Panels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void RequestName_Changed(object sender, EventArgs e)
+        private void RequestName_Changed(object sender, EventArgs e)
         {
             ActiveRequest.Name = RequestName.Text;
             bool invalid = RequestName.Text.Length == 0;

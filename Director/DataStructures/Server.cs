@@ -53,15 +53,17 @@ namespace Director.DataStructures
         /// </summary>
         public String AuthPassword { get; set; }
 
-		/// <summary>
-		/// Default headers for requests!
-		/// </summary>
-		public List<Header> DefaultHeaders = new List<Header> ();
+        /// <summary>
+        /// Default headers for requests!
+        /// </summary>
+        public List<Header> DefaultHeaders = new List<Header>();
 
         /// <summary>
         /// Default constructor for serialization purposes.
         /// </summary>
-        public Server() : this ("", "") { }
+        public Server() : this("", "")
+        {
+        }
 
         /// <summary>
         /// Create server instance with defined name!
@@ -72,17 +74,11 @@ namespace Director.DataStructures
         {
             // Set name
             this.Name = name;
-            this.Url  = serverUrl;
-            
+            this.Url = serverUrl;
+
             // Create scenarios and emails
             Scenarios = new List<Scenario>();
             Emails = new List<Email>();
-
-            Emails.Add(new Email() { UserEmail = "parovka@gmail.com", Errors = true, Notifications = true });          
-			Emails.Add(new Email() { UserEmail = "parovka1@gmail.com", Errors = true, Notifications = true });          
-			Emails.Add(new Email() { UserEmail = "parovka2@gmail.com", Errors = false, Notifications = true });          
-			Emails.Add(new Email() { UserEmail = "parovka3@gmail.com", Errors = true, Notifications = true });          
-			Emails.Add(new Email() { UserEmail = "parovka4@gmail.com", Errors = true, Notifications = true });          
         }
 
         /// <summary>
@@ -123,24 +119,25 @@ namespace Director.DataStructures
                 _scenarioId = Scenarios.Max(x => x.Id) + 1;
 
             // Create a new one
-			Scenario NewScenario = new Scenario (_scenarioId, Scenarios.Count, Director.Properties.Resources.NewScenarioName) {
-				ParentServer = this
-			};
+            var newScenario = new Scenario(_scenarioId, Scenarios.Count, Director.Properties.Resources.NewScenarioName)
+            {
+                ParentServer = this
+            };
 
             // Add to list
-            Scenarios.Add(NewScenario);
+            Scenarios.Add(newScenario);
 
             // Return scenario
-            return NewScenario;
+            return newScenario;
         }
 
-		/// <summary>
-		/// Remove scenario item.
-		/// </summary>
-		/// <param name="sc">Sc.</param>
-		public void RemoveScenario(Scenario sc)
-		{
-			Scenarios.Remove(sc);
-		}
+        /// <summary>
+        /// Remove scenario item.
+        /// </summary>
+        /// <param name="sc">Sc.</param>
+        public void RemoveScenario(Scenario sc)
+        {
+            Scenarios.Remove(sc);
+        }
     }
 }

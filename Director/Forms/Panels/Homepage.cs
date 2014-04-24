@@ -9,14 +9,11 @@ using Director.Forms.Controls;
 
 namespace Director.Forms.Panels
 {
-    class Homepage : PanelBase
+    internal class Homepage : PanelBase
     {
-
-		string MarkDownText
-		{
-			get
-			{
-				return @"
+        private string MarkDownText
+        {
+            get { return @"
 Project Site: http://director.strnadj.eu/
 
 Icons from: http://www.fatcow.com/
@@ -34,16 +31,14 @@ Director is project for testing REST APIs by scenarios.
 
 - Mac OS X View optimalization
 
-";
-			}
-		}
+"; }
+        }
 
-		/// <summary>
-		/// Homepage constructor.
-		/// </summary>
+        /// <summary>
+        /// Homepage constructor.
+        /// </summary>
         public Homepage() : base(null, "Api Director", DirectorImages.HOMEPAGE_IMAGE)
         {
-
         }
 
         /// <summary>
@@ -53,7 +48,7 @@ Director is project for testing REST APIs by scenarios.
         {
             var markdown = new MarkdownView()
             {
-				Markdown = MarkDownText
+                Markdown = MarkDownText
             };
             markdown.Margin = 10;
 

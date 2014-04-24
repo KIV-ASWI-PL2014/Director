@@ -8,17 +8,17 @@ using Director.Forms.Controls;
 
 namespace Director
 {
-	public class EmailList : VBox
-	{
-		/// <summary>
-		/// Row height.
-		/// </summary>
-		public const int ROW_HEIGHT = 30;
+    public class EmailList : VBox
+    {
+        /// <summary>
+        /// Row height.
+        /// </summary>
+        public const int ROW_HEIGHT = 30;
 
-		/// <summary>
-		/// Email field width.
-		/// </summary>
-		public const int EMAIL_WIDTH = 200;
+        /// <summary>
+        /// Email field width.
+        /// </summary>
+        public const int EMAIL_WIDTH = 200;
 
         /// <summary>
         /// Notification width.
@@ -35,74 +35,78 @@ namespace Director
         /// </summary>
         public const int BTN_WIDTH = 80;
 
-		/// <summary>
-		/// Current server instance.
-		/// </summary>
-		private Server ActiveServer { get; set; }
+        /// <summary>
+        /// Current server instance.
+        /// </summary>
+        private Server ActiveServer { get; set; }
 
-		/// <summary>
-		/// Email List Content with email list items.
-		/// </summary>
-		private VBox EmailListContent { get; set; }
+        /// <summary>
+        /// Email List Content with email list items.
+        /// </summary>
+        private VBox EmailListContent { get; set; }
 
-		/// <summary>
-		/// Email list items.
-		/// </summary>
-		private List<EmailListItem> EmailItems = new List<EmailListItem> ();
+        /// <summary>
+        /// Email list items.
+        /// </summary>
+        private List<EmailListItem> EmailItems = new List<EmailListItem>();
 
-		/// <summary>
-		/// Default contstructor of email list widget.
-		/// </summary>
-		public EmailList ()
-		{
-			// Expand?
-			ExpandVertical = true;
-			ExpandVertical = true;
+        /// <summary>
+        /// Default contstructor of email list widget.
+        /// </summary>
+        public EmailList()
+        {
+            // Expand?
+            ExpandVertical = true;
+            ExpandVertical = true;
 
-			// Init components
-			_initializeComponents ();
-		}
+            // Init components
+            _initializeComponents();
+        }
 
-		/// <summary>
-		/// Init object components.
-		/// </summary>
-		private void _initializeComponents()
-		{
-			// Create first line with informations
-			HBox FirstLine = new HBox ();
-			Label EmailName = new Label (Director.Properties.Resources.Email) {
-				VerticalPlacement = WidgetPlacement.Start,
-				HorizontalPlacement = WidgetPlacement.Center,
-				MarginLeft = 10,
-				MarginTop = 5,
+        /// <summary>
+        /// Init object components.
+        /// </summary>
+        private void _initializeComponents()
+        {
+            // Create first line with informations
+            HBox FirstLine = new HBox();
+            Label EmailName = new Label(Director.Properties.Resources.Email)
+            {
+                VerticalPlacement = WidgetPlacement.Start,
+                HorizontalPlacement = WidgetPlacement.Center,
+                MarginLeft = 10,
+                MarginTop = 5,
                 ExpandHorizontal = true,
                 ExpandVertical = false
-			};
-			Label Errors = new Label (Director.Properties.Resources.Errors) {
+            };
+            Label Errors = new Label(Director.Properties.Resources.Errors)
+            {
                 MinWidth = ERROR_WIDTH,
                 WidthRequest = ERROR_WIDTH,
                 ExpandVertical = false,
                 VerticalPlacement = WidgetPlacement.Fill
-			};
-			Label Notif = new Label (Director.Properties.Resources.Notification) {
+            };
+            Label Notif = new Label(Director.Properties.Resources.Notification)
+            {
                 MinWidth = NOTIFICATION_WIDTH,
                 WidthRequest = NOTIFICATION_WIDTH,
                 ExpandVertical = false,
                 VerticalPlacement = WidgetPlacement.Fill
-			};			
-			Button NewEmail = new Button(Image.FromResource(DirectorImages.ADD_ICON)) {
+            };
+            Button NewEmail = new Button(Image.FromResource(DirectorImages.ADD_ICON))
+            {
                 MinWidth = 30,
                 WidthRequest = 30,
                 MarginRight = 30
-			};
-			NewEmail.Clicked += NewEmail_Clicked;
-			FirstLine.PackStart (EmailName, true, true);
-			FirstLine.PackStart (Errors, false, false);
-			FirstLine.PackStart (Notif, false, false);
-			FirstLine.PackStart (NewEmail, false, false);
-			PackStart (FirstLine);
+            };
+            NewEmail.Clicked += NewEmail_Clicked;
+            FirstLine.PackStart(EmailName, true, true);
+            FirstLine.PackStart(Errors, false, false);
+            FirstLine.PackStart(Notif, false, false);
+            FirstLine.PackStart(NewEmail, false, false);
+            PackStart(FirstLine);
 
-			// Create content
+            // Create content
             EmailListContent = new VBox()
             {
                 BackgroundColor = Colors.White,
@@ -118,163 +122,167 @@ namespace Director
                 BackgroundColor = Colors.LightGray
             };
 
-			// Clear list
-			EmailItems.Clear ();
+            // Clear list
+            EmailItems.Clear();
 
-			// Add item list
+            // Add item list
             PackStart(EmailListScroll, true, true);
-		}
+        }
 
-		/// <summary>
-		/// Add new email to email list in server & create email list box.
-		/// </summary>
-		private void NewEmail_Clicked(object sender, EventArgs e)
-		{
-			var _new = new Email ();
-			ActiveServer.Emails.Add (_new);
-			int size = ActiveServer.Emails.Count + 1;
-			var tmp = new EmailListItem (this, _new, (size % 2 == 0) ? Colors.White : Colors.LightGray) {
-				BackgroundColor = Colors.Red
-			};
-			EmailItems.Add (tmp);
-			EmailListContent.PackStart (tmp);
-		}
+        /// <summary>
+        /// Add new email to email list in server & create email list box.
+        /// </summary>
+        private void NewEmail_Clicked(object sender, EventArgs e)
+        {
+            var _new = new Email();
+            ActiveServer.Emails.Add(_new);
+            int size = ActiveServer.Emails.Count + 1;
+            var tmp = new EmailListItem(this, _new, (size%2 == 0) ? Colors.White : Colors.LightGray)
+            {
+                BackgroundColor = Colors.Red
+            };
+            EmailItems.Add(tmp);
+            EmailListContent.PackStart(tmp);
+        }
 
-		/// <summary>
-		/// Remove active email.
-		/// </summary>
-		public void RemoveEmail(Email email)
-		{
-			ActiveServer.Emails.Remove (email);
-			SetServer (ActiveServer);
-		}
+        /// <summary>
+        /// Remove active email.
+        /// </summary>
+        public void RemoveEmail(Email email)
+        {
+            ActiveServer.Emails.Remove(email);
+            SetServer(ActiveServer);
+        }
 
 
-		/// <summary>
-		/// Set server to email list view.
-		/// </summary>
-		/// <param name="_server">_server.</param>
-		public void SetServer(Server _server)
-		{
-			// Servers
-			ActiveServer = _server;
+        /// <summary>
+        /// Set server to email list view.
+        /// </summary>
+        /// <param name="_server">_server.</param>
+        public void SetServer(Server _server)
+        {
+            // Servers
+            ActiveServer = _server;
 
-			// Clear items
-			EmailItems.Clear ();
+            // Clear items
+            EmailItems.Clear();
 
-			// Clear list content
-			EmailListContent.Clear ();
+            // Clear list content
+            EmailListContent.Clear();
 
-			// Add all emails from Server
-			int x = 0;
-			foreach (Email i in ActiveServer.Emails) {
-                var tmp = new EmailListItem(this, i, (x % 2 == 0) ? Colors.White : Colors.LightGray);
+            // Add all emails from Server
+            int x = 0;
+            foreach (Email i in ActiveServer.Emails)
+            {
+                var tmp = new EmailListItem(this, i, (x%2 == 0) ? Colors.White : Colors.LightGray);
                 if (!Email.IsValid(i.UserEmail))
                 {
                     tmp.BackgroundColor = Colors.Red;
                 }
-				EmailListContent.PackStart (tmp);
-				EmailItems.Add (tmp);
-				x++;
-			}
-		}
-	}
+                EmailListContent.PackStart(tmp);
+                EmailItems.Add(tmp);
+                x++;
+            }
+        }
+    }
 
-	class EmailListItem : HBox
-	{
-		/// <summary>
-		/// Email text entry.
-		/// </summary>
-		public TextEntry EmailText { get; set; }
+    internal class EmailListItem : HBox
+    {
+        /// <summary>
+        /// Email text entry.
+        /// </summary>
+        public TextEntry EmailText { get; set; }
 
-		/// <summary>
-		/// Parent.
-		/// </summary>
-		public EmailList ListParent { get; set; }
+        /// <summary>
+        /// Parent.
+        /// </summary>
+        public EmailList ListParent { get; set; }
 
-		/// <summary>
-		/// Email for chaning data.
-		/// </summary>
-		/// <value>The active scenario.</value>
-		public Email ActiveEmail { get; set; }
+        /// <summary>
+        /// Email for chaning data.
+        /// </summary>
+        /// <value>The active scenario.</value>
+        public Email ActiveEmail { get; set; }
 
-		/// <summary>
-		/// Notification email?
-		/// </summary>
-		public CheckBox Notification { get; set; } 
+        /// <summary>
+        /// Notification email?
+        /// </summary>
+        public CheckBox Notification { get; set; }
 
-		/// <summary>
-		/// Errors
-		/// </summary>
-		public CheckBox Errors { get; set; }
+        /// <summary>
+        /// Errors
+        /// </summary>
+        public CheckBox Errors { get; set; }
 
-		/// <summary>
-		/// Button for removing email address from list.
-		/// </summary>
-		public Button RemoveEmail { get; set; }
+        /// <summary>
+        /// Button for removing email address from list.
+        /// </summary>
+        public Button RemoveEmail { get; set; }
 
-		/// <summary>
-		/// Default color.
-		/// </summary>
-		public Color DefaultColor { get; set; }
+        /// <summary>
+        /// Default color.
+        /// </summary>
+        public Color DefaultColor { get; set; }
 
-		/// <summary>
-		/// Create list item with specific conditions.
-		/// </summary>
-		public EmailListItem(EmailList parent, Email s, Color bgColor)
-		{
+        /// <summary>
+        /// Create list item with specific conditions.
+        /// </summary>
+        public EmailListItem(EmailList parent, Email s, Color bgColor)
+        {
             // Set height
             MinHeight = EmailList.ROW_HEIGHT;
             HeightRequest = EmailList.ROW_HEIGHT;
 
-			// Set background color
-			BackgroundColor = DefaultColor = bgColor;
+            // Set background color
+            BackgroundColor = DefaultColor = bgColor;
 
-			// Self expand horizontal and vertical
-			ExpandHorizontal = true;
-			ExpandVertical = true;
+            // Self expand horizontal and vertical
+            ExpandHorizontal = true;
+            ExpandVertical = true;
 
-			// No margin at all
-			Margin = 0;
+            // No margin at all
+            Margin = 0;
 
             // Set parent & active email
-			ListParent = parent;
-			ActiveEmail = s;
-			EmailText = new TextEntry () {
-				Text = s.UserEmail,
-				MarginLeft = 5,
-				HorizontalPlacement = WidgetPlacement.Fill,
-				VerticalPlacement = WidgetPlacement.Center,
-				MarginTop = 1,
-				ExpandHorizontal = true,
-				ExpandVertical =  false
-			};
+            ListParent = parent;
+            ActiveEmail = s;
+            EmailText = new TextEntry()
+            {
+                Text = s.UserEmail,
+                MarginLeft = 5,
+                HorizontalPlacement = WidgetPlacement.Fill,
+                VerticalPlacement = WidgetPlacement.Center,
+                MarginTop = 1,
+                ExpandHorizontal = true,
+                ExpandVertical = false
+            };
             EmailText.Changed += delegate
             {
                 s.UserEmail = EmailText.Text;
-				if (Email.IsValid(EmailText.Text)) {
-					BackgroundColor = DefaultColor;
-				} else {
-					BackgroundColor = Colors.Red;
+                if (Email.IsValid(EmailText.Text))
+                {
+                    BackgroundColor = DefaultColor;
+                }
+                else
+                {
+                    BackgroundColor = Colors.Red;
                     EmailText.SetFocus();
-				}
+                }
             };
-			PackStart (EmailText, true, true);
+            PackStart(EmailText, true, true);
 
-			// Error
-			Errors = new CheckBox () {
+            // Error
+            Errors = new CheckBox()
+            {
                 State = (s.Errors) ? CheckBoxState.On : CheckBoxState.Off,
                 WidthRequest = EmailList.ERROR_WIDTH,
                 MinWidth = EmailList.ERROR_WIDTH,
                 HorizontalPlacement = WidgetPlacement.Center,
-				VerticalPlacement = WidgetPlacement.Center,
-				MarginLeft = 25
-			};
-            Errors.Toggled += delegate
-            {
-                s.Errors = Errors.State == CheckBoxState.On;
+                VerticalPlacement = WidgetPlacement.Center,
+                MarginLeft = 25
             };
-			PackStart(Errors);
+            Errors.Toggled += delegate { s.Errors = Errors.State == CheckBoxState.On; };
+            PackStart(Errors);
 
             // Notification
             Notification = new CheckBox()
@@ -283,25 +291,20 @@ namespace Director
                 WidthRequest = EmailList.ERROR_WIDTH,
                 MinWidth = EmailList.ERROR_WIDTH,
                 HorizontalPlacement = WidgetPlacement.Center,
-				VerticalPlacement = WidgetPlacement.Center
+                VerticalPlacement = WidgetPlacement.Center
             };
-            Notification.Toggled += delegate
-            {
-                s.Notifications = Notification.State == CheckBoxState.On;
-            };
-			PackStart(Notification);
+            Notification.Toggled += delegate { s.Notifications = Notification.State == CheckBoxState.On; };
+            PackStart(Notification);
 
             // Button
-			RemoveEmail = new Button (Image.FromResource (DirectorImages.CROSS_ICON)) {
-				HorizontalPlacement = WidgetPlacement.Center,
-				VerticalPlacement = WidgetPlacement.Center,
-				MarginRight = 20
-			};
-			RemoveEmail.Clicked += delegate {
-				parent.RemoveEmail(ActiveEmail);
-			};
-			PackStart (RemoveEmail);
-		}
-	}
+            RemoveEmail = new Button(Image.FromResource(DirectorImages.CROSS_ICON))
+            {
+                HorizontalPlacement = WidgetPlacement.Center,
+                VerticalPlacement = WidgetPlacement.Center,
+                MarginRight = 20
+            };
+            RemoveEmail.Clicked += delegate { parent.RemoveEmail(ActiveEmail); };
+            PackStart(RemoveEmail);
+        }
+    }
 }
-

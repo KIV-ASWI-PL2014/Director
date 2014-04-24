@@ -9,7 +9,7 @@ using Xwt.Drawing;
 
 namespace Director.Forms.Controls
 {
-    class InfoBox : Canvas
+    internal class InfoBox : Canvas
     {
         /// <summary>
         /// Default margin.
@@ -30,7 +30,7 @@ namespace Director.Forms.Controls
         /// Image
         /// </summary>
         private String Logo { get; set; }
-				
+
         /// <summary>
         /// Default constructor for info box.
         /// </summary>
@@ -39,28 +39,28 @@ namespace Director.Forms.Controls
         public InfoBox(string label, String image)
         {
             // Set size
-            MinWidth = BoxSize.Width + margin * 2;
-            MinHeight = BoxSize.Height + margin * 2;
+            MinWidth = BoxSize.Width + margin*2;
+            MinHeight = BoxSize.Height + margin*2;
 
             // Set label and image
             Label = label;
             Logo = image;
         }
-		
-		protected override void OnDraw (Context ctx, Rectangle dirtyRect)
-		{
+
+        protected override void OnDraw(Context ctx, Rectangle dirtyRect)
+        {
             // Line arround
-			ctx.SetColor(Colors.DarkGray);
+            ctx.SetColor(Colors.DarkGray);
 
             // Drive line arround
-			ctx.Rectangle (Bounds);
-			ctx.Fill ();
+            ctx.Rectangle(Bounds);
+            ctx.Fill();
 
 
-			ctx.SetColor (Colors.Gray);
-			ctx.Rectangle (Bounds.Inflate (-margin, -margin)); 
-			ctx.Fill ();
-			
+            ctx.SetColor(Colors.Gray);
+            ctx.Rectangle(Bounds.Inflate(-margin, -margin));
+            ctx.Fill();
+
             // Draw image
             ctx.DrawImage(Image.FromResource(Logo), 5.0, 5.0);
 
@@ -71,8 +71,8 @@ namespace Director.Forms.Controls
             _layout.Text = Label;
             _layout.SetFontWeight(FontWeight.Bold, 0, Label.Length);
 
-			// Cocoa layouts
-			ctx.DrawTextLayout (_layout, 45, ((Config.Cocoa || Config.Gtk) ? 5 : 2));
-		}
+            // Cocoa layouts
+            ctx.DrawTextLayout(_layout, 45, ((Config.Cocoa || Config.Gtk) ? 5 : 2));
+        }
     }
 }
