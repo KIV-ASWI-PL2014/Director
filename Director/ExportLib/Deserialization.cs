@@ -7,11 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Director.Forms.Export
+namespace Director.ExportLib
 {
-    class Deserilation
+    class Deserialization
     {
-        public Server DeserializeServer(String path)
+        public static Server DeserializeServer(String path)
         {
             StreamReader sr = new StreamReader(path);
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(Server));
@@ -23,7 +23,7 @@ namespace Director.Forms.Export
                 {
                     if (req.customVariablesExp != null)
                     {
-                        Dictionary<string, string> custVarDes = new Dictionary<string,string>();
+                        Dictionary<string, string> custVarDes = new Dictionary<string, string>();
                         foreach (CustomVariableItem cvi in req.customVariablesExp)
                             custVarDes.Add(cvi.id, cvi.value);
                         req.customVariables = custVarDes;

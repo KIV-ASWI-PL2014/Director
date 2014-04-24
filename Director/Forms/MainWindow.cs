@@ -10,6 +10,7 @@ using Director.Forms.Controls;
 using Director.DataStructures;
 using Director.Forms.Export;
 using Director.Forms.Inputs;
+using Director.ExportLib;
 
 namespace Director.Forms
 {
@@ -865,9 +866,7 @@ namespace Director.Forms
             {
                 try
                 {
-                    Deserilation de = new Deserilation();
-                    UServer = de.DeserializeServer(dlg.FileNames[0]);
-
+                    UServer = Deserialization.DeserializeServer(dlg.FileNames[0]);
                 }
                 catch
                 {

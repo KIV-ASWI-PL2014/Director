@@ -7,11 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Director.Forms.Export
+namespace Director.ExportLib
 {
-    class Serializator
+    class Serialization
     {
-        public void SerializeServer(Server server, string fileToSave)
+        public static void SerializeServer(Server server, string fileToSave, List<Scenario> ScenarioList)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(Server));
             using (TextWriter writer = new StreamWriter(fileToSave))

@@ -1,4 +1,5 @@
 ﻿using Director.DataStructures;
+using Director.ExportLib;
 using Director.Forms.Controls;
 using System;
 using System.Collections.Generic;
@@ -170,15 +171,15 @@ namespace Director.Forms.Export
             }
             else
             {
-                // List
-                String infoList = "Scenario list to export: ";
-                Serializator fr = new Serializator();
-                foreach (var i in items)
-                {
-                    fr.SerializeServer(i.ScenarioInstance.ParentServer, ExportPath.Text);
-                    //infoList += i.ScenarioInstance.Name + ", ";
-                    break;
-                }
+                // Prepare list of scenarios for export
+                List<Scenario> ExportScenarios = new List<Scenario>();
+                foreach (var item in items)
+                    ExportScenarios.Add(item.ScenarioInstance);
+                
+                // Start serialization
+                Serialization.SerializeServer(ActiveServer, ExportPath.Text, ExportScenarios);
+
+                // Close dialog window
                 Close();
             }
         }
