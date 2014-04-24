@@ -145,7 +145,7 @@ namespace Director.ParserLib
             // try to deserialize JSON template into internal parser structures
             try
             {
-                root = deserialize(template);
+                root = deserialize(template, errors, SOURCE_TEMPLATE);
             }
             catch (JsonException e)
             {
@@ -184,7 +184,7 @@ namespace Director.ParserLib
             // try to deserialize JSON template into internal parser structures
             try
             {
-                root = deserialize(template);
+                root = deserialize(template, errors, SOURCE_TEMPLATE);
             }
             catch (JsonException e)
             {
@@ -223,7 +223,7 @@ namespace Director.ParserLib
             // try to deserialize JSON template into internal parser structures
             try
             {
-                template_root = deserialize(template);
+                template_root = deserialize(template, errors, SOURCE_TEMPLATE);
             }
             catch (JsonException e)
             {
@@ -236,7 +236,7 @@ namespace Director.ParserLib
             // try to deserialize received JSON into internal parser structures
             try
             {
-                response_root = deserialize(response);
+                response_root = deserialize(response, errors, SOURCE_RESPONSE);
             }
             catch (JsonException e)
             {
@@ -273,7 +273,7 @@ namespace Director.ParserLib
             return new ParserError(-1, -1, "\nMessage: " + errorMessage, source);
         }
 
-        private Dictionary<string, ParserItem> deserialize(string template)
+        public static Dictionary<string, ParserItem> deserialize(string template, List<ParserError> errors, string source)
         {
             Dictionary<string, ParserItem> result = new Dictionary<string, ParserItem>();
             JsonTextReader reader = new JsonTextReader(new StringReader(template));
@@ -335,7 +335,10 @@ namespace Director.ParserLib
 
                 if (reader.TokenType == JsonToken.EndObject)
                 {
-                    indent_path.RemoveAt(indent_path.Count - 1); // remove last element
+                    if (indent_path.Count > 0)
+                        indent_path.RemoveAt(indent_path.Count - 1); // remove last element
+                    else // too many of closing parentheses
+                        errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "{"), source));
                 }
 
                 if (reader.TokenType == JsonToken.StartArray)
@@ -352,10 +355,16 @@ namespace Director.ParserLib
                 }
             }
 
+            // too many of opening parentheses
+            if (indent_path.Count > 0)
+            {
+                errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "}"), source));
+            }
+
             return result;
         }
 
-        private string serialize(Dictionary<string, ParserItem> root)
+        public static string serialize(Dictionary<string, ParserItem> root)
         {
             StringBuilder sb = new StringBuilder();
             JsonTextWriter writer = new JsonTextWriter(new StringWriter(sb));
@@ -1007,7 +1016,7 @@ namespace Director.ParserLib
             {
                 try
                 {
-                    result = deserialize(value);
+                    result = deserialize(value, errors, SOURCE_TEMPLATE);
                 }
                 catch (JsonException)
                 {
@@ -1397,7 +1406,7 @@ namespace Director.ParserLib
             }
 
             // generate random float between the value of first and second argument with desired number of fractional digits and return it as a string
-            return "" + Math.Round((this.random.NextDouble() * (max_range - min_range) + min_range), precision);
+            return Convert.ToString(Math.Round((this.random.NextDouble() * (max_range - min_range) + min_range), precision), culture);
         }
 
         /// <summary>
