@@ -100,12 +100,12 @@ namespace Director.Forms
         /// <summary>
         /// Open scenario.
         /// </summary>
-        private MenuItem OpenScenarioMenu;
+        private MenuItem OpenServerMenu;
 
         /// <summary>
         /// Export scenario menu.
         /// </summary>
-        private MenuItem SaveScenarioMenu;
+        private MenuItem SaveServerMenu;
 
         /// <summary>
         /// Scenario clipboard.
@@ -137,6 +137,10 @@ namespace Director.Forms
         /// </summary>
         private MenuItem PasteRequest { get; set; }
 
+        /// <summary>
+        /// Close scenario.
+        /// </summary>
+        private MenuItem CloseServer { get; set; }
 
         /// <summary>
         /// Default constructor initiate components!
@@ -171,6 +175,9 @@ namespace Director.Forms
 
             // Initialize content
             _intializeBoxes();
+
+            // Set buttons to enabled
+            DisableServerButtons();
         }
 
         /// <summary>
@@ -195,9 +202,6 @@ namespace Director.Forms
             CurrentServer.Columns.Add("Server", ColumnImage, ColumnName); // Dummy column, not sure why?
             CurrentServer.HeadersVisible = false;
 
-            // Clear tree view!
-            ClearCurrentServerTree();
-
             // Net item parsing
             CurrentServer.ButtonPressed += HandleMouseOnTreeView;
 
@@ -215,11 +219,22 @@ namespace Director.Forms
             // Add to panel
             MainBox.PackStart(ContentBox, true, true);
 
-            // Set content to main box
-            Content = MainBox;
+            // Control box with bottom info panel
+            VBox MainContent = new VBox();
+            MainContent.PackStart(MainBox, expand: true, fill: true);
 
-            // TODO: Remove in release!
-            CreateNewServer(null, null);
+            // Create Info label with link
+            LinkLabel _info = new LinkLabel("© NetBrick, s.r.o.")
+            {
+                Uri = new Uri("http://director.strnadj.eu/")
+            };
+            MainContent.PackStart(_info, vpos: WidgetPlacement.End, hpos: WidgetPlacement.End);
+
+            // Clear tree view!
+            ClearCurrentServerTree();
+
+            // Set content to main box
+            Content = MainContent;
         }
 
         /// <summary>
@@ -231,12 +246,15 @@ namespace Director.Forms
             ServerStore.Clear();
 
             // Create server store box!
-            CreateTreeItem(
+            var pos = CreateTreeItem(
                 null,
                 Director.Properties.Resources.TreeStoreInformation,
                 Image.FromResource(DirectorImages.HELP_ICON),
                 DirectorHomepage
                 );
+
+            // Select information
+            CurrentServer.SelectRow(pos);
         }
 
         /// <summary>
@@ -819,24 +837,29 @@ namespace Director.Forms
             {
                 Image = Image.FromResource(DirectorImages.NEW_SERVER_ICON)
             };
-            NewServer.Clicked += CreateNewServer;
             ServerMenu.Items.Add(NewServer);
 
             // Scenario open
-            OpenScenarioMenu = new MenuItem(Director.Properties.Resources.MenuOpenScenario)
+            OpenServerMenu = new MenuItem(Director.Properties.Resources.MenuOpenScenario)
             {
                 Image = Image.FromResource(DirectorImages.OPEN_SCENARIO_ICON)
             };
-            OpenScenarioMenu.Clicked += OpenNewScenario;
-            ServerMenu.Items.Add(OpenScenarioMenu);
+            ServerMenu.Items.Add(OpenServerMenu);
 
             // Export scenario
-            SaveScenarioMenu = new MenuItem(Director.Properties.Resources.MenuSaveScenario)
+            SaveServerMenu = new MenuItem(Director.Properties.Resources.MenuSaveScenario)
             {
                 Image = Image.FromResource(DirectorImages.SAVE_SCENARIO_ICON)
             };
-            SaveScenarioMenu.Clicked += SaveScenario;
-            ServerMenu.Items.Add(SaveScenarioMenu);
+            ServerMenu.Items.Add(SaveServerMenu);
+
+            // Close scenario
+            CloseServer = new MenuItem(Director.Properties.Resources.MenuCloseScenario)
+            {
+                Image = Image.FromResource(DirectorImages.CROSS_ICON),
+                Sensitive = false
+            };
+            ServerMenu.Items.Add(CloseServer);
 
             // Separator before exit
             ServerMenu.Items.Add(new SeparatorMenuItem());
@@ -853,11 +876,60 @@ namespace Director.Forms
         }
 
         /// <summary>
+        /// Disable server buttons (new, open).
+        /// </summary>
+        private void DisableServerButtons()
+        {
+            NewServer.Clicked += CreateNewServer;
+            NewServer.Sensitive = true;
+            OpenServerMenu.Clicked += OpenNewServer;
+            OpenServerMenu.Sensitive = true;
+
+            SaveServerMenu.Sensitive = false;
+            SaveServerMenu.Clicked -= SaveServer;
+            CloseServer.Sensitive = false;
+            CloseServer.Clicked -= CloseServer_Clicked;
+        }
+
+        /// <summary>
+        /// Enable server buttons.
+        /// </summary>
+        private void EnableServerButtons()
+        {
+            NewServer.Clicked -= CreateNewServer;
+            NewServer.Sensitive = false;
+            OpenServerMenu.Clicked -= OpenNewServer;
+            OpenServerMenu.Sensitive = false;
+
+            SaveServerMenu.Sensitive = true;
+            SaveServerMenu.Clicked += SaveServer;
+            CloseServer.Sensitive = true;
+            CloseServer.Clicked += CloseServer_Clicked;
+        }
+
+        /// <summary>
+        /// Close server menu.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void CloseServer_Clicked(object sender, EventArgs e)
+        {
+            bool res = MessageDialog.Confirm(Director.Properties.Resources.MessageBoxCloseScenario, Command.Ok);
+            if (res)
+            {
+                UServer = null;
+                ClearCurrentServerTree();
+                UpdateControlView(null, null);
+                DisableServerButtons();
+            }
+        }
+
+        /// <summary>
         /// Open new scenario.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OpenNewScenario(object sender, EventArgs e)
+        private void OpenNewServer(object sender, EventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog(Director.Properties.Resources.DialogOpenScenario);
             dlg.Multiselect = false;
@@ -900,6 +972,9 @@ namespace Director.Forms
                 // Select Server and update view
                 CurrentServer.SelectRow(tmp);
                 UpdateControlView(null, null);
+
+                // Enable close sceanrio
+                EnableServerButtons();
             }
 
         }
@@ -909,7 +984,7 @@ namespace Director.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SaveScenario(object sender, EventArgs e)
+        private void SaveServer(object sender, EventArgs e)
         {
             ExportWindow ew = new ExportWindow(UServer);
             ew.Show();
@@ -1046,6 +1121,9 @@ namespace Director.Forms
 
             // Disable server menu mac!
             NewServer.Clicked -= CreateNewServer;
+
+            // Enable close server
+            EnableServerButtons();
         }
 
 

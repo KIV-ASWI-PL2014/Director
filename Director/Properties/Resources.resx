@@ -472,4 +472,10 @@
   <data name="DialogInvalidFile" xml:space="preserve">
     <value>Invalid Director file!</value>
   </data>
+  <data name="MenuCloseScenario" xml:space="preserve">
+    <value>Close scenario</value>
+  </data>
+  <data name="MessageBoxCloseScenario" xml:space="preserve">
+    <value>Do you want to close scenario?</value>
+  </data>
 </root>

@@ -513,6 +513,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close scenario.
+        /// </summary>
+        internal static string MenuCloseScenario {
+            get {
+                return ResourceManager.GetString("MenuCloseScenario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy request.
         /// </summary>
         internal static string MenuCopyRequest {
@@ -608,6 +617,15 @@ namespace Director.Properties {
         internal static string MenuServer {
             get {
                 return ResourceManager.GetString("MenuServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to close scenario?.
+        /// </summary>
+        internal static string MessageBoxCloseScenario {
+            get {
+                return ResourceManager.GetString("MessageBoxCloseScenario", resourceCulture);
             }
         }
         
