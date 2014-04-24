@@ -29,5 +29,7 @@ namespace Director.Forms.Controls
         public const string COPY_ICON = "Director.Resources.page_copy.png";
         public const string PASTE_ICON = "Director.Resources.page_paste.png";
         public const string SETTINGS_IMAGE = "Director.Resources.settings.png";
+        public const string UP_ICON = "Director.Resources.arrow_up.png";
+        public const string DOWN_ICON = "Director.Resources.arrow_down.png";
     }
 }

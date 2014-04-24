@@ -460,4 +460,13 @@
   <data name="arrow_up" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow_up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="MessageBoxRemoveRequest" xml:space="preserve">
+    <value>Are you sure you want to remove this request?</value>
+  </data>
+  <data name="OrderDOWN" xml:space="preserve">
+    <value>DOWN</value>
+  </data>
+  <data name="OrderUP" xml:space="preserve">
+    <value>UP</value>
+  </data>
 </root>

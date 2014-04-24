@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using Director.DataStructures.Exceptions;
 using System.IO;
 using Director.DataStructures.SupportStructures;
+using Xwt;
 
 namespace Director.DataStructures
 {
@@ -22,6 +23,12 @@ namespace Director.DataStructures
         /// <value>The parent scenario.</value>
         [XmlIgnore]
         public Scenario ParentScenario { get; set; }
+
+        /// <summary>
+        /// Tree position - set when creating.
+        /// </summary>
+        [XmlIgnore]
+        public TreePosition TreePosition { get; set; }
 
         /// <summary>
         /// Request ID in scenario list.
@@ -145,6 +152,12 @@ namespace Director.DataStructures
             TextReader reader = new StringReader(sb.ToString());
             Request t = (Request) ser.Deserialize(reader);
             t.ParentScenario = this.ParentScenario;
+
+            // SEt new position
+            t.Position = this.ParentScenario.Requests.Max(n => n.Position) + 1;
+
+            // Tree position is set by GUI
+
             return t;
         }
 

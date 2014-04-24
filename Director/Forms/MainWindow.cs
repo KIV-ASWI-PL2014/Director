@@ -69,7 +69,6 @@ namespace Director.Forms
         /// Data fields describing server - save to TreeStore.
         /// </summary>
         private DataField<Image> ColumnImage = new DataField<Image>();
-
         private DataField<String> ColumnName = new DataField<string>();
         private DataField<Object> ColumnType = new DataField<object>();
 
@@ -171,121 +170,6 @@ namespace Director.Forms
 
             // Initialize content
             _intializeBoxes();
-
-            // Initialize D&D actions for TreeView
-            _initializeDaD();
-        }
-
-        /// <summary>
-        /// Curent drag and drop object.
-        /// </summary>
-        public object CurrentDaDObject = null;
-
-        /// <summary>
-        /// Init drag and drop for tree.
-        /// </summary>
-        private void _initializeDaD()
-        {
-            CurrentServer.ButtonPressed += CurrentServer_ButtonPressed;
-            CurrentServer.DragDrop += CurrentServer_DragDrop;
-            CurrentServer.DragOver += CurrentServer_DragOver;
-            CurrentServer.MouseMoved += CurrentServer_MouseMoved;
-            CurrentServer.SetDragDropTarget(TransferDataType.Text, TransferDataType.Uri);
-        }
-
-        void CurrentServer_MouseMoved(object sender, MouseMovedEventArgs e)
-        {
-            if (CurrentDaDObject != null)
-            {
-                Console.WriteLine("Mouse moved");
-            }
-        }
-
-        void CurrentServer_DragOver(object sender, DragOverEventArgs e)
-        {
-            if (e.Action == DragDropAction.All)
-                e.AllowedAction = DragDropAction.Move;
-            else
-                e.AllowedAction = e.Action;
-        }
-
-        void CurrentServer_DragDrop(object sender, DragEventArgs e)
-        {
-            Console.WriteLine("Dropped! " + e.Action);
-            Console.WriteLine("Text: " + e.Data.GetValue(TransferDataType.Text));
-            Console.WriteLine("Uris:");
-            foreach (var u in e.Data.Uris)
-                Console.WriteLine("u:" + u);
-            e.Success = true;
-        }
-
-        void CurrentServer_DragOverCheck(object sender, DragOverCheckEventArgs e)
-        {
-            if (e.Action == DragDropAction.All)
-                e.AllowedAction = DragDropAction.Move;
-            else
-                e.AllowedAction = e.Action;
-        }
-
-        private void CurrentServer_DragDropCheck(object sender, DragCheckEventArgs e)
-        {
-            Console.WriteLine("Dropped!");
-            Console.WriteLine("Drag drop check");
-        }
-
-        /// <summary>
-        /// Starg drag and drop.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CurrentServer_ButtonPressed(object sender, ButtonEventArgs e)
-        {
-            if (e.Button == PointerButton.Left)
-            {
-                TreePosition tmp;
-                RowDropPosition tmp2;
-
-                // Get item
-                if (CurrentServer.GetDropTargetRow(e.X, e.Y, out tmp2, out tmp))
-                {
-                    // Set row
-                    CurrentServer.SelectRow(tmp);
-
-                    // Create DAD operation
-                    var d = CurrentServer.CreateDragOperation();
-
-                    // Get row data - for proper ContextMenu
-                    var data = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
-
-                    // Scenario D&D text and image
-                    if (data is Scenario)
-                    {
-                        d.SetDragImage(ScenarioImage, (int)ScenarioImage.Size.Width, (int)ScenarioImage.Size.Height);
-                    }
-                    else if (data is Request)
-                    {
-                        d.SetDragImage(RequestImage, (int)RequestImage.Size.Width, (int)RequestImage.Size.Height);
-                    }
-                    else
-                    {
-                        d = null;
-                    }
-
-                    if (d != null)
-                    {
-                        Console.WriteLine("Test {0} {1}", e.X, e.Y);
-                        CurrentDaDObject = data;
-                        d.AllowedActions = DragDropAction.All;
-                        d.Finished += delegate
-                        {
-                            CurrentDaDObject = null;
-                            Console.WriteLine("END Dad");
-                        };
-                        Console.WriteLine("Start DAD");
-                        d.Start();
-                    }                    
-                }
-            }
         }
 
         /// <summary>
@@ -514,6 +398,25 @@ namespace Director.Forms
             };
             MenuAddRequest.Clicked += AddRequest;
             ScenarioMenu.Items.Add(MenuAddRequest);
+            ScenarioMenu.Items.Add(new SeparatorMenuItem());
+
+            // Scenario UP and down
+            MenuItem ItemUpMenu = new MenuItem(Director.Properties.Resources.OrderUP)
+            {
+                Image = Image.FromResource(DirectorImages.UP_ICON)
+            };
+            ItemUpMenu.Clicked += ItemUpMenu_Clicked;
+            ScenarioMenu.Items.Add(ItemUpMenu);
+            
+            MenuItem ItemDownMenu = new MenuItem(Director.Properties.Resources.OrderDOWN)
+            {
+                Image = Image.FromResource(DirectorImages.DOWN_ICON)
+            };
+            ItemDownMenu.Clicked += ItemDownMenu_Clicked;
+            ScenarioMenu.Items.Add(ItemDownMenu);
+
+            // Add to scenario and request menu
+            ScenarioMenu.Items.Add(new SeparatorMenuItem());
 
             // Paste request
             PasteRequest = new MenuItem(Director.Properties.Resources.MenuPasteRequest)
@@ -557,6 +460,23 @@ namespace Director.Forms
             CopyRequest.Clicked += CopyRequest_Clicked;
             RequestMenu.Items.Add(CopyRequest);
 
+            RequestMenu.Items.Add(new SeparatorMenuItem());
+
+            // Scenario UP and down
+            MenuItem RequestItemUpMenu = new MenuItem(Director.Properties.Resources.OrderUP)
+            {
+                Image = Image.FromResource(DirectorImages.UP_ICON)
+            };
+            RequestItemUpMenu.Clicked += ItemUpMenu_Clicked;
+            RequestMenu.Items.Add(RequestItemUpMenu);
+
+            MenuItem RequestItemDownMenu = new MenuItem(Director.Properties.Resources.OrderDOWN)
+            {
+                Image = Image.FromResource(DirectorImages.DOWN_ICON)
+            };
+            RequestItemDownMenu.Clicked += ItemDownMenu_Clicked;
+            RequestMenu.Items.Add(RequestItemDownMenu);
+
             // Separator
             RequestMenu.Items.Add(new SeparatorMenuItem());
 
@@ -566,6 +486,165 @@ namespace Director.Forms
                 Image = Image.FromResource(DirectorImages.CROSS_ICON)
             };
             RequestMenu.Items.Add(MenuRemoveRequest);
+            MenuRemoveRequest.Clicked += MenuRemoveRequest_Clicked;
+        }
+
+        /// <summary>
+        /// Remove scenario context menu item clicked!
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">E.</param>
+        private void MenuRemoveRequest_Clicked(object sender, EventArgs e)
+        {
+            TreePosition tmp = CurrentServer.SelectedRow;
+
+            if (tmp == null)
+                return;
+
+            var s = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+
+            if (s is Request)
+            {
+                Request req = (Request)s;
+                bool res = MessageDialog.Confirm(Director.Properties.Resources.MessageBoxRemoveRequest, Command.Ok);
+                if (res)
+                {
+                    // If scenario is in clipboard remove too!
+                    if (RequestClipboard == req)
+                    {
+                        ScenarioClipboard = null;
+                        PasteScenario.Clicked -= PasteRequest_Clicked;
+                        PasteScenario.Sensitive = false;
+                    }
+
+                    // Remove scenario
+                    req.ParentScenario.RemoveRequest(req);
+
+                    // Remove from tree view
+                    ServerStore.GetNavigatorAt(tmp).Remove();
+
+                    // Set position to parent scenario
+                    CurrentServer.SelectRow(req.ParentScenario.TreePosition);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Item down - move scenario down.
+        /// </summary>
+        void ItemDownMenu_Clicked(object sender, EventArgs e)
+        {
+            TreePosition tmp = CurrentServer.SelectedRow;
+            if (tmp == null)
+                return;
+            var r = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+
+            if (r is Request)
+            {
+                // Switch requests down
+                Request _request = (Request)r;
+                var _newRequest = _request.ParentScenario.MoveRequestDown(_request);
+
+                if (_newRequest != null)
+                    SwitchRequestObjects(_request, _newRequest);
+            }
+            else if (r is Scenario)
+            {
+                // Switch requests down
+                Scenario _scenario = (Scenario)r;
+                var _newScenario = _scenario.ParentServer.MoveScenarioDown(_scenario);
+
+                if (_newScenario != null)
+                    SwitchScenarioObjects(_scenario, _newScenario);
+            }
+        }
+
+        /// <summary>
+        /// Switch scenario ServerStore objects.
+        /// </summary>
+        private void SwitchScenarioObjects(Scenario _scenario, Scenario _newScenario)
+        {
+            ServerStore.GetNavigatorAt(_scenario.TreePosition).SetValue(ColumnName, _newScenario.Name);
+            ServerStore.GetNavigatorAt(_newScenario.TreePosition).SetValue(ColumnName, _scenario.Name);
+
+            // Switch objects
+            ServerStore.GetNavigatorAt(_scenario.TreePosition).SetValue(ColumnType, _newScenario);
+            ServerStore.GetNavigatorAt(_newScenario.TreePosition).SetValue(ColumnType, _scenario);
+
+            // Switch positions
+            TreePosition tmpTP = _scenario.TreePosition;
+            _scenario.TreePosition = _newScenario.TreePosition;
+            _newScenario.TreePosition = tmpTP;
+
+            // Switch childrens
+            ServerStore.GetNavigatorAt(_scenario.TreePosition).RemoveChildren();
+            ServerStore.GetNavigatorAt(_newScenario.TreePosition).RemoveChildren();
+
+            // Create childrens again
+            foreach (Request s in _scenario.Requests.OrderBy(n => n.Position))
+            {
+                s.TreePosition = CreateTreeItem(_scenario.TreePosition, s.Name, RequestImage, s);
+            }
+
+            foreach (Request s in _newScenario.Requests.OrderBy(n => n.Position))
+            {
+                s.TreePosition = CreateTreeItem(_newScenario.TreePosition, s.Name, RequestImage, s);
+            }
+
+            // Refresh
+            UpdateControlView(null, null);
+        }
+
+        /// <summary>
+        /// Switch request serer store objects.
+        /// </summary>
+        private void SwitchRequestObjects(Request _request, Request _newRequest)
+        {
+            // Switch objects and names in tree view!
+            ServerStore.GetNavigatorAt(_request.TreePosition).SetValue(ColumnName, _newRequest.Name);
+            ServerStore.GetNavigatorAt(_newRequest.TreePosition).SetValue(ColumnName, _request.Name);
+
+            // Switch objects
+            ServerStore.GetNavigatorAt(_request.TreePosition).SetValue(ColumnType, _newRequest);
+            ServerStore.GetNavigatorAt(_newRequest.TreePosition).SetValue(ColumnType, _request);
+
+            // Switch positions
+            TreePosition tmpTP = _request.TreePosition;
+            _request.TreePosition = _newRequest.TreePosition;
+            _newRequest.TreePosition = tmpTP;
+
+            // Refresh box
+            UpdateControlView(null, null);
+        }
+
+        /// <summary>
+        /// Move item up.
+        /// </summary>
+        void ItemUpMenu_Clicked(object sender, EventArgs e)
+        {
+            TreePosition tmp = CurrentServer.SelectedRow;
+            if (tmp == null)
+                return;
+            var r = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+
+            if (r is Request)
+            {
+                // Switch requests down
+                Request _request = (Request)r;
+                var _newRequest = _request.ParentScenario.MoveRequestUp(_request);
+
+                if (_newRequest != null)
+                    SwitchRequestObjects(_request, _newRequest);
+            }
+            else if (r is Scenario)
+            {
+                // Switch requests down
+                Scenario _scenario = (Scenario)r;
+                var _newScenario = _scenario.ParentServer.MoveScenarioUp(_scenario);
+
+                if (_newScenario != null)
+                    SwitchScenarioObjects(_scenario, _newScenario);
+            }
         }
 
         /// <summary>
@@ -626,7 +705,10 @@ namespace Director.Forms
                 ((Scenario) s).Requests.Add(NewRequest);
 
                 // Refresh tree view
-                CreateTreeItem(tmp, NewRequest.Name, RequestImage, NewRequest);
+                var position = CreateTreeItem(tmp, NewRequest.Name, RequestImage, NewRequest);
+
+                // Add position to item
+                NewRequest.TreePosition = position;
             }
         }
 
@@ -653,10 +735,13 @@ namespace Director.Forms
                 UServer.Scenarios.Add(NewScenario);
 
                 // Refresh tree view
-                tmp = CreateTreeItem(tmp, NewScenario.Name, ScenarioImage, NewScenario);
+                tmp = NewScenario.TreePosition = CreateTreeItem(tmp, NewScenario.Name, ScenarioImage, NewScenario);
 
+                // Set all scenarios 
                 foreach (Request req in NewScenario.Requests)
-                    CreateTreeItem(tmp, req.Name, RequestImage, req);
+                {
+                    req.TreePosition = CreateTreeItem(tmp, req.Name, RequestImage, req);
+                }
             }
         }
 
@@ -812,7 +897,7 @@ namespace Director.Forms
                 if (res)
                 {
                     // If scenario is in clipboard remove too!
-                    if (ScenarioClipboard == (Scenario) s)
+                    if (ScenarioClipboard == sc)
                     {
                         ScenarioClipboard = null;
                         PasteScenario.Clicked -= PasteScenario_Clicked;
@@ -824,6 +909,9 @@ namespace Director.Forms
 
                     // Remove from tree view
                     ServerStore.GetNavigatorAt(tmp).Remove();
+
+                    // Set position to server
+                    CurrentServer.SelectRow(UServer.TreePosition);
                 }
             }
         }
@@ -853,7 +941,7 @@ namespace Director.Forms
                 Scenario NewScenario = s.CreateNewScenario();
 
                 // Add to tree!
-                CreateTreeItem(tmp, NewScenario.Name, ScenarioImage, NewScenario);
+                NewScenario.TreePosition = CreateTreeItem(tmp, NewScenario.Name, ScenarioImage, NewScenario);
             }
         }
 
@@ -875,7 +963,7 @@ namespace Director.Forms
             {
                 Scenario s = (Scenario) data;
                 Request NewRequest = s.CreateNewRequest();
-                CreateTreeItem(tmp, NewRequest.Name, RequestImage, NewRequest);
+                NewRequest.TreePosition = CreateTreeItem(tmp, NewRequest.Name, RequestImage, NewRequest);
                 UpdateControlView(sender, e);
             }
         }
@@ -912,7 +1000,7 @@ namespace Director.Forms
             ClearCurrentServerTree();
 
             // Add node
-            CreateTreeItem(null, UServer.Name, ServerImage, UServer);
+            UServer.TreePosition = CreateTreeItem(null, UServer.Name, ServerImage, UServer);
 
             // Disable server menu
             NewServer.Sensitive = false;
