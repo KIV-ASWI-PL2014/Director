@@ -1,14 +1,13 @@
-﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="20.4.2014 21:37:33">
+﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="22.4.2014 20:16:37">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug Mac" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Forms/Inputs/EditWindow.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Forms/Controls/TextEntryHelper.cs">
     <Files>
       <File FileName="Forms/Inputs/SetWindow.cs" Line="1" Column="1" />
-      <File FileName="ProgramMac.cs" Line="1" Column="1" />
-      <File FileName="DataStructures/Scenario.cs" Line="1" Column="1" />
-      <File FileName="DataStructures/Server.cs" Line="1" Column="1" />
-      <File FileName="Forms/Controls/HeaderList.cs" Line="1" Column="1" />
-      <File FileName="Forms/Inputs/EditWindow.cs" Line="236" Column="36" />
-      <File FileName="Forms/Panels/ScenarioPage.cs" Line="1" Column="1" />
+      <File FileName="ProgramMac.cs" Line="14" Column="6" />
+      <File FileName="DataStructures/Server.cs" Line="21" Column="22" />
+      <File FileName="Forms/Controls/HeaderList.cs" Line="180" Column="17" />
+      <File FileName="Forms/Controls/ResponseWidget.cs" Line="1" Column="1" />
+      <File FileName="Forms/Controls/TextEntryHelper.cs" Line="207" Column="31" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

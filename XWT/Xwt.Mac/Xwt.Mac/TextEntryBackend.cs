@@ -40,7 +40,12 @@ namespace Xwt.Mac
 		{
 			ViewObject = field;
 		}
-		
+
+		public int TabIndex {
+			get { return 0; }
+			set { }
+		}
+
 		public override void Initialize ()
 		{
 			base.Initialize ();

@@ -98,11 +98,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="ProgramMac.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -125,6 +120,12 @@
     </Compile>
     <Compile Include="Forms\Controls\HeaderList.cs" />
     <Compile Include="DataStructures\SupportStructures\Header.cs" />
+    <Compile Include="DataStructures\SupportStructures\FileItem.cs" />
+    <Compile Include="Forms\Controls\FileList.cs" />
+    <Compile Include="Forms\Controls\RequestWidget.cs" />
+    <Compile Include="Forms\Controls\ResponseWidget.cs" />
+    <Compile Include="Forms\Controls\TextEntryHelper.cs" />
+    <Compile Include="Forms\Inputs\ServerHeaders.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -174,6 +175,12 @@
   <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Resources\homepage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

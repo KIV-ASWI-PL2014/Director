@@ -40,6 +40,11 @@ namespace Xwt.GtkBackend
 			Widget.Show ();
 		}
 
+		public int TabIndex {
+			get { return 0; }
+			set { }
+		}
+
 		protected virtual Gtk.Entry TextEntry {
 			get { return (Gtk.Entry)base.Widget; }
 		}
