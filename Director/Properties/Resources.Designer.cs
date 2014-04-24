@@ -193,6 +193,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid Director file!.
+        /// </summary>
+        internal static string DialogInvalidFile {
+            get {
+                return ResourceManager.GetString("DialogInvalidFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select scenario file.
         /// </summary>
         internal static string DialogOpenScenario {

@@ -469,4 +469,7 @@
   <data name="OrderUP" xml:space="preserve">
     <value>UP</value>
   </data>
+  <data name="DialogInvalidFile" xml:space="preserve">
+    <value>Invalid Director file!</value>
+  </data>
 </root>

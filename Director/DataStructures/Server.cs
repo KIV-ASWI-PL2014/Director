@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Xwt;
 
 namespace Director.DataStructures
@@ -22,6 +23,7 @@ namespace Director.DataStructures
         /// <summary>
         /// Tree position.
         /// </summary>
+        [XmlIgnore]
         public TreePosition TreePosition { get; set; }
 
         /// <summary>

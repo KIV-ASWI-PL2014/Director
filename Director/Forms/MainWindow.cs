@@ -863,10 +863,44 @@ namespace Director.Forms
             dlg.Filters.Add(new FileDialogFilter("Director files", "*.adfe"));
             if (dlg.Run())
             {
-                //MessageDialog.ShowMessage("Files: ", string.Join("\n", dlg.FileNames));
-                Deserilation de = new Deserilation();
-                UServer = de.DeserializeServer(dlg.FileNames[0]);
-                //TODO reconstruction of the tree
+                try
+                {
+                    Deserilation de = new Deserilation();
+                    UServer = de.DeserializeServer(dlg.FileNames[0]);
+
+                }
+                catch
+                {
+                    MessageDialog.ShowError(Director.Properties.Resources.DialogInvalidFile);
+                    return;
+                }
+                
+                // Server tree view reconstruction
+                ClearCurrentServerTree();
+
+                // Add node
+                var tmp = UServer.TreePosition = CreateTreeItem(null, UServer.Name, ServerImage, UServer);
+
+                // Disable server menu
+                NewServer.Sensitive = false;
+
+                // Disable server menu mac!
+                NewServer.Clicked -= CreateNewServer;
+
+                // Create all scenarios and requests
+                foreach (Scenario s in UServer.Scenarios.OrderBy(n => n.Position))
+                {
+                    s.TreePosition = CreateTreeItem(tmp, s.Name, ScenarioImage, s);
+
+                    foreach (Request r in s.Requests.OrderBy(n => n.Position))
+                    {
+                        r.TreePosition = CreateTreeItem(s.TreePosition, r.Name, RequestImage, r);
+                    }
+                }
+
+                // Select Server and update view
+                CurrentServer.SelectRow(tmp);
+                UpdateControlView(null, null);
             }
 
         }
@@ -903,11 +937,7 @@ namespace Director.Forms
                 if (res)
                 {
                     // If scenario is in clipboard remove too!
-<<<<<<< HEAD
-                    if (ScenarioClipboard == (Scenario)s)
-=======
                     if (ScenarioClipboard == sc)
->>>>>>> 1a02b9b9ba5f4b7a24922bc2284aced7633f3e2c
                     {
                         ScenarioClipboard = null;
                         PasteScenario.Clicked -= PasteScenario_Clicked;
