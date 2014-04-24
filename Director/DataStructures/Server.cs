@@ -18,6 +18,7 @@ namespace Director.DataStructures
         /// <summary>
         /// Scenario list.
         /// </summary>
+        [XmlIgnore]
         public List<Scenario> Scenarios { get; set; }
 
         /// <summary>

@@ -866,7 +866,7 @@ namespace Director.Forms
             {
                 try
                 {
-                    UServer = Deserialization.DeserializeServer(dlg.FileNames[0]);
+                    UServer = Deserialization.DeserializeAll(dlg.FileNames[0]);
                 }
                 catch
                 {
