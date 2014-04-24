@@ -93,12 +93,19 @@ namespace Director.DataStructures
         /// <summary>
         /// Custom variables for parser.
         /// </summary>
+        [XmlIgnore]
         public Dictionary<string, string> customVariables { get; set; }
+
+        /// <summary>
+        /// Custom variables for serialization
+        /// </summary>
+        public CustomVariableItem[] customVariablesExp { get; set; }
 
         /// <summary>
         /// Empty constructor for XML serialization!
         /// </summary>
-        public Request() : this(0, 0, "")
+        public Request()
+            : this(0, 0, "")
         {
         }
 
@@ -138,12 +145,12 @@ namespace Director.DataStructures
         /// <returns></returns>
         public Request Clone()
         {
-            XmlSerializer ser = new XmlSerializer(typeof (Request));
+            XmlSerializer ser = new XmlSerializer(typeof(Request));
             StringBuilder sb = new StringBuilder();
             TextWriter writer = new StringWriter(sb);
             ser.Serialize(writer, this);
             TextReader reader = new StringReader(sb.ToString());
-            Request t = (Request) ser.Deserialize(reader);
+            Request t = (Request)ser.Deserialize(reader);
             t.ParentScenario = this.ParentScenario;
             return t;
         }

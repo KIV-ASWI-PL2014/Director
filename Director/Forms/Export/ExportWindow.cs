@@ -172,11 +172,14 @@ namespace Director.Forms.Export
             {
                 // List
                 String infoList = "Scenario list to export: ";
+                Serializator fr = new Serializator();
                 foreach (var i in items)
                 {
-                    infoList += i.ScenarioInstance.Name + ", ";
+                    fr.SerializeServer(i.ScenarioInstance.ParentServer, ExportPath.Text);
+                    //infoList += i.ScenarioInstance.Name + ", ";
+                    break;
                 }
-                MessageDialog.ShowMessage(infoList);
+                Close();
             }
         }
     }

@@ -298,19 +298,19 @@ namespace Director.Forms
                 {
                     SetContentBoxControl(ServerBox);
                     ServerBox.ActualPosition = CurrentServer.SelectedRow;
-                    ServerBox.SetServer((Server) s);
+                    ServerBox.SetServer((Server)s);
                 }
                 else if (s is Scenario)
                 {
                     SetContentBoxControl(ScenarioBox);
                     ScenarioBox.ActualPosition = CurrentServer.SelectedRow;
-                    ScenarioBox.SetScenario((Scenario) s);
+                    ScenarioBox.SetScenario((Scenario)s);
                 }
                 else if (s is Request)
                 {
                     SetContentBoxControl(RequestBox);
                     RequestBox.ActualPosition = CurrentServer.SelectedRow;
-                    RequestBox.SetRequest((Request) s);
+                    RequestBox.SetRequest((Request)s);
                 }
                 else if (s is Homepage)
                 {
@@ -515,7 +515,7 @@ namespace Director.Forms
                 {
                     PasteRequest.Clicked += PasteRequest_Clicked;
                 }
-                RequestClipboard = (Request) r;
+                RequestClipboard = (Request)r;
                 PasteRequest.Sensitive = true;
             }
         }
@@ -540,7 +540,7 @@ namespace Director.Forms
                 NewRequest.Name += "#copy";
 
                 // Add to scenario
-                ((Scenario) s).Requests.Add(NewRequest);
+                ((Scenario)s).Requests.Add(NewRequest);
 
                 // Refresh tree view
                 CreateTreeItem(tmp, NewRequest.Name, RequestImage, NewRequest);
@@ -593,7 +593,7 @@ namespace Director.Forms
                 if (ScenarioClipboard == null)
                     PasteScenario.Clicked += PasteScenario_Clicked;
 
-                ScenarioClipboard = (Scenario) s;
+                ScenarioClipboard = (Scenario)s;
                 PasteScenario.Sensitive = true;
             }
         }
@@ -612,7 +612,7 @@ namespace Director.Forms
             var s = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
 
             if (s is Request)
-                OpenEditRequest((Request) s);
+                OpenEditRequest((Request)s);
         }
 
         /// <summary>
@@ -694,7 +694,13 @@ namespace Director.Forms
             dlg.Multiselect = false;
             dlg.Filters.Add(new FileDialogFilter("Director files", "*.adfe"));
             if (dlg.Run())
-                MessageDialog.ShowMessage("Files: ", string.Join("\n", dlg.FileNames));
+            {
+                //MessageDialog.ShowMessage("Files: ", string.Join("\n", dlg.FileNames));
+                Deserilation de = new Deserilation();
+                UServer = de.DeserializeServer(dlg.FileNames[0]);
+                //TODO reconstruction of the tree
+            }
+
         }
 
         /// <summary>
@@ -724,12 +730,12 @@ namespace Director.Forms
 
             if (s is Scenario)
             {
-                Scenario sc = (Scenario) s;
+                Scenario sc = (Scenario)s;
                 bool res = MessageDialog.Confirm(Director.Properties.Resources.MessageBoxRemoveScenario, Command.Ok);
                 if (res)
                 {
                     // If scenario is in clipboard remove too!
-                    if (ScenarioClipboard == (Scenario) s)
+                    if (ScenarioClipboard == (Scenario)s)
                     {
                         ScenarioClipboard = null;
                         PasteScenario.Clicked -= PasteScenario_Clicked;
@@ -764,7 +770,7 @@ namespace Director.Forms
 
             if (data is Server)
             {
-                Server s = (Server) data;
+                Server s = (Server)data;
 
                 // Add new scenario
                 Scenario NewScenario = s.CreateNewScenario();
@@ -790,7 +796,7 @@ namespace Director.Forms
 
             if (data is Scenario)
             {
-                Scenario s = (Scenario) data;
+                Scenario s = (Scenario)data;
                 Request NewRequest = s.CreateNewRequest();
                 CreateTreeItem(tmp, NewRequest.Name, RequestImage, NewRequest);
                 UpdateControlView(sender, e);
