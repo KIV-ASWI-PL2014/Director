@@ -6,12 +6,17 @@ using System.Threading.Tasks;
 
 namespace Director.ParserLib
 {
+    /// <summary>
+    /// This class represents an error which may occur during Parser execution. All errors have to be traceable to the specific position (line and
+    /// position variables) of a specific file (source).
+    /// Other classes need to be prevented from changing of an error's inner data, so once the error have been created you can only get the data.
+    /// </summary>
     public class ParserError
     {
-        private int line;
-        private int position;
+        private int line; // line of string/file on which the error occured
+        private int position; // position of concrete line of string/file on which the error occured
         private string message;
-        private string source;
+        private string source; // string definition of source string/file in which error occured
 
         public ParserError(int line, int position, string message, string source)
         {

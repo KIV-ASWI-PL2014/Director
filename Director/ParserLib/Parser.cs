@@ -122,7 +122,17 @@ namespace Director.ParserLib
         // global variables
         //
         private Random random = new Random();
+        private CultureInfo culture = new CultureInfo("en-GB");
 
+        /// <summary>
+        /// This method will deserialize JSON reveived in "template" parameter, parse it's special syntax and returns ParserResult object which will
+        /// contain list of all occured errors and (if no critical errors occured) generated resulting JSON.
+        /// Depending on how concrete template is defined, some custom variables might also have to passed in "customVariables" parameter as well.
+        /// For a complete syntax definition please check the documentation.
+        /// </summary>
+        /// <param name="template">JSON template with special syntax</param>
+        /// <param name="customVariables">Custom variables</param>
+        /// <returns>ParserResult object containing errors and result</returns>
         public ParserResult generateRequest(string template, Dictionary<string, string> customVariables)
         {
             List<ParserError> errors = new List<ParserError>();
@@ -131,9 +141,6 @@ namespace Director.ParserLib
             // if no object with custom variables was passed, create new one
             if (customVariables == null)
                 customVariables = new Dictionary<string, string>();
-
-            // TODO: delete this after testing
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
 
             // try to deserialize JSON template into internal parser structures
             try
@@ -158,6 +165,13 @@ namespace Director.ParserLib
             return new ParserResult(errors, result);
         }
 
+        /// <summary>
+        /// This method will check JSON template for any syntactical errors and thus determines whether it is OK to even let the Parser
+        /// compare received JSON with this template.
+        /// </summary>
+        /// <param name="template">JSON template with special syntax</param>
+        /// <param name="customVariables">Custom variables</param>
+        /// <returns>ParserResult object containing occured errors</returns>
         public ParserResult validateResponse(string template, Dictionary<string, string> customVariables)
         {
             List<ParserError> errors = new List<ParserError>();
@@ -166,9 +180,6 @@ namespace Director.ParserLib
             // if no object with custom variables was passed, create new one
             if (customVariables == null)
                 customVariables = new Dictionary<string, string>();
-
-            // TODO: delete this after testing
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
 
             // try to deserialize JSON template into internal parser structures
             try
@@ -190,6 +201,15 @@ namespace Director.ParserLib
             return new ParserResult(errors, null);
         }
 
+        /// <summary>
+        /// This method will check JSON template for any syntactical errors and if there are none, the template with it's defined rules is
+        /// compared to the actual received response.
+        /// </summary>
+        /// <param name="template">JSON template with special syntax</param>
+        /// <param name="response">received JSON response</param>
+        /// <param name="customVariables">Custom variables</param>
+        /// <param name="ignoreUndefinedKeys">If true redundant keys in received response will be ignored</param>
+        /// <returns>ParserResult object containing occured errors</returns>
         public ParserResult parseResponse(string template, string response, Dictionary<string, string> customVariables, bool ignoreUndefinedKeys)
         {
             List<ParserError> errors = new List<ParserError>();
@@ -199,9 +219,6 @@ namespace Director.ParserLib
             // if no object with custom variables was passed, create new one
             if (customVariables == null)
                 customVariables = new Dictionary<string, string>();
-
-            // TODO: delete this after testing
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
 
             // try to deserialize JSON template into internal parser structures
             try
@@ -249,8 +266,8 @@ namespace Director.ParserLib
             int posPosition = errorMessage.IndexOf(POSITION_DEF);
             if ( (posLine != -1) && (posPosition != -1) )
             {
-                int line = Convert.ToInt32(Regex.Match(errorMessage.Substring(posLine, posPosition - posLine), @"\d+").Value);
-                int position = Convert.ToInt32(Regex.Match(errorMessage.Substring(posPosition, errorMessage.Length - posPosition), @"\d+").Value);
+                int line = Convert.ToInt32(Regex.Match(errorMessage.Substring(posLine, posPosition - posLine), @"\d+").Value, culture);
+                int position = Convert.ToInt32(Regex.Match(errorMessage.Substring(posPosition, errorMessage.Length - posPosition), @"\d+").Value, culture);
                 return new ParserError(line, position, errorMessage.Substring(0, posPosition - LINE_DEF.Length - 1), source);
             }
             return new ParserError(-1, -1, "\nMessage: " + errorMessage, source);
@@ -551,13 +568,13 @@ namespace Director.ParserLib
 
             // unify values of int and float family type members on the same type
             if (template_item.comp_def.value != null && RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(template_item.comp_def.value.GetType()))
-                template_item.comp_def.value = Convert.ToInt32(template_item.comp_def.value);
+                template_item.comp_def.value = Convert.ToInt32(template_item.comp_def.value, culture);
             if (response_item.value != null && RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(response_item.value.GetType()))
-                response_item.value = Convert.ToInt32(response_item.value);
+                response_item.value = Convert.ToInt32(response_item.value, culture);
             if (template_item.comp_def.value != null && RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(template_item.comp_def.value.GetType()))
-                template_item.comp_def.value = Convert.ToSingle(template_item.comp_def.value);
+                template_item.comp_def.value = Convert.ToSingle(template_item.comp_def.value, culture);
             if (response_item.value != null && RESPONSE_COMPARISON_FAMILY_TYPE_FLOATS.Contains(response_item.value.GetType()))
-                response_item.value = Convert.ToSingle(response_item.value);
+                response_item.value = Convert.ToSingle(response_item.value, culture);
 
             // response value might have been parsed as integer type, but we still want to be able to compare it with float type template value
             if (RESPONSE_COMPARISON_FAMILY_TYPE_INTEGERS.Contains(response_item.value.GetType()) &&
@@ -570,12 +587,12 @@ namespace Director.ParserLib
                 )
             )
             {
-                response_item.value = Convert.ToSingle(response_item.value);
+                response_item.value = Convert.ToSingle(response_item.value, culture);
             }
 
             // store value in custom variable if requested
             if (template_item.comp_def.var_name != null)
-                customVariables[template_item.comp_def.var_name] = Convert.ToString(response_item.value);
+                customVariables[template_item.comp_def.var_name] = Convert.ToString(response_item.value, culture);
 
             // strict comparison
             if (template_item.comp_def.type == null && template_item.comp_def.operation == null && template_item.comp_def.value != null)
@@ -910,13 +927,13 @@ namespace Director.ParserLib
                 // type was not provided => we will try to assume the closest type possible
                 try
                 {
-                    result = Convert.ToInt32(value); // is it integer?
+                    result = Convert.ToInt32(value, culture); // is it integer?
                 }
                 catch (Exception)
                 {
                     try
                     {
-                        result = Convert.ToSingle(value); // is it float?
+                        result = Convert.ToSingle(value, culture); // is it float?
                     }
                     catch (Exception)
                     {
@@ -945,7 +962,7 @@ namespace Director.ParserLib
                 // try to convert value to integer
                 try
                 {
-                    result = Convert.ToInt32(value);
+                    result = Convert.ToInt32(value, culture);
                 }
                 catch (FormatException)
                 {
@@ -961,7 +978,7 @@ namespace Director.ParserLib
                 // try to convert value to float
                 try
                 {
-                    result = Convert.ToSingle(value);
+                    result = Convert.ToSingle(value, culture);
                 }
                 catch (FormatException)
                 {
@@ -1221,13 +1238,13 @@ namespace Director.ParserLib
                         switch (function_name)
                         {
                             case REQUEST_FN_RAND_INT:
-                                item.value = Convert.ToInt32(value); // type to integer
+                                item.value = Convert.ToInt32(value, culture); // type to integer
                                 break;
                             case REQUEST_FN_RAND_FLOAT:
-                                item.value = Convert.ToSingle(value); // type to float
+                                item.value = Convert.ToSingle(value, culture); // type to float
                                 break;
                             case REQUEST_FN_SEQUENCE:
-                                item.value = Convert.ToInt32(value); // type to integer
+                                item.value = Convert.ToInt32(value, culture); // type to integer
                                 break;
                             default:
                                 item.value = value;
@@ -1273,7 +1290,7 @@ namespace Director.ParserLib
             int result = Int32.MinValue;
             try
             {
-                result = Convert.ToInt32(argument);
+                result = Convert.ToInt32(argument, culture);
             }
             catch (FormatException)
             {
@@ -1299,7 +1316,7 @@ namespace Director.ParserLib
             float result = Single.MinValue;
             try
             {
-                result = Convert.ToSingle(argument);
+                result = Convert.ToSingle(argument, culture);
             }
             catch (FormatException)
             {
@@ -1482,7 +1499,7 @@ namespace Director.ParserLib
             int next_sequence_number;
             if (new_sequence)
             {
-                customVariables[function_arguments[3]] = Convert.ToString(start);
+                customVariables[function_arguments[3]] = Convert.ToString(start, culture);
                 next_sequence_number = start;
             }
             else
@@ -1499,7 +1516,7 @@ namespace Director.ParserLib
                     if ((increment > 0 && next_sequence_number > end) || (increment < 0 && next_sequence_number < end))
                         next_sequence_number = start; // reset sequence
                 }
-                customVariables[function_arguments[3]] = Convert.ToString(next_sequence_number); // save new sequence value for next request
+                customVariables[function_arguments[3]] = Convert.ToString(next_sequence_number, culture); // save new sequence value for next request
             }
             return "" + next_sequence_number;
         }
