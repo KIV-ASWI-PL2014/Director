@@ -10,6 +10,7 @@ using Director.Forms.Controls;
 using Director.DataStructures;
 using Director.Forms.Export;
 using Director.Forms.Inputs;
+using Xwt.WPFBackend;
 
 namespace Director.Forms
 {
@@ -186,9 +187,9 @@ namespace Director.Forms
         /// </summary>
         private void _initializeDaD()
         {
-            CurrentServer.ButtonPressed += CurrentServer_ButtonPressed;
-            CurrentServer.DragDrop += CurrentServer_DragDrop;
-            CurrentServer.DragOver += CurrentServer_DragOver;
+            CurrentServer.ItemButtonPressed += CurrentServer_ButtonPressed;
+            CurrentServer.ItemDragDrop += CurrentServer_DragDrop;
+            CurrentServer.ItemDragOver += CurrentServer_DragOver;
             CurrentServer.MouseMoved += CurrentServer_MouseMoved;
             CurrentServer.SetDragDropTarget(TransferDataType.Text, TransferDataType.Uri);
         }
@@ -203,6 +204,7 @@ namespace Director.Forms
 
         void CurrentServer_DragOver(object sender, DragOverEventArgs e)
         {
+            Console.WriteLine("Drag over");
             if (e.Action == DragDropAction.All)
                 e.AllowedAction = DragDropAction.Move;
             else
@@ -252,7 +254,7 @@ namespace Director.Forms
                     CurrentServer.SelectRow(tmp);
 
                     // Create DAD operation
-                    var d = CurrentServer.CreateDragOperation();
+                    var d = CurrentServer.CreateDragOperationWithItem(sender);
 
                     // Get row data - for proper ContextMenu
                     var data = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
@@ -273,7 +275,6 @@ namespace Director.Forms
 
                     if (d != null)
                     {
-                        Console.WriteLine("Test {0} {1}", e.X, e.Y);
                         CurrentDaDObject = data;
                         d.AllowedActions = DragDropAction.All;
                         d.Finished += delegate
@@ -331,7 +332,22 @@ namespace Director.Forms
             MainBox.PackStart(ContentBox, true, true);
 
             // Set content to main box
-            Content = MainBox;
+            VBox MainContentBox = new VBox();
+            MainContentBox.PackStart(MainBox, expand: true, fill: true);
+            Label l = new Label("test");
+            MainContentBox.PackStart(l);
+            MainContentBox.PackStart(new Label("(c) NetBrick s.r.o."));
+            Content = MainContentBox;
+
+            // Test Drag and drop
+            l.ButtonPressed += delegate
+            {
+                var d = l.CreateDragOperation();
+                d.Data.AddValue("Test");
+                d.SetDragImage(ScenarioImage, (int)ScenarioImage.Size.Width, (int)ScenarioImage.Size.Height);
+                d.AllowedActions = DragDropAction.All;
+                d.Start();
+            };
 
             // TODO: Remove in release!
             CreateNewServer(null, null);

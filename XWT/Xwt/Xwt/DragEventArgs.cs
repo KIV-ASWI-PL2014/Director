@@ -149,6 +149,23 @@ namespace Xwt
 		/// </remarks>
 		public DragDropAction AllowedAction { get; set; }
 	}
+
+    public class DragItemOverEventArgs : DragOverEventArgs
+    {
+        public DragItemOverEventArgs (Point position, ITransferData dataStore, DragDropAction action) : base(position, dataStore, action)
+		{
+
+		}
+    }
+
+
+    public class DragItemDropEventArgs : DragEventArgs
+    {
+        public DragItemDropEventArgs (Point position, Xwt.Backends.TransferDataStore dataStore, DragDropAction action) : base(position, dataStore, action)
+		{
+
+		}
+    }
 	
 	public class DragFinishedEventArgs: EventArgs
 	{

@@ -332,7 +332,7 @@ namespace Xwt.WPFBackend
 			}
 		}
 
-		private IEnumerable<ExTreeViewItem> GetAllVisibleItems(ItemsControl itemsControl)
+		public IEnumerable<ExTreeViewItem> GetAllVisibleItems(ItemsControl itemsControl)
 		{
 			foreach (var item in itemsControl.Items)
 			{

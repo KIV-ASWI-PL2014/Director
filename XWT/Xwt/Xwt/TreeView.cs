@@ -74,6 +74,21 @@ namespace Xwt
 			{
 				return Xwt.Backends.DefaultNaturalSizes.TreeView;
 			}
+
+            public void OnItemButtonPressed(ButtonEventArgs e)
+            {
+                ((TreeView)Parent).OnItemButtonPressed(e);
+            }
+
+            public void OnItemDragOver(DragItemOverEventArgs e)
+            {
+                ((TreeView)Parent).OnItemDragOver(e);
+            }
+
+            public void OnItemDragDrop(DragItemDropEventArgs e)
+            {
+                ((TreeView)Parent).OnItemDragDrop(e);
+            }
 		}
 		
 		static TreeView ()
@@ -409,7 +424,19 @@ namespace Xwt
 		void IColumnContainer.NotifyColumnsChanged ()
 		{
 		}
-		
+
+        public override DragOperation CreateDragOperation()
+        {
+            currentDragOperation = new DragOperation(this);
+            return currentDragOperation;
+        }
+
+        public DragOperation CreateDragOperationWithItem(object item)
+        {
+            currentDragOperation = new DragOperation((Widget) item);
+            return currentDragOperation;
+        }
+
 		/// <summary>
 		/// Raises the selection changed event.
 		/// </summary>
@@ -422,6 +449,88 @@ namespace Xwt
 				selectionChanged (this, a);
 		}
 		
+        /// <summary>
+        /// Item events handlers.
+        /// </summary>
+        internal protected virtual void OnItemButtonPressed(ButtonEventArgs args)
+        {
+            if (itemButtonPressed != null)
+                itemButtonPressed(this, args);
+        } 
+
+        EventHandler<ButtonEventArgs> itemButtonPressed;
+
+        public event EventHandler<ButtonEventArgs> ItemButtonPressed
+        {
+            add
+            {
+                BackendHost.OnBeforeEventAdd(WidgetEvent.ItemButtonPresed, itemButtonPressed);
+                itemButtonPressed += value;
+            }
+
+            remove
+            {
+                BackendHost.OnBeforeEventAdd(WidgetEvent.ItemButtonPresed, itemButtonPressed);
+                itemButtonPressed -= value;
+            }
+        }
+
+        /// <summary>
+        /// Item drag event handlers.
+        /// </summary>
+        internal protected virtual void OnItemDragOver(DragItemOverEventArgs args)
+        {
+            if (itemDragOver != null)
+                itemDragOver(this, args);
+        } 
+
+        EventHandler<DragItemOverEventArgs> itemDragOver;
+
+        public event EventHandler<DragItemOverEventArgs> ItemDragOver
+        {
+            add
+            {
+                BackendHost.OnBeforeEventAdd(WidgetEvent.ItemDragOver, itemDragOver);
+                itemDragOver += value;
+            }
+
+            remove
+            {
+                BackendHost.OnBeforeEventAdd(WidgetEvent.ItemDragOver, itemDragOver);
+                itemDragOver -= value;
+            }
+        }
+
+
+        /// <summary>
+        /// Item drag drop!
+        /// </summary>
+        /// <summary>
+        internal protected virtual void OnItemDragDrop(DragItemDropEventArgs args)
+        {
+            if (itemDragDrop != null)
+                itemDragDrop(this, args);
+        } 
+
+
+        EventHandler<DragItemDropEventArgs> itemDragDrop;
+
+        public event EventHandler<DragItemDropEventArgs> ItemDragDrop
+        {
+            add
+            {
+                BackendHost.OnBeforeEventAdd(WidgetEvent.ItemDragDrop, itemDragDrop);
+                itemDragDrop += value;
+            }
+
+            remove
+            {
+                BackendHost.OnBeforeEventAdd(WidgetEvent.ItemDragDrop, itemDragDrop);
+                itemDragDrop -= value;
+            }
+        }
+
+
 		EventHandler selectionChanged;
 		
 		/// <summary>

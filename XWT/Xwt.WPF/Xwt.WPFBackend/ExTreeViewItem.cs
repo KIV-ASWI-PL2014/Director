@@ -48,6 +48,7 @@ namespace Xwt.WPFBackend
 			: this()
 		{
 			this.view = view;
+            AllowDrop = true;
 		}
 
 		protected override void OnExpanded (RoutedEventArgs e)
@@ -164,11 +165,11 @@ namespace Xwt.WPFBackend
 
             FillDataStore(store, e.Data, DragDropInfo.TargetTypes);
 
-            var args = new DragOverEventArgs(pos, store, proposedAction);
+            var args = new DragItemOverEventArgs(pos, store, proposedAction);
 
             view.Backend.Context.InvokeUserCode(delegate
             {
-                ((ITreeViewEventSink)view.Backend.EventSink).OnDragOver(args);
+                ((ITreeViewEventSink)view.Backend.EventSink).OnItemDragOver(args);
             });
         }
 
@@ -242,7 +243,7 @@ namespace Xwt.WPFBackend
 
             view.Backend.Context.InvokeUserCode(delegate
             {
-                ((ITreeViewEventSink)view.Backend.EventSink).OnButtonPressed(args);
+                ((ITreeViewEventSink)view.Backend.EventSink).OnItemButtonPressed(args);
             });
 		}
 

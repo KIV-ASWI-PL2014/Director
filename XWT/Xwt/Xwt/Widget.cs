@@ -52,7 +52,7 @@ namespace Xwt
 		SizeConstraint cachedWidthConstraint;
 		SizeConstraint cachedHeightConstraint;
 		bool sizeCached;
-		DragOperation currentDragOperation;
+		public DragOperation currentDragOperation;
 		Widget contentWidget;
 		WindowFrame parentWindow;
 		double minWidth = -1, minHeight = -1;
@@ -658,7 +658,7 @@ namespace Xwt
 			Backend.SetFocus ();
 		}
 		
-		public DragOperation CreateDragOperation ()
+		public virtual DragOperation CreateDragOperation ()
 		{
 			currentDragOperation = new DragOperation (this);
 			return currentDragOperation;

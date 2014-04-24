@@ -127,8 +127,8 @@ namespace Xwt.Backends
 		void OnDragDropCheck (DragCheckEventArgs args);
 		void OnDragDrop (DragEventArgs args);
 		void OnDragLeave (EventArgs args);
-		
 		void OnDragFinished (DragFinishedEventArgs args);
+
 		
 		DragStartData OnDragStarted ();
 		void OnKeyPressed (KeyEventArgs args);
@@ -198,7 +198,10 @@ namespace Xwt.Backends
 		MouseMoved = 1 << 14,
 		DragStarted = 1 << 15,
 		BoundsChanged = 1 << 16,
-        MouseScrolled = 1 << 17
+        MouseScrolled = 1 << 17,
+        ItemButtonPresed = 1 << 18,
+        ItemDragOver = 1 << 19,
+        ItemDragDrop = 1 << 20
 	}
 	
 	public class DragStartData

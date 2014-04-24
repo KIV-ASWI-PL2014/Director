@@ -72,6 +72,10 @@ namespace Xwt.Backends
 		void OnRowActivated (TreePosition position);
 		void OnRowExpanding (TreePosition position);
 		void OnRowExpanded (TreePosition position);
+
+        void OnItemButtonPressed(ButtonEventArgs e);
+        void OnItemDragOver(DragItemOverEventArgs e);
+        void OnItemDragDrop(DragItemDropEventArgs e);
 	}
 }
 
