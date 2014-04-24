@@ -177,32 +177,115 @@ namespace Director.Forms
         }
 
         /// <summary>
+        /// Curent drag and drop object.
+        /// </summary>
+        public object CurrentDaDObject = null;
+
+        /// <summary>
         /// Init drag and drop for tree.
         /// </summary>
         private void _initializeDaD()
         {
             CurrentServer.ButtonPressed += CurrentServer_ButtonPressed;
+            CurrentServer.DragDrop += CurrentServer_DragDrop;
+            CurrentServer.DragOver += CurrentServer_DragOver;
             CurrentServer.MouseMoved += CurrentServer_MouseMoved;
-            CurrentServer.DragDropCheck += CurrentServer_DragDropCheck;
+            CurrentServer.SetDragDropTarget(TransferDataType.Text, TransferDataType.Uri);
         }
 
-        private void CurrentServer_MouseMoved(object sender, MouseMovedEventArgs e)
+        void CurrentServer_MouseMoved(object sender, MouseMovedEventArgs e)
         {
-        }
-
-        private Point _lastMouseDown { get; set; }
-
-        private void CurrentServer_ButtonPressed(object sender, ButtonEventArgs e)
-        {
-            if (e.Button == PointerButton.Left)
+            if (CurrentDaDObject != null)
             {
-                _lastMouseDown = new Point(e.X, e.Y);
+                Console.WriteLine("Mouse moved");
             }
+        }
+
+        void CurrentServer_DragOver(object sender, DragOverEventArgs e)
+        {
+            if (e.Action == DragDropAction.All)
+                e.AllowedAction = DragDropAction.Move;
+            else
+                e.AllowedAction = e.Action;
+        }
+
+        void CurrentServer_DragDrop(object sender, DragEventArgs e)
+        {
+            Console.WriteLine("Dropped! " + e.Action);
+            Console.WriteLine("Text: " + e.Data.GetValue(TransferDataType.Text));
+            Console.WriteLine("Uris:");
+            foreach (var u in e.Data.Uris)
+                Console.WriteLine("u:" + u);
+            e.Success = true;
+        }
+
+        void CurrentServer_DragOverCheck(object sender, DragOverCheckEventArgs e)
+        {
+            if (e.Action == DragDropAction.All)
+                e.AllowedAction = DragDropAction.Move;
+            else
+                e.AllowedAction = e.Action;
         }
 
         private void CurrentServer_DragDropCheck(object sender, DragCheckEventArgs e)
         {
-            Console.WriteLine("DD check");
+            Console.WriteLine("Dropped!");
+            Console.WriteLine("Drag drop check");
+        }
+
+        /// <summary>
+        /// Starg drag and drop.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CurrentServer_ButtonPressed(object sender, ButtonEventArgs e)
+        {
+            if (e.Button == PointerButton.Left)
+            {
+                TreePosition tmp;
+                RowDropPosition tmp2;
+
+                // Get item
+                if (CurrentServer.GetDropTargetRow(e.X, e.Y, out tmp2, out tmp))
+                {
+                    // Set row
+                    CurrentServer.SelectRow(tmp);
+
+                    // Create DAD operation
+                    var d = CurrentServer.CreateDragOperation();
+
+                    // Get row data - for proper ContextMenu
+                    var data = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+
+                    // Scenario D&D text and image
+                    if (data is Scenario)
+                    {
+                        d.SetDragImage(ScenarioImage, (int)ScenarioImage.Size.Width, (int)ScenarioImage.Size.Height);
+                    }
+                    else if (data is Request)
+                    {
+                        d.SetDragImage(RequestImage, (int)RequestImage.Size.Width, (int)RequestImage.Size.Height);
+                    }
+                    else
+                    {
+                        d = null;
+                    }
+
+                    if (d != null)
+                    {
+                        Console.WriteLine("Test {0} {1}", e.X, e.Y);
+                        CurrentDaDObject = data;
+                        d.AllowedActions = DragDropAction.All;
+                        d.Finished += delegate
+                        {
+                            CurrentDaDObject = null;
+                            Console.WriteLine("END Dad");
+                        };
+                        Console.WriteLine("Start DAD");
+                        d.Start();
+                    }                    
+                }
+            }
         }
 
         /// <summary>
