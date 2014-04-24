@@ -780,6 +780,8 @@ namespace Director.Forms
                 if (ScenarioClipboard == null)
                     PasteScenario.Clicked += PasteScenario_Clicked;
 
+                Console.WriteLine("Scenario in clipboard");
+
                 ScenarioClipboard = (Scenario)s;
                 PasteScenario.Sensitive = true;
             }
@@ -962,10 +964,12 @@ namespace Director.Forms
                 foreach (Scenario s in UServer.Scenarios.OrderBy(n => n.Position))
                 {
                     s.TreePosition = CreateTreeItem(tmp, s.Name, ScenarioImage, s);
+                    s.ParentServer = UServer;
 
                     foreach (Request r in s.Requests.OrderBy(n => n.Position))
                     {
                         r.TreePosition = CreateTreeItem(s.TreePosition, r.Name, RequestImage, r);
+                        r.ParentScenario = s;
                     }
                 }
 

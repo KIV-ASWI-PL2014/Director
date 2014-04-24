@@ -137,6 +137,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm.
+        /// </summary>
+        internal static string ConfirmInput {
+            get {
+                return ResourceManager.GetString("ConfirmInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add request.
         /// </summary>
         internal static string ContextMenuAddRequest {
@@ -505,11 +514,29 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid status code.
+        /// </summary>
+        internal static string InvalidStatusCode {
+            get {
+                return ResourceManager.GetString("InvalidStatusCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Time delay must be a number and greather or equal to 0!.
         /// </summary>
         internal static string InvalidTimeDelay {
             get {
                 return ResourceManager.GetString("InvalidTimeDelay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid time!.
+        /// </summary>
+        internal static string InvalidWaitTime {
+            get {
+                return ResourceManager.GetString("InvalidWaitTime", resourceCulture);
             }
         }
         
@@ -955,6 +982,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Response content.
+        /// </summary>
+        internal static string ResponseContent {
+            get {
+                return ResourceManager.GetString("ResponseContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Response.
         /// </summary>
         internal static string ResposneTab {
@@ -1201,6 +1237,15 @@ namespace Director.Properties {
         internal static string Username {
             get {
                 return ResourceManager.GetString("Username", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wait in seconds after sucessfull previous request:.
+        /// </summary>
+        internal static string WaitPreviousRequest {
+            get {
+                return ResourceManager.GetString("WaitPreviousRequest", resourceCulture);
             }
         }
     }

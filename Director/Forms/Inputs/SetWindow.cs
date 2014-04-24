@@ -77,6 +77,10 @@ namespace Director.Forms.Inputs
             {
                 TextInput.Text = ReqWidget.ActiveRequest.RequestTemplate;
             }
+            else if (ResWidget != null)
+            {
+                TextInput.Text = ResWidget.ActiveRequest.ResponseTemplate;
+            }
 
             ScrollView ScrollTextInput = new ScrollView()
             {
@@ -92,7 +96,7 @@ namespace Director.Forms.Inputs
 
             // Btn
             Button ConfirmButton = new Button(Image.FromResource(DirectorImages.OK_ICON),
-                Director.Properties.Resources.Confirm)
+                Director.Properties.Resources.ConfirmInput)
             {
                 WidthRequest = 150,
                 ExpandHorizontal = false,
@@ -122,6 +126,13 @@ namespace Director.Forms.Inputs
                     ReqWidget.SetRequest(TextInput.Text);
                     Close();
                 }
+                else if (ResWidget != null)
+                {
+                    ResWidget.SetResponse(TextInput.Text);
+                    Close();
+                }
+                else
+                    Close();
             }
             else
             {

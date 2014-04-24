@@ -109,6 +109,11 @@ namespace Director.DataStructures
         public CustomVariableItem[] customVariablesExp { get; set; }
 
         /// <summary>
+        /// Wait after previous request time! (in seconds)
+        /// </summary>
+        public int WaitAfterPreviousRequest { get; set; }
+
+        /// <summary>
         /// Empty constructor for XML serialization!
         /// </summary>
         public Request()

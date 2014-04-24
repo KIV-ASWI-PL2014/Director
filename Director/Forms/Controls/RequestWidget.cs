@@ -27,11 +27,6 @@ namespace Director.Forms.Controls
         public String Template { get; set; }
         
         /// <summary>
-        /// Json parser.
-        /// </summary>
-        public Parser JSonParser { get; set; }
-
-        /// <summary>
         /// Clickable items.
         /// </summary>
         public List<ClickableItems> CanvasItems { get; set; }
@@ -75,7 +70,8 @@ namespace Director.Forms.Controls
             DrawText("{");
             NextLine();
             X += 20;
-            Dictionary<string, ParserItem> data = JSonParser.deserialize(Template);
+            List<ParserError> errors = new List<ParserError>();
+            Dictionary<string, ParserItem> data = Parser.deserialize(Template, errors, "template");
             DrawJson(data);
             X -= 20;
             DrawText("}");
@@ -200,11 +196,6 @@ namespace Director.Forms.Controls
         private Menu RequestHelperMenu { get; set; }
 
         /// <summary>
-        /// Json parser.
-        /// </summary>
-        public Parser JsonParser { get; set; }
-
-        /// <summary>
         /// Create widget.
         /// </summary>
         /// <param name="_request"></param>
@@ -216,14 +207,12 @@ namespace Director.Forms.Controls
             // Set margin
             Margin = 10;
 
-            // Json parser
-            JsonParser = new Parser();
-
             // Create Text view
             RenderBox = new RequestDrawing()
             {
-                ExpandHorizontal = true, ExpandVertical = true,
-                JSonParser = JsonParser
+                ExpandHorizontal = true,
+                ExpandVertical = true,
+                Template = _request.RequestTemplate
             };
             PackStart(new Label(Director.Properties.Resources.RequestContent));
             PackStart(RenderBox, expand: true, fill: true);
