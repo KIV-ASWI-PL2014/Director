@@ -184,6 +184,9 @@ namespace Director.Forms
 
             // Set buttons to enabled
             DisableServerButtons();
+
+            // Runn progressing images
+            _runProgressImages();
         }
 
         /// <summary>
@@ -938,46 +941,79 @@ namespace Director.Forms
         }
 
         /// <summary>
+        /// Running objects for timer.
+        /// </summary>
+        public List<TreePosition> RunningObjects = new List<TreePosition>();
+
+        /// <summary>
+        /// Last index.
+        /// </summary>
+        public int LastIndex = 0;
+
+        /// <summary>
+        /// Invoke time and change images.
+        /// </summary>
+        private void _runProgressImages()
+        {
+            Xwt.Application.TimeoutInvoke(TimeSpan.FromMilliseconds(100), () =>
+            {
+                foreach (var pos in RunningObjects)
+                    ChangeTreeIcon(pos, DirectorImages.RUN_ICONS[LastIndex]);
+
+                // Increase
+                LastIndex = (LastIndex + 1) > 7 ? 0 : LastIndex + 1;
+
+                return true;
+            });
+        }
+
+
+        /// <summary>
         /// Runn all scenarios.
         /// </summary>
         void RunAllMenu_Clicked(object sender, EventArgs e)
         {
-            // Set all default icons
-            foreach (var s in UServer.Scenarios)
+            Application.Invoke(delegate
             {
-                ChangeTreeIcon(s.TreePosition, ScenarioImage);
-                foreach (var r in s.Requests)
-                    ChangeTreeIcon(r.TreePosition, RequestImage);
-            }
-
-            // Run in specific order
-            foreach (var s in UServer.Scenarios.OrderBy(n => n.Position))
-            {
-                bool success = true;
-                ChangeTreeIcon(s.TreePosition, Image.FromResource(DirectorImages.PROCESSING_ICON));
-
-                // Run requests
-                foreach (var r in s.Requests.OrderBy(n => n.Position))
+                // Set all default icons
+                foreach (var s in UServer.Scenarios)
                 {
-                    ChangeTreeIcon(r.TreePosition, Image.FromResource(DirectorImages.PROCESSING_ICON));
-                    RestResponse response = Director.Remote.Remote.SendRemoteRequest(r);
+                    ChangeTreeIcon(s.TreePosition, ScenarioImage);
+                    foreach (var r in s.Requests)
+                        ChangeTreeIcon(r.TreePosition, RequestImage);
+                }
 
-                    if (r.ExpectedStatusCode != -1 && response.StatusCode.ToString().Equals(r.ExpectedStatusCode) == false)
+                // Run in specific order
+                foreach (var s in UServer.Scenarios.OrderBy(n => n.Position))
+                {
+                    bool success = true;
+                    RunningObjects.Add(s.TreePosition);
+
+                    // Run requests
+                    foreach (var r in s.Requests.OrderBy(n => n.Position))
                     {
-                        success = false;
-                        break;
+                        RunningObjects.Add(r.TreePosition);
+                        RestResponse response = Director.Remote.Remote.SendRemoteRequest(r);
+
+                        if (r.ExpectedStatusCode != -1 && response.StatusCode.ToString().Equals(r.ExpectedStatusCode) == false)
+                        {
+                            RunningObjects.Remove(r.TreePosition);
+                            success = false;
+                            break;
+                        }
+                    }
+
+                    RunningObjects.Remove(s.TreePosition);
+                    if (success)
+                    {
+                        ChangeTreeIcon(s.TreePosition, Image.FromResource(DirectorImages.SCENARIO_ICON));
+                    }
+                    else
+                    {
+                        ChangeTreeIcon(s.TreePosition, Image.FromResource(DirectorImages.CROSS_ICON));
                     }
                 }
-
-                if (success)
-                {
-                    ChangeTreeIcon(s.TreePosition, Image.FromResource(DirectorImages.SCENARIO_ICON));
-                }
-                else
-                {
-                    ChangeTreeIcon(s.TreePosition, Image.FromResource(DirectorImages.CROSS_ICON));
-                }
-            }
+            });
         }
 
         /// <summary>

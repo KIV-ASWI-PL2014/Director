@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xwt.Drawing;
 
 namespace Director.Forms.Controls
 {
@@ -33,5 +34,19 @@ namespace Director.Forms.Controls
         public const string DOWN_ICON = "Director.Resources.arrow_down.png";
         public const string EDIT_CONTENT_ICON = "Director.Resources.add_content.png";
         public const string RUN_ICON = "Director.Resources.run.png";
+
+        /// <summary>
+        /// Running icons.
+        /// </summary>
+        public static Image[] RUN_ICONS = new Image[] {
+            Image.FromResource("Director.Resources.0.gif"),
+            Image.FromResource("Director.Resources.1.gif"),
+            Image.FromResource("Director.Resources.2.gif"),
+            Image.FromResource("Director.Resources.3.gif"),
+            Image.FromResource("Director.Resources.4.gif"),
+            Image.FromResource("Director.Resources.5.gif"),
+            Image.FromResource("Director.Resources.6.gif"),
+            Image.FromResource("Director.Resources.7.gif"),
+        };
     }
 }
