@@ -11,6 +11,7 @@ using Director.DataStructures;
 using Director.Forms.Export;
 using Director.Forms.Inputs;
 using Director.ExportLib;
+using RestSharp;
 
 namespace Director.Forms
 {
@@ -100,12 +101,12 @@ namespace Director.Forms
         /// <summary>
         /// Open scenario.
         /// </summary>
-        private MenuItem OpenScenarioMenu;
+        private MenuItem OpenServerMenu;
 
         /// <summary>
         /// Export scenario menu.
         /// </summary>
-        private MenuItem SaveScenarioMenu;
+        private MenuItem SaveServerMenu;
 
         /// <summary>
         /// Scenario clipboard.
@@ -137,6 +138,15 @@ namespace Director.Forms
         /// </summary>
         private MenuItem PasteRequest { get; set; }
 
+        /// <summary>
+        /// Close scenario.
+        /// </summary>
+        private MenuItem CloseServer { get; set; }
+
+        /// <summary>
+        /// Run all menu item.
+        /// </summary>
+        private MenuItem RunAllMenu { get; set; }
 
         /// <summary>
         /// Default constructor initiate components!
@@ -171,6 +181,12 @@ namespace Director.Forms
 
             // Initialize content
             _intializeBoxes();
+
+            // Set buttons to enabled
+            DisableServerButtons();
+
+            // Runn progressing images
+            _runProgressImages();
         }
 
         /// <summary>
@@ -195,9 +211,6 @@ namespace Director.Forms
             CurrentServer.Columns.Add("Server", ColumnImage, ColumnName); // Dummy column, not sure why?
             CurrentServer.HeadersVisible = false;
 
-            // Clear tree view!
-            ClearCurrentServerTree();
-
             // Net item parsing
             CurrentServer.ButtonPressed += HandleMouseOnTreeView;
 
@@ -215,11 +228,22 @@ namespace Director.Forms
             // Add to panel
             MainBox.PackStart(ContentBox, true, true);
 
-            // Set content to main box
-            Content = MainBox;
+            // Control box with bottom info panel
+            VBox MainContent = new VBox();
+            MainContent.PackStart(MainBox, expand: true, fill: true);
 
-            // TODO: Remove in release!
-            CreateNewServer(null, null);
+            // Create Info label with link
+            LinkLabel _info = new LinkLabel("© NetBrick, s.r.o.")
+            {
+                Uri = new Uri("http://director.strnadj.eu/")
+            };
+            MainContent.PackStart(_info, vpos: WidgetPlacement.End, hpos: WidgetPlacement.End);
+
+            // Clear tree view!
+            ClearCurrentServerTree();
+
+            // Set content to main box
+            Content = MainContent;
         }
 
         /// <summary>
@@ -231,12 +255,15 @@ namespace Director.Forms
             ServerStore.Clear();
 
             // Create server store box!
-            CreateTreeItem(
+            var pos = CreateTreeItem(
                 null,
                 Director.Properties.Resources.TreeStoreInformation,
                 Image.FromResource(DirectorImages.HELP_ICON),
                 DirectorHomepage
                 );
+
+            // Select information
+            CurrentServer.SelectRow(pos);
         }
 
         /// <summary>
@@ -355,6 +382,23 @@ namespace Director.Forms
 
             // Add server menu to items
             menu.Items.Add(server);
+
+            // Create running menu
+            MenuItem RunMenu = new MenuItem(Director.Properties.Resources.MenuRun);
+
+            // Create submenu
+            RunMenu.SubMenu = _createRunSubmenu();
+
+            // Add
+            menu.Items.Add(RunMenu);
+
+            // Settings
+            MenuItem SettingsMenu = new MenuItem(Director.Properties.Resources.SettingsMenu);
+            menu.Items.Add(SettingsMenu);
+
+            // Help menu
+            MenuItem HelpMenu = new MenuItem(Director.Properties.Resources.HelpMenu);
+            menu.Items.Add(HelpMenu);
 
             // Set as main menu
             MainMenu = menu;
@@ -488,6 +532,25 @@ namespace Director.Forms
             };
             RequestMenu.Items.Add(MenuRemoveRequest);
             MenuRemoveRequest.Clicked += MenuRemoveRequest_Clicked;
+        }
+
+        /// <summary>
+        /// Create run submenu.
+        /// </summary>
+        /// <returns></returns>
+        private Menu _createRunSubmenu()
+        {
+            Menu _runSubmenu = new Menu();
+
+            // Run all
+            RunAllMenu = new MenuItem(Director.Properties.Resources.RunAllMenu)
+            {
+                Image = Image.FromResource(DirectorImages.RUN_ICON),
+                Sensitive = false
+            };
+            _runSubmenu.Items.Add(RunAllMenu);
+
+            return _runSubmenu;
         }
 
         /// <summary>
@@ -762,6 +825,8 @@ namespace Director.Forms
                 if (ScenarioClipboard == null)
                     PasteScenario.Clicked += PasteScenario_Clicked;
 
+                Console.WriteLine("Scenario in clipboard");
+
                 ScenarioClipboard = (Scenario)s;
                 PasteScenario.Sensitive = true;
             }
@@ -819,24 +884,29 @@ namespace Director.Forms
             {
                 Image = Image.FromResource(DirectorImages.NEW_SERVER_ICON)
             };
-            NewServer.Clicked += CreateNewServer;
             ServerMenu.Items.Add(NewServer);
 
             // Scenario open
-            OpenScenarioMenu = new MenuItem(Director.Properties.Resources.MenuOpenScenario)
+            OpenServerMenu = new MenuItem(Director.Properties.Resources.MenuOpenScenario)
             {
                 Image = Image.FromResource(DirectorImages.OPEN_SCENARIO_ICON)
             };
-            OpenScenarioMenu.Clicked += OpenNewScenario;
-            ServerMenu.Items.Add(OpenScenarioMenu);
+            ServerMenu.Items.Add(OpenServerMenu);
 
             // Export scenario
-            SaveScenarioMenu = new MenuItem(Director.Properties.Resources.MenuSaveScenario)
+            SaveServerMenu = new MenuItem(Director.Properties.Resources.MenuSaveScenario)
             {
                 Image = Image.FromResource(DirectorImages.SAVE_SCENARIO_ICON)
             };
-            SaveScenarioMenu.Clicked += SaveScenario;
-            ServerMenu.Items.Add(SaveScenarioMenu);
+            ServerMenu.Items.Add(SaveServerMenu);
+
+            // Close scenario
+            CloseServer = new MenuItem(Director.Properties.Resources.MenuCloseScenario)
+            {
+                Image = Image.FromResource(DirectorImages.CROSS_ICON),
+                Sensitive = false
+            };
+            ServerMenu.Items.Add(CloseServer);
 
             // Separator before exit
             ServerMenu.Items.Add(new SeparatorMenuItem());
@@ -853,11 +923,150 @@ namespace Director.Forms
         }
 
         /// <summary>
+        /// Disable server buttons (new, open).
+        /// </summary>
+        private void DisableServerButtons()
+        {
+            NewServer.Clicked += CreateNewServer;
+            NewServer.Sensitive = true;
+            OpenServerMenu.Clicked += OpenNewServer;
+            OpenServerMenu.Sensitive = true;
+
+            RunAllMenu.Sensitive = false;
+            RunAllMenu.Clicked -= RunAllMenu_Clicked;
+            SaveServerMenu.Sensitive = false;
+            SaveServerMenu.Clicked -= SaveServer;
+            CloseServer.Sensitive = false;
+            CloseServer.Clicked -= CloseServer_Clicked;
+        }
+
+        /// <summary>
+        /// Running objects for timer.
+        /// </summary>
+        public List<TreePosition> RunningObjects = new List<TreePosition>();
+
+        /// <summary>
+        /// Last index.
+        /// </summary>
+        public int LastIndex = 0;
+
+        /// <summary>
+        /// Invoke time and change images.
+        /// </summary>
+        private void _runProgressImages()
+        {
+            Xwt.Application.TimeoutInvoke(TimeSpan.FromMilliseconds(100), () =>
+            {
+                foreach (var pos in RunningObjects)
+                    ChangeTreeIcon(pos, DirectorImages.RUN_ICONS[LastIndex]);
+
+                // Increase
+                LastIndex = (LastIndex + 1) > 7 ? 0 : LastIndex + 1;
+
+                return true;
+            });
+        }
+
+
+        /// <summary>
+        /// Runn all scenarios.
+        /// </summary>
+        void RunAllMenu_Clicked(object sender, EventArgs e)
+        {
+            Application.Invoke(delegate
+            {
+                // Set all default icons
+                foreach (var s in UServer.Scenarios)
+                {
+                    ChangeTreeIcon(s.TreePosition, ScenarioImage);
+                    foreach (var r in s.Requests)
+                        ChangeTreeIcon(r.TreePosition, RequestImage);
+                }
+
+                // Run in specific order
+                foreach (var s in UServer.Scenarios.OrderBy(n => n.Position))
+                {
+                    bool success = true;
+                    RunningObjects.Add(s.TreePosition);
+
+                    // Run requests
+                    foreach (var r in s.Requests.OrderBy(n => n.Position))
+                    {
+                        RunningObjects.Add(r.TreePosition);
+                        RestResponse response = Director.Remote.Remote.SendRemoteRequest(r);
+
+                        if (r.ExpectedStatusCode != -1 && response.StatusCode.ToString().Equals(r.ExpectedStatusCode) == false)
+                        {
+                            RunningObjects.Remove(r.TreePosition);
+                            success = false;
+                            break;
+                        }
+                    }
+
+                    RunningObjects.Remove(s.TreePosition);
+                    if (success)
+                    {
+                        ChangeTreeIcon(s.TreePosition, Image.FromResource(DirectorImages.SCENARIO_ICON));
+                    }
+                    else
+                    {
+                        ChangeTreeIcon(s.TreePosition, Image.FromResource(DirectorImages.CROSS_ICON));
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// Change tree icon on posiiton.
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="icon"></param>
+        void ChangeTreeIcon(TreePosition pos, Image icon)
+        {
+            ServerStore.GetNavigatorAt(pos).SetValue(ColumnImage, icon);
+        }
+
+        /// <summary>
+        /// Enable server buttons.
+        /// </summary>
+        private void EnableServerButtons()
+        {
+            NewServer.Clicked -= CreateNewServer;
+            NewServer.Sensitive = false;
+            OpenServerMenu.Clicked -= OpenNewServer;
+            OpenServerMenu.Sensitive = false;
+
+            RunAllMenu.Sensitive = true;
+            RunAllMenu.Clicked += RunAllMenu_Clicked;
+            SaveServerMenu.Sensitive = true;
+            SaveServerMenu.Clicked += SaveServer;
+            CloseServer.Sensitive = true;
+            CloseServer.Clicked += CloseServer_Clicked;
+        }
+
+        /// <summary>
+        /// Close server menu.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void CloseServer_Clicked(object sender, EventArgs e)
+        {
+            bool res = MessageDialog.Confirm(Director.Properties.Resources.MessageBoxCloseScenario, Command.Ok);
+            if (res)
+            {
+                UServer = null;
+                ClearCurrentServerTree();
+                UpdateControlView(null, null);
+                DisableServerButtons();
+            }
+        }
+
+        /// <summary>
         /// Open new scenario.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OpenNewScenario(object sender, EventArgs e)
+        private void OpenNewServer(object sender, EventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog(Director.Properties.Resources.DialogOpenScenario);
             dlg.Multiselect = false;
@@ -866,7 +1075,7 @@ namespace Director.Forms
             {
                 try
                 {
-                    UServer = Deserialization.DeserializeServer(dlg.FileNames[0]);
+                    UServer = Deserialization.DeserializeAll(dlg.FileNames[0]);
                 }
                 catch
                 {
@@ -890,16 +1099,21 @@ namespace Director.Forms
                 foreach (Scenario s in UServer.Scenarios.OrderBy(n => n.Position))
                 {
                     s.TreePosition = CreateTreeItem(tmp, s.Name, ScenarioImage, s);
+                    s.ParentServer = UServer;
 
                     foreach (Request r in s.Requests.OrderBy(n => n.Position))
                     {
                         r.TreePosition = CreateTreeItem(s.TreePosition, r.Name, RequestImage, r);
+                        r.ParentScenario = s;
                     }
                 }
 
                 // Select Server and update view
                 CurrentServer.SelectRow(tmp);
                 UpdateControlView(null, null);
+
+                // Enable close sceanrio
+                EnableServerButtons();
             }
 
         }
@@ -909,9 +1123,13 @@ namespace Director.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SaveScenario(object sender, EventArgs e)
+        private void SaveServer(object sender, EventArgs e)
         {
             ExportWindow ew = new ExportWindow(UServer);
+            Content.Sensitive = false;
+            ew.Closed += delegate {
+                Content.Sensitive = true;
+            };
             ew.Show();
         }
 
@@ -1046,6 +1264,9 @@ namespace Director.Forms
 
             // Disable server menu mac!
             NewServer.Clicked -= CreateNewServer;
+
+            // Enable close server
+            EnableServerButtons();
         }
 
 

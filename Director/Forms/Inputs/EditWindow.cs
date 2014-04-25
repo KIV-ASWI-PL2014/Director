@@ -48,6 +48,18 @@ namespace Director.Forms.Inputs
         };
 
         /// <summary>
+        /// Invalid waiting time.
+        /// </summary>
+        private Label InvalidTime = new Label()
+        {
+            Markup = "<b>" + Director.Properties.Resources.InvalidWaitTime + "</b>",
+            Visible = false,
+            TextColor = Colors.Red,
+            TextAlignment = Alignment.End,
+            MarginRight = 10
+        };
+
+        /// <summary>
         /// Create window instance.
         /// </summary>
         /// <param name="_window">Main window</param>
@@ -84,8 +96,7 @@ namespace Director.Forms.Inputs
             Frame RequestUrl = new Frame()
             {
                 Label = Director.Properties.Resources.RequestInfoBox,
-                Padding = 10,
-                MinHeight = 140
+                Padding = 10
             };
             VBox RequestUrlContent = new VBox();
             RequestUrlContent.PackStart(new Label(Director.Properties.Resources.RequestUrl));
@@ -120,6 +131,36 @@ namespace Director.Forms.Inputs
                 if (RequestSettings.CurrentTab.Child is OverviewWidget)
                     ((OverviewWidget) RequestSettings.CurrentTab.Child).RefreshOverview();
             };
+
+            // Wait in seconds
+            RequestUrlContent.PackStart(new Label(Director.Properties.Resources.WaitPreviousRequest));
+            TextEntry WaitTime = new TextEntry()
+            {
+                Text = ActiveRequest.WaitAfterPreviousRequest + ""
+            };
+            RequestUrlContent.PackStart(WaitTime, expand: true, fill: true);
+            RequestUrlContent.PackStart(InvalidTime, vpos: WidgetPlacement.End);
+            WaitTime.Changed += delegate
+            {
+                try
+                {
+                    ActiveRequest.WaitAfterPreviousRequest = int.Parse(WaitTime.Text);
+
+                    if (ActiveRequest.WaitAfterPreviousRequest < 0)
+                    {
+                        ActiveRequest.WaitAfterPreviousRequest = 0;
+                        WaitTime.Text = "0";
+                        throw new InvalidCastException();
+                    }
+
+                    InvalidTime.Visible = false;
+                }
+                catch
+                {
+                    InvalidTime.Visible = true;
+                }
+            };
+
 
             RequestUrl.Content = RequestUrlContent;
             ParentContent.PackStart(RequestUrl, expand: false, fill: true);

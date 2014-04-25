@@ -177,7 +177,7 @@ namespace Director.Forms.Export
                     ExportScenarios.Add(item.ScenarioInstance);
                 
                 // Start serialization
-                Serialization.SerializeServer(ActiveServer, ExportPath.Text, ExportScenarios);
+                Serialization.SerializeAll(ActiveServer, ExportPath.Text, ExportScenarios);
 
                 // Close dialog window
                 Close();

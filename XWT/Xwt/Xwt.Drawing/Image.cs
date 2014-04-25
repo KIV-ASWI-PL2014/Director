@@ -582,7 +582,7 @@ namespace Xwt.Drawing
 		{
 			return ToolkitEngine.ImageBackendHandler.GetSize (Backend);
 		}
-	}
+    }
 
 	class NativeImageRef
 	{

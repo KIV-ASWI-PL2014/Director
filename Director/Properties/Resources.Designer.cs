@@ -63,9 +63,108 @@ namespace Director.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _0 {
+            get {
+                object obj = ResourceManager.GetObject("_0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _1 {
+            get {
+                object obj = ResourceManager.GetObject("_1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _2 {
+            get {
+                object obj = ResourceManager.GetObject("_2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _3 {
+            get {
+                object obj = ResourceManager.GetObject("_3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _4 {
+            get {
+                object obj = ResourceManager.GetObject("_4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _5 {
+            get {
+                object obj = ResourceManager.GetObject("_5", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _6 {
+            get {
+                object obj = ResourceManager.GetObject("_6", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _7 {
+            get {
+                object obj = ResourceManager.GetObject("_7", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        internal static string AboutMenu {
+            get {
+                return ResourceManager.GetString("AboutMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap add {
             get {
                 object obj = ResourceManager.GetObject("add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap add_content {
+            get {
+                object obj = ResourceManager.GetObject("add_content", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,6 +222,15 @@ namespace Director.Properties {
         internal static string Confirm {
             get {
                 return ResourceManager.GetString("Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm.
+        /// </summary>
+        internal static string ConfirmInput {
+            get {
+                return ResourceManager.GetString("ConfirmInput", resourceCulture);
             }
         }
         
@@ -226,6 +334,15 @@ namespace Director.Properties {
             get {
                 object obj = ResourceManager.GetObject("edit", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set content.
+        /// </summary>
+        internal static string EditContent {
+            get {
+                return ResourceManager.GetString("EditContent", resourceCulture);
             }
         }
         
@@ -440,6 +557,24 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Help.
+        /// </summary>
+        internal static string HelpMenu {
+            get {
+                return ResourceManager.GetString("HelpMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help.
+        /// </summary>
+        internal static string HelpMenuItem {
+            get {
+                return ResourceManager.GetString("HelpMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap homepage {
@@ -486,11 +621,29 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid status code.
+        /// </summary>
+        internal static string InvalidStatusCode {
+            get {
+                return ResourceManager.GetString("InvalidStatusCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Time delay must be a number and greather or equal to 0!.
         /// </summary>
         internal static string InvalidTimeDelay {
             get {
                 return ResourceManager.GetString("InvalidTimeDelay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid time!.
+        /// </summary>
+        internal static string InvalidWaitTime {
+            get {
+                return ResourceManager.GetString("InvalidWaitTime", resourceCulture);
             }
         }
         
@@ -509,6 +662,15 @@ namespace Director.Properties {
         internal static string MenuAddScenario {
             get {
                 return ResourceManager.GetString("MenuAddScenario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close scenario.
+        /// </summary>
+        internal static string MenuCloseScenario {
+            get {
+                return ResourceManager.GetString("MenuCloseScenario", resourceCulture);
             }
         }
         
@@ -594,6 +756,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run.
+        /// </summary>
+        internal static string MenuRun {
+            get {
+                return ResourceManager.GetString("MenuRun", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save scenario.
         /// </summary>
         internal static string MenuSaveScenario {
@@ -608,6 +779,15 @@ namespace Director.Properties {
         internal static string MenuServer {
             get {
                 return ResourceManager.GetString("MenuServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you want to close scenario?.
+        /// </summary>
+        internal static string MessageBoxCloseScenario {
+            get {
+                return ResourceManager.GetString("MessageBoxCloseScenario", resourceCulture);
             }
         }
         
@@ -810,6 +990,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Request content:.
+        /// </summary>
+        internal static string RequestContent {
+            get {
+                return ResourceManager.GetString("RequestContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Files.
         /// </summary>
         internal static string RequestFiles {
@@ -909,6 +1098,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Response content.
+        /// </summary>
+        internal static string ResponseContent {
+            get {
+                return ResourceManager.GetString("ResponseContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Response.
         /// </summary>
         internal static string ResposneTab {
@@ -934,6 +1132,15 @@ namespace Director.Properties {
             get {
                 object obj = ResourceManager.GetObject("run", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run all!.
+        /// </summary>
+        internal static string RunAllMenu {
+            get {
+                return ResourceManager.GetString("RunAllMenu", resourceCulture);
             }
         }
         
@@ -1104,12 +1311,30 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set request or response.
+        /// </summary>
+        internal static string SetContentTitle {
+            get {
+                return ResourceManager.GetString("SetContentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap settings {
             get {
                 object obj = ResourceManager.GetObject("settings", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        internal static string SettingsMenu {
+            get {
+                return ResourceManager.GetString("SettingsMenu", resourceCulture);
             }
         }
         
@@ -1146,6 +1371,15 @@ namespace Director.Properties {
         internal static string Username {
             get {
                 return ResourceManager.GetString("Username", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wait in seconds after sucessfull previous request:.
+        /// </summary>
+        internal static string WaitPreviousRequest {
+            get {
+                return ResourceManager.GetString("WaitPreviousRequest", resourceCulture);
             }
         }
     }
