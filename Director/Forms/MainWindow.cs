@@ -11,6 +11,7 @@ using Director.DataStructures;
 using Director.Forms.Export;
 using Director.Forms.Inputs;
 using Director.ExportLib;
+using RestSharp;
 
 namespace Director.Forms
 {
@@ -141,6 +142,11 @@ namespace Director.Forms
         /// Close scenario.
         /// </summary>
         private MenuItem CloseServer { get; set; }
+
+        /// <summary>
+        /// Run all menu item.
+        /// </summary>
+        private MenuItem RunAllMenu { get; set; }
 
         /// <summary>
         /// Default constructor initiate components!
@@ -374,6 +380,23 @@ namespace Director.Forms
             // Add server menu to items
             menu.Items.Add(server);
 
+            // Create running menu
+            MenuItem RunMenu = new MenuItem(Director.Properties.Resources.MenuRun);
+
+            // Create submenu
+            RunMenu.SubMenu = _createRunSubmenu();
+
+            // Add
+            menu.Items.Add(RunMenu);
+
+            // Settings
+            MenuItem SettingsMenu = new MenuItem(Director.Properties.Resources.SettingsMenu);
+            menu.Items.Add(SettingsMenu);
+
+            // Help menu
+            MenuItem HelpMenu = new MenuItem(Director.Properties.Resources.HelpMenu);
+            menu.Items.Add(HelpMenu);
+
             // Set as main menu
             MainMenu = menu;
 
@@ -506,6 +529,25 @@ namespace Director.Forms
             };
             RequestMenu.Items.Add(MenuRemoveRequest);
             MenuRemoveRequest.Clicked += MenuRemoveRequest_Clicked;
+        }
+
+        /// <summary>
+        /// Create run submenu.
+        /// </summary>
+        /// <returns></returns>
+        private Menu _createRunSubmenu()
+        {
+            Menu _runSubmenu = new Menu();
+
+            // Run all
+            RunAllMenu = new MenuItem(Director.Properties.Resources.RunAllMenu)
+            {
+                Image = Image.FromResource(DirectorImages.RUN_ICON),
+                Sensitive = false
+            };
+            _runSubmenu.Items.Add(RunAllMenu);
+
+            return _runSubmenu;
         }
 
         /// <summary>
@@ -887,10 +929,65 @@ namespace Director.Forms
             OpenServerMenu.Clicked += OpenNewServer;
             OpenServerMenu.Sensitive = true;
 
+            RunAllMenu.Sensitive = false;
+            RunAllMenu.Clicked -= RunAllMenu_Clicked;
             SaveServerMenu.Sensitive = false;
             SaveServerMenu.Clicked -= SaveServer;
             CloseServer.Sensitive = false;
             CloseServer.Clicked -= CloseServer_Clicked;
+        }
+
+        /// <summary>
+        /// Runn all scenarios.
+        /// </summary>
+        void RunAllMenu_Clicked(object sender, EventArgs e)
+        {
+            // Set all default icons
+            foreach (var s in UServer.Scenarios)
+            {
+                ChangeTreeIcon(s.TreePosition, ScenarioImage);
+                foreach (var r in s.Requests)
+                    ChangeTreeIcon(r.TreePosition, RequestImage);
+            }
+
+            // Run in specific order
+            foreach (var s in UServer.Scenarios.OrderBy(n => n.Position))
+            {
+                bool success = true;
+                ChangeTreeIcon(s.TreePosition, Image.FromResource(DirectorImages.PROCESSING_ICON));
+
+                // Run requests
+                foreach (var r in s.Requests.OrderBy(n => n.Position))
+                {
+                    ChangeTreeIcon(r.TreePosition, Image.FromResource(DirectorImages.PROCESSING_ICON));
+                    RestResponse response = Director.Remote.Remote.SendRemoteRequest(r);
+
+                    if (r.ExpectedStatusCode != -1 && response.StatusCode.ToString().Equals(r.ExpectedStatusCode) == false)
+                    {
+                        success = false;
+                        break;
+                    }
+                }
+
+                if (success)
+                {
+                    ChangeTreeIcon(s.TreePosition, Image.FromResource(DirectorImages.SCENARIO_ICON));
+                }
+                else
+                {
+                    ChangeTreeIcon(s.TreePosition, Image.FromResource(DirectorImages.CROSS_ICON));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Change tree icon on posiiton.
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="icon"></param>
+        void ChangeTreeIcon(TreePosition pos, Image icon)
+        {
+            ServerStore.GetNavigatorAt(pos).SetValue(ColumnImage, icon);
         }
 
         /// <summary>
@@ -903,6 +1000,8 @@ namespace Director.Forms
             OpenServerMenu.Clicked -= OpenNewServer;
             OpenServerMenu.Sensitive = false;
 
+            RunAllMenu.Sensitive = true;
+            RunAllMenu.Clicked += RunAllMenu_Clicked;
             SaveServerMenu.Sensitive = true;
             SaveServerMenu.Clicked += SaveServer;
             CloseServer.Sensitive = true;

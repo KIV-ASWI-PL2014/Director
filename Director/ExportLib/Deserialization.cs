@@ -42,15 +42,12 @@ namespace Director.ExportLib
 
             foreach (Scenario sc in scenarios)
             {
-                foreach (Request req in sc.Requests)
+                if (sc.customVariablesExp != null)
                 {
-                    if (req.customVariablesExp != null)
-                    {
-                        Dictionary<string, string> custVarDes = new Dictionary<string, string>();
-                        foreach (CustomVariableItem cvi in req.customVariablesExp)
-                            custVarDes.Add(cvi.id, cvi.value);
-                        req.customVariables = custVarDes;
-                    }
+                    Dictionary<string, string> custVarDes = new Dictionary<string, string>();
+                    foreach (CustomVariableItem cvi in sc.customVariablesExp)
+                        custVarDes.Add(cvi.id, cvi.value);
+                    sc.customVariables = custVarDes;
                 }
             }
 

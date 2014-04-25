@@ -98,17 +98,6 @@ namespace Director.DataStructures
         public String ResponseTemplate { get; set; }
 
         /// <summary>
-        /// Custom variables for parser.
-        /// </summary>
-        [XmlIgnore]
-        public Dictionary<string, string> customVariables { get; set; }
-
-        /// <summary>
-        /// Custom variables for serialization
-        /// </summary>
-        public CustomVariableItem[] customVariablesExp { get; set; }
-
-        /// <summary>
         /// Wait after previous request time! (in seconds)
         /// </summary>
         public int WaitAfterPreviousRequest { get; set; }

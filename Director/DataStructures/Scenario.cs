@@ -60,6 +60,17 @@ namespace Director.DataStructures
         private int _TimeAfterPrevious;
 
         /// <summary>
+        /// Custom variables for parser.
+        /// </summary>
+        [XmlIgnore]
+        public Dictionary<string, string> customVariables { get; set; }
+
+        /// <summary>
+        /// Custom variables for serialization
+        /// </summary>
+        public CustomVariableItem[] customVariablesExp { get; set; }
+
+        /// <summary>
         /// Time delay after previous scenario ends! [seconds]
         /// </summary>
         public int TimeAfterPrevious
@@ -102,6 +113,7 @@ namespace Director.DataStructures
             RunningFrequency = 0;
             TimeAfterPrevious = 10;
             PeriodicityRunning = false;
+            customVariables = new Dictionary<string, string>();
         }
 
         /// <summary>

@@ -39,11 +39,8 @@ namespace Director.ExportLib
 
             foreach (Scenario sc in scenarios)
             {
-                foreach (Request req in sc.Requests)
-                {
-                    if (req.customVariables != null)
-                        req.customVariablesExp = req.customVariables.Select(kv => new CustomVariableItem() { id = kv.Key, value = kv.Value }).ToArray();
-                }
+                if (sc.customVariables != null)
+                    sc.customVariablesExp = sc.customVariables.Select(kv => new CustomVariableItem() { id = kv.Key, value = kv.Value }).ToArray();
             }
 
             using (TextWriter writer = new StreamWriter(Path.Combine(tmpDirectory.FullName, Export.scenarioOverview)))
