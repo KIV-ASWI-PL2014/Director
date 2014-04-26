@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
-using System.IO.Compression;
+using Director.DataStructures.SupportStructures;
+using ICSharpCode.SharpZipLib.Zip;
+using ICSharpCode.SharpZipLib.Core;
 
 namespace Director.ExportLib
 {
@@ -17,23 +19,45 @@ namespace Director.ExportLib
 
         public static Boolean SerializeAll(Server server, string fileToSave, List<Scenario> ScenarioList)
         {
-            tmpDirectory = Export.createTempDirectory();
+            tmpDirectory = Export.createTempDirectory(true);
             if (tmpDirectory == null)
                 return false;
 
             //serialization of server
-            SerializeServer(server);
+            if (!SerializeServer(server))
+                return false;
 
             //serialization of scenarios
-            SerializeScenarios(ScenarioList);
+            if (!SerializeScenarios(ScenarioList))
+                return false;
 
-            //archive created files
-            ZipFile.CreateFromDirectory(Path.Combine(Path.GetTempPath(), Export.exportDirectory), fileToSave);
+            try
+            {
+                //delete original zip if exists
+                if (File.Exists(fileToSave))
+                    File.Delete(fileToSave);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception during serialization of scenarios: " + e.Message);
+                return false;
+            }
+
+            try
+            {
+                //archive created files
+                ZipUtil.CreateArchiveFromFolder(fileToSave, tmpDirectory.FullName);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Exception during a zip compression : " + e.Message);
+                return false;
+            }
             return true;
         }
 
 
-        public static void SerializeScenarios(List<Scenario> scenarios)
+        public static Boolean SerializeScenarios(List<Scenario> scenarios)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(List<Scenario>));
 
@@ -41,24 +65,72 @@ namespace Director.ExportLib
             {
                 if (sc.customVariables != null)
                     sc.customVariablesExp = sc.customVariables.Select(kv => new CustomVariableItem() { id = kv.Key, value = kv.Value }).ToArray();
-            }
 
-            using (TextWriter writer = new StreamWriter(Path.Combine(tmpDirectory.FullName, Export.scenarioOverview)))
-            {
-                //serialization of scenarios
-                serializer.Serialize(writer, scenarios);
+                if (!ProcessFiles(sc))
+                    return false;
             }
+            try
+            {
+                using (TextWriter writer = new StreamWriter(Path.Combine(tmpDirectory.FullName, Export.scenarioOverview)))
+                {
+                    //serialization of scenarios
+                    serializer.Serialize(writer, scenarios);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception during serialization of scenarios: " + e.Message);
+                return false;
+            }
+            return true;
+        }
+
+        public static Boolean ProcessFiles(Scenario sc)
+        {
+            int counter;
+            String prefix;
+            foreach (Request req in sc.Requests)
+            {
+                counter = 1;
+                prefix = string.Format("{0}_{1}", sc.Id, req.Id);
+                foreach (FileItem f in req.Files)
+                {
+                    try
+                    {
+                        String newFileName = string.Format("{0}_{1}_{2}", prefix, counter, Export.getFileNameFromAbsolutePath(f.FilePath));
+                        String resourceDir = Path.Combine(tmpDirectory.FullName, Export.resourceDirectory);
+                        File.Copy(f.FilePath, Path.Combine(resourceDir, newFileName), true);
+                        f.FilePath = newFileName;
+                        counter++;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Exception during processing files: " + e.Message);
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
 
-        public static void SerializeServer(Server server)
+        public static Boolean SerializeServer(Server server)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(Server));
-            using (TextWriter writer = new StreamWriter(Path.Combine(tmpDirectory.FullName, Export.serverOverview)))
+            try
             {
-                //serialization of server
-                serializer.Serialize(writer, server);
+                XmlSerializer serializer = new XmlSerializer(typeof(Server));
+                using (TextWriter writer = new StreamWriter(Path.Combine(tmpDirectory.FullName, Export.serverOverview)))
+                {
+                    //serialization of server
+                    serializer.Serialize(writer, server);
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception during serialization of server: " + e.Message);
+                return false;
+            }
+            return true;
         }
 
     }
