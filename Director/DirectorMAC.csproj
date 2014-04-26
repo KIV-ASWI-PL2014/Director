@@ -76,11 +76,20 @@
     <Compile Include="DataStructures\Scenario.cs" />
     <Compile Include="DataStructures\Server.cs" />
     <Compile Include="DataStructures\SupportStructures\Email.cs" />
+    <Compile Include="DataStructures\SupportStructures\FileItem.cs" />
     <Compile Include="DataStructures\SupportStructures\Frequency.cs" />
+    <Compile Include="ExportLib\Deserialization.cs" />
     <Compile Include="ExportLib\Export.cs" />
+    <Compile Include="ExportLib\Serialization.cs" />
     <Compile Include="Forms\Controls\EmailList.cs" />
+    <Compile Include="Forms\Controls\FileList.cs" />
+    <Compile Include="Forms\Controls\RequestWidget.cs" />
+    <Compile Include="Forms\Controls\ResponseWidget.cs" />
+    <Compile Include="Forms\Controls\TextEntryHelper.cs" />
+    <Compile Include="DataStructures\CustomVariableItem.cs" />
     <Compile Include="Forms\Inputs\EditWindow.cs" />
     <Compile Include="Forms\Inputs\SetWindow.cs" />
+    <Compile Include="Forms\Inputs\ServerHeaders.cs" />
     <Compile Include="ParserLib\ParserCompareDefinition.cs" />
     <Compile Include="ParserLib\ParserError.cs" />
     <Compile Include="ParserLib\Parser.cs" />
@@ -98,6 +107,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="ProgramMac.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Remote\Remote.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -120,12 +130,6 @@
     </Compile>
     <Compile Include="Forms\Controls\HeaderList.cs" />
     <Compile Include="DataStructures\SupportStructures\Header.cs" />
-    <Compile Include="DataStructures\SupportStructures\FileItem.cs" />
-    <Compile Include="Forms\Controls\FileList.cs" />
-    <Compile Include="Forms\Controls\RequestWidget.cs" />
-    <Compile Include="Forms\Controls\ResponseWidget.cs" />
-    <Compile Include="Forms\Controls\TextEntryHelper.cs" />
-    <Compile Include="Forms\Inputs\ServerHeaders.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -284,9 +288,62 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon %282%29.ico" />
-    <EmbeddedResource Include="Resources\page_paste.png" />
-    <EmbeddedResource Include="Resources\page_copy.png" />
+    <EmbeddedResource Include="Resources\arrow_up.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\arrow_down.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\settings.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\page_paste.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\page_copy.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\default_headers.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\0.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\1.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\2.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\3.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\4.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\5.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\6.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\7.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
