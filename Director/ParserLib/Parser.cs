@@ -257,6 +257,84 @@ namespace Director.ParserLib
             return new ParserResult(errors, null);
         }
 
+        /// <summary>
+        /// This method will replace all variable names in "template" by their actual values.
+        /// </summary>
+        /// <param name="template">string with special syntax</param>
+        /// <param name="customVariables">Custom variables</param>
+        /// <returns>ParserResult object containing errors and result</returns>
+        public static ParserResult parseHeader(string template, Dictionary<string, string> customVariables)
+        {
+            List<ParserError> errors = new List<ParserError>();
+            int original_error_count = errors.Count;
+
+            // if no object with custom variables was passed, create new one
+            if (customVariables == null)
+                customVariables = new Dictionary<string, string>();
+
+            // find out all positions of VARIABLE_CHARACTERs in the string value
+            List<int> occurrences = new List<int>();
+            int index = 0;
+            do
+            {
+                index = template.IndexOf(VARIABLE_CHARACTER, index); // ... so, find all occurrences of function characters in given string value
+                if (index != -1)
+                {
+                    if (index == 0 || template[index - 1] != ESCAPE_CHARACTER) // either first character or unescaped one
+                        occurrences.Add(index);
+                    index++;
+                }
+            } while (index != -1);
+            List<int> original_occurrences = new List<int>(occurrences); // when we notify the user about parser error we want to refer to the positions from original template
+
+            if (occurrences.Count % 2 != 0)
+            {
+                // last VARIABLE_CHARACTER is missing it's pair ...
+                errors.Add(new ParserError(0, original_occurrences.Last(), ERR_MSG_MISSING_VARIABLE_CHARACTER, SOURCE_TEMPLATE)); // ... notify the user ...
+                occurrences.RemoveAt(occurrences.Count - 1); // ... and do not try to replace this one in future
+            }
+
+            // now  we can replace all escaped VARIABLE_CHARACTER for the real ones
+            // note: all concerned indices in occurrences list must be modified accordingly, since ESCAPE_CHARACTERs are being taken
+            // out from the original string
+            index = 0;
+            do
+            {
+                index = template.IndexOf("" + ESCAPE_CHARACTER + VARIABLE_CHARACTER, index); // find escaped VARIABLE_CHARACTER
+                if (index != -1)
+                {
+                    template = template.Remove(index, 1); // remove ESCAPE_CHARACTER from the string
+                    // all occurrences with further placement than index of escaped character must be corrected by one
+                    shift_occurrences(occurrences, index, -1);
+                    index++;
+                }
+            } while (index != -1);
+
+            // try to match variable names with dictionary of custom variables
+            // notify the user if match is not found
+            for (int i = 0; i < occurrences.Count; i += 2)
+            {
+                string variable_name = template.Substring(occurrences[i] + 1, occurrences[i + 1] - occurrences[i] - 1); // grab variable name without VARIABLE_CHARACTERs on edges
+                if (customVariables.ContainsKey(variable_name)) // is this variable defined in passed custom variables?
+                {
+                    // replace variable name by it's value
+                    template = template.Remove(occurrences[i], occurrences[i + 1] - occurrences[i] + 1); // remove variable name from original string inc. VARIABLE_CHARACTERs on edges
+                    template = template.Insert(occurrences[i], customVariables[variable_name]); // insert actual value of that variable on the original position
+                    // after we changed length of original string by replacing variable name by it's value, we need to change all occurrence indices accordingly
+                    shift_occurrences(occurrences, occurrences[i], customVariables[variable_name].Length - variable_name.Length - 2);
+                }
+                else
+                {
+                    // create new error
+                    errors.Add(new ParserError(0, original_occurrences[i], string.Format(ERR_MSG_UNKNOWN_CUSTOM_VARIABLE, variable_name), SOURCE_TEMPLATE));
+                }
+            }
+
+            // create and return ParserResult object
+            ParserResult result = new ParserResult(errors, template);
+            return result;
+        }
+
         private ParserError createError(string errorMessage, string source)
         {
             const string LINE_DEF = ", line ";
@@ -1277,7 +1355,7 @@ namespace Director.ParserLib
         /// <param name="list"></param>
         /// <param name="threshold"></param>
         /// <param name="shift"></param>
-        private void shift_occurrences(List<int> list, int threshold, int shift)
+        private static void shift_occurrences(List<int> list, int threshold, int shift)
         {
             for (int i = 0; i < list.Count; i++)
             {
