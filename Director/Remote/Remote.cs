@@ -24,7 +24,7 @@ namespace Director.Remote
                 client.Authenticator = new HttpBasicAuthenticator(_request.AuthName, _request.AuthPassword);
 
             // Create request
-            var request = new RestRequest();
+            var request = new RestRequest(_request.RequestMethod);
 
             // Create custom variables if not exists!
             if (_request.ParentScenario.customVariables == null)
@@ -38,7 +38,7 @@ namespace Director.Remote
                 throw new InvalidOperationException();
             
             // Set body
-            request.AddBody(result.getResult());
+            request.AddParameter("application/json", result.getResult(), ParameterType.RequestBody);
 
             // Set headers
             foreach (var h in _request.Headers)

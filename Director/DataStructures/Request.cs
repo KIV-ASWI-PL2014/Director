@@ -8,6 +8,7 @@ using Director.DataStructures.Exceptions;
 using System.IO;
 using Director.DataStructures.SupportStructures;
 using Xwt;
+using RestSharp;
 
 namespace Director.DataStructures
 {
@@ -191,6 +192,39 @@ namespace Director.DataStructures
             }
 
             return text;
+        }
+
+        /// <summary>
+        /// Request method POST.
+        /// </summary>
+        public Method RequestMethod
+        {
+            get
+            {
+                switch (HTTP_METHOD.ToLower())
+                {
+                    case "post":
+                        return Method.POST;
+
+                    case "delete":
+                        return Method.DELETE;
+
+                    case "head":
+                        return Method.HEAD;
+
+                    case "options":
+                        return Method.OPTIONS;
+
+                    case "patch":
+                        return Method.PATCH;
+
+                    case "put":
+                        return Method.PUT;
+
+                    default:
+                        return Method.GET;
+                }
+            }
         }
     }
 }

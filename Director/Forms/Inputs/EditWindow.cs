@@ -116,6 +116,7 @@ namespace Director.Forms.Inputs
             RequestHttpMethod.Items.Add(4, "PUT");
             RequestHttpMethod.Items.Add(5, "PATCH");
             RequestHttpMethod.Items.Add(6, "DELETE");
+            RequestHttpMethod.Items.Add(7, "OPTIONS");
             try
             {
                 RequestHttpMethod.SelectedText = ActiveRequest.HTTP_METHOD;

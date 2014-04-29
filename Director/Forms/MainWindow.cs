@@ -995,7 +995,7 @@ namespace Director.Forms
                         RunningObjects.Add(r.TreePosition);
                         RestResponse response = Director.Remote.Remote.SendRemoteRequest(r);
 
-                        if (r.ExpectedStatusCode != -1 && response.StatusCode.ToString().Equals(r.ExpectedStatusCode) == false)
+                        if (r.ExpectedStatusCode != -1 && ((int) response.StatusCode) != r.ExpectedStatusCode)
                         {
                             RunningObjects.Remove(r.TreePosition);
                             success = false;
