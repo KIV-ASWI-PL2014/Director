@@ -104,6 +104,27 @@ namespace Director.DataStructures
         public int WaitAfterPreviousRequest { get; set; }
 
         /// <summary>
+        /// Request remote result.
+        /// </summary>
+        private String requestRemoteResult;
+        public String RequestRemoteResult
+        {
+            get
+            {
+                if (requestRemoteResult == null)
+                {
+                    return "";
+                }
+                else
+                    return requestRemoteResult;
+            }
+            set
+            {
+                requestRemoteResult = value;
+            }
+        }
+
+        /// <summary>
         /// Empty constructor for XML serialization!
         /// </summary>
         public Request()

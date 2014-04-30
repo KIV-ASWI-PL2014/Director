@@ -67,8 +67,8 @@ namespace Director.Forms.Inputs
         public EditWindow(MainWindow _window, Request _request)
         {
             // Set default size
-            Width = 790;
-            Height = 750;
+            Width = 770;
+            Height = 700;
 
             // This window can not be maximalized
             Resizable = true;

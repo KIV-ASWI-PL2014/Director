@@ -631,4 +631,22 @@
   <data name="PARSER_ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE" xml:space="preserve">
     <value>Provided value "{0}" couldn't be converted to "{1}" type.</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="InvalidReturnCode" xml:space="preserve">
+    <value>Expected: {0} code but request ends with: {1}.</value>
+  </data>
+  <data name="RequestNotSuccessfull" xml:space="preserve">
+    <value>Request was not successfull ({0})!</value>
+  </data>
+  <data name="Response" xml:space="preserve">
+    <value>Response</value>
+  </data>
+  <data name="ResultBody" xml:space="preserve">
+    <value>Result body</value>
+  </data>
+  <data name="ResultIsOk" xml:space="preserve">
+    <value>Request is OK</value>
+  </data>
 </root>
