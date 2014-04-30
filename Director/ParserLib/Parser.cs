@@ -89,34 +89,34 @@ namespace Director.ParserLib
         //
         // parser error messages
         //
-        private static readonly string ERR_MSG_MISSING_VARIABLE_CHARACTER = "Missing closing variable character (" + VARIABLE_CHARACTER + "). Either provide one or escape this one like " + ESCAPE_CHARACTER + VARIABLE_CHARACTER + " .";
-        private static readonly string ERR_MSG_MISSING_MAIN_SYNTAX_CHARACTER = "Missing closing function character (" + MAIN_SYNTAX_CHARACTER + "). Either provide one or escape this one like " + ESCAPE_CHARACTER + MAIN_SYNTAX_CHARACTER + " .";
-        private static readonly string ERR_MSG_UNKNOWN_CUSTOM_VARIABLE = "Variable \"{0}\" is not defined.";
-        private static readonly string ERR_MSG_EXPECTING_CHARACTER = "Expecting \"{0}\".";
-        private static readonly string ERR_MSG_INVALID_CHARACTER = "Invalid character \"{0}\".";
-        private static readonly string ERR_MSG_MISSING_FN_NAME = "Missing function name.";
-        private static readonly string ERR_MSG_UNRECOGNIZED_CHARS_AFTER_FN = "Unrecognized characters after defined function.";
-        private static readonly string ERR_MSG_SWAPPED_PARENTHESES = "Possible swapped parentheses - " + REQUEST_FN_LEFT_PARENTHESIS + " must be closed with " + REQUEST_FN_RIGHT_PARENTHESIS + ".";
-        private static readonly string ERR_MSG_UNRECOGNIZED_FN = "Unrecognized function.";
-        private static readonly string ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS = "Invalid number of arguments.";
-        private static readonly string ERR_MSG_ARGUMENT_NOT_INTEGER = "Argument \"{0}\" is not a valid integer.";
-        private static readonly string ERR_MSG_ARGUMENT_NOT_FLOAT = "Argument \"{0}\" is not a valid float.";
-        private static readonly string ERR_MSG_ARGUMENT_TOO_BIG = "Argument \"{0}\" is too big of a number.";
-        private static readonly string ERR_MSG_ARGUMENT_INVALID = "Argument \"{0}\" is invalid.";
-        private static readonly string ERR_MSG_ARGUMENTS_WRONG_SIZED = "Argument no. {0} (\"{1}\") must be smaller than argument no. {2} (\"{3}\").";
-        private static readonly string ERR_MSG_FN_INSIDE_VAR = "Illegal function definition inside variable name.";
-        private static readonly string ERR_MSG_UNKNOWN_OPERATION = "Unknown operation type \"{0}\".";
-        private static readonly string ERR_MSG_UNKNOWN_TYPE = "Unknown type \"{0}\".";
-        private static readonly string ERR_MSG_MISING_TYPE_FOR_OPERATION = "Missing type for operation. If you want to compare the value, type must be specified.";
-        private static readonly string ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE = "Operation \"{0}\" does not support \"{1}\" type.";
-        private static readonly string ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE = "Provided value \"{0}\" couldn't be converted to \"{1}\" type.";
-        private static readonly string ERR_MSG_ILLEGAL_KEY_IN_RESPONSE = "Response JSON contains \"{0}\" key, that is not defined in the template.";
-        private static readonly string ERR_MSG_MISSING_KEY_IN_RESPONSE = "Response JSON does not contain \"{0}\" key, that is defined as mandatory in the template.";
-        private static readonly string ERR_MSG_VALUES_DIFFER_IN_TYPE = "Values for matched key \"{0}\" differ in their type (\"{1}\" and \"{2}\").";
-        private static readonly string ERR_MSG_COMPARE_VALUES = "Values \"{0}\" defined in template and \"{1}\" received in response don't match.";
-        private static readonly string ERR_MSG_COMPARE_TYPES = "Types \"{0}\" defined in template and \"{1}\" received in response don't match.";
-        private static readonly string ERR_MSG_COMPARE_OPERATION = "Operation \"{0} {1} {2}\" returned false.";
-        private static readonly string ERR_MSG_REGEX_PARSER = "Regular expression parser raised following exception: {0}";
+        private static readonly string ERR_MSG_MISSING_VARIABLE_CHARACTER = string.Format(Director.Properties.Resources.PARSER_ERR_MSG_MISSING_VARIABLE_CHARACTER, VARIABLE_CHARACTER, "" + ESCAPE_CHARACTER + VARIABLE_CHARACTER);
+        private static readonly string ERR_MSG_MISSING_MAIN_SYNTAX_CHARACTER = string.Format(Director.Properties.Resources.PARSER_ERR_MSG_MISSING_MAIN_SYNTAX_CHARACTER, MAIN_SYNTAX_CHARACTER, "" + ESCAPE_CHARACTER + MAIN_SYNTAX_CHARACTER);
+        private static readonly string ERR_MSG_UNKNOWN_CUSTOM_VARIABLE = Director.Properties.Resources.PARSER_ERR_MSG_UNKNOWN_CUSTOM_VARIABLE;
+        private static readonly string ERR_MSG_EXPECTING_CHARACTER = Director.Properties.Resources.PARSER_ERR_MSG_EXPECTING_CHARACTER;
+        private static readonly string ERR_MSG_INVALID_CHARACTER = Director.Properties.Resources.PARSER_ERR_MSG_INVALID_CHARACTER;
+        private static readonly string ERR_MSG_MISSING_FN_NAME = Director.Properties.Resources.PARSER_ERR_MSG_MISSING_FN_NAME;
+        private static readonly string ERR_MSG_UNRECOGNIZED_CHARS_AFTER_FN = Director.Properties.Resources.PARSER_ERR_MSG_UNRECOGNIZED_CHARS_AFTER_FN;
+        private static readonly string ERR_MSG_SWAPPED_PARENTHESES = string.Format(Director.Properties.Resources.PARSER_ERR_MSG_SWAPPED_PARENTHESES, REQUEST_FN_LEFT_PARENTHESIS, REQUEST_FN_RIGHT_PARENTHESIS);
+        private static readonly string ERR_MSG_UNRECOGNIZED_FN = Director.Properties.Resources.PARSER_ERR_MSG_UNRECOGNIZED_FN;
+        private static readonly string ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS = Director.Properties.Resources.PARSER_ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS;
+        private static readonly string ERR_MSG_ARGUMENT_NOT_INTEGER = Director.Properties.Resources.PARSER_ERR_MSG_ARGUMENT_NOT_INTEGER;
+        private static readonly string ERR_MSG_ARGUMENT_NOT_FLOAT = Director.Properties.Resources.PARSER_ERR_MSG_ARGUMENT_NOT_FLOAT;
+        private static readonly string ERR_MSG_ARGUMENT_TOO_BIG = Director.Properties.Resources.PARSER_ERR_MSG_ARGUMENT_TOO_BIG;
+        private static readonly string ERR_MSG_ARGUMENT_INVALID = Director.Properties.Resources.PARSER_ERR_MSG_ARGUMENT_INVALID;
+        private static readonly string ERR_MSG_ARGUMENTS_WRONG_SIZED = Director.Properties.Resources.PARSER_ERR_MSG_ARGUMENTS_WRONG_SIZED;
+        private static readonly string ERR_MSG_FN_INSIDE_VAR = Director.Properties.Resources.PARSER_ERR_MSG_FN_INSIDE_VAR;
+        private static readonly string ERR_MSG_UNKNOWN_OPERATION = Director.Properties.Resources.PARSER_ERR_MSG_UNKNOWN_OPERATION;
+        private static readonly string ERR_MSG_UNKNOWN_TYPE = Director.Properties.Resources.PARSER_ERR_MSG_UNKNOWN_TYPE;
+        private static readonly string ERR_MSG_MISING_TYPE_FOR_OPERATION = Director.Properties.Resources.PARSER_ERR_MSG_MISING_TYPE_FOR_OPERATION;
+        private static readonly string ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE = Director.Properties.Resources.PARSER_ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE;
+        private static readonly string ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE = Director.Properties.Resources.PARSER_ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE;
+        private static readonly string ERR_MSG_ILLEGAL_KEY_IN_RESPONSE = Director.Properties.Resources.PARSER_ERR_MSG_ILLEGAL_KEY_IN_RESPONSE;
+        private static readonly string ERR_MSG_MISSING_KEY_IN_RESPONSE = Director.Properties.Resources.PARSER_ERR_MSG_MISSING_KEY_IN_RESPONSE;
+        private static readonly string ERR_MSG_VALUES_DIFFER_IN_TYPE = Director.Properties.Resources.PARSER_ERR_MSG_VALUES_DIFFER_IN_TYPE;
+        private static readonly string ERR_MSG_COMPARE_VALUES = Director.Properties.Resources.PARSER_ERR_MSG_COMPARE_VALUES;
+        private static readonly string ERR_MSG_COMPARE_TYPES = Director.Properties.Resources.PARSER_ERR_MSG_COMPARE_TYPES;
+        private static readonly string ERR_MSG_COMPARE_OPERATION = Director.Properties.Resources.PARSER_ERR_MSG_COMPARE_OPERATION;
+        private static readonly string ERR_MSG_REGEX_PARSER = Director.Properties.Resources.PARSER_ERR_MSG_REGEX_PARSER;
 
         //
         // global variables
