@@ -89,34 +89,34 @@ namespace Director.ParserLib
         //
         // parser error messages
         //
-        private static readonly string ERR_MSG_MISSING_VARIABLE_CHARACTER = "Missing closing variable character (" + VARIABLE_CHARACTER + "). Either provide one or escape this one like " + ESCAPE_CHARACTER + VARIABLE_CHARACTER + " .";
-        private static readonly string ERR_MSG_MISSING_MAIN_SYNTAX_CHARACTER = "Missing closing function character (" + MAIN_SYNTAX_CHARACTER + "). Either provide one or escape this one like " + ESCAPE_CHARACTER + MAIN_SYNTAX_CHARACTER + " .";
-        private static readonly string ERR_MSG_UNKNOWN_CUSTOM_VARIABLE = "Variable \"{0}\" is not defined.";
-        private static readonly string ERR_MSG_EXPECTING_CHARACTER = "Expecting \"{0}\".";
-        private static readonly string ERR_MSG_INVALID_CHARACTER = "Invalid character \"{0}\".";
-        private static readonly string ERR_MSG_MISSING_FN_NAME = "Missing function name.";
-        private static readonly string ERR_MSG_UNRECOGNIZED_CHARS_AFTER_FN = "Unrecognized characters after defined function.";
-        private static readonly string ERR_MSG_SWAPPED_PARENTHESES = "Possible swapped parentheses - " + REQUEST_FN_LEFT_PARENTHESIS + " must be closed with " + REQUEST_FN_RIGHT_PARENTHESIS + ".";
-        private static readonly string ERR_MSG_UNRECOGNIZED_FN = "Unrecognized function.";
-        private static readonly string ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS = "Invalid number of arguments.";
-        private static readonly string ERR_MSG_ARGUMENT_NOT_INTEGER = "Argument \"{0}\" is not a valid integer.";
-        private static readonly string ERR_MSG_ARGUMENT_NOT_FLOAT = "Argument \"{0}\" is not a valid float.";
-        private static readonly string ERR_MSG_ARGUMENT_TOO_BIG = "Argument \"{0}\" is too big of a number.";
-        private static readonly string ERR_MSG_ARGUMENT_INVALID = "Argument \"{0}\" is invalid.";
-        private static readonly string ERR_MSG_ARGUMENTS_WRONG_SIZED = "Argument no. {0} (\"{1}\") must be smaller than argument no. {2} (\"{3}\").";
-        private static readonly string ERR_MSG_FN_INSIDE_VAR = "Illegal function definition inside variable name.";
-        private static readonly string ERR_MSG_UNKNOWN_OPERATION = "Unknown operation type \"{0}\".";
-        private static readonly string ERR_MSG_UNKNOWN_TYPE = "Unknown type \"{0}\".";
-        private static readonly string ERR_MSG_MISING_TYPE_FOR_OPERATION = "Missing type for operation. If you want to compare the value, type must be specified.";
-        private static readonly string ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE = "Operation \"{0}\" does not support \"{1}\" type.";
-        private static readonly string ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE = "Provided value \"{0}\" couldn't be converted to \"{1}\" type.";
-        private static readonly string ERR_MSG_ILLEGAL_KEY_IN_RESPONSE = "Response JSON contains \"{0}\" key, that is not defined in the template.";
-        private static readonly string ERR_MSG_MISSING_KEY_IN_RESPONSE = "Response JSON does not contain \"{0}\" key, that is defined as mandatory in the template.";
-        private static readonly string ERR_MSG_VALUES_DIFFER_IN_TYPE = "Values for matched key \"{0}\" differ in their type (\"{1}\" and \"{2}\").";
-        private static readonly string ERR_MSG_COMPARE_VALUES = "Values \"{0}\" defined in template and \"{1}\" received in response don't match.";
-        private static readonly string ERR_MSG_COMPARE_TYPES = "Types \"{0}\" defined in template and \"{1}\" received in response don't match.";
-        private static readonly string ERR_MSG_COMPARE_OPERATION = "Operation \"{0} {1} {2}\" returned false.";
-        private static readonly string ERR_MSG_REGEX_PARSER = "Regular expression parser raised following exception: {0}";
+        private static readonly string ERR_MSG_MISSING_VARIABLE_CHARACTER = string.Format(Director.Properties.Resources.PARSER_ERR_MSG_MISSING_VARIABLE_CHARACTER, VARIABLE_CHARACTER, "" + ESCAPE_CHARACTER + VARIABLE_CHARACTER);
+        private static readonly string ERR_MSG_MISSING_MAIN_SYNTAX_CHARACTER = string.Format(Director.Properties.Resources.PARSER_ERR_MSG_MISSING_MAIN_SYNTAX_CHARACTER, MAIN_SYNTAX_CHARACTER, "" + ESCAPE_CHARACTER + MAIN_SYNTAX_CHARACTER);
+        private static readonly string ERR_MSG_UNKNOWN_CUSTOM_VARIABLE = Director.Properties.Resources.PARSER_ERR_MSG_UNKNOWN_CUSTOM_VARIABLE;
+        private static readonly string ERR_MSG_EXPECTING_CHARACTER = Director.Properties.Resources.PARSER_ERR_MSG_EXPECTING_CHARACTER;
+        private static readonly string ERR_MSG_INVALID_CHARACTER = Director.Properties.Resources.PARSER_ERR_MSG_INVALID_CHARACTER;
+        private static readonly string ERR_MSG_MISSING_FN_NAME = Director.Properties.Resources.PARSER_ERR_MSG_MISSING_FN_NAME;
+        private static readonly string ERR_MSG_UNRECOGNIZED_CHARS_AFTER_FN = Director.Properties.Resources.PARSER_ERR_MSG_UNRECOGNIZED_CHARS_AFTER_FN;
+        private static readonly string ERR_MSG_SWAPPED_PARENTHESES = string.Format(Director.Properties.Resources.PARSER_ERR_MSG_SWAPPED_PARENTHESES, REQUEST_FN_LEFT_PARENTHESIS, REQUEST_FN_RIGHT_PARENTHESIS);
+        private static readonly string ERR_MSG_UNRECOGNIZED_FN = Director.Properties.Resources.PARSER_ERR_MSG_UNRECOGNIZED_FN;
+        private static readonly string ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS = Director.Properties.Resources.PARSER_ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS;
+        private static readonly string ERR_MSG_ARGUMENT_NOT_INTEGER = Director.Properties.Resources.PARSER_ERR_MSG_ARGUMENT_NOT_INTEGER;
+        private static readonly string ERR_MSG_ARGUMENT_NOT_FLOAT = Director.Properties.Resources.PARSER_ERR_MSG_ARGUMENT_NOT_FLOAT;
+        private static readonly string ERR_MSG_ARGUMENT_TOO_BIG = Director.Properties.Resources.PARSER_ERR_MSG_ARGUMENT_TOO_BIG;
+        private static readonly string ERR_MSG_ARGUMENT_INVALID = Director.Properties.Resources.PARSER_ERR_MSG_ARGUMENT_INVALID;
+        private static readonly string ERR_MSG_ARGUMENTS_WRONG_SIZED = Director.Properties.Resources.PARSER_ERR_MSG_ARGUMENTS_WRONG_SIZED;
+        private static readonly string ERR_MSG_FN_INSIDE_VAR = Director.Properties.Resources.PARSER_ERR_MSG_FN_INSIDE_VAR;
+        private static readonly string ERR_MSG_UNKNOWN_OPERATION = Director.Properties.Resources.PARSER_ERR_MSG_UNKNOWN_OPERATION;
+        private static readonly string ERR_MSG_UNKNOWN_TYPE = Director.Properties.Resources.PARSER_ERR_MSG_UNKNOWN_TYPE;
+        private static readonly string ERR_MSG_MISING_TYPE_FOR_OPERATION = Director.Properties.Resources.PARSER_ERR_MSG_MISING_TYPE_FOR_OPERATION;
+        private static readonly string ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE = Director.Properties.Resources.PARSER_ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE;
+        private static readonly string ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE = Director.Properties.Resources.PARSER_ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE;
+        private static readonly string ERR_MSG_ILLEGAL_KEY_IN_RESPONSE = Director.Properties.Resources.PARSER_ERR_MSG_ILLEGAL_KEY_IN_RESPONSE;
+        private static readonly string ERR_MSG_MISSING_KEY_IN_RESPONSE = Director.Properties.Resources.PARSER_ERR_MSG_MISSING_KEY_IN_RESPONSE;
+        private static readonly string ERR_MSG_VALUES_DIFFER_IN_TYPE = Director.Properties.Resources.PARSER_ERR_MSG_VALUES_DIFFER_IN_TYPE;
+        private static readonly string ERR_MSG_COMPARE_VALUES = Director.Properties.Resources.PARSER_ERR_MSG_COMPARE_VALUES;
+        private static readonly string ERR_MSG_COMPARE_TYPES = Director.Properties.Resources.PARSER_ERR_MSG_COMPARE_TYPES;
+        private static readonly string ERR_MSG_COMPARE_OPERATION = Director.Properties.Resources.PARSER_ERR_MSG_COMPARE_OPERATION;
+        private static readonly string ERR_MSG_REGEX_PARSER = Director.Properties.Resources.PARSER_ERR_MSG_REGEX_PARSER;
 
         //
         // global variables
@@ -255,6 +255,84 @@ namespace Director.ParserLib
 
             // return all possibly found errors
             return new ParserResult(errors, null);
+        }
+
+        /// <summary>
+        /// This method will replace all variable names in "template" by their actual values.
+        /// </summary>
+        /// <param name="template">string with special syntax</param>
+        /// <param name="customVariables">Custom variables</param>
+        /// <returns>ParserResult object containing errors and result</returns>
+        public static ParserResult parseHeader(string template, Dictionary<string, string> customVariables)
+        {
+            List<ParserError> errors = new List<ParserError>();
+            int original_error_count = errors.Count;
+
+            // if no object with custom variables was passed, create new one
+            if (customVariables == null)
+                customVariables = new Dictionary<string, string>();
+
+            // find out all positions of VARIABLE_CHARACTERs in the string value
+            List<int> occurrences = new List<int>();
+            int index = 0;
+            do
+            {
+                index = template.IndexOf(VARIABLE_CHARACTER, index); // ... so, find all occurrences of function characters in given string value
+                if (index != -1)
+                {
+                    if (index == 0 || template[index - 1] != ESCAPE_CHARACTER) // either first character or unescaped one
+                        occurrences.Add(index);
+                    index++;
+                }
+            } while (index != -1);
+            List<int> original_occurrences = new List<int>(occurrences); // when we notify the user about parser error we want to refer to the positions from original template
+
+            if (occurrences.Count % 2 != 0)
+            {
+                // last VARIABLE_CHARACTER is missing it's pair ...
+                errors.Add(new ParserError(0, original_occurrences.Last(), ERR_MSG_MISSING_VARIABLE_CHARACTER, SOURCE_TEMPLATE)); // ... notify the user ...
+                occurrences.RemoveAt(occurrences.Count - 1); // ... and do not try to replace this one in future
+            }
+
+            // now  we can replace all escaped VARIABLE_CHARACTER for the real ones
+            // note: all concerned indices in occurrences list must be modified accordingly, since ESCAPE_CHARACTERs are being taken
+            // out from the original string
+            index = 0;
+            do
+            {
+                index = template.IndexOf("" + ESCAPE_CHARACTER + VARIABLE_CHARACTER, index); // find escaped VARIABLE_CHARACTER
+                if (index != -1)
+                {
+                    template = template.Remove(index, 1); // remove ESCAPE_CHARACTER from the string
+                    // all occurrences with further placement than index of escaped character must be corrected by one
+                    shift_occurrences(occurrences, index, -1);
+                    index++;
+                }
+            } while (index != -1);
+
+            // try to match variable names with dictionary of custom variables
+            // notify the user if match is not found
+            for (int i = 0; i < occurrences.Count; i += 2)
+            {
+                string variable_name = template.Substring(occurrences[i] + 1, occurrences[i + 1] - occurrences[i] - 1); // grab variable name without VARIABLE_CHARACTERs on edges
+                if (customVariables.ContainsKey(variable_name)) // is this variable defined in passed custom variables?
+                {
+                    // replace variable name by it's value
+                    template = template.Remove(occurrences[i], occurrences[i + 1] - occurrences[i] + 1); // remove variable name from original string inc. VARIABLE_CHARACTERs on edges
+                    template = template.Insert(occurrences[i], customVariables[variable_name]); // insert actual value of that variable on the original position
+                    // after we changed length of original string by replacing variable name by it's value, we need to change all occurrence indices accordingly
+                    shift_occurrences(occurrences, occurrences[i], customVariables[variable_name].Length - variable_name.Length - 2);
+                }
+                else
+                {
+                    // create new error
+                    errors.Add(new ParserError(0, original_occurrences[i], string.Format(ERR_MSG_UNKNOWN_CUSTOM_VARIABLE, variable_name), SOURCE_TEMPLATE));
+                }
+            }
+
+            // create and return ParserResult object
+            ParserResult result = new ParserResult(errors, template);
+            return result;
         }
 
         private ParserError createError(string errorMessage, string source)
@@ -1277,7 +1355,7 @@ namespace Director.ParserLib
         /// <param name="list"></param>
         /// <param name="threshold"></param>
         /// <param name="shift"></param>
-        private void shift_occurrences(List<int> list, int threshold, int shift)
+        private static void shift_occurrences(List<int> list, int threshold, int shift)
         {
             for (int i = 0; i < list.Count; i++)
             {
