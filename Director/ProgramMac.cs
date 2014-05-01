@@ -19,7 +19,7 @@ namespace Director
         private static void Main()
         {
 			// Set toolkit type
-          Config.SetAppType (ToolkitType.Gtk); 
+			Config.SetAppType (ToolkitType.Gtk); 
           Application.Initialize(Config.GetAppType());
 
 

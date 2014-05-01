@@ -65,6 +65,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\XWT\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\XWT\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\XWT\RestSharp.dll</HintPath>
     </Reference>
@@ -102,6 +105,7 @@
     <Compile Include="Forms\MainWindow.cs" />
     <Compile Include="Forms\Panels\PanelBase.cs" />
     <Compile Include="Forms\Panels\RequestPage.cs" />
+    <Compile Include="ExportLib\ZipUtil.cs" />
     <Compile Include="Forms\Panels\ScenarioPage.cs" />
     <Compile Include="Forms\Panels\ServerPage.cs" />
     <Compile Include="Program.cs" />
@@ -185,6 +189,11 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\add_content.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

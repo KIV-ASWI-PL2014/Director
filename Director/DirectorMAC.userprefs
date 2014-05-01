@@ -1,19 +1,22 @@
-﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="24.4.2014 18:32:51">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ExportLib/Deserialization.cs">
+﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="29.4.2014 17:14:48">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug Mac" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ParserLib/Parser.cs">
     <Files>
       <File FileName="Forms/Inputs/SetWindow.cs" Line="1" Column="1" />
-      <File FileName="ProgramMac.cs" Line="1" Column="1" />
+      <File FileName="ProgramMac.cs" Line="32" Column="31" />
       <File FileName="DataStructures/Server.cs" Line="1" Column="1" />
-      <File FileName="Forms/Controls/HeaderList.cs" Line="1" Column="1" />
-      <File FileName="Forms/Controls/ResponseWidget.cs" Line="1" Column="1" />
-      <File FileName="Forms/Controls/TextEntryHelper.cs" Line="1" Column="1" />
-      <File FileName="Forms/MainWindow.cs" Line="1" Column="1" />
-      <File FileName="ExportLib/Deserialization.cs" Line="9" Column="29" />
+      <File FileName="Forms/MainWindow.cs" Line="997" Column="72" />
+      <File FileName="Remote/Remote.cs" Line="39" Column="40" />
+      <File FileName="ParserLib/Parser.cs" Line="280" Column="1" />
+      <File FileName="Forms/Export/ExportWindow.cs" Line="1" Column="1" />
+      <File FileName="DataStructures/SupportStructures/Header.cs" Line="1" Column="1" />
+      <File FileName="DataStructures/SupportStructures/Frequency.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/strnadj/ZCU/Director/Director/ParserLib/Parser.cs" line="280" column="10" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

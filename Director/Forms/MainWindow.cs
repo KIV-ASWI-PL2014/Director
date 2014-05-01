@@ -261,7 +261,7 @@ namespace Director.Forms
                 Image.FromResource(DirectorImages.HELP_ICON),
                 DirectorHomepage
                 );
-
+				
             // Select information
             CurrentServer.SelectRow(pos);
         }
@@ -933,11 +933,15 @@ namespace Director.Forms
             OpenServerMenu.Sensitive = true;
 
             RunAllMenu.Sensitive = false;
-            RunAllMenu.Clicked -= RunAllMenu_Clicked;
+			try {
+				RunAllMenu.Clicked -= RunAllMenu_Clicked;
+				SaveServerMenu.Clicked -= SaveServer;
+				CloseServer.Clicked -= CloseServer_Clicked;
+			} catch {
+
+			}
             SaveServerMenu.Sensitive = false;
-            SaveServerMenu.Clicked -= SaveServer;
             CloseServer.Sensitive = false;
-            CloseServer.Clicked -= CloseServer_Clicked;
         }
 
         /// <summary>
