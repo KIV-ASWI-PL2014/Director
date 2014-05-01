@@ -374,6 +374,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Chyba.
+        /// </summary>
+        internal static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Errors.
         /// </summary>
         internal static string Errors {
@@ -590,6 +599,15 @@ namespace Director.Properties {
         internal static string InvalidRequestName {
             get {
                 return ResourceManager.GetString("InvalidRequestName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected: {0} code but request ends with: {1}..
+        /// </summary>
+        internal static string InvalidReturnCode {
+            get {
+                return ResourceManager.GetString("InvalidReturnCode", resourceCulture);
             }
         }
         
@@ -941,6 +959,258 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Argument &quot;{0}&quot; is invalid..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_ARGUMENT_INVALID {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_ARGUMENT_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argument &quot;{0}&quot; is not a valid float..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_ARGUMENT_NOT_FLOAT {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_ARGUMENT_NOT_FLOAT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argument &quot;{0}&quot; is not a valid integer..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_ARGUMENT_NOT_INTEGER {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_ARGUMENT_NOT_INTEGER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argument &quot;{0}&quot; is too big of a number..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_ARGUMENT_TOO_BIG {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_ARGUMENT_TOO_BIG", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Argument no. {0} (&quot;{1}&quot;) must be smaller than argument no. {2} (&quot;{3}&quot;)..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_ARGUMENTS_WRONG_SIZED {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_ARGUMENTS_WRONG_SIZED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation &quot;{0} {1} {2}&quot; returned false..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_COMPARE_OPERATION {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_COMPARE_OPERATION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Types &quot;{0}&quot; defined in template and &quot;{1}&quot; received in response don&apos;t match..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_COMPARE_TYPES {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_COMPARE_TYPES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Values &quot;{0}&quot; defined in template and &quot;{1}&quot; received in response don&apos;t match..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_COMPARE_VALUES {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_COMPARE_VALUES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expecting &quot;{0}&quot;..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_EXPECTING_CHARACTER {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_EXPECTING_CHARACTER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Illegal function definition inside variable name..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_FN_INSIDE_VAR {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_FN_INSIDE_VAR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response JSON contains &quot;{0}&quot; key, that is not defined in the template..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_ILLEGAL_KEY_IN_RESPONSE {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_ILLEGAL_KEY_IN_RESPONSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid character &quot;{0}&quot;..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_INVALID_CHARACTER {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_INVALID_CHARACTER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid number of arguments..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing type for operation. If you want to compare the value, type must be specified..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_MISING_TYPE_FOR_OPERATION {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_MISING_TYPE_FOR_OPERATION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing function name..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_MISSING_FN_NAME {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_MISSING_FN_NAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response JSON does not contain &quot;{0}&quot; key, that is defined as mandatory in the template..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_MISSING_KEY_IN_RESPONSE {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_MISSING_KEY_IN_RESPONSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing closing function character ({0}). Either provide one or escape this one like {1} ..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_MISSING_MAIN_SYNTAX_CHARACTER {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_MISSING_MAIN_SYNTAX_CHARACTER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing closing variable character ({0}). Either provide one or escape this one like {1} ..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_MISSING_VARIABLE_CHARACTER {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_MISSING_VARIABLE_CHARACTER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation &quot;{0}&quot; does not support &quot;{1}&quot; type..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Regular expression parser raised following exception: {0}.
+        /// </summary>
+        internal static string PARSER_ERR_MSG_REGEX_PARSER {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_REGEX_PARSER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Possible swapped parentheses - &quot;{0}&quot; must be closed with &quot;{1}&quot;..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_SWAPPED_PARENTHESES {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_SWAPPED_PARENTHESES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable &quot;{0}&quot; is not defined..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_UNKNOWN_CUSTOM_VARIABLE {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_UNKNOWN_CUSTOM_VARIABLE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown operation type &quot;{0}&quot;..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_UNKNOWN_OPERATION {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_UNKNOWN_OPERATION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown type &quot;{0}&quot;..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_UNKNOWN_TYPE {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_UNKNOWN_TYPE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unrecognized characters after defined function..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_UNRECOGNIZED_CHARS_AFTER_FN {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_UNRECOGNIZED_CHARS_AFTER_FN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unrecognized function..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_UNRECOGNIZED_FN {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_UNRECOGNIZED_FN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provided value &quot;{0}&quot; couldn&apos;t be converted to &quot;{1}&quot; type..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Values for matched key &quot;{0}&quot; differ in their type (&quot;{1}&quot; and &quot;{2}&quot;)..
+        /// </summary>
+        internal static string PARSER_ERR_MSG_VALUES_DIFFER_IN_TYPE {
+            get {
+                return ResourceManager.GetString("PARSER_ERR_MSG_VALUES_DIFFER_IN_TYPE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
         internal static string Password {
@@ -1044,6 +1314,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Request was not successfull ({0})!.
+        /// </summary>
+        internal static string RequestNotSuccessfull {
+            get {
+                return ResourceManager.GetString("RequestNotSuccessfull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Overview.
         /// </summary>
         internal static string RequestOverview {
@@ -1098,6 +1377,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Response.
+        /// </summary>
+        internal static string Response {
+            get {
+                return ResourceManager.GetString("Response", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Response content.
         /// </summary>
         internal static string ResponseContent {
@@ -1112,6 +1400,24 @@ namespace Director.Properties {
         internal static string ResposneTab {
             get {
                 return ResourceManager.GetString("ResposneTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Result body.
+        /// </summary>
+        internal static string ResultBody {
+            get {
+                return ResourceManager.GetString("ResultBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request is OK.
+        /// </summary>
+        internal static string ResultIsOk {
+            get {
+                return ResourceManager.GetString("ResultIsOk", resourceCulture);
             }
         }
         

@@ -24,7 +24,7 @@ namespace Director.Remote
                 client.Authenticator = new HttpBasicAuthenticator(_request.AuthName, _request.AuthPassword);
 
             // Create request
-            var request = new RestRequest();
+            var request = new RestRequest(_request.RequestMethod);
 
             // Create custom variables if not exists!
             if (_request.ParentScenario.customVariables == null)
@@ -35,8 +35,12 @@ namespace Director.Remote
 				Parser p = new Parser ();
 				ParserResult result = p.generateRequest (_request.RequestTemplate, _request.ParentScenario.customVariables);
 
-				if (result.isSuccess () == false)
-					throw new InvalidOperationException ();
+
+            if (result.isSuccess() == false)
+                throw new InvalidOperationException();
+            
+    	        // Set body
+	            request.AddParameter("application/json", result.getResult(), ParameterType.RequestBody);
 
 				// Set body
 				request.AddBody(result.getResult());

@@ -547,4 +547,106 @@
   <data name="_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\7.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="PARSER_ERR_MSG_ARGUMENTS_WRONG_SIZED" xml:space="preserve">
+    <value>Argument no. {0} ("{1}") must be smaller than argument no. {2} ("{3}").</value>
+  </data>
+  <data name="PARSER_ERR_MSG_ARGUMENT_INVALID" xml:space="preserve">
+    <value>Argument "{0}" is invalid.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_ARGUMENT_NOT_FLOAT" xml:space="preserve">
+    <value>Argument "{0}" is not a valid float.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_ARGUMENT_NOT_INTEGER" xml:space="preserve">
+    <value>Argument "{0}" is not a valid integer.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_ARGUMENT_TOO_BIG" xml:space="preserve">
+    <value>Argument "{0}" is too big of a number.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_COMPARE_OPERATION" xml:space="preserve">
+    <value>Operation "{0} {1} {2}" returned false.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_COMPARE_TYPES" xml:space="preserve">
+    <value>Types "{0}" defined in template and "{1}" received in response don't match.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_COMPARE_VALUES" xml:space="preserve">
+    <value>Values "{0}" defined in template and "{1}" received in response don't match.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_EXPECTING_CHARACTER" xml:space="preserve">
+    <value>Expecting "{0}".</value>
+  </data>
+  <data name="PARSER_ERR_MSG_FN_INSIDE_VAR" xml:space="preserve">
+    <value>Illegal function definition inside variable name.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_ILLEGAL_KEY_IN_RESPONSE" xml:space="preserve">
+    <value>Response JSON contains "{0}" key, that is not defined in the template.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_INVALID_CHARACTER" xml:space="preserve">
+    <value>Invalid character "{0}".</value>
+  </data>
+  <data name="PARSER_ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS" xml:space="preserve">
+    <value>Invalid number of arguments.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_MISING_TYPE_FOR_OPERATION" xml:space="preserve">
+    <value>Missing type for operation. If you want to compare the value, type must be specified.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_MISSING_FN_NAME" xml:space="preserve">
+    <value>Missing function name.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_MISSING_KEY_IN_RESPONSE" xml:space="preserve">
+    <value>Response JSON does not contain "{0}" key, that is defined as mandatory in the template.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_MISSING_MAIN_SYNTAX_CHARACTER" xml:space="preserve">
+    <value>Missing closing function character ({0}). Either provide one or escape this one like {1} .</value>
+  </data>
+  <data name="PARSER_ERR_MSG_MISSING_VARIABLE_CHARACTER" xml:space="preserve">
+    <value>Missing closing variable character ({0}). Either provide one or escape this one like {1} .</value>
+  </data>
+  <data name="PARSER_ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE" xml:space="preserve">
+    <value>Operation "{0}" does not support "{1}" type.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_REGEX_PARSER" xml:space="preserve">
+    <value>Regular expression parser raised following exception: {0}</value>
+  </data>
+  <data name="PARSER_ERR_MSG_SWAPPED_PARENTHESES" xml:space="preserve">
+    <value>Possible swapped parentheses - "{0}" must be closed with "{1}".</value>
+  </data>
+  <data name="PARSER_ERR_MSG_UNKNOWN_CUSTOM_VARIABLE" xml:space="preserve">
+    <value>Variable "{0}" is not defined.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_UNKNOWN_OPERATION" xml:space="preserve">
+    <value>Unknown operation type "{0}".</value>
+  </data>
+  <data name="PARSER_ERR_MSG_UNKNOWN_TYPE" xml:space="preserve">
+    <value>Unknown type "{0}".</value>
+  </data>
+  <data name="PARSER_ERR_MSG_UNRECOGNIZED_CHARS_AFTER_FN" xml:space="preserve">
+    <value>Unrecognized characters after defined function.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_UNRECOGNIZED_FN" xml:space="preserve">
+    <value>Unrecognized function.</value>
+  </data>
+  <data name="PARSER_ERR_MSG_VALUES_DIFFER_IN_TYPE" xml:space="preserve">
+    <value>Values for matched key "{0}" differ in their type ("{1}" and "{2}").</value>
+  </data>
+  <data name="PARSER_ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE" xml:space="preserve">
+    <value>Provided value "{0}" couldn't be converted to "{1}" type.</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="InvalidReturnCode" xml:space="preserve">
+    <value>Expected: {0} code but request ends with: {1}.</value>
+  </data>
+  <data name="RequestNotSuccessfull" xml:space="preserve">
+    <value>Request was not successfull ({0})!</value>
+  </data>
+  <data name="Response" xml:space="preserve">
+    <value>Response</value>
+  </data>
+  <data name="ResultBody" xml:space="preserve">
+    <value>Result body</value>
+  </data>
+  <data name="ResultIsOk" xml:space="preserve">
+    <value>Request is OK</value>
+  </data>
 </root>

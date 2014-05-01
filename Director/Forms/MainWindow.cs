@@ -12,6 +12,8 @@ using Director.Forms.Export;
 using Director.Forms.Inputs;
 using Director.ExportLib;
 using RestSharp;
+using Director.ParserLib;
+using System.Threading;
 
 namespace Director.Forms
 {
@@ -79,9 +81,25 @@ namespace Director.Forms
         /// </summary>
         private Image ServerImage = Image.FromResource(DirectorImages.ROOT_ICON);
 
+        /// <summary>
+        /// Scenario image.
+        /// </summary>
         private Image ScenarioImage = Image.FromResource(DirectorImages.SCENARIO_ICON);
+
+        /// <summary>
+        /// Request image.
+        /// </summary>
         private Image RequestImage = Image.FromResource(DirectorImages.REQUEST_ICON);
-        private Image ProcessingImage = Image.FromResource(DirectorImages.PROCESSING_ICON);
+
+        /// <summary>
+        /// OK image.
+        /// </summary>
+        private Image OKImage = Image.FromResource(DirectorImages.OK_ICON);
+
+        /// <summary>
+        /// Error image.
+        /// </summary>
+        private Image ERORImage = Image.FromResource(DirectorImages.CROSS_ICON);
 
         /// <summary>
         /// Server context menu.
@@ -984,7 +1002,10 @@ namespace Director.Forms
                 {
                     ChangeTreeIcon(s.TreePosition, ScenarioImage);
                     foreach (var r in s.Requests)
+                    {
                         ChangeTreeIcon(r.TreePosition, RequestImage);
+                        r.RequestRemoteResult = "";
+                    }
                 }
 
                 // Run in specific order
@@ -999,9 +1020,56 @@ namespace Director.Forms
                         RunningObjects.Add(r.TreePosition);
                         RestResponse response = Director.Remote.Remote.SendRemoteRequest(r);
 
-                        if (r.ExpectedStatusCode != -1 && response.StatusCode.ToString().Equals(r.ExpectedStatusCode) == false)
+                        // Prepare error...
+                        r.RequestRemoteResult = string.Format("# {0}\n\n", Director.Properties.Resources.Error);
+
+                        // Response
+                        Parser p = new Parser();
+                        ParserResult res = p.parseResponse(r.ResponseTemplate, response.Content, s.customVariables, true);
+
+                        // Valid?
+                        bool valid = false;
+
+                        // Parse response
+                        if (response.ResponseStatus != ResponseStatus.Completed)
                         {
-                            RunningObjects.Remove(r.TreePosition);
+                            r.RequestRemoteResult += string.Format(Director.Properties.Resources.RequestNotSuccessfull + "\n\n", response.ResponseStatus.ToString());
+                        } else if (r.ExpectedStatusCode != -1 && ((int) response.StatusCode) != r.ExpectedStatusCode)
+                        {
+                            // Set error message:
+                            r.RequestRemoteResult += string.Format(Director.Properties.Resources.InvalidReturnCode + "\n\n", r.ExpectedStatusCode, (int)response.StatusCode);
+                        }
+                        else if (!res.isSuccess())
+                        {
+                            foreach( var er in res.getErrors())
+                                r.RequestRemoteResult += "* " + er.getMessage() + "\n";
+                            
+                            r.RequestRemoteResult += "\n\n";
+                        }
+                        else
+                        {
+                            valid = true;
+                            r.RequestRemoteResult = string.Format("# {0}\n\n", Director.Properties.Resources.ResultIsOk);
+                        }
+
+                        // Add response content
+                        if (response.Content != null && response.Content.Length > 0)
+                        {
+                            r.RequestRemoteResult += string.Format("# {0}\n", Director.Properties.Resources.Response);
+                            r.RequestRemoteResult += response.Content;
+                        }
+
+                        // Remove from running
+                        RunningObjects.Remove(r.TreePosition);
+
+                        // Set error image
+                        if (valid)
+                        {
+                            ChangeTreeIcon(r.TreePosition, OKImage);
+                        }
+                        else
+                        {
+                            ChangeTreeIcon(r.TreePosition, ERORImage);
                             success = false;
                             break;
                         }
@@ -1010,11 +1078,11 @@ namespace Director.Forms
                     RunningObjects.Remove(s.TreePosition);
                     if (success)
                     {
-                        ChangeTreeIcon(s.TreePosition, Image.FromResource(DirectorImages.SCENARIO_ICON));
+                        ChangeTreeIcon(s.TreePosition, ScenarioImage);
                     }
                     else
                     {
-                        ChangeTreeIcon(s.TreePosition, Image.FromResource(DirectorImages.CROSS_ICON));
+                        ChangeTreeIcon(s.TreePosition, ERORImage);
                     }
                 }
             });

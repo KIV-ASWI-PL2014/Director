@@ -31,6 +31,11 @@ namespace Director.Forms.Panels
         private MarkdownView RequestOverview { get; set; }
 
         /// <summary>
+        /// Request status - response.
+        /// </summary>
+        private MarkdownView RequestStatus { get; set; }
+
+        /// <summary>
         /// Invalid request name description.
         /// </summary>
         private Label InvalidRequestName = new Label()
@@ -62,6 +67,7 @@ namespace Director.Forms.Panels
             RequestName.Text = request.Name;
             RequestName.Changed += RequestName_Changed;
             RequestOverview.Markdown = ActiveRequest.GetMarkdownInfo();
+            RequestStatus.Markdown = ActiveRequest.RequestRemoteResult;
         }
 
         /// <summary>
@@ -122,11 +128,12 @@ namespace Director.Forms.Panels
                 Label = Director.Properties.Resources.RequestResponse,
                 Padding = 10
             };
-            ResponseFrame.Content = new RichTextView()
+            RequestStatus = new MarkdownView()
             {
-                ExpandHorizontal = true,
-                ExpandVertical = true
+                ExpandHorizontal = false,
+                ExpandVertical = false
             };
+            ResponseFrame.Content = RequestStatus;
             RRPanel.PackStart(ResponseFrame, true, true);
             PackStart(RRPanel, true, true);
         }

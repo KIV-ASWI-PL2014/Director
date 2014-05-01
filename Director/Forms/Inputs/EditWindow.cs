@@ -67,8 +67,8 @@ namespace Director.Forms.Inputs
         public EditWindow(MainWindow _window, Request _request)
         {
             // Set default size
-            Width = 790;
-            Height = 750;
+            Width = 770;
+            Height = 700;
 
             // This window can not be maximalized
             Resizable = true;
@@ -116,6 +116,7 @@ namespace Director.Forms.Inputs
             RequestHttpMethod.Items.Add(4, "PUT");
             RequestHttpMethod.Items.Add(5, "PATCH");
             RequestHttpMethod.Items.Add(6, "DELETE");
+            RequestHttpMethod.Items.Add(7, "OPTIONS");
             try
             {
                 RequestHttpMethod.SelectedText = ActiveRequest.HTTP_METHOD;
