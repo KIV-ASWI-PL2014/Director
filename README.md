@@ -1,9 +1,11 @@
+[![Build
+status](https://ci.appveyor.com/api/projects/status/0opgnlm36ofenlde)](https://ci.appveyor.com/project/Strnadj/director)
+
 Director
 ========
 
 * Director is tool for continual API Testing with a huge specification of request and response
 * Director is standalone application with option export scenarios to Director WEB API
-
 
 
 Annotation
