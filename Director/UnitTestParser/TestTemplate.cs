@@ -15,7 +15,7 @@ namespace UnitTestParser
         [TestMethod]
         public void OperationWithoutType()
         {
-            String template = "\"foo\": [\"##gt#10##\"";
+            String template = "{\"foo\": [\"##gt#10##\"}";
             ParserResult pr = parser.validateResponse(template, null);
 
             Assert.IsNotNull(pr);
@@ -30,7 +30,7 @@ namespace UnitTestParser
             {
                 {"a", "10"}
             };
-            String template = "\"foo\": [\"#integer#ne#b##\"";
+            String template = "{\"foo\": [\"#integer#ne#b##\"}";
             ParserResult pr = parser.validateResponse(template, customVar);
             Assert.IsNotNull(pr);
             Assert.IsFalse(pr.isSuccess());
@@ -40,13 +40,13 @@ namespace UnitTestParser
         public void WrongType() 
         {
             ParserResult pr;
-            String template = "\"foo\": [\"#integer#eq#2.33##\"";
+            String template = "{\"foo\": [\"#integer#eq#2.33##\"}";
 
             pr = parser.validateResponse(template, null);
             Assert.IsNotNull(pr);
             Assert.IsFalse(pr.isSuccess());
 
-            template = "\"foo\": [\"#integer#eq#2.33##\"";
+            template = "{\"foo\": [\"#integer#eq#2.33##\"}";
             Assert.IsNotNull(pr);
             Assert.IsFalse(pr.isSuccess());
         }
@@ -55,13 +55,13 @@ namespace UnitTestParser
         public void MissingHash() 
         {
             ParserResult pr;
-            String template = "\"foo\": [\"integer#eq#2##\"";
+            String template = "{\"foo\": [\"integer#eq#2##\"}";
 
             pr = parser.validateResponse(template, null);
             Assert.IsNotNull(pr);
             Assert.IsFalse(pr.isSuccess());
 
-            template = "\"foo\": [\"#integer#ne#2#\"";
+            template = "{\"foo\": [\"#integer#ne#2#\"}";
 
             pr = parser.validateResponse(template, null);
             Assert.IsNotNull(pr);
@@ -73,7 +73,7 @@ namespace UnitTestParser
         public void WrongVariableType() 
         {
             ParserResult pr;
-            String template = "\"foo\": \"#integer#uv_eq#ahoj##\"";
+            String template = "{\"foo\": \"#integer#uv_eq#ahoj##\"}";
 
             Dictionary<string, string> customVar = new Dictionary<string, string>
             {

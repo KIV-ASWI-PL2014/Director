@@ -355,9 +355,8 @@ namespace Director.ParserLib
         {
             Dictionary<string, ParserItem> result = new Dictionary<string, ParserItem>();
             JsonTextReader reader = new JsonTextReader(new StringReader(template));
-            List<Dictionary<string, ParserItem>> indent_path = new List<Dictionary<string, ParserItem>>();
+            List<object> indent_path = new List<object>();
             string found_key = null;
-            List<ParserItem> array = null;
 
             while (reader.Read())
             {
@@ -366,29 +365,33 @@ namespace Director.ParserLib
                     found_key = (string) reader.Value;
                 }
 
+                // simple type
                 if  (  
-                        (
-                            reader.TokenType == JsonToken.String || 
-                            reader.TokenType == JsonToken.Integer ||
-                            reader.TokenType == JsonToken.Float ||
-                            reader.TokenType == JsonToken.Boolean ||
-                            reader.TokenType == JsonToken.Null
-                        )
-                    &&
-                        found_key != null
-                    )
+                    reader.TokenType == JsonToken.String || 
+                    reader.TokenType == JsonToken.Integer ||
+                    reader.TokenType == JsonToken.Float ||
+                    reader.TokenType == JsonToken.Boolean ||
+                    reader.TokenType == JsonToken.Null
+                )
                 {
-                    ParserItem item = new ParserItem(reader.LineNumber, reader.LinePosition, reader.Value);
-
-                    if (array == null)
+                    if (indent_path.Count > 0)
                     {
-                        indent_path.Last().Add(found_key, item);
-                        found_key = null;
+                        ParserItem item = new ParserItem(reader.LineNumber, reader.LinePosition, reader.Value);
+
+                        if (indent_path.Last() is Dictionary<string, ParserItem>)
+                        {
+                            // we are parsing element of object on this level
+                            ((Dictionary<string, ParserItem>)indent_path.Last()).Add(found_key, item);
+                            found_key = null;
+                        }
+                        else
+                        {
+                            // we are parsing element of array on this level
+                            ((List<ParserItem>)indent_path.Last()).Add(item);
+                        }
                     }
                     else
-                    {
-                        array.Add(item);
-                    }
+                        errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "{"), source));
                 }
 
 
@@ -400,14 +403,22 @@ namespace Director.ParserLib
                     }
                     else
                     {
-                        if (found_key != null)
+                        Dictionary<string, ParserItem> sub_node = new Dictionary<string, ParserItem>(); // create new node for new object
+                        ParserItem item = new ParserItem(reader.LineNumber, reader.LinePosition, sub_node);
+
+                        if (indent_path.Last() is Dictionary<string, ParserItem>)
                         {
-                            Dictionary<string, ParserItem> sub_node = new Dictionary<string, ParserItem>(); // create new node for new object
-                            ParserItem item = new ParserItem(reader.LineNumber, reader.LinePosition, sub_node);
-                            indent_path.Last().Add(found_key, item); // add item to the current level
+                            // we are parsing element of object on this level
+                            ((Dictionary<string, ParserItem>)indent_path.Last()).Add(found_key, item);
                             found_key = null;
-                            indent_path.Add(sub_node); // add new active saving location to the end of this list
                         }
+                        else
+                        {
+                            // we are parsing element of array on this level
+                            ((List<ParserItem>)indent_path.Last()).Add(item);
+                        }
+
+                        indent_path.Add(sub_node); // add new active saving location to the end of this list
                     }
                 }
 
@@ -421,22 +432,40 @@ namespace Director.ParserLib
 
                 if (reader.TokenType == JsonToken.StartArray)
                 {
-                    array = new List<ParserItem>();
+                    List<ParserItem> sub_node = new List<ParserItem>(); // create new node for new array
+                    ParserItem item = new ParserItem(reader.LineNumber, reader.LinePosition, sub_node);
+
+                    if (indent_path.Last() is Dictionary<string, ParserItem>)
+                    {
+                        // we are parsing element of object on this level
+                        ((Dictionary<string, ParserItem>)indent_path.Last()).Add(found_key, item);
+                        found_key = null;
+                    }
+                    else
+                    {
+                        // we are parsing element of array on this level
+                        ((List<ParserItem>)indent_path.Last()).Add(item);
+                    }
+
+                    indent_path.Add(sub_node); // add new active saving location to the end of this list
                 }
 
                 if (reader.TokenType == JsonToken.EndArray)
                 {
-                    ParserItem item = new ParserItem(reader.LineNumber, reader.LinePosition, array);
-                    indent_path.Last().Add(found_key, item);
-                    found_key = null;
-                    array = null;
+                    if (indent_path.Count > 0)
+                        indent_path.RemoveAt(indent_path.Count - 1); // remove last element
+                    else // too many of closing parentheses
+                        errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "["), source));
                 }
             }
 
             // too many of opening parentheses
             if (indent_path.Count > 0)
             {
-                errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "}"), source));
+                if (indent_path.Last() is Dictionary<string, ParserItem>)
+                    errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "}"), source));
+                else
+                    errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "]"), source));
             }
 
             return result;
@@ -459,20 +488,7 @@ namespace Director.ParserLib
                 {
                     if (item.Value.value is List<ParserItem>) // array
                     {
-                        writer.WriteStartArray();
-                        List<ParserItem> list = (List<ParserItem>)item.Value.value;
-                        foreach (ParserItem list_item in list) // do the same serialization for every item of that list/array
-                        {
-                            if (list_item.value is Dictionary<string, ParserItem>) // object
-                            {
-                                writer.WriteRawValue(serialize((Dictionary<string, ParserItem>)list_item.value)); // recursive serialization
-                            }
-                            else // simple data type
-                            {
-                                writer.WriteValue(list_item.value);
-                            }
-                        }
-                        writer.WriteEndArray();
+                        serializeArray((List<ParserItem>)item.Value.value, writer);
                     }
                     else // simple data type
                     {
@@ -483,6 +499,27 @@ namespace Director.ParserLib
             writer.WriteEndObject();
 
             return sb.ToString();
+        }
+
+        private static void serializeArray(List<ParserItem> array, JsonTextWriter writer)
+        {
+            writer.WriteStartArray();
+            foreach (ParserItem list_item in array) // do the same serialization for every item of that list/array
+            {
+                if (list_item.value is Dictionary<string, ParserItem>) // object
+                {
+                    writer.WriteRawValue(serialize((Dictionary<string, ParserItem>)list_item.value)); // recursive serialization
+                }
+                else if (list_item.value is List<ParserItem>) // array
+                {
+                    serializeArray((List<ParserItem>)list_item.value, writer); // recursive serialization
+                }
+                else // simple data type
+                {
+                    writer.WriteValue(list_item.value);
+                }
+            }
+            writer.WriteEndArray();
         }
 
         private void parseInnerSyntaxOfRequestTemplate(Dictionary<string, ParserItem> root, Dictionary<string, string> customVariables, List<ParserError> errors)
@@ -575,10 +612,15 @@ namespace Director.ParserLib
                     Type template_type = null;
                     Type response_type = null;
                     response_type = response_root[template_key].value.GetType();
-                    if (template_root[template_key].comp_def.value != null)
-                        template_type = template_root[template_key].comp_def.value.GetType();
+                    if (template_root[template_key].comp_def != null)
+                    {
+                        if (template_root[template_key].comp_def.value != null)
+                            template_type = template_root[template_key].comp_def.value.GetType();
+                        else
+                            template_type = template_root[template_key].comp_def.type;
+                    }
                     else
-                        template_type = template_root[template_key].comp_def.type;
+                        template_type = template_root[template_key].value.GetType();
 
                     // are the items comparable?
                     if (response_type == template_type || // values are of the same type
