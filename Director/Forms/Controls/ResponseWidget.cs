@@ -287,9 +287,7 @@ namespace Director.Forms.Controls
         void RenderBox_ButtonPressed(object sender, ButtonEventArgs e)
         {
             if (e.Button == PointerButton.Right)
-            {
-                RequestHelperMenu.Popup(RenderBox, e.X, e.Y);
-            }
+                RequestHelperMenu.Popup();
         }
 
         /// <summary>

@@ -20,12 +20,25 @@ namespace Director
         {
 			// Set toolkit type
 			Config.SetAppType (ToolkitType.Gtk); 
-          Application.Initialize(Config.GetAppType());
+          	Application.Initialize(Config.GetAppType());
 
 
-            MainWindow _mainWindow = new MainWindow();
+			//MainWindow _mainWindow = new MainWindow();
 
-            // Close window handlers
+			Server s = new Server() { Name = "OCR" };
+			s.DefaultHeaders.Add(new Header() { Name = "content/type", Value = "application/json" });
+			s.SetUrl("http://localhost:3000/api/");
+			Scenario sc = s.CreateNewScenario();
+			sc.Name = "test";
+			sc.ParentServer = s;
+			Request test = sc.CreateNewRequest();
+			test.ParentScenario = sc;
+
+
+			EditWindow _mainWindow = new EditWindow (null, test);
+
+			// Close window handlers
+
             _mainWindow.Closed += delegate { Application.Exit(); };
 
             _mainWindow.Show();

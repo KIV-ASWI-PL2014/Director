@@ -19,7 +19,7 @@ namespace Director.Forms.Inputs
         /// <summary>
         /// Text input.
         /// </summary>
-        public TextEntry TextInput { get; set; }
+		public MultiLineTextEntry TextInput { get; set; }
 
         /// <summary>
         /// Formated input text.
@@ -67,11 +67,10 @@ namespace Director.Forms.Inputs
             VBox InputArea = new VBox();
 
             // Prepare input
-            TextInput = new TextEntry()
+			TextInput = new MultiLineTextEntry()
             {
                 ExpandVertical = true,
-                ExpandHorizontal = true,
-                MultiLine = true
+                ExpandHorizontal = true
             };
             if (ReqWidget != null)
             {

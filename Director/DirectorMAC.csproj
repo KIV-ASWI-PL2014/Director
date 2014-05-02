@@ -27,6 +27,11 @@
     <UseSGen>false</UseSGen>
     <EnablePackageSigning>false</EnablePackageSigning>
     <DebugSymbols>true</DebugSymbols>
+    <CodeSigningKey>Mac Developer</CodeSigningKey>
+    <PackageSigningKey>Developer ID Installer</PackageSigningKey>
+    <I18n>
+    </I18n>
+    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug Linux|AnyCPU' ">
     <Optimize>false</Optimize>
