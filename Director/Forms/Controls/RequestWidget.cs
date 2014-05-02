@@ -32,7 +32,7 @@ namespace Director.Forms.Controls
         public List<ClickableItems> CanvasItems { get; set; }
 
         /// <summary>
-        /// x
+		/// X,Y points for drawing.
         /// </summary>
         public int X { get; set; }
         public int Y { get; set; }
@@ -91,22 +91,21 @@ namespace Director.Forms.Controls
                 String KeyInfo = string.Format("\"{0}\" : ", pair.Key);
                 
 
-                if (pair.Value.value is Dictionary<string, ParserItem>)
-                {
-                    DrawText(KeyInfo+"{");
-                    X += 20;
-                    NextLine();
-                    DrawJson((Dictionary<string, ParserItem>)pair.Value.value);
-                    X -= 20;
-                    DrawText("}");
-                    NextLine();
-                }
-                else if (pair.Value.value is System.String)
-                {
-                    DrawProperty(pair.Key, (String) pair.Value.value);
-                    NextLine();
-                }
-                else
+				if (pair.Value.value is Dictionary<string, ParserItem>) {
+					DrawText (KeyInfo + "{");
+					X += 20;
+					NextLine ();
+					DrawJson ((Dictionary<string, ParserItem>)pair.Value.value);
+					X -= 20;
+					DrawText ("}");
+					NextLine ();
+				} else if (pair.Value.value is System.String) {
+					DrawProperty (pair.Key, '"' + (String)pair.Value.value + '"');
+					NextLine ();
+				} else if (pair.Value.value is System.Int64) {
+					DrawProperty (pair.Key, '"' + (String)pair.Value.value + '"');
+					NextLine ();
+				} else
                 {
                     DrawText(pair.Value.value.GetType().ToString());
                     NextLine();
@@ -245,9 +244,7 @@ namespace Director.Forms.Controls
         void RenderBox_ButtonPressed(object sender, ButtonEventArgs e)
         {
             if (e.Button == PointerButton.Right)
-            {
-                RequestHelperMenu.Popup(RenderBox, e.X, e.Y);
-            }
+				RequestHelperMenu.Popup();
         }
 
         /// <summary>

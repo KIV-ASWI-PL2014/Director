@@ -334,6 +334,8 @@
     <Compile Include="Xwt.Backends\ICanvasCellViewBackend.cs" />
     <Compile Include="Xwt\SearchTextEntry.cs" />
     <Compile Include="Xwt.Backends\ISearchTextEntryBackend.cs" />
+    <Compile Include="Xwt\MultiLineTextEntry.cs" />
+    <Compile Include="Xwt.Backends\IMultiLineTextEntryBackend.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

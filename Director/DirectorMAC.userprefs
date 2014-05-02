@@ -1,17 +1,17 @@
-﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="22.4.2014 20:16:37">
+﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="1.5.2014 20:00:51">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug Mac" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Forms/Controls/TextEntryHelper.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Forms/Controls/RequestWidget.cs">
     <Files>
       <File FileName="Forms/Inputs/SetWindow.cs" Line="1" Column="1" />
-      <File FileName="ProgramMac.cs" Line="14" Column="6" />
-      <File FileName="DataStructures/Server.cs" Line="21" Column="22" />
-      <File FileName="Forms/Controls/HeaderList.cs" Line="180" Column="17" />
-      <File FileName="Forms/Controls/ResponseWidget.cs" Line="1" Column="1" />
-      <File FileName="Forms/Controls/TextEntryHelper.cs" Line="207" Column="31" />
+      <File FileName="ProgramMac.cs" Line="1" Column="1" />
+      <File FileName="Remote/Remote.cs" Line="1" Column="1" />
+      <File FileName="Forms/Controls/RequestWidget.cs" Line="88" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/strnadj/ZCU/Director/Director/Forms/Controls/RequestWidget.cs" line="88" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

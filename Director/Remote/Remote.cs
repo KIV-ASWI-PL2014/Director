@@ -31,15 +31,21 @@ namespace Director.Remote
                 _request.ParentScenario.customVariables = new Dictionary<string, string>();
 
             // Create request from template
-            Parser p = new Parser();
-            ParserResult result = p.generateRequest(_request.RequestTemplate, _request.ParentScenario.customVariables);
+			if (_request.RequestTemplate != null && _request.RequestTemplate.Length > 0) {
+				Parser p = new Parser ();
+				ParserResult result = p.generateRequest (_request.RequestTemplate, _request.ParentScenario.customVariables);
+
 
             if (result.isSuccess() == false)
                 throw new InvalidOperationException();
             
-            // Set body
-            request.AddParameter("application/json", result.getResult(), ParameterType.RequestBody);
+    	        // Set body
+	            request.AddParameter("application/json", result.getResult(), ParameterType.RequestBody);
 
+				// Set body
+				request.AddBody(result.getResult());
+			}
+            
             // Set headers
             foreach (var h in _request.Headers)
                 request.AddHeader(h.Name, h.Value);

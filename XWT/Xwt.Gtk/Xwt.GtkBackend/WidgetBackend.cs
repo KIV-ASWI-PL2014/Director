@@ -792,6 +792,8 @@ namespace Xwt.GtkBackend
 			a.X = args.Event.X;
 			a.Y = args.Event.Y;
 
+			Console.WriteLine ("Button: {0}, {1}", a.X, a.Y);
+
 			a.Button = (PointerButton) args.Event.Button;
 			if (args.Event.Type == Gdk.EventType.TwoButtonPress)
 				a.MultiplePress = 2;

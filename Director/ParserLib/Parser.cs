@@ -135,6 +135,7 @@ namespace Director.ParserLib
         /// <returns>ParserResult object containing errors and result</returns>
         public ParserResult generateRequest(string template, Dictionary<string, string> customVariables)
         {
+			Console.WriteLine ("GENERATE REQUEST {0}\n", template);
             List<ParserError> errors = new List<ParserError>();
             Dictionary<string, ParserItem> root = null; // top layer of internal parser structures of deserialized JSON template
 

@@ -279,7 +279,7 @@ namespace Director.Forms
                 Image.FromResource(DirectorImages.HELP_ICON),
                 DirectorHomepage
                 );
-
+				
             // Select information
             CurrentServer.SelectRow(pos);
         }
@@ -365,15 +365,15 @@ namespace Director.Forms
 
                     if (data is Server)
                     {
-                        ServerMenu.Popup(CurrentServer, e.X, e.Y);
+                        ServerMenu.Popup();
                     }
                     else if (data is Scenario)
                     {
-                        ScenarioMenu.Popup(CurrentServer, e.X, e.Y);
+                        ScenarioMenu.Popup();
                     }
                     else if (data is Request)
                     {
-                        RequestMenu.Popup(CurrentServer, e.X, e.Y);
+                        RequestMenu.Popup();
                     }
                 }
             }
@@ -951,11 +951,15 @@ namespace Director.Forms
             OpenServerMenu.Sensitive = true;
 
             RunAllMenu.Sensitive = false;
-            RunAllMenu.Clicked -= RunAllMenu_Clicked;
+			try {
+				RunAllMenu.Clicked -= RunAllMenu_Clicked;
+				SaveServerMenu.Clicked -= SaveServer;
+				CloseServer.Clicked -= CloseServer_Clicked;
+			} catch {
+
+			}
             SaveServerMenu.Sensitive = false;
-            SaveServerMenu.Clicked -= SaveServer;
             CloseServer.Sensitive = false;
-            CloseServer.Clicked -= CloseServer_Clicked;
         }
 
         /// <summary>
