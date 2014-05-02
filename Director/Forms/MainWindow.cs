@@ -413,6 +413,45 @@ namespace Director.Forms
             // Settings
             MenuItem SettingsMenu = new MenuItem(Director.Properties.Resources.SettingsMenu);
             menu.Items.Add(SettingsMenu);
+            SettingsMenu.SubMenu = new Menu();
+
+            // Language
+            MenuItem Languages = new MenuItem(Director.Properties.Resources.Language)
+            {
+                Image = Image.FromResource(DirectorImages.LIST_ICON)
+            };
+            SettingsMenu.SubMenu.Items.Add(Languages);
+
+            // Langauges submenu
+            Menu LanguagesSubMenu = new Menu();
+            Languages.SubMenu = LanguagesSubMenu;
+
+            // Get locale
+            string locale = Director.Properties.Settings.Default.language;
+
+            // English
+            MenuItem LocaleEnglish = new MenuItem("English")
+            {
+                Image = Image.FromResource(DirectorImages.EN_ICON)
+            };
+            LanguagesSubMenu.Items.Add(LocaleEnglish);
+            LocaleEnglish.Clicked += delegate
+            {
+                Director.Properties.Settings.Default.language = "en";
+                MessageDialog.ShowMessage(Director.Properties.Resources.RestartApp);
+            };
+
+            // Czech
+            MenuItem LocaleCzech = new MenuItem("Czech")
+            {
+                Image = Image.FromResource(DirectorImages.CS_ICON)
+            };
+            LanguagesSubMenu.Items.Add(LocaleCzech);
+            LocaleCzech.Clicked += delegate
+            {
+                Director.Properties.Settings.Default.language = "cs";
+                MessageDialog.ShowMessage(Director.Properties.Resources.RestartApp);
+            };
 
             // Help menu
             MenuItem HelpMenu = new MenuItem(Director.Properties.Resources.HelpMenu);
@@ -912,7 +951,7 @@ namespace Director.Forms
             ServerMenu.Items.Add(OpenServerMenu);
 
             // Export scenario
-            SaveServerMenu = new MenuItem(Director.Properties.Resources.MenuSaveScenario)
+            SaveServerMenu = new MenuItem(Director.Properties.Resources.MenuSaveServer)
             {
                 Image = Image.FromResource(DirectorImages.SAVE_SCENARIO_ICON)
             };

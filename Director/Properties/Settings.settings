@@ -2,11 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Director.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="app_version" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">0.1a</Value>
-    </Setting>
-    <Setting Name="authors" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Jan Strnadek, David Pejrimovsky, Vaclav Stengl, Dana Lunterova</Value>
+    <Setting Name="language" Type="System.String" Scope="User">
+      <Value Profile="(Default)">cs</Value>
     </Setting>
   </Settings>
 </SettingsFile>

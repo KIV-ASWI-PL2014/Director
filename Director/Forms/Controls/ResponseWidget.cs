@@ -103,11 +103,35 @@ namespace Director.Forms.Controls
                     DrawProperty(pair.Key, (String)pair.Value.value);
                     NextLine();
                 }
-                else
+                else if (pair.Value.value is System.Int64 || pair.Value.value is System.Double)
                 {
-                    DrawText(pair.Value.value.GetType().ToString());
+                    DrawProperty(pair.Key, pair.Value.value + "");
                     NextLine();
                 }
+                else if (pair.Value.value == null)
+                {
+                    DrawProperty(pair.Key, "null");
+                    NextLine();
+                }
+                else
+                {
+                    DrawText(KeyInfo + "[");
+                    X += 20;
+                    NextLine();
+                    DrawArray((List<ParserItem>) pair.Value.value);
+                    X -= 20;
+                    DrawText("]");
+                    NextLine();
+                }
+            }
+        }
+
+        private void DrawArray(List<ParserItem> list)
+        {
+            foreach (var item in list)
+            {
+                DrawText(item.GetType() + ",");
+                NextLine();
             }
         }
 

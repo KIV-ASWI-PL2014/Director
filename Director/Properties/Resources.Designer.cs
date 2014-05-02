@@ -284,6 +284,16 @@ namespace Director.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap cs {
+            get {
+                object obj = ResourceManager.GetObject("cs", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap default_headers {
             get {
                 object obj = ResourceManager.GetObject("default_headers", resourceCulture);
@@ -365,6 +375,16 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap en {
+            get {
+                object obj = ResourceManager.GetObject("en", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid request URL!.
         /// </summary>
         internal static string ErroInvalidRequest {
@@ -374,7 +394,7 @@ namespace Director.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chyba.
+        ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string Error {
             get {
@@ -666,6 +686,25 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        internal static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap list {
+            get {
+                object obj = ResourceManager.GetObject("list", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Api Director.
         /// </summary>
         internal static string MainWindowTitle {
@@ -783,11 +822,11 @@ namespace Director.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save scenario.
+        ///   Looks up a localized string similar to Save server.
         /// </summary>
-        internal static string MenuSaveScenario {
+        internal static string MenuSaveServer {
             get {
-                return ResourceManager.GetString("MenuSaveScenario", resourceCulture);
+                return ResourceManager.GetString("MenuSaveServer", resourceCulture);
             }
         }
         
@@ -1400,6 +1439,15 @@ namespace Director.Properties {
         internal static string ResposneTab {
             get {
                 return ResourceManager.GetString("ResposneTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For apply changes, you have to restart application!.
+        /// </summary>
+        internal static string RestartApp {
+            get {
+                return ResourceManager.GetString("RestartApp", resourceCulture);
             }
         }
         

@@ -256,8 +256,8 @@
   <data name="MenuOpenScenario" xml:space="preserve">
     <value>Open scenario</value>
   </data>
-  <data name="MenuSaveScenario" xml:space="preserve">
-    <value>Save scenario</value>
+  <data name="MenuSaveServer" xml:space="preserve">
+    <value>Save server</value>
   </data>
   <data name="MenuServer" xml:space="preserve">
     <value>Server</value>
@@ -632,7 +632,7 @@
     <value>Provided value "{0}" couldn't be converted to "{1}" type.</value>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>Chyba</value>
+    <value>Error</value>
   </data>
   <data name="InvalidReturnCode" xml:space="preserve">
     <value>Expected: {0} code but request ends with: {1}.</value>
@@ -648,5 +648,20 @@
   </data>
   <data name="ResultIsOk" xml:space="preserve">
     <value>Request is OK</value>
+  </data>
+  <data name="cs" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cs.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="en" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\en.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="list" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\list.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RestartApp" xml:space="preserve">
+    <value>For apply changes, you have to restart application!</value>
   </data>
 </root>
