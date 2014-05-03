@@ -1,11 +1,11 @@
 using Director.Forms;
 using System;
 using Xwt;
-using RestSharp;
 using Director.DataStructures;
+using System.Threading;
 using Director.Forms.Inputs;
 using Director.ParserLib;
-using System.Threading;
+using System.Collections.Generic;
 
 namespace Director
 {
@@ -25,6 +25,20 @@ namespace Director
 
             // Initialize
             Application.Initialize(Config.GetAppType());
+
+            Server s = new Server() { Name = "OCR" };
+            s.DefaultHeaders.Add(new Header() { Name = "content/type", Value = "application/json" });
+            s.DefaultHeaders.Add(new Header() { Name = "Token", Value = "application/json" });
+            s.SetUrl("http://localhost:3000/api/");
+            Scenario sc = s.CreateNewScenario();
+            sc.Name = "test";
+            sc.ParentServer = s;
+            Request test = sc.CreateNewRequest();
+
+            sc.customVariables.Add("test", "hovadina");
+            test.ParentScenario = sc;
+
+            //EditWindow _mainWindow = new EditWindow(null, test);
 
             // Create main window and show
             MainWindow _mainWindow = new MainWindow();

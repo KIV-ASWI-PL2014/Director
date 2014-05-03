@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using Xwt;
 
 namespace Director.Forms.Controls
@@ -86,7 +83,7 @@ namespace Director.Forms.Controls
         /// <summary>
         /// Got item focus.
         /// </summary>
-        public event EventHandler GotFocus
+        public event EventHandler HelperGotFocus
         {
             add { got_focus += value; }
             remove { got_focus -= value; }

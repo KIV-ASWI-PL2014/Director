@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xwt;
 using Director.Forms.Controls;
 using Director.DataStructures;
@@ -28,12 +24,12 @@ namespace Director.Forms.Panels
         /// <summary>
         /// Request overview.
         /// </summary>
-        private MarkdownView RequestOverview { get; set; }
+        private VBox RequestOverview { get; set; }
 
         /// <summary>
         /// Request status - response.
         /// </summary>
-        private MarkdownView RequestStatus { get; set; }
+        private VBox RequestStatus { get; set; }
 
         /// <summary>
         /// Invalid request name description.
@@ -54,7 +50,13 @@ namespace Director.Forms.Panels
         public RequestPage(MainWindow _window)
             : base(_window, Director.Properties.Resources.RequestInfoBox, DirectorImages.REQUEST_IMAGE)
         {
+            CaptionFont = Font.WithSize(17).WithWeight(FontWeight.Bold);
         }
+
+        /// <summary>
+        /// Caption font.
+        /// </summary>
+        public Font CaptionFont { get; set; }
 
         /// <summary>
         /// Set request.
@@ -66,8 +68,8 @@ namespace Director.Forms.Panels
             RequestName.Changed -= RequestName_Changed;
             RequestName.Text = request.Name;
             RequestName.Changed += RequestName_Changed;
-            RequestOverview.Markdown = ActiveRequest.GetMarkdownInfo();
-            RequestStatus.Markdown = ActiveRequest.RequestRemoteResult;
+            ActiveRequest.CreateResult(RequestStatus, CaptionFont);
+            ActiveRequest.CreateOverview(RequestOverview, CaptionFont);
         }
 
         /// <summary>
@@ -75,6 +77,9 @@ namespace Director.Forms.Panels
         /// </summary>
         public override void _initializeComponents()
         {
+            ExpandVertical = false;
+            ExpandHorizontal = false;
+
             // Frame Request Name
             Frame RequestNameFrame = new Frame()
             {
@@ -102,11 +107,9 @@ namespace Director.Forms.Panels
                 Label = Director.Properties.Resources.RequestRequest,
                 Padding = 10
             };
-            RequestOverview = new MarkdownView();
+            RequestOverview = new VBox();
             RequestFrame.Content = new ScrollView()
             {
-                ExpandHorizontal = true,
-                ExpandVertical = true,
                 Content = RequestOverview
             };
             RRPanel.PackStart(RequestFrame, true, true);
@@ -123,17 +126,16 @@ namespace Director.Forms.Panels
             RRPanel.PackStart(EditBtn, expand: false, hpos: WidgetPlacement.End);
 
             // Response
+            RequestStatus = new VBox();
             Frame ResponseFrame = new Frame()
             {
                 Label = Director.Properties.Resources.RequestResponse,
-                Padding = 10
+                Padding = 10,
             };
-            RequestStatus = new MarkdownView()
+            ResponseFrame.Content = new ScrollView()
             {
-                ExpandHorizontal = false,
-                ExpandVertical = false
+                Content = RequestStatus
             };
-            ResponseFrame.Content = RequestStatus;
             RRPanel.PackStart(ResponseFrame, true, true);
             PackStart(RRPanel, true, true);
         }

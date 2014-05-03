@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xwt.Drawing;
+﻿using Xwt.Drawing;
 
 namespace Director.Forms.Controls
 {
@@ -37,6 +32,10 @@ namespace Director.Forms.Controls
         public const string CS_ICON = "Director.Resources.cs.png";
         public const string EN_ICON = "Director.Resources.en.png";
         public const string LIST_ICON = "Director.Resources.list.png";
+        public const string DIRECTOR_IMAGE = "Director.Resources.splashscreen.png";
+        public const string HEADER_IMAGE = "Director.Resources.insert.png";
+        public const string HEADER_EDIT_IMAGE = "Director.Resources.header_edit.png";
+        public const string BULLET_ICON = "Director.Resources.bullet_blue.png";
 
         /// <summary>
         /// Running icons.

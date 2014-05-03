@@ -1,11 +1,6 @@
 ﻿using Director.Forms.Controls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xwt;
-using Xwt.Drawing;
 
 namespace Director.Forms.Panels
 {
@@ -36,6 +31,7 @@ namespace Director.Forms.Panels
         /// <param name="_mainWindow"></param>
         /// <param name="_desc"></param>
         /// <param name="_image"></param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PanelBase(MainWindow _mainWindow, String _desc, String _image)
         {
             CurrentMainWindow = _mainWindow;

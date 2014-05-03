@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Director.ParserLib
 {
@@ -40,6 +37,11 @@ namespace Director.ParserLib
             if (isSuccess())
                 return "";
 
+            return CreateMarkdownReport(errors);
+        }
+
+        public static string CreateMarkdownReport(List<ParserError> errors)
+        {
             string ret = "";
 
             ret += "# Errors found\n";

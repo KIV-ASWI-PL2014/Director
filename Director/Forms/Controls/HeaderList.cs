@@ -3,6 +3,7 @@ using Xwt;
 using System.Collections.Generic;
 using Xwt.Drawing;
 using Director.Forms.Controls;
+using Director.DataStructures;
 
 namespace Director
 {
@@ -44,9 +45,14 @@ namespace Director
         public List<HeaderListItem> HeaderListItems { get; set; }
 
         /// <summary>
+        /// Scenario for parser variables.
+        /// </summary>
+        public Scenario ActiveScenario { get; private set; }
+
+        /// <summary>
         /// Create header list.
         /// </summary>
-        public HeaderList(List<Header> headers)
+        public HeaderList(List<Header> headers, Scenario sc = null)
         {
             // Set headers
             Headers = headers;
@@ -57,6 +63,9 @@ namespace Director
 
             // Margins
             Margin = 10;
+
+            // Scenario
+            ActiveScenario = sc;
 
             // Header list items
             HeaderListItems = new List<HeaderListItem>();
@@ -198,6 +207,11 @@ namespace Director
         private TextEntryHelper Values { get; set; }
 
         /// <summary>
+        /// Variable button!
+        /// </summary>
+        private Button VariableButton { get; set; }
+
+        /// <summary>
         /// Remove button.
         /// </summary>
         private Button RemoveBtn { get; set; }
@@ -297,7 +311,7 @@ namespace Director
                 TabIndex = ParentList.TAB_INDEX
             };
             Types.Changed += delegate { ActiveHeader.Name = Types.Text; };
-            Types.GotFocus += GotChildFocusHandler;
+            Types.HelperGotFocus += GotChildFocusHandler;
 
             // Value
             Values = new TextEntryHelper()
@@ -310,7 +324,20 @@ namespace Director
                 TabIndex = ParentList.TAB_INDEX
             };
             Values.Changed += delegate { ActiveHeader.Value = Values.Text; };
-            Values.GotFocus += GotChildFocusHandler;
+            Values.HelperGotFocus += GotChildFocusHandler;
+
+            // Parent list contains Scenario
+            if (ParentList.ActiveScenario != null)
+            {
+                VariableButton = new Button(Image.FromResource(DirectorImages.HEADER_IMAGE))
+                {
+                    HorizontalPlacement = WidgetPlacement.Center,
+                    VerticalPlacement = WidgetPlacement.Center,
+                    ExpandHorizontal = false,
+                    ExpandVertical = false
+                };
+                VariableButton.Clicked += VariableButton_Clicked;
+            }
 
             // Remove button
             RemoveBtn = new Button(Image.FromResource(DirectorImages.CROSS_ICON))
@@ -325,8 +352,159 @@ namespace Director
 
             PackStart(Types, expand: true);
             PackStart(Values, expand: true);
+            if (VariableButton != null)
+                PackStart(VariableButton, expand: false, fill: false);
             PackStart(RemoveBtn, expand: false, fill: false);
         }
+
+        /// <summary>
+        /// Variable expression items!
+        /// </summary>
+        private TextEntry TextBefore { get; set; }
+        private TextEntry TextAfter { get; set; }
+        private ComboBox Variables { get; set; }
+        private Label Example { get; set; }
+
+        /// <summary>
+        /// Set variable.
+        /// </summary>
+        void VariableButton_Clicked(object sender, EventArgs e)
+        {
+            // Test if variables are ready
+            if (ParentList.ActiveScenario.customVariables.Count == 0)
+            {
+                MessageDialog.ShowError(Director.Properties.Resources.NoVariablesFound);
+                return;
+            }
+
+            // Create Dialog window
+            var expressionDialog = new Dialog()
+            {
+                InitialLocation = WindowLocation.CenterParent,
+                Width = 370,
+                Resizable = false
+            };
+
+            // Set Title
+            expressionDialog.Title = Director.Properties.Resources.HeaderSettings;
+
+            // Prepare content
+            VBox t = new VBox()
+            {
+                ExpandHorizontal = true,
+                ExpandVertical = true
+            };
+
+            // Text before
+            TextBefore = new TextEntry();
+            t.PackStart(new Label(Director.Properties.Resources.TextBefore + ":"));
+            t.PackStart(TextBefore, false, true);
+            
+            // Variable
+            Variables = new ComboBox();
+            t.PackStart(new Label(Director.Properties.Resources.Variable + ":"));
+            Variables.Items.Add("");
+            foreach (String k in ParentList.ActiveScenario.customVariables.Keys)
+                Variables.Items.Add(k);
+            t.PackStart(Variables, false, true);
+
+            // Text after
+            TextAfter = new TextEntry();
+            t.PackStart(new Label(Director.Properties.Resources.TextAfter + ":"));
+            t.PackStart(TextAfter, false, true);
+
+            // Example
+            Example = new Label();
+            t.PackStart(new Label(Director.Properties.Resources.Example + ":"));
+            t.PackStart(Example, false, true);
+
+            // Expression solver split by $$
+            String value = ActiveHeader.Value;
+            var arr = value.Split('$');
+
+            if (arr.Length == 1)
+            {
+                TextBefore.Text = arr[0];
+                Variables.SelectedIndex = 0;
+                TextAfter.Text = "";
+            }
+            else if (arr.Length == 3)
+            {
+                TextBefore.Text = arr[0];
+                TextAfter.Text = arr[2];
+                try
+                {
+                    Variables.SelectedText = arr[1];
+                }
+                catch
+                {
+                    TextBefore.Text = value;
+                    TextAfter.Text = "";
+                    Variables.SelectedIndex = 0;
+                }
+            }
+            else
+            {
+                TextBefore.Text = value;
+                TextAfter.Text = "";
+                Variables.SelectedIndex = 0;
+            }
+            Example.Text = value;
+
+            // Set hooks
+            TextBefore.Changed += ExpressionSolver;
+            TextAfter.Changed += ExpressionSolver;
+            Variables.SelectionChanged += ExpressionSolver;
+
+            // Image
+            HBox ContentBox = new HBox()
+            {
+                ExpandHorizontal = true,
+                ExpandVertical = true
+            };
+
+            // Image view
+            ImageView ImageIcon = new ImageView(Image.FromResource(DirectorImages.HEADER_EDIT_IMAGE))
+            {
+                WidthRequest = 32, HeightRequest = 32,
+                Margin = 20
+            };
+            ContentBox.PackStart(ImageIcon, false, false);
+            ContentBox.PackStart(t, true, true);
+
+            // Set content
+            expressionDialog.Content = ContentBox;
+
+            // Prepare buttons
+            expressionDialog.Buttons.Add(new DialogButton(Director.Properties.Resources.OkComand, Command.Ok));
+            expressionDialog.Buttons.Add(new DialogButton(Director.Properties.Resources.Cancel, Command.Cancel));
+
+            // Run?
+            var result = expressionDialog.Run(this.ParentList.ParentWindow);
+
+            if (result == Command.Ok)
+                Values.Text = ActiveHeader.Value = Example.Text;
+
+            // Dispose dialog
+            expressionDialog.Dispose();
+        }
+
+        /// <summary>
+        /// Expression solver.
+        /// </summary>
+        void ExpressionSolver(object sender, EventArgs e)
+        {
+            Example.Text = TextBefore.Text;
+
+            if (Variables.SelectedText.Length > 0)
+            {
+                Example.Text += string.Format("${0}$", Variables.SelectedText);
+            }
+
+            Example.Text += TextAfter.Text;
+        }
+
+        
 
         /// <summary>
         /// Hide all other children helpers.

@@ -1,11 +1,8 @@
-﻿using Director.Forms.Controls;
+﻿using Director.Formatters;
+using Director.Forms.Controls;
 using Director.ParserLib;
-using Newtonsoft.Json.Schema;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xwt;
 using Xwt.Drawing;
 
@@ -57,6 +54,9 @@ namespace Director.Forms.Inputs
             // This window can not be maximalized
             Resizable = true;
 
+            // Icon
+            Icon = Image.FromResource(DirectorImages.EDIT_ICON);
+
             // Set content
             Title = Director.Properties.Resources.SetContentTitle;
 
@@ -74,22 +74,22 @@ namespace Director.Forms.Inputs
             };
             if (ReqWidget != null)
             {
-                TextInput.Text = ReqWidget.ActiveRequest.RequestTemplate;
+                TextInput.Text = JSONFormatter.Format(ReqWidget.ActiveRequest.RequestTemplate);
             }
             else if (ResWidget != null)
             {
-                TextInput.Text = ResWidget.ActiveRequest.ResponseTemplate;
+                TextInput.Text = JSONFormatter.Format(ResWidget.ActiveRequest.ResponseTemplate);
             }
 
             ScrollView ScrollTextInput = new ScrollView()
             {
                 Content = TextInput
             };
-            InputArea.PackStart(new Label("Paste input:"));
+            InputArea.PackStart(new Label() { Markup = "<b>" + Director.Properties.Resources.PasteInput + "</b>" });
             InputArea.PackStart(ScrollTextInput, true, true);
 
             // Prepare output
-            InputArea.PackStart(new Label("Output: "));
+            InputArea.PackStart(new Label() { Markup = "<b>" + Director.Properties.Resources.Output + "</b>" });
             ErrorReport = new MarkdownView();
             InputArea.PackStart(ErrorReport, true, true);
 
@@ -116,9 +116,9 @@ namespace Director.Forms.Inputs
         /// </summary>
         void ConfirmButton_Clicked(object sender, EventArgs e)
         {
-            Parser p = new Parser();
-            ParserResult _results = p.generateRequest(TextInput.Text, new Dictionary<string,string>());
-            if (_results.isSuccess())
+            List<ParserError> errors = new List<ParserError>();
+            Dictionary<string, ParserItem> result = Parser.deserialize(TextInput.Text, errors, "json");
+            if (errors.Count == 0)
             {
                 if (ReqWidget != null)
                 {
@@ -135,7 +135,7 @@ namespace Director.Forms.Inputs
             }
             else
             {
-                ErrorReport.Markdown = _results.GetMarkdownReport();
+                ErrorReport.Markdown = ParserResult.CreateMarkdownReport(errors);
             }
         }
 

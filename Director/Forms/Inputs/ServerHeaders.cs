@@ -1,16 +1,11 @@
 ﻿using Director.DataStructures;
 using Director.Forms.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xwt;
 using Xwt.Drawing;
 
 namespace Director.Forms.Inputs
 {
-    internal class ServerHeaders : Window
+    internal class ServerHeaders : Dialog
     {
         /// <summary>
         /// Main window.
@@ -38,6 +33,7 @@ namespace Director.Forms.Inputs
             Height = 550;
             Resizable = true;
             Title = Director.Properties.Resources.DefaultServerHeaders;
+            Icon = Image.FromResource(DirectorImages.EDIT_CONTENT_ICON);
             _initializeComponents();
         }
 
@@ -52,8 +48,7 @@ namespace Director.Forms.Inputs
             };
 
             // Info window
-            InfoBox MainInfoBox = new InfoBox(Director.Properties.Resources.DefaultServerHeaders,
-                DirectorImages.SETTINGS_IMAGE);
+            InfoBox MainInfoBox = new InfoBox(Director.Properties.Resources.DefaultServerHeaders, DirectorImages.SETTINGS_IMAGE);
             MainContent.PackStart(MainInfoBox);
 
             // Add header list
@@ -63,18 +58,10 @@ namespace Director.Forms.Inputs
             };
             MainContent.PackStart(HeaderControl, expand: true, fill: true);
 
-            // Add button
-            // Close btn
-            Button ConfirmButton = new Button(Image.FromResource(DirectorImages.OK_ICON),
-                Director.Properties.Resources.Confirm)
-            {
-                WidthRequest = 150,
-                ExpandHorizontal = false,
-                ExpandVertical = false
-            };
-            ConfirmButton.Clicked += delegate { Close(); };
-            MainContent.PackStart(ConfirmButton, expand: false, hpos: WidgetPlacement.End);
+            // Close button
+            Buttons.Add(new DialogButton(Director.Properties.Resources.Confirm, Command.Ok));
 
+            // Set content
             Content = MainContent;
         }
     }

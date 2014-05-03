@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xwt;
 using Director.Forms.Panels;
 using Xwt.Drawing;
@@ -13,6 +11,7 @@ using Director.Forms.Inputs;
 using Director.ExportLib;
 using RestSharp;
 using Director.ParserLib;
+using Director.Formatters;
 using System.Threading;
 
 namespace Director.Forms
@@ -79,27 +78,27 @@ namespace Director.Forms
         /// <summary>
         /// Default images for Server tree.
         /// </summary>
-        private Image ServerImage = Image.FromResource(DirectorImages.ROOT_ICON);
+        private static Image ServerImage = Image.FromResource(DirectorImages.ROOT_ICON);
 
         /// <summary>
         /// Scenario image.
         /// </summary>
-        private Image ScenarioImage = Image.FromResource(DirectorImages.SCENARIO_ICON);
+        private static Image ScenarioImage = Image.FromResource(DirectorImages.SCENARIO_ICON);
 
         /// <summary>
         /// Request image.
         /// </summary>
-        private Image RequestImage = Image.FromResource(DirectorImages.REQUEST_ICON);
+        private static Image RequestImage = Image.FromResource(DirectorImages.REQUEST_ICON);
 
         /// <summary>
         /// OK image.
         /// </summary>
-        private Image OKImage = Image.FromResource(DirectorImages.OK_ICON);
+        private static Image OKImage = Image.FromResource(DirectorImages.OK_ICON);
 
         /// <summary>
         /// Error image.
         /// </summary>
-        private Image ERORImage = Image.FromResource(DirectorImages.CROSS_ICON);
+        private static Image ERORImage = Image.FromResource(DirectorImages.CROSS_ICON);
 
         /// <summary>
         /// Server context menu.
@@ -167,6 +166,11 @@ namespace Director.Forms
         private MenuItem RunAllMenu { get; set; }
 
         /// <summary>
+        /// Caption font!
+        /// </summary>
+        public static Font CaptionFont { get; set; }
+
+        /// <summary>
         /// Default constructor initiate components!
         /// </summary>
         public MainWindow()
@@ -187,9 +191,15 @@ namespace Director.Forms
             /// Title and Initial size
             Title = Director.Properties.Resources.MainWindowTitle;
 
+            // Icon
+            Icon = Image.FromResource(DirectorImages.ROOT_ICON);
+
             // Set default size
-            Width = 750;
+            Width = 770;
             Height = 630;
+
+            // Caption font
+            CaptionFont = Font.SystemFont.WithSize(17).WithWeight(FontWeight.Bold);
 
             // Center screen
             InitialLocation = WindowLocation.CenterScreen;
@@ -220,7 +230,7 @@ namespace Director.Forms
 
             // Create tree view
             CurrentServer = new TreeView();
-            CurrentServer.WidthRequest = 200;
+            CurrentServer.WidthRequest = 230;
             CurrentServer.SelectionMode = SelectionMode.Single;
             CurrentServer.SelectionChanged += UpdateControlView;
 
@@ -239,12 +249,14 @@ namespace Director.Forms
             MainBox.PackStart(CurrentServer);
 
             // Prepare content box
-            ContentBox = new VBox();
-            ContentBox.MarginLeft = 10;
+            ContentBox = new VBox()
+            {
+                MarginLeft = 10
+            };
             SetContentBoxControl(DirectorHomepage);
 
             // Add to panel
-            MainBox.PackStart(ContentBox, true, true);
+            MainBox.PackStart(ContentBox, expand: true, fill: true);
 
             // Control box with bottom info panel
             VBox MainContent = new VBox();
@@ -457,6 +469,23 @@ namespace Director.Forms
             MenuItem HelpMenu = new MenuItem(Director.Properties.Resources.HelpMenu);
             menu.Items.Add(HelpMenu);
 
+            // Help menu
+            Menu HelpSubMenu = new Menu();
+            HelpMenu.SubMenu = HelpSubMenu;
+
+            // About menu
+            MenuItem AboutMenu = new MenuItem(Director.Properties.Resources.About)
+            {
+                Image = Image.FromResource(DirectorImages.HELP_ICON)
+            };
+            HelpSubMenu.Items.Add(AboutMenu);
+            AboutMenu.Clicked += delegate
+            {
+                About.About AboutWindow = new About.About();
+                var d = AboutWindow.Run();
+                AboutWindow.Dispose();
+            };
+
             // Set as main menu
             MainMenu = menu;
 
@@ -500,6 +529,17 @@ namespace Director.Forms
             };
             MenuAddRequest.Clicked += AddRequest;
             ScenarioMenu.Items.Add(MenuAddRequest);
+            
+
+            // Run scenario
+            MenuItem MenuRunScenario = new MenuItem(Director.Properties.Resources.RunScenario)
+            {
+                Image = Image.FromResource(DirectorImages.RUN_ICON)
+            };
+            ScenarioMenu.Items.Add(MenuRunScenario);
+            MenuRunScenario.Clicked += RunScenario;
+
+            // Separator
             ScenarioMenu.Items.Add(new SeparatorMenuItem());
 
             // Scenario UP and down
@@ -776,9 +816,8 @@ namespace Director.Forms
         private void MenuEditDefaultHeaders_Clicked(object sender, EventArgs e)
         {
             ServerHeaders ServerHeadersWindow = new ServerHeaders(this, UServer);
-            ServerHeadersWindow.Show();
-            Opacity = 0.1;
-            ServerHeadersWindow.Closed += delegate { Opacity = 1; };
+            var d = ServerHeadersWindow.Run();
+            ServerHeadersWindow.Dispose();
         }
 
         /// <summary>
@@ -881,9 +920,6 @@ namespace Director.Forms
             {
                 if (ScenarioClipboard == null)
                     PasteScenario.Clicked += PasteScenario_Clicked;
-
-                Console.WriteLine("Scenario in clipboard");
-
                 ScenarioClipboard = (Scenario)s;
                 PasteScenario.Sensitive = true;
             }
@@ -1004,7 +1040,7 @@ namespace Director.Forms
         /// <summary>
         /// Running objects for timer.
         /// </summary>
-        public List<TreePosition> RunningObjects = new List<TreePosition>();
+        public static List<TreePosition> RunningObjects = new List<TreePosition>();
 
         /// <summary>
         /// Last index.
@@ -1018,113 +1054,215 @@ namespace Director.Forms
         {
             Xwt.Application.TimeoutInvoke(TimeSpan.FromMilliseconds(100), () =>
             {
-                foreach (var pos in RunningObjects)
+                foreach (var pos in RunningObjects.ToArray())
                     ChangeTreeIcon(pos, DirectorImages.RUN_ICONS[LastIndex]);
+
+                while (ChangeTreeImage.Count != 0)
+                {
+                    TreeChange it = ChangeTreeImage.Dequeue();
+                    if (it.NewImage != null)
+                    {
+                        ChangeTreeIcon(it.Position, it.NewImage);
+                    }
+                    if (it.Text != null && it.Text.Length > 0)
+                    {
+                        UpdateTreeStoreText(it.Position, it.Text);
+                    }
+                }
 
                 // Increase
                 LastIndex = (LastIndex + 1) > 7 ? 0 : LastIndex + 1;
+
+				// Refresh server
+				if (RefreshCurrentServer) {
+					UpdateControlView(null, null);
+					RefreshCurrentServer = false;
+				}
 
                 return true;
             });
         }
 
+        /// <summary>
+        /// Tree change structure.c
+        /// </summary>
+        public struct TreeChange {
+            public TreePosition Position;
+            public Image NewImage;
+            public String Text;
+        }
+
+        /// <summary>
+        /// Change tree images!
+        /// </summary>
+        public static Queue<TreeChange> ChangeTreeImage = new Queue<TreeChange>();
+
+        /// <summary>
+        /// Running request worker.
+        /// </summary>
+        /// <param name="RunningObject"></param>
+        public static void ThreadWorker(object RunningObject)
+        {
+            // Clear running objects
+            List<Scenario> Scenarios = new List<Scenario>();
+            RunningObjects.Clear();
+
+            // Add all scenarios
+            if (RunningObject is Server)
+            {
+                Scenarios = ((Server)RunningObject).Scenarios;
+            }
+            else
+                Scenarios.Add((Scenario)RunningObject);
+
+            // Set all scenarios to before-running time!
+            foreach (var s in Scenarios)
+            {
+                // Change icon
+                ChangeIcon(s.TreePosition, ScenarioImage);
+
+                // Clear variables
+                s.customVariables = new Dictionary<string, string>();
+
+                // Change icons
+                foreach (var r in s.Requests)
+                    ChangeIcon(r.TreePosition, RequestImage);
+            }
+
+            // Run scenarios in specific order
+            foreach (var s in Scenarios.OrderBy(n => n.Position))
+            {
+                // Running success?
+                bool success = true;
+
+                // Scenariio is running!
+                RunningObjects.Add(s.TreePosition);
+
+                foreach (var r in s.Requests.OrderBy(n => n.Position))
+                {
+                    // Add to running objects
+                    RunningObjects.Add(r.TreePosition);
+
+                    // Wait?
+                    if (r.WaitAfterPreviousRequest > 0)
+                    {
+                        int time = r.WaitAfterPreviousRequest;
+                        while (time > 0)
+                        {
+                            ChangeIcon(r.TreePosition, text: string.Format("{0} ({1} s)", r.Name, time));
+                            Thread.Sleep(1000);
+                            time--;
+                        }
+                        ChangeIcon(r.TreePosition, text: r.Name);
+                    }
+
+                    // Send
+                    RestResponse response = Director.Remote.Remote.SendRemoteRequest(r);
+
+                    // Clear result
+                    r.ClearResults();
+
+                    // Prepare error...
+                    r.AddResultViewItem(1, Director.Properties.Resources.Error + ":");
+
+                    // Valid?
+                    bool valid = false;
+
+                    // Response
+                    Parser p = new Parser();
+                    ParserResult res = null;
+                        
+                    if (r.ResponseTemplate != null && r.ResponseTemplate.Length > 0)
+                        res = p.parseResponse(r.ResponseTemplate, response.Content, s.customVariables, true);
+
+
+                    // Parse response
+                    if (response.ResponseStatus != ResponseStatus.Completed)
+                    {
+                        r.AddResultViewItem(2, string.Format(Director.Properties.Resources.RequestNotSuccessfull, response.ResponseStatus.ToString()));
+                    }
+                    else if (r.ExpectedStatusCode != -1 && ((int)response.StatusCode) != r.ExpectedStatusCode)
+                    {
+                        // Set error message:
+                        r.AddResultViewItem(2, string.Format(Director.Properties.Resources.InvalidReturnCode, r.ExpectedStatusCode, (int)response.StatusCode));
+                    }
+                    else if (res is ParserResult && !res.isSuccess())
+                    {
+                        foreach (var er in res.getErrors())
+                            r.AddResultViewItem(2, er.getMessage());
+                    }
+                    else
+                    {
+                        valid = true;
+                        r.ClearResults();
+                        r.AddResultViewItem(1, Director.Properties.Resources.ResultIsOk);
+                    }
+
+                    // Add response content
+                    if (response.Content != null && response.Content.Length > 0)
+                    {
+                        r.AddResultViewItem(1, Director.Properties.Resources.Response + ":");
+
+                        // Response
+                        String formatted = JSONFormatter.Format(response.Content);
+
+                        // Request box
+
+                        if (formatted != null)
+                            r.AddResultViewItem(3, formatted);                       
+                        else
+                            r.AddResultViewItem(3,  response.Content);  
+                    }
+
+                    // Remove from running
+                    RunningObjects.Remove(r.TreePosition);
+
+                    // Set error image
+                    if (valid)
+                        ChangeIcon(r.TreePosition, OKImage);
+                    else
+                    {
+                        ChangeIcon(r.TreePosition, ERORImage);
+                        success = false;
+                        break;
+                    }
+                }
+
+                RunningObjects.Remove(s.TreePosition);
+                if (success)
+                    ChangeIcon(s.TreePosition, ScenarioImage);
+                else
+                    ChangeIcon(s.TreePosition, ERORImage);
+            }
+
+            // Remove all running objects
+            RunningObjects.Clear();
+
+			// Refresh UI
+			RefreshCurrentServer = true;
+        }
+
+		/// <summary>
+		/// Refresh current server for Timer!
+		/// </summary>
+		public static bool RefreshCurrentServer = false;
+
+        /// <summary>
+        /// Change icon or text.
+        /// </summary>
+        public static void ChangeIcon(TreePosition p, Image i = null, String text = null)
+        {
+            ChangeTreeImage.Enqueue(new TreeChange() { Position = p, NewImage = i, Text = text });
+        }
 
         /// <summary>
         /// Runn all scenarios.
         /// </summary>
         void RunAllMenu_Clicked(object sender, EventArgs e)
         {
-            Application.Invoke(delegate
-            {
-                // Set all default icons
-                foreach (var s in UServer.Scenarios)
-                {
-                    ChangeTreeIcon(s.TreePosition, ScenarioImage);
-                    foreach (var r in s.Requests)
-                    {
-                        ChangeTreeIcon(r.TreePosition, RequestImage);
-                        r.RequestRemoteResult = "";
-                    }
-                }
-
-                // Run in specific order
-                foreach (var s in UServer.Scenarios.OrderBy(n => n.Position))
-                {
-                    bool success = true;
-                    RunningObjects.Add(s.TreePosition);
-
-                    // Run requests
-                    foreach (var r in s.Requests.OrderBy(n => n.Position))
-                    {
-                        RunningObjects.Add(r.TreePosition);
-                        RestResponse response = Director.Remote.Remote.SendRemoteRequest(r);
-
-                        // Prepare error...
-                        r.RequestRemoteResult = string.Format("# {0}\n\n", Director.Properties.Resources.Error);
-
-                        // Response
-                        Parser p = new Parser();
-                        ParserResult res = p.parseResponse(r.ResponseTemplate, response.Content, s.customVariables, true);
-
-                        // Valid?
-                        bool valid = false;
-
-                        // Parse response
-                        if (response.ResponseStatus != ResponseStatus.Completed)
-                        {
-                            r.RequestRemoteResult += string.Format(Director.Properties.Resources.RequestNotSuccessfull + "\n\n", response.ResponseStatus.ToString());
-                        } else if (r.ExpectedStatusCode != -1 && ((int) response.StatusCode) != r.ExpectedStatusCode)
-                        {
-                            // Set error message:
-                            r.RequestRemoteResult += string.Format(Director.Properties.Resources.InvalidReturnCode + "\n\n", r.ExpectedStatusCode, (int)response.StatusCode);
-                        }
-                        else if (!res.isSuccess())
-                        {
-                            foreach( var er in res.getErrors())
-                                r.RequestRemoteResult += "* " + er.getMessage() + "\n";
-                            
-                            r.RequestRemoteResult += "\n\n";
-                        }
-                        else
-                        {
-                            valid = true;
-                            r.RequestRemoteResult = string.Format("# {0}\n\n", Director.Properties.Resources.ResultIsOk);
-                        }
-
-                        // Add response content
-                        if (response.Content != null && response.Content.Length > 0)
-                        {
-                            r.RequestRemoteResult += string.Format("# {0}\n", Director.Properties.Resources.Response);
-                            r.RequestRemoteResult += response.Content;
-                        }
-
-                        // Remove from running
-                        RunningObjects.Remove(r.TreePosition);
-
-                        // Set error image
-                        if (valid)
-                        {
-                            ChangeTreeIcon(r.TreePosition, OKImage);
-                        }
-                        else
-                        {
-                            ChangeTreeIcon(r.TreePosition, ERORImage);
-                            success = false;
-                            break;
-                        }
-                    }
-
-                    RunningObjects.Remove(s.TreePosition);
-                    if (success)
-                    {
-                        ChangeTreeIcon(s.TreePosition, ScenarioImage);
-                    }
-                    else
-                    {
-                        ChangeTreeIcon(s.TreePosition, ERORImage);
-                    }
-                }
-            });
+            Thread WorkingThread = new Thread(ThreadWorker);
+            WorkingThread.IsBackground = true;
+			WorkingThread.Start (UServer);
         }
 
         /// <summary>
@@ -1170,6 +1308,7 @@ namespace Director.Forms
                 UpdateControlView(null, null);
                 DisableServerButtons();
             }
+            RunningObjects.Clear();
         }
 
         /// <summary>
@@ -1333,6 +1472,27 @@ namespace Director.Forms
                 Request NewRequest = s.CreateNewRequest();
                 NewRequest.TreePosition = CreateTreeItem(tmp, NewRequest.Name, RequestImage, NewRequest);
                 UpdateControlView(sender, e);
+            }
+        }
+
+        /// <summary>
+        /// Run this scenario.
+        /// </summary>
+        private void RunScenario(object sender, EventArgs e)
+        { 
+            TreePosition tmp = CurrentServer.SelectedRow;
+
+            if (tmp == null)
+                return;
+
+            var data = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+
+            if (data is Scenario)
+            {
+                Scenario s = (Scenario)data;
+                Thread t = new Thread(ThreadWorker);
+                t.IsBackground = true;
+                t.Start(s);
             }
         }
 

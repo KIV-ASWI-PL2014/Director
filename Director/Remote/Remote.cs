@@ -3,9 +3,6 @@ using Director.ParserLib;
 using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Director.Remote
 {
@@ -36,8 +33,8 @@ namespace Director.Remote
 				ParserResult result = p.generateRequest (_request.RequestTemplate, _request.ParentScenario.customVariables);
 
 
-            if (result.isSuccess() == false)
-                throw new InvalidOperationException();
+                if (result.isSuccess() == false)
+                    throw new InvalidOperationException();
             
     	        // Set body
 	            request.AddParameter("application/json", result.getResult(), ParameterType.RequestBody);
@@ -48,7 +45,11 @@ namespace Director.Remote
             
             // Set headers
             foreach (var h in _request.Headers)
-                request.AddHeader(h.Name, h.Value);
+            {
+                // TODO: Catch exception
+                ParserResult result = Parser.parseHeader(h.Value, _request.ParentScenario.customVariables);
+                request.AddHeader(h.Name, result.getResult());
+            }
 
             // Add files
             foreach (var f in _request.Files)

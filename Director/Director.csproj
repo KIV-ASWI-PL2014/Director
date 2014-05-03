@@ -50,8 +50,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>directoricon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
@@ -91,13 +90,17 @@
     <Compile Include="ExportLib\Export.cs" />
     <Compile Include="ExportLib\Serialization.cs" />
     <Compile Include="ExportLib\ZipUtil.cs" />
+    <Compile Include="Formatters\JSONFormatter.cs" />
+    <Compile Include="Forms\About\About.cs" />
     <Compile Include="Forms\Controls\EmailList.cs" />
     <Compile Include="Forms\Controls\FileList.cs" />
+    <Compile Include="Forms\Controls\ListItem.cs" />
     <Compile Include="Forms\Controls\RequestWidget.cs" />
     <Compile Include="Forms\Controls\ResponseWidget.cs" />
     <Compile Include="Forms\Controls\TextEntryHelper.cs" />
     <Compile Include="DataStructures\CustomVariableItem.cs" />
     <Compile Include="Forms\Inputs\EditWindow.cs" />
+    <Compile Include="Forms\Inputs\JSONCanvas.cs" />
     <Compile Include="Forms\Inputs\SetWindow.cs" />
     <Compile Include="Forms\Inputs\ServerHeaders.cs" />
     <Compile Include="ParserLib\ParserCompareDefinition.cs" />
@@ -364,6 +367,27 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\list.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\splashscreen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\insert.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\header_edit.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="directoricon.ico" />
+    <EmbeddedResource Include="Resources\bullet_blue.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

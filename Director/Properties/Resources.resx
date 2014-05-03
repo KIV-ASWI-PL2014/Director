@@ -443,7 +443,7 @@
     <value>..\Resources\settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ExpectedStatusCode" xml:space="preserve">
-    <value>Expected status code:</value>
+    <value>Expected status code</value>
   </data>
   <data name="FileName" xml:space="preserve">
     <value>File name</value>
@@ -663,5 +663,113 @@
   </data>
   <data name="RestartApp" xml:space="preserve">
     <value>For apply changes, you have to restart application!</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>About Director</value>
+  </data>
+  <data name="Authors" xml:space="preserve">
+    <value>Authors</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="HomepageUrl" xml:space="preserve">
+    <value>Homepage</value>
+  </data>
+  <data name="Informations" xml:space="preserve">
+    <value>Informations</value>
+  </data>
+  <data name="splashscreen" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\splashscreen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Example" xml:space="preserve">
+    <value>Example</value>
+  </data>
+  <data name="HeaderSettings" xml:space="preserve">
+    <value>Expression creator</value>
+  </data>
+  <data name="insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\insert.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="NoVariablesFound" xml:space="preserve">
+    <value>There are no variables in this scenario, make please a new one from successfull request!</value>
+  </data>
+  <data name="OkComand" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="TextAfter" xml:space="preserve">
+    <value>Text after</value>
+  </data>
+  <data name="TextBefore" xml:space="preserve">
+    <value>Text before</value>
+  </data>
+  <data name="Variable" xml:space="preserve">
+    <value>Variable</value>
+  </data>
+  <data name="header_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\header_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Icons" xml:space="preserve">
+    <value>Icons by</value>
+  </data>
+  <data name="InputPrompt" xml:space="preserve">
+    <value>Paste input:</value>
+  </data>
+  <data name="OutputMessage" xml:space="preserve">
+    <value>Output:</value>
+  </data>
+  <data name="EditVariable" xml:space="preserve">
+    <value>Edit variable</value>
+  </data>
+  <data name="FormatDirective" xml:space="preserve">
+    <value>Format directive</value>
+  </data>
+  <data name="FormatGuide" xml:space="preserve">
+    <value>Format guide</value>
+  </data>
+  <data name="InvalidNumberInput" xml:space="preserve">
+    <value>Input has to be number!</value>
+  </data>
+  <data name="JsonValue" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="Output" xml:space="preserve">
+    <value>Output:</value>
+  </data>
+  <data name="PasteInput" xml:space="preserve">
+    <value>Paste input:</value>
+  </data>
+  <data name="RequestTemplate" xml:space="preserve">
+    <value>Request template</value>
+  </data>
+  <data name="ResponseTemplate" xml:space="preserve">
+    <value>Response template</value>
+  </data>
+  <data name="bullet_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bullet_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CopyInClipboard" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="NoResponse" xml:space="preserve">
+    <value>No response yet, run scenario first!</value>
+  </data>
+  <data name="Requests" xml:space="preserve">
+    <value>Requests</value>
+  </data>
+  <data name="RunScenario" xml:space="preserve">
+    <value>Run scenario</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Variables</value>
+  </data>
+  <data name="Wait" xml:space="preserve">
+    <value>waiting</value>
   </data>
 </root>

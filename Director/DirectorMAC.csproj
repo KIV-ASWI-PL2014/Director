@@ -11,8 +11,6 @@
     <RootNamespace>Director</RootNamespace>
     <AssemblyName>DirectorMAC</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <ProductVersion>12.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <StartupObject>Director.ProgramMac</StartupObject>
     <SuppressXamMacUpsell>True</SuppressXamMacUpsell>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -89,6 +87,10 @@
     <Compile Include="ExportLib\Deserialization.cs" />
     <Compile Include="ExportLib\Export.cs" />
     <Compile Include="ExportLib\Serialization.cs" />
+    <Compile Include="ExportLib\ZipUtil.cs" />
+    <Compile Include="Forms\About\About.cs" />
+    <Compile Include="Formatters\JSONFormatter.cs" />
+    <Compile Include="Forms\Controls\ListItem.cs" />
     <Compile Include="Forms\Controls\EmailList.cs" />
     <Compile Include="Forms\Controls\FileList.cs" />
     <Compile Include="Forms\Controls\RequestWidget.cs" />
@@ -96,6 +98,7 @@
     <Compile Include="Forms\Controls\TextEntryHelper.cs" />
     <Compile Include="DataStructures\CustomVariableItem.cs" />
     <Compile Include="Forms\Inputs\EditWindow.cs" />
+    <Compile Include="Forms\Inputs\JSONCanvas.cs" />
     <Compile Include="Forms\Inputs\SetWindow.cs" />
     <Compile Include="Forms\Inputs\ServerHeaders.cs" />
     <Compile Include="ParserLib\ParserCompareDefinition.cs" />
@@ -110,7 +113,6 @@
     <Compile Include="Forms\MainWindow.cs" />
     <Compile Include="Forms\Panels\PanelBase.cs" />
     <Compile Include="Forms\Panels\RequestPage.cs" />
-    <Compile Include="ExportLib\ZipUtil.cs" />
     <Compile Include="Forms\Panels\ScenarioPage.cs" />
     <Compile Include="Forms\Panels\ServerPage.cs" />
     <Compile Include="Program.cs" />
@@ -358,6 +360,42 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\7.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\cs.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\en.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\list.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\splashscreen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\insert.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\header_edit.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="directoricon.ico" />
+    <EmbeddedResource Include="Resources\bullet_blue.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

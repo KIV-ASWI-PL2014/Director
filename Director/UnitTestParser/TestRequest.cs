@@ -108,5 +108,24 @@ namespace UnitTestParser
             if(result.Length != 8 && result.Length != 9)
                 Assert.Fail("Wrong length of generated string.");
         }
+
+        [TestMethod]
+        public void TestOnlyVariables()
+        {
+            ParserResult pr;
+            String result;
+            Dictionary<string, string> values = new Dictionary<string, string>
+            {
+                {"token", "2"}
+            };
+
+            pr = parser.generateRequest("{ \"foo\": \"$token$\" }", values);
+            Assert.IsNotNull(pr);
+            Assert.IsTrue(pr.isSuccess());
+            result = pr.getResult().Replace(" ", "");
+            result = result.Substring(result.IndexOf(":") + 1);
+            result = result.Replace("}", "");
+            Assert.AreEqual("\"2\"", result);
+        }
     }
 }

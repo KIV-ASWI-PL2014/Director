@@ -1,10 +1,6 @@
 ﻿using Director.DataStructures;
 using Director.Forms.Controls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xwt;
 using Xwt.Drawing;
 
@@ -68,13 +64,16 @@ namespace Director.Forms.Inputs
         {
             // Set default size
             Width = 770;
-            Height = 700;
+			Height = 680;
 
             // This window can not be maximalized
             Resizable = true;
 
             // Set title
             Title = "Request: " + _request.Name;
+
+            // Icon
+            Icon = Image.FromResource(DirectorImages.ROOT_ICON);
 
             // Center screen
             InitialLocation = WindowLocation.CenterScreen;
@@ -121,7 +120,7 @@ namespace Director.Forms.Inputs
             {
                 RequestHttpMethod.SelectedText = ActiveRequest.HTTP_METHOD;
             }
-            catch (Exception e)
+            catch
             {
                 RequestHttpMethod.SelectedText = ActiveRequest.HTTP_METHOD = "GET";
             }
@@ -174,10 +173,12 @@ namespace Director.Forms.Inputs
                     ActiveRequest.SetUrl(RequestUrlField.Text);
                     InvalidRequestUrl.Hide();
                 }
-                catch (Exception e)
+                catch
                 {
                     InvalidRequestUrl.Show();
                 }
+                if (RequestSettings.CurrentTab.Child is OverviewWidget)
+                    ((OverviewWidget)RequestSettings.CurrentTab.Child).RefreshOverview();
             };
 
             // Create Notebook
@@ -216,7 +217,7 @@ namespace Director.Forms.Inputs
         private void _initializeTabs()
         {
             RequestSettings.Add(new OverviewWidget(ActiveRequest), Director.Properties.Resources.RequestOverview);
-            RequestSettings.Add(new HeaderList(ActiveRequest.Headers), Director.Properties.Resources.RequestHeaders);
+            RequestSettings.Add(new HeaderList(ActiveRequest.Headers, ActiveRequest.ParentScenario), Director.Properties.Resources.RequestHeaders);
             RequestSettings.Add(new FileList(ActiveRequest.Files), Director.Properties.Resources.RequestFiles);
             RequestSettings.Add(new RequestWidget(ActiveRequest), Director.Properties.Resources.RequestTab);
             RequestSettings.Add(new ResponseWidget(ActiveRequest), Director.Properties.Resources.RequestResponse);
@@ -235,7 +236,7 @@ namespace Director.Forms.Inputs
         /// Overview widget.
         /// </summary>
         /// <value>The overview.</value>
-        private MarkdownView Overview { get; set; }
+        private VBox Overview { get; set; }
 
         /// <summary>
         /// Scroll overview.
@@ -257,10 +258,11 @@ namespace Director.Forms.Inputs
             ExpandVertical = true;
 
             // Create markdown
-            Overview = new MarkdownView();
+            Overview = new VBox();
             ScrollOverview = new ScrollView()
             {
-                Content = Overview
+                Content = Overview,
+                MarginTop = 5
             };
             PackStart(ScrollOverview, expand: true, fill: true);
 
@@ -273,7 +275,7 @@ namespace Director.Forms.Inputs
         /// </summary>
         public void RefreshOverview()
         {
-            Overview.Markdown = ActiveRequest.GetMarkdownInfo();
+            ActiveRequest.CreateOverview(Overview, Font.WithSize(17).WithWeight(FontWeight.Bold));
         }
     }
 }

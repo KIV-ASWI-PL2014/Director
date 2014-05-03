@@ -1,177 +1,14 @@
 ﻿using Director.DataStructures;
 using Director.Forms.Inputs;
 using Director.ParserLib;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 using Xwt;
 using Xwt.Drawing;
-using Xwt.Formats;
 
 namespace Director.Forms.Controls
 {
-    internal class ClickableItems
-    {
-        
-    }
-
-    internal class RequestDrawing : Canvas
-    {
-        /// <summary>
-        /// Template.
-        /// </summary>
-        public String Template { get; set; }
-        
-        /// <summary>
-        /// Clickable items.
-        /// </summary>
-        public List<ClickableItems> CanvasItems { get; set; }
-
-        /// <summary>
-		/// X,Y points for drawing.
-        /// </summary>
-        public int X { get; set; }
-        public int Y { get; set; }
-
-        /// <summary>
-        /// Active context.
-        /// </summary>
-        public Context CTX { get; set; }
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        public RequestDrawing()
-        {
-            CanvasItems = new List<ClickableItems>();
-        }
-
-        /// <summary>
-        /// Draw text.
-        /// </summary>
-        /// <param name="ctx"></param>
-        /// <param name="dirtyRect"></param>
-        protected override void OnDraw(Context ctx, Rectangle dirtyRect)
-        {
-            base.OnDraw(ctx, dirtyRect);
-
-            if (Template == null)
-                return;
-
-            X = 20;
-            Y = 0;
-            CTX = ctx;
-
-            // Data set
-            DrawText("{");
-            NextLine();
-            X += 20;
-            List<ParserError> errors = new List<ParserError>();
-            Dictionary<string, ParserItem> data = Parser.deserialize(Template, errors, "template");
-            DrawJson(data);
-            X -= 20;
-            DrawText("}");
-        }
-
-        void NextLine()
-        {
-            Y += 18;
-        }
-
-        void DrawJson(Dictionary<string, ParserItem> data)
-        {
-
-            foreach (KeyValuePair<string, ParserItem> pair in data)
-            {
-                // Print key
-                String KeyInfo = string.Format("\"{0}\" : ", pair.Key);
-                
-
-				if (pair.Value.value is Dictionary<string, ParserItem>) {
-					DrawText (KeyInfo + "{");
-					X += 20;
-					NextLine ();
-					DrawJson ((Dictionary<string, ParserItem>)pair.Value.value);
-					X -= 20;
-					DrawText ("}");
-					NextLine ();
-				} else if (pair.Value.value is System.String) {
-					DrawProperty (pair.Key, '"' + (String)pair.Value.value + '"');
-					NextLine ();
-				} else if (pair.Value.value is System.Int64) {
-					DrawProperty (pair.Key, '"' + (String)pair.Value.value + '"');
-					NextLine ();
-				} else
-                {
-                    DrawText(pair.Value.value.GetType().ToString());
-                    NextLine();
-                }
-            }
-        }
-
-        TextLayout CreateTextLayout(string text)
-        {
-            var Item = new TextLayout();
-            Item.Text = text;
-            Item.Font.WithSize(10);
-            return Item;
-        }
-
-        void DrawProperty(string key, string value)
-        {
-            // Draw item
-            var Item = CreateTextLayout(string.Format("\"{0}\" : ", key));
-            CTX.DrawTextLayout(Item, X, Y);
-
-            double newX = X + Item.GetSize().Width;
-
-            // Create value
-            var Value = new TextLayout();
-            Value.Font.WithSize(10);
-            Value.Text = value;
-            var s = Value.GetSize();
-            var rect = new Rectangle(newX, Y, s.Width, s.Height).Inflate(0.2, 0.2);
-            CTX.SetColor(Colors.DarkBlue);
-            CTX.SetLineWidth(1);
-            CTX.Rectangle(rect);
-            CTX.Stroke();
-            CTX.SetColor(Colors.Blue);
-            CTX.Rectangle(rect);
-            CTX.Fill();
-            CTX.SetColor(Colors.White);
-            CTX.DrawTextLayout(Value, newX, Y);
-            CTX.SetColor(Colors.Black);
-
-            var end = CreateTextLayout(",");
-            CTX.DrawTextLayout(end, newX + s.Width + 8, Y);
-        }
-
-        void DrawText(string data)
-        {
-            var text = new TextLayout();
-            text.Font = this.Font.WithSize(12);
-            text.Text = data;
-            CTX.DrawTextLayout(text, X, Y);
-        }
-
-        void DrawText(string data, Color color, int start, int end)
-        {
-            var text = new TextLayout();
-            text.Font = this.Font.WithSize(10);
-            CTX.SetColor(color);
-            if (color != null) {
-                text.SetBackground(color, start, end);
-            }
-            CTX.SetColor(Colors.Black);
-            text.Text = data;
-            CTX.DrawTextLayout(text, X, Y);
-        }
-    }
-
     internal class RequestWidget : VBox
     {
         /// <summary>
@@ -182,7 +19,7 @@ namespace Director.Forms.Controls
         /// <summary>
         /// Render box
         /// </summary>
-        public RequestDrawing RenderBox { get; set; }
+        public JSONCanvas RenderBox { get; set; }
 
         /// <summary>
         /// Active request.
@@ -193,6 +30,21 @@ namespace Director.Forms.Controls
         /// Request menu.
         /// </summary>
         private Menu RequestHelperMenu { get; set; }
+
+        /// <summary>
+        /// Canvas scroll view.
+        /// </summary>
+        private ScrollView CanvasScrollView { get; set; }
+
+        /// <summary>
+        /// Dictionary template!
+        /// </summary>
+        private Dictionary<string, ParserItem> Template { get; set; }
+
+        /// <summary>
+        /// Edit variable item.
+        /// </summary>
+        private MenuItem EditVariable { get; set; }
 
         /// <summary>
         /// Create widget.
@@ -207,17 +59,34 @@ namespace Director.Forms.Controls
             Margin = 10;
 
             // Create Text view
-            RenderBox = new RequestDrawing()
+            PackStart(new Label() { Markup = "<b>" + Director.Properties.Resources.RequestContent + "</b>" });
+
+            // Parse Request
+            if (_request.RequestTemplate != null)
+            {
+                List<ParserError> errors = new List<ParserError>();
+                Template = Parser.deserialize(_request.RequestTemplate, errors, "template");
+            }
+
+            // Create canvas
+            RenderBox = new JSONCanvas()
             {
                 ExpandHorizontal = true,
                 ExpandVertical = true,
-                Template = _request.RequestTemplate
+                Template = Template
             };
-            PackStart(new Label(Director.Properties.Resources.RequestContent));
-            PackStart(RenderBox, expand: true, fill: true);
+
+            // Create Scroll view
+            CanvasScrollView = new ScrollView()
+            {
+                HorizontalScrollPolicy = ScrollPolicy.Automatic,
+                VerticalScrollPolicy = ScrollPolicy.Automatic
+            };
+            PackStart(CanvasScrollView, expand: true, fill: true);
+            CanvasScrollView.Content = RenderBox;
 
             // Set template
-            RenderBox.Template = ActiveRequest.RequestTemplate;
+            RenderBox.Template = Template;
 
             // Action items
             RenderBox.ButtonPressed += RenderBox_ButtonPressed;
@@ -236,23 +105,68 @@ namespace Director.Forms.Controls
 
             // Request menu helper
             RequestHelperMenu = new Menu();
-
-            MenuItem a = new MenuItem("Test");
-            RequestHelperMenu.Items.Add(a);
+            EditVariable = new MenuItem(Director.Properties.Resources.EditVariable)
+            {
+                Image = Image.FromResource(DirectorImages.EDIT_CONTENT_ICON)
+            };
+            RequestHelperMenu.Items.Add(EditVariable);
+            EditVariable.Clicked += EditVariable_Clicked;
         }
 
+        /// <summary>
+        /// Clickable delegate.
+        /// </summary>
+        void EditVariable_Clicked(object sender, EventArgs e)
+        {
+            // Active parser item
+            if (ActiveParserItem == null) return;
+
+            // Create dialog
+            EditRequestVariable _edit = new EditRequestVariable(ActiveParserItem);
+
+            // Run dialog
+            var d = _edit.Run();
+
+            // Ok
+            if (d == Command.Ok)
+            {
+                ActiveParserItem.value = _edit.GetValue();
+                SetRequest(Parser.serialize(Template));
+            }
+
+            _edit.Dispose();
+        }
+
+        /// <summary>
+        /// Active parser item.
+        /// </summary>
+        private ParserItem ActiveParserItem { get; set; }
+
+        /// <summary>
+        /// Mouse button right click on canvas.
+        /// </summary>
         void RenderBox_ButtonPressed(object sender, ButtonEventArgs e)
         {
             if (e.Button == PointerButton.Right)
-				RequestHelperMenu.Popup();
+            {
+                ParserItem item = RenderBox.MouseTargetItemAt(e.X, e.Y);
+                if (item != null)
+                {
+                    ActiveParserItem = item;
+                    //RequestHelperMenu.Items[0].Label = string.Format("{0} - {1}", item.value.GetType().ToString(), item.value.ToString());
+                    RequestHelperMenu.Popup();
+                }
+            }
         }
 
         /// <summary>
         /// Set request.
         /// </summary>
-        public void SetRequest(String request)
+        public void SetRequest(String requestTemplate)
         {
-            ActiveRequest.RequestTemplate = RenderBox.Template = request;
+            ActiveRequest.RequestTemplate = requestTemplate;
+            List<ParserError> errors = new List<ParserError>();
+            RenderBox.Template = Template = Parser.deserialize(requestTemplate, errors, "template");
             RenderBox.QueueDraw();
         }
 
@@ -271,13 +185,371 @@ namespace Director.Forms.Controls
             };
             _window.Show();
         }
+    }
+
+    struct RequestVariable
+    {
+        public int Start, End, DecimalPlaces, Type;
+        public string Text, Pattern, Method;
+        public bool Format;
+    }
+
+    internal class EditRequestVariable : Dialog
+    {
+        /// <summary>
+        /// Active item.
+        /// </summary>
+        private ParserItem ActiveItem { get; set; }
 
         /// <summary>
-        /// Text view.
+        /// Value.
         /// </summary>
-        void TextView_Changed(object sender, EventArgs e)
+        public RadioButton Value { get; set; }
+
+        /// <summary>
+        /// Format directive.
+        /// </summary>
+        public RadioButton Directive { get; set; }
+
+        /// <summary>
+        /// Guide.
+        /// </summary>
+        public RadioButton Guide { get; set; }
+
+        /// <summary>
+        /// Value text.
+        /// </summary>
+        public TextEntry ValueText { get; set; }
+
+        /// <summary>
+        /// Value options.
+        /// </summary>
+        public ComboBox ValueOptions { get; set; }
+
+        /// <summary>
+        /// Directive text.
+        /// </summary>
+        public TextEntry DirectiveText { get; set; }
+
+        /// <summary>
+        /// Variables.
+        /// </summary>
+        public List<RequestVariable> Variables { get; set; }
+
+        /// <summary>
+        /// Output example label.
+        /// </summary>
+        public Label OutputExampleLabel { get; set; }
+
+        /// <summary>
+        /// Output example string.
+        /// </summary>
+        public String OutputExample { get; set; }
+
+        /// <summary>
+        /// Types.
+        /// </summary>
+        public const int TYPE_STRING = 0;
+        public const int TYPE_INT = 1;
+        public const int TYPE_DOUBLE = 2;
+        public const int TYPE_NULL = 3;
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="item"></param>
+        public EditRequestVariable(ParserItem item)
         {
-            ActiveRequest.RequestTemplate = TextView.Text;  
+            // Title and dialog variables
+            Title = Director.Properties.Resources.EditVariable;
+            Icon = Image.FromResource(DirectorImages.EDIT_CONTENT_ICON);
+            Resizable = false;
+            ActiveItem = item;
+            Variables = new List<RequestVariable>();
+
+            // Widht height
+            Width = 450;
+            //Height = 250;
+
+            // Init content
+            _initializeComponents();
+
+            // Buttons
+            Buttons.Add(new DialogButton(Director.Properties.Resources.ConfirmInput, Command.Ok));
+            Buttons.Add(new DialogButton(Director.Properties.Resources.Cancel, Command.Cancel));
+
+            // Set data
+            ParseData();
+        }
+
+        /// <summary>
+        /// Set data.
+        /// </summary>
+        private void ParseData()
+        {
+            ParserItem it = ActiveItem;
+
+            if (it.value is System.Int64 || it.value is System.Int32)
+            {
+                Variables.Add(new RequestVariable()
+                {
+                    Text = it.value + "",
+                    Type = TYPE_INT
+                });
+            }
+            else if (it.value is System.Double)
+            {
+                Variables.Add(new RequestVariable()
+                {
+                    Text = (it.value + "").Replace(',', '.'),
+                    Type = TYPE_DOUBLE
+                });
+            }
+            else if (it.value == null)
+            {
+                Variables.Add(new RequestVariable()
+                {
+                    Text = "",
+                    Type = TYPE_NULL
+                });
+            }
+            else
+            {
+                Variables.Add(new RequestVariable()
+                {
+                    Text = it.value.ToString(),
+                    Type = TYPE_STRING
+                });
+            }
+
+            // One variable parse
+            if (Variables.Count == 1)
+            {
+                var i = Variables[0];
+
+                if (i.Format)
+                {
+                    Directive.Active = true;
+                }
+                else
+                {
+                    Value.Active = true;
+                    ValueOptions.SelectedIndex = i.Type;
+                    ValueText.Text = i.Text;
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// Return new value.
+        /// </summary>
+        public object GetValue()
+        {
+            if (Value.Active)
+            {
+                var i = ValueOptions.SelectedIndex;
+                var text = ValueText.Text;
+
+                if (i == TYPE_INT)
+                {
+                    try
+                    {
+                        return int.Parse(text);
+                    }
+                    catch
+                    {
+                        return 0;
+                    }
+                }
+                else if (i == TYPE_DOUBLE)
+                {
+                    try
+                    {
+                        return double.Parse(text, CultureInfo.InvariantCulture.NumberFormat);
+                    }
+                    catch
+                    {
+                        return 0.0;
+                    }
+                }
+                else if (i == TYPE_STRING)
+                {
+                    return ValueText.Text;
+                }
+                else
+                    return null;
+            }
+            else if (Directive.Active)
+            {
+                return DirectiveText.Text;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Guide options.
+        /// </summary>
+        private ScrollView GuideOptions { get; set; }
+
+        /// <summary>
+        /// Guide items.
+        /// </summary>
+        private VBox GuideItems { get; set; }
+
+        /// <summary>
+        /// Add guide item.
+        /// </summary>
+        private Button AddGuideItem { get; set; }
+
+        /// <summary>
+        /// Create components.
+        /// </summary>
+        private void _initializeComponents()
+        {
+            VBox ContentBox = new VBox();
+
+            // Options
+            Value = new RadioButton(Director.Properties.Resources.JsonValue);
+            Directive = new RadioButton(Director.Properties.Resources.FormatDirective);
+            Guide = new RadioButton(Director.Properties.Resources.FormatGuide);
+            Value.Group = Directive.Group = Guide.Group;
+            Value.Active = true;
+
+            // Prepare
+            Value.ActiveChanged += Value_ActiveChanged;
+
+            // Add VALUE
+            ContentBox.PackStart(Value);
+            HBox ValueBox = new HBox();
+
+            // Value option
+            ValueOptions = new ComboBox()
+            {
+                WidthRequest = 80
+            };
+            ValueOptions.Items.Add("String");
+            ValueOptions.Items.Add("Integer");
+            ValueOptions.Items.Add("Double");
+            ValueOptions.Items.Add("Null");
+            ValueOptions.SelectedIndex = 0;
+            ValueBox.PackStart(ValueOptions);
+
+            // Value text edit
+            ValueText = new TextEntry()
+            {
+                ExpandVertical = false,
+                ExpandHorizontal = true
+            };
+            ValueBox.PackStart(ValueText);
+            ValueText.Changed += ValueText_Changed;
+            ContentBox.PackStart(ValueBox);
+
+
+            // Add Directive
+            ContentBox.PackStart(Directive);
+            DirectiveText = new TextEntry()
+            {
+                Sensitive = false
+            };
+            ContentBox.PackStart(DirectiveText, false, true);
+
+            // Add Guide
+            /**ContentBox.PackStart(Guide);
+
+            // Add guide item
+            AddGuideItem = new Button(Image.FromResource(DirectorImages.ADD_ICON))
+            {
+                MinWidth = 30,
+                WidthRequest = 30,
+                Sensitive = false
+            };
+            AddGuideItem.Clicked += AddGuideItem_Clicked;
+            ContentBox.PackStart(AddGuideItem, vpos: WidgetPlacement.Center, hpos: WidgetPlacement.End);
+
+            // Guide options
+            GuideOptions = new ScrollView()
+            {
+                ExpandHorizontal = true,
+                ExpandVertical = true,
+                HorizontalScrollPolicy = ScrollPolicy.Never,
+                VerticalScrollPolicy = ScrollPolicy.Always,
+                Sensitive = false
+            };
+            ContentBox.PackStart(GuideOptions, expand: true, fill: true);
+
+
+            OutputExampleLabel = new Label()
+            {
+                Sensitive = false
+            };
+            ContentBox.PackStart(OutputExampleLabel, expand: false, fill: true);*/
+
+            // Set content box
+            Content = ContentBox;
+        }
+
+        /// <summary>
+        /// Add item.
+        /// </summary>
+        void AddGuideItem_Clicked(object sender, EventArgs e)
+        {
+            
+        }
+
+        /// <summary>
+        /// Control propriet type.
+        /// </summary>
+        void ValueText_Changed(object sender, EventArgs e)
+        {
+            String text = ValueText.Text;
+            var i = ValueOptions.SelectedIndex;
+
+            if (i == TYPE_INT)
+            {
+                try
+                {
+                    ValueText.Text = int.Parse(text) + "";
+                }
+                catch
+                {
+                    ValueText.Text = "0";
+                    MessageDialog.ShowError(Director.Properties.Resources.InvalidNumberInput);
+                }
+            }
+            else if (i == TYPE_DOUBLE)
+            {
+                try
+                {
+                    ValueText.Text = double.Parse(text, CultureInfo.InvariantCulture.NumberFormat) + "";
+                }
+                catch
+                {
+                    ValueText.Text = "0.0";
+                    MessageDialog.ShowError(Director.Properties.Resources.InvalidNumberInput);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Change value.
+        /// </summary>
+        void Value_ActiveChanged(object sender, EventArgs e)
+        {
+            // Value active
+            ValueOptions.Sensitive = Value.Active;
+            ValueText.Sensitive = Value.Active;
+
+            // Directive active
+            DirectiveText.Sensitive = Directive.Active;
+
+            // Guide options
+            /*GuideOptions.Sensitive = Guide.Active;
+            OutputExampleLabel.Sensitive = Guide.Active;
+            AddGuideItem.Sensitive = Guide.Active;*/
         }
     }
 }

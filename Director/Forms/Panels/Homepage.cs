@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xwt;
-using Xwt.Drawing;
+﻿using Xwt;
 using Director.Forms.Controls;
 
 namespace Director.Forms.Panels
@@ -26,6 +20,14 @@ Director is project for testing REST APIs by scenarios.
 
 - Email: jan.strnadek@gmail.com
 - Webpage: http://director.strnadj.eu/
+
+# Missing parts
+
+- Better edit of Response template
+- XML tranformations
+- Last open files
+- Languages
+- Fix parser
 
 # Changelog
 
