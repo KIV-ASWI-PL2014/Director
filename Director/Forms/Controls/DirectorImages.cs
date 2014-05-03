@@ -37,6 +37,7 @@ namespace Director.Forms.Controls
         public const string CS_ICON = "Director.Resources.cs.png";
         public const string EN_ICON = "Director.Resources.en.png";
         public const string LIST_ICON = "Director.Resources.list.png";
+        public const string DIRECTOR_IMAGE = "Director.Resources.splashscreen.png";
 
         /// <summary>
         /// Running icons.

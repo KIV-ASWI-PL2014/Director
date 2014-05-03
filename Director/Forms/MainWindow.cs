@@ -457,6 +457,27 @@ namespace Director.Forms
             MenuItem HelpMenu = new MenuItem(Director.Properties.Resources.HelpMenu);
             menu.Items.Add(HelpMenu);
 
+            // Help menu
+            Menu HelpSubMenu = new Menu();
+            HelpMenu.SubMenu = HelpSubMenu;
+
+            // About menu
+            MenuItem AboutMenu = new MenuItem(Director.Properties.Resources.About)
+            {
+                Image = Image.FromResource(DirectorImages.HELP_ICON)
+            };
+            HelpSubMenu.Items.Add(AboutMenu);
+            AboutMenu.Clicked += delegate
+            {
+                About.About AboutWindow = new About.About();
+                Content.Sensitive = false;
+                AboutWindow.Closed += delegate
+                {
+                    Content.Sensitive = true;
+                };
+                AboutWindow.Show();
+            };
+
             // Set as main menu
             MainMenu = menu;
 
