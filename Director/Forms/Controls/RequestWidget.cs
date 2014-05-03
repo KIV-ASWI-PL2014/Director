@@ -14,164 +14,6 @@ using Xwt.Formats;
 
 namespace Director.Forms.Controls
 {
-    internal class ClickableItems
-    {
-        
-    }
-
-    internal class RequestDrawing : Canvas
-    {
-        /// <summary>
-        /// Template.
-        /// </summary>
-        public String Template { get; set; }
-        
-        /// <summary>
-        /// Clickable items.
-        /// </summary>
-        public List<ClickableItems> CanvasItems { get; set; }
-
-        /// <summary>
-		/// X,Y points for drawing.
-        /// </summary>
-        public int X { get; set; }
-        public int Y { get; set; }
-
-        /// <summary>
-        /// Active context.
-        /// </summary>
-        public Context CTX { get; set; }
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        public RequestDrawing()
-        {
-            CanvasItems = new List<ClickableItems>();
-        }
-
-        /// <summary>
-        /// Draw text.
-        /// </summary>
-        /// <param name="ctx"></param>
-        /// <param name="dirtyRect"></param>
-        protected override void OnDraw(Context ctx, Rectangle dirtyRect)
-        {
-            base.OnDraw(ctx, dirtyRect);
-
-            if (Template == null)
-                return;
-
-            X = 20;
-            Y = 0;
-            CTX = ctx;
-
-            // Data set
-            DrawText("{");
-            NextLine();
-            X += 20;
-            List<ParserError> errors = new List<ParserError>();
-            Dictionary<string, ParserItem> data = Parser.deserialize(Template, errors, "template");
-            DrawJson(data);
-            X -= 20;
-            DrawText("}");
-        }
-
-        void NextLine()
-        {
-            Y += 18;
-        }
-
-        void DrawJson(Dictionary<string, ParserItem> data)
-        {
-
-            foreach (KeyValuePair<string, ParserItem> pair in data)
-            {
-                // Print key
-                String KeyInfo = string.Format("\"{0}\" : ", pair.Key);
-                
-
-				if (pair.Value.value is Dictionary<string, ParserItem>) {
-					DrawText (KeyInfo + "{");
-					X += 20;
-					NextLine ();
-					DrawJson ((Dictionary<string, ParserItem>)pair.Value.value);
-					X -= 20;
-					DrawText ("}");
-					NextLine ();
-				} else if (pair.Value.value is System.String) {
-					DrawProperty (pair.Key, '"' + (String)pair.Value.value + '"');
-					NextLine ();
-				} else if (pair.Value.value is System.Int64) {
-					DrawProperty (pair.Key, '"' + (String)pair.Value.value + '"');
-					NextLine ();
-				} else
-                {
-                    DrawText(pair.Value.value.GetType().ToString());
-                    NextLine();
-                }
-            }
-        }
-
-        TextLayout CreateTextLayout(string text)
-        {
-            var Item = new TextLayout();
-            Item.Text = text;
-            Item.Font.WithSize(10);
-            return Item;
-        }
-
-        void DrawProperty(string key, string value)
-        {
-            // Draw item
-            var Item = CreateTextLayout(string.Format("\"{0}\" : ", key));
-            CTX.DrawTextLayout(Item, X, Y);
-
-            double newX = X + Item.GetSize().Width;
-
-            // Create value
-            var Value = new TextLayout();
-            Value.Font.WithSize(10);
-            Value.Text = value;
-            var s = Value.GetSize();
-            var rect = new Rectangle(newX, Y, s.Width, s.Height).Inflate(0.2, 0.2);
-            CTX.SetColor(Colors.DarkBlue);
-            CTX.SetLineWidth(1);
-            CTX.Rectangle(rect);
-            CTX.Stroke();
-            CTX.SetColor(Colors.Blue);
-            CTX.Rectangle(rect);
-            CTX.Fill();
-            CTX.SetColor(Colors.White);
-            CTX.DrawTextLayout(Value, newX, Y);
-            CTX.SetColor(Colors.Black);
-
-            var end = CreateTextLayout(",");
-            CTX.DrawTextLayout(end, newX + s.Width + 8, Y);
-        }
-
-        void DrawText(string data)
-        {
-            var text = new TextLayout();
-            text.Font = this.Font.WithSize(12);
-            text.Text = data;
-            CTX.DrawTextLayout(text, X, Y);
-        }
-
-        void DrawText(string data, Color color, int start, int end)
-        {
-            var text = new TextLayout();
-            text.Font = this.Font.WithSize(10);
-            CTX.SetColor(color);
-            if (color != null) {
-                text.SetBackground(color, start, end);
-            }
-            CTX.SetColor(Colors.Black);
-            text.Text = data;
-            CTX.DrawTextLayout(text, X, Y);
-        }
-    }
-
     internal class RequestWidget : VBox
     {
         /// <summary>
@@ -182,7 +24,7 @@ namespace Director.Forms.Controls
         /// <summary>
         /// Render box
         /// </summary>
-        public RequestDrawing RenderBox { get; set; }
+        public JSONCanvas RenderBox { get; set; }
 
         /// <summary>
         /// Active request.
@@ -207,7 +49,7 @@ namespace Director.Forms.Controls
             Margin = 10;
 
             // Create Text view
-            RenderBox = new RequestDrawing()
+            RenderBox = new JSONCanvas()
             {
                 ExpandHorizontal = true,
                 ExpandVertical = true,
