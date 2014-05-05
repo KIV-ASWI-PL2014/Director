@@ -1,12 +1,6 @@
 ﻿using Director.DataStructures;
-using Director.Forms.Controls;
 using Director.Forms.Inputs;
-using Director.ParserLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xwt;
 using Xwt.Drawing;
 

@@ -1,16 +1,8 @@
 ﻿using Director.DataStructures;
 using Director.Forms.Inputs;
-using Director.ParserLib;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xwt;
 using Xwt.Drawing;
-using Xwt.Formats;
 
 namespace Director.Forms.Controls
 {

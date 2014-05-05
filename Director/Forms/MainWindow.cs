@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xwt;
 using Director.Forms.Panels;
 using Xwt.Drawing;
@@ -13,7 +11,6 @@ using Director.Forms.Inputs;
 using Director.ExportLib;
 using RestSharp;
 using Director.ParserLib;
-using System.Threading;
 
 namespace Director.Forms
 {
@@ -473,12 +470,8 @@ namespace Director.Forms
             AboutMenu.Clicked += delegate
             {
                 About.About AboutWindow = new About.About();
-                Content.Sensitive = false;
-                AboutWindow.Closed += delegate
-                {
-                    Content.Sensitive = true;
-                };
-                AboutWindow.Show();
+                var d = AboutWindow.Run();
+                AboutWindow.Dispose();
             };
 
             // Set as main menu
@@ -800,9 +793,8 @@ namespace Director.Forms
         private void MenuEditDefaultHeaders_Clicked(object sender, EventArgs e)
         {
             ServerHeaders ServerHeadersWindow = new ServerHeaders(this, UServer);
-            ServerHeadersWindow.Show();
-            Opacity = 0.1;
-            ServerHeadersWindow.Closed += delegate { Opacity = 1; };
+            var d = ServerHeadersWindow.Run();
+            ServerHeadersWindow.Dispose();
         }
 
         /// <summary>

@@ -4,8 +4,6 @@ using Director.Forms.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xwt;
 using Xwt.Drawing;
 
@@ -56,6 +54,9 @@ namespace Director.Forms.Export
 
             /// Title and Initial size
             Title = Director.Properties.Resources.ExportDialog;
+
+            // Set icon
+            Icon = Image.FromResource(DirectorImages.SAVE_SCENARIO_ICON);
 
             // Set default size
             Width = 450;

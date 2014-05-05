@@ -1,26 +1,46 @@
 ﻿using Director.Forms.Controls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xwt;
 using Xwt.Drawing;
 
 namespace Director.Forms.About
 {
-    class About : Window
+    class About : Dialog
     {
+        /// <summary>
+        /// X.
+        /// </summary>
+        private int X { get; set; }
+
+        /// <summary>
+        /// Informations table.
+        /// </summary>
+        private Table Informations { get; set; }
+
         /// <summary>
         /// Default constructor.
         /// </summary>
         public About()
         {
+            // Set title, size and icon
             Title = Director.Properties.Resources.About;
+            Icon = Image.FromResource(DirectorImages.HELP_ICON);
             Height = 320;
             Width = 480;
             Resizable = false;
 
+            // Set X
+            X = 0;
+
+            // Init components
+            _initializeComponnents();
+        }
+
+        /// <summary>
+        /// Initialize components.
+        /// </summary>
+        private void _initializeComponnents()
+        {
             // Content box
             VBox ContentBox = new VBox();
 
@@ -30,46 +50,73 @@ namespace Director.Forms.About
             ContentBox.PackStart(img);
 
             // Informations
-            Table Informations = new Table()
+            Informations = new Table()
             {
                 Margin = 10
             };
-            Informations.Add(new Label() { Markup = "<b>Director</b>" }, 0, 0, colspan: 2);
 
+            // Director name
+            AddTwoColumnsLabel(new Label() { Markup = "<b>Director</b>" });
+            
             // Version
-            Informations.Add(new Label(Director.Properties.Resources.Version + ":"), 0, 1);
-            Informations.Add(new Label("0.1a"), 1, 1);
+            AddInformation(Director.Properties.Resources.Version + ":", "0.1a");
 
             // Homepage
-            Informations.Add(new Label(Director.Properties.Resources.HomepageUrl + ":"), 0, 2);
-            LinkLabel _info = new LinkLabel("http://director.strnadj.eu/")
-            {
-                Uri = new Uri("http://director.strnadj.eu/")
-            };
-            Informations.Add(_info, 1, 2);
+            AddLink(Director.Properties.Resources.HomepageUrl + ":", "http://director.strnadj.eu/", "http://director.strnadj.eu/");
 
             // Authors
-            Informations.Add(new Label(Director.Properties.Resources.Authors + ":"), 0, 3);
-            Informations.Add(new Label("Jan Strnadek, David Pejrimovsky, Vaclav Stengl"), 1, 3);
+            AddInformation(Director.Properties.Resources.Authors + ":", "Jan Strnadek, David Pejrimovsky, Vaclav Stengl");
 
+            // Icons by
+            AddLink(Director.Properties.Resources.Icons + ":", "FatCow Web Icons", "http://www.fatcow.com/");
+
+            // Set content box
             ContentBox.PackStart(Informations, expand: true, fill: true);
 
             // Button
-            Button ConfirmButton = new Button(Image.FromResource(DirectorImages.OK_ICON), Director.Properties.Resources.Close)
-            {
-                WidthRequest = 150,
-                ExpandHorizontal = false,
-                ExpandVertical = false
-            };
-            ContentBox.PackStart(ConfirmButton, expand: false, hpos: WidgetPlacement.End);
-            ConfirmButton.Clicked += delegate
-            {
-                this.Close();
-            };
-
+            Buttons.Add(new DialogButton(Director.Properties.Resources.Close, Image.FromResource(DirectorImages.OK_ICON), Command.Ok));
 
             // Set content
             Content = ContentBox;
+        }
+
+        /// <summary>
+        /// Add informations.
+        /// </summary>
+        /// <param name="desc"></param>
+        /// <param name="value"></param>
+        void AddInformation(String desc, String value)
+        {
+            Informations.Add(new Label(desc), 0, X);
+            Informations.Add(new Label(value), 1, X);
+            X++;
+        }
+
+        /// <summary>
+        /// Add link.
+        /// </summary>
+        /// <param name="desc"></param>
+        /// <param name="linkDesc"></param>
+        /// <param name="link"></param>
+        void AddLink(String desc, String linkDesc, String link)
+        {
+            Informations.Add(new Label(desc), 0, X);
+            LinkLabel _link = new LinkLabel(linkDesc)
+            {
+                Uri = new Uri(link)
+            };
+            Informations.Add(_link, 1, X);
+            X++;
+        }
+
+        /// <summary>
+        /// Add label!
+        /// </summary>
+        /// <param name="l"></param>
+        void AddTwoColumnsLabel(Label l)
+        {
+            Informations.Add(l, 0, X, colspan: 2);
+            X++;
         }
     }
 }

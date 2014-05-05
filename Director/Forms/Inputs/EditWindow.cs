@@ -1,10 +1,6 @@
 ﻿using Director.DataStructures;
 using Director.Forms.Controls;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xwt;
 using Xwt.Drawing;
 
@@ -124,7 +120,7 @@ namespace Director.Forms.Inputs
             {
                 RequestHttpMethod.SelectedText = ActiveRequest.HTTP_METHOD;
             }
-            catch (Exception e)
+            catch
             {
                 RequestHttpMethod.SelectedText = ActiveRequest.HTTP_METHOD = "GET";
             }
@@ -177,7 +173,7 @@ namespace Director.Forms.Inputs
                     ActiveRequest.SetUrl(RequestUrlField.Text);
                     InvalidRequestUrl.Hide();
                 }
-                catch (Exception e)
+                catch
                 {
                     InvalidRequestUrl.Show();
                 }
