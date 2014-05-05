@@ -1,6 +1,8 @@
 ﻿using Director.DataStructures;
 using Director.Forms.Inputs;
+using Director.ParserLib;
 using System;
+using System.Collections.Generic;
 using Xwt;
 using Xwt.Drawing;
 
@@ -34,6 +36,12 @@ namespace Director.Forms.Controls
         private ScrollView CanvasScrollView { get; set; }
 
         /// <summary>
+        /// Dictionary template!
+        /// </summary>
+        private Dictionary<string, ParserItem> Template { get; set; }
+        
+
+        /// <summary>
         /// Create widget.
         /// </summary>
         /// <param name="_request"></param>
@@ -48,12 +56,19 @@ namespace Director.Forms.Controls
             // Create Text view
             PackStart(new Label() { Markup = "<b>" + Director.Properties.Resources.RequestContent + "</b>" });
             
+            // Parse Request
+            if (_request.RequestTemplate != null)
+            {
+                List<ParserError> errors = new List<ParserError>();
+                Template = Parser.deserialize(_request.RequestTemplate, errors, "template");
+            }
+
             // Create canvas
             RenderBox = new JSONCanvas()
             {
                 ExpandHorizontal = true,
                 ExpandVertical = true,
-                Template = _request.RequestTemplate
+                Template = Template
             };
 
             // Create Scroll view
@@ -66,7 +81,7 @@ namespace Director.Forms.Controls
             CanvasScrollView.Content = RenderBox;
 
             // Set template
-            RenderBox.Template = ActiveRequest.RequestTemplate;
+            RenderBox.Template = Template;
 
             // Action items
             RenderBox.ButtonPressed += RenderBox_ButtonPressed;
@@ -90,18 +105,30 @@ namespace Director.Forms.Controls
             RequestHelperMenu.Items.Add(a);
         }
 
+        /// <summary>
+        /// Mouse button right click on canvas.
+        /// </summary>
         void RenderBox_ButtonPressed(object sender, ButtonEventArgs e)
         {
             if (e.Button == PointerButton.Right)
-				RequestHelperMenu.Popup();
+            {
+                ParserItem item = RenderBox.MouseTargetItemAt(e.X, e.Y);
+                if (item != null)
+                {
+                    RequestHelperMenu.Items[0].Label = string.Format("{0} - {1}", item.value.GetType().ToString(), item.value.ToString());
+                    RequestHelperMenu.Popup();
+                }
+            }
         }
 
         /// <summary>
         /// Set request.
         /// </summary>
-        public void SetRequest(String request)
+        public void SetRequest(String requestTemplate)
         {
-            ActiveRequest.RequestTemplate = RenderBox.Template = request;
+            ActiveRequest.RequestTemplate = requestTemplate;
+            List<ParserError> errors = new List<ParserError>();
+            RenderBox.Template = Template = Parser.deserialize(requestTemplate, errors, "template");
             RenderBox.QueueDraw();
         }
 
@@ -119,14 +146,6 @@ namespace Director.Forms.Controls
                 Parent.Sensitive = true;
             };
             _window.Show();
-        }
-
-        /// <summary>
-        /// Text view.
-        /// </summary>
-        void TextView_Changed(object sender, EventArgs e)
-        {
-            ActiveRequest.RequestTemplate = TextView.Text;  
         }
     }
 }

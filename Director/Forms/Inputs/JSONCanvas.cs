@@ -6,12 +6,19 @@ using Xwt.Drawing;
 
 namespace Director.Forms.Inputs
 {
-    internal class ClickableResponseItem
+    /// <summary>
+    /// Clickable response item container!
+    /// </summary>
+    public struct ClickableResponseItem
     {
-
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Height { get; set; }
+        public double Width { get; set; }
+        public ParserItem Item { get; set; }
     }
 
-    class JSONCanvas : Canvas
+    public class JSONCanvas : Canvas
     {
         /// <summary>
         /// Scroll adjustments!
@@ -22,7 +29,7 @@ namespace Director.Forms.Inputs
         /// <summary>
         /// Template.
         /// </summary>
-        public String Template { get; set; }
+        public Dictionary<string, ParserItem> Template { get; set; }
 
         /// <summary>
         /// Clickable items.
@@ -78,6 +85,7 @@ namespace Director.Forms.Inputs
             maxX = 0;
             Y = 0;
             X = 20;
+            CanvasItems.Clear();
         }
 
         /// <summary>
@@ -124,15 +132,11 @@ namespace Director.Forms.Inputs
             // Set Context
             CTX = ctx;
 
-            // Parse data
-            List<ParserError> errors            = new List<ParserError>();
-            Dictionary<string, ParserItem> data = Parser.deserialize(Template, errors, "template");
-
             // Data set
             DrawText("{");
             NextLine();
             Right();
-            DrawJson(data);
+            DrawJson(Template);
             Left();
             DrawText("}");
 
@@ -157,9 +161,50 @@ namespace Director.Forms.Inputs
             DrawText("{");
             NextLine();
             Right();
-            DrawJson(data);
+            DrawJson(Template);
             Left();
             DrawText("}");
+        }
+
+        /// <summary>
+        /// Return item click on!
+        /// </summary>
+        public ParserItem MouseTargetItemAt(double X, double Y)
+        {
+            List<ClickableResponseItem> items = CanvasItems.FindAll(n => n.X <= X && n.Y <= Y && n.Height >= Y && n.Width >= X);
+
+            if (items.Count == 0)
+            {
+                return null;
+            }
+            else
+            {
+                return items[0].Item;
+            }
+        }
+
+        /// <summary>
+        /// Create clickable item on target destination!
+        /// </summary>
+        private void CreateClickableItem(double corX, double corY, double corWidth, double corHeight, ParserItem item)
+        {
+            if (hscroll != null && vscroll != null)
+            {
+                corX -= hscroll.Value;
+                corY -= vscroll.Value;
+            }
+
+            // Not clickable (out of range)
+            if (corX < 0 || corY < 0)
+                return;
+
+            // Create Item
+            CanvasItems.Add(
+                new ClickableResponseItem()
+                {
+                    X = corX, Y = corY, Height = corY + corHeight, Width = corX + corWidth, Item = item
+                }
+            );
         }
 
 
@@ -254,7 +299,7 @@ namespace Director.Forms.Inputs
             {
                 if (key != null)
                 {
-                    DrawProperty(key, (String)item.value, comma);
+                    DrawProperty(key, (String)item.value, item, comma);
                 }
                 else
                     DrawText(item.value + commaStr);
@@ -263,7 +308,7 @@ namespace Director.Forms.Inputs
             {
                 if (key != null)
                 {
-                    DrawProperty(key, item.value + "", comma);
+                    DrawProperty(key, item.value + "", item, comma);
                 }
                 else
                     DrawText(item.value + commaStr);
@@ -272,7 +317,7 @@ namespace Director.Forms.Inputs
             {
                 if (key != null)
                 {
-                    DrawProperty(key, "null", comma);
+                    DrawProperty(key, "null", item, comma);
                 }
                 else
                     DrawText("null" + commaStr);
@@ -319,7 +364,7 @@ namespace Director.Forms.Inputs
             return Item;
         }
 
-        void DrawProperty(string key, string value, bool comma = true)
+        void DrawProperty(string key, string value, ParserItem item, bool comma = true)
         {
             if (CanDraw)
             {
@@ -335,6 +380,7 @@ namespace Director.Forms.Inputs
                 Value.Text = value;
                 var s = Value.GetSize();
                 var rect = new Rectangle(newX, Y, s.Width, s.Height).Inflate(0.2, 0.2);
+                CreateClickableItem((double) newX, (double)Y, s.Width, s.Height, item);
                 CTX.SetColor(Colors.DarkBlue);
                 CTX.SetLineWidth(1);
                 CTX.Rectangle(rect);

@@ -41,7 +41,7 @@ namespace Director
             //EditWindow _mainWindow = new EditWindow(null, test);
 
             // Create main window and show
-             MainWindow _mainWindow = new MainWindow();
+            MainWindow _mainWindow = new MainWindow();
             _mainWindow.Show();
             _mainWindow.Closed += delegate {
                 Application.Exit();
