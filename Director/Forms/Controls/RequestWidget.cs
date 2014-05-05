@@ -29,6 +29,11 @@ namespace Director.Forms.Controls
         private Menu RequestHelperMenu { get; set; }
 
         /// <summary>
+        /// Canvas scroll view.
+        /// </summary>
+        private ScrollView CanvasScrollView { get; set; }
+
+        /// <summary>
         /// Create widget.
         /// </summary>
         /// <param name="_request"></param>
@@ -41,14 +46,24 @@ namespace Director.Forms.Controls
             Margin = 10;
 
             // Create Text view
+            PackStart(new Label() { Markup = "<b>" + Director.Properties.Resources.RequestContent + "</b>" });
+            
+            // Create canvas
             RenderBox = new JSONCanvas()
             {
                 ExpandHorizontal = true,
                 ExpandVertical = true,
                 Template = _request.RequestTemplate
             };
-            PackStart(new Label(Director.Properties.Resources.RequestContent));
-            PackStart(RenderBox, expand: true, fill: true);
+
+            // Create Scroll view
+            CanvasScrollView = new ScrollView()
+            {
+                HorizontalScrollPolicy = ScrollPolicy.Automatic,
+                VerticalScrollPolicy = ScrollPolicy.Automatic
+            };
+            PackStart(CanvasScrollView, expand: true, fill: true);
+            CanvasScrollView.Content = RenderBox;
 
             // Set template
             RenderBox.Template = ActiveRequest.RequestTemplate;

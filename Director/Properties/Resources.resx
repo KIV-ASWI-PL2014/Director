@@ -718,4 +718,10 @@
   <data name="Icons" xml:space="preserve">
     <value>Icons by</value>
   </data>
+  <data name="InputPrompt" xml:space="preserve">
+    <value>Paste input:</value>
+  </data>
+  <data name="OutputMessage" xml:space="preserve">
+    <value>Output:</value>
+  </data>
 </root>

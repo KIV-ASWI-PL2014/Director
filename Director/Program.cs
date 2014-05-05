@@ -3,6 +3,7 @@ using System;
 using Xwt;
 using Director.DataStructures;
 using System.Threading;
+using Director.Forms.Inputs;
 
 namespace Director
 {
@@ -36,10 +37,11 @@ namespace Director
             test.ParentScenario = sc;
 
 
+
             //EditWindow _mainWindow = new EditWindow(null, test);
 
             // Create main window and show
-            MainWindow _mainWindow = new MainWindow();
+             MainWindow _mainWindow = new MainWindow();
             _mainWindow.Show();
             _mainWindow.Closed += delegate {
                 Application.Exit();

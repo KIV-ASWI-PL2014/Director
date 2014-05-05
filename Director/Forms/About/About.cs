@@ -10,7 +10,7 @@ namespace Director.Forms.About
         /// <summary>
         /// X.
         /// </summary>
-        private int X { get; set; }
+        private int TableX { get; set; }
 
         /// <summary>
         /// Informations table.
@@ -30,7 +30,7 @@ namespace Director.Forms.About
             Resizable = false;
 
             // Set X
-            X = 0;
+            TableX = 0;
 
             // Init components
             _initializeComponnents();
@@ -87,9 +87,9 @@ namespace Director.Forms.About
         /// <param name="value"></param>
         void AddInformation(String desc, String value)
         {
-            Informations.Add(new Label(desc), 0, X);
-            Informations.Add(new Label(value), 1, X);
-            X++;
+            Informations.Add(new Label(desc), 0, TableX);
+            Informations.Add(new Label(value), 1, TableX);
+            TableX++;
         }
 
         /// <summary>
@@ -100,13 +100,13 @@ namespace Director.Forms.About
         /// <param name="link"></param>
         void AddLink(String desc, String linkDesc, String link)
         {
-            Informations.Add(new Label(desc), 0, X);
+            Informations.Add(new Label(desc), 0, TableX);
             LinkLabel _link = new LinkLabel(linkDesc)
             {
                 Uri = new Uri(link)
             };
-            Informations.Add(_link, 1, X);
-            X++;
+            Informations.Add(_link, 1, TableX);
+            TableX++;
         }
 
         /// <summary>
@@ -115,8 +115,8 @@ namespace Director.Forms.About
         /// <param name="l"></param>
         void AddTwoColumnsLabel(Label l)
         {
-            Informations.Add(l, 0, X, colspan: 2);
-            X++;
+            Informations.Add(l, 0, TableX, colspan: 2);
+            TableX++;
         }
     }
 }

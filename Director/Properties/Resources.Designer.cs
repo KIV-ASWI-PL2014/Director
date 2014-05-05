@@ -705,6 +705,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Paste input:.
+        /// </summary>
+        internal static string InputPrompt {
+            get {
+                return ResourceManager.GetString("InputPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap insert {
@@ -1093,6 +1102,15 @@ namespace Director.Properties {
         internal static string OutputFileNotSelected {
             get {
                 return ResourceManager.GetString("OutputFileNotSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output:.
+        /// </summary>
+        internal static string OutputMessage {
+            get {
+                return ResourceManager.GetString("OutputMessage", resourceCulture);
             }
         }
         

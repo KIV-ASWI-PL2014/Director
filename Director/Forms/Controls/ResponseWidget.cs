@@ -40,6 +40,11 @@ namespace Director.Forms.Controls
             MarginRight = 10
         };
 
+        /// <summary>
+        /// Scroll view.
+        /// </summary>
+        private ScrollView CanvasScrollView { get; set; }
+
 
         public ResponseWidget(Request _request)
         {
@@ -83,16 +88,25 @@ namespace Director.Forms.Controls
                 }
             };
 
+            // Label
+            PackStart(new Label() { Markup = "<b>" + Director.Properties.Resources.ResponseContent + ":</b>" });
 
-            // Create Text view
+            // Json canvas
             RenderBox = new JSONCanvas()
             {
                 ExpandHorizontal = true,
                 ExpandVertical = true,
                 Template = _request.ResponseTemplate
             };
-            PackStart(new Label(Director.Properties.Resources.ResponseContent));
-            PackStart(RenderBox, expand: true, fill: true);
+
+            // Create scroll view
+            CanvasScrollView = new ScrollView()
+            {
+                HorizontalScrollPolicy = ScrollPolicy.Automatic,
+                VerticalScrollPolicy = ScrollPolicy.Automatic
+            };
+            PackStart(CanvasScrollView, expand: true, fill: true);
+            CanvasScrollView.Content = RenderBox;
 
             // Set template
             RenderBox.Template = ActiveRequest.RequestTemplate;

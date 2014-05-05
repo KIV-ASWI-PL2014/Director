@@ -14,6 +14,12 @@ namespace Director.Forms.Inputs
     class JSONCanvas : Canvas
     {
         /// <summary>
+        /// Scroll adjustments!
+        /// </summary>
+        ScrollAdjustment hscroll;
+        ScrollAdjustment vscroll;
+
+        /// <summary>
         /// Template.
         /// </summary>
         public String Template { get; set; }
@@ -24,9 +30,19 @@ namespace Director.Forms.Inputs
         public List<ClickableResponseItem> CanvasItems { get; set; }
 
         /// <summary>
-        /// x
+        /// Find X and Max X!
         /// </summary>
-        public int X { get; set; }
+        public int x, maxX;
+        public int X { 
+            get { 
+                return x;
+            }
+            set
+            {
+                if (value > maxX) maxX = value;
+                x = value;
+            }
+        }
         public int Y { get; set; }
 
         /// <summary>
@@ -35,50 +51,178 @@ namespace Director.Forms.Inputs
         public Context CTX { get; set; }
 
         /// <summary>
+        /// Image size;
+        /// </summary>
+        public int ImageHeight { get; set; }
+        public int ImageWidth { get; set; }
+
+        /// <summary>
+        /// Draw operational?
+        /// </summary>
+        public bool CanDraw { get; set; }
+
+        /// <summary>
         /// Constructor.
         /// </summary>
         public JSONCanvas()
         {
             CanvasItems = new List<ClickableResponseItem>();
+            ImageHeight = ImageWidth = 0;
         }
 
         /// <summary>
-        /// Draw text.
+        /// Clear values.
         /// </summary>
-        /// <param name="ctx"></param>
-        /// <param name="dirtyRect"></param>
-        protected override void OnDraw(Context ctx, Rectangle dirtyRect)
+        public void ClearValues()
         {
-            base.OnDraw(ctx, dirtyRect);
-
-            if (Template == null)
-                return;
-
-            X = 20;
+            maxX = 0;
             Y = 0;
-            CTX = ctx;
-
-            // Data set
-            DrawText("{");
-            NextLine();
-            X += 20;
-            List<ParserError> errors = new List<ParserError>();
-            Dictionary<string, ParserItem> data = Parser.deserialize(Template, errors, "template");
-            DrawJson(data);
-            X -= 20;
-            DrawText("}");
+            X = 20;
         }
 
+        /// <summary>
+        /// Right.
+        /// </summary>
+        public void Right()
+        {
+            X += 20;
+        }
+
+        /// <summary>
+        /// Left.
+        /// </summary>
+        public void Left()
+        {
+            X -= 20;
+        }
+
+        /// <summary>
+        /// Next line.
+        /// </summary>
         void NextLine()
         {
             Y += 18;
         }
 
+        /// <summary>
+        /// Draw text.
+        /// </summary>
+        protected override void OnDraw(Context ctx, Rectangle dirtyRect)
+        {
+            base.OnDraw(ctx, dirtyRect);
+
+            // If no template dont draw!
+            if (Template == null)
+                return;
+
+            // Stop drawing (count size for request)
+            CanDraw = false;
+
+            // Clear
+            ClearValues();
+           
+            // Set Context
+            CTX = ctx;
+
+            // Parse data
+            List<ParserError> errors            = new List<ParserError>();
+            Dictionary<string, ParserItem> data = Parser.deserialize(Template, errors, "template");
+
+            // Data set
+            DrawText("{");
+            NextLine();
+            Right();
+            DrawJson(data);
+            Left();
+            DrawText("}");
+
+            // Set image size - scrollbars!
+            if (hscroll != null && vscroll != null && (hscroll.UpperValue != maxX || vscroll.UpperValue != Y+20))
+            {
+                hscroll.UpperValue = maxX;
+                vscroll.UpperValue = Y + 20;
+            }
+
+            // Start drawing
+            CanDraw = true;
+
+            // Clear and draw again! - translate context!
+            if (hscroll != null && vscroll != null)
+                ctx.Translate(-hscroll.Value, -vscroll.Value);
+
+            // Clear values!
+            ClearValues();
+
+            // Data set
+            DrawText("{");
+            NextLine();
+            Right();
+            DrawJson(data);
+            Left();
+            DrawText("}");
+        }
+
+
+        /// <summary>
+        /// Necessary override for scrolling.
+        /// </summary>
+        protected override bool SupportsCustomScrolling
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Create scroll horizontal and vertical adjustments and redraw if it is necessary!
+        /// </summary>
+        /// <param name="horizontal"></param>
+        /// <param name="vertical"></param>
+        protected override void SetScrollAdjustments(ScrollAdjustment horizontal, ScrollAdjustment vertical)
+        {
+            hscroll = horizontal;
+            vscroll = vertical;
+
+            hscroll.UpperValue = 0;
+            hscroll.PageIncrement = Bounds.Width;
+            hscroll.PageSize = Bounds.Width;
+            hscroll.ValueChanged += delegate
+            {
+                QueueDraw();
+            };
+
+            vscroll.UpperValue = 0;
+            vscroll.PageIncrement = Bounds.Height;
+            vscroll.PageSize = Bounds.Height;
+            vscroll.ValueChanged += delegate
+            {
+                QueueDraw();
+            };
+        }
+
+        /// <summary>
+        /// If bounds changed, change scrollbars.
+        /// </summary>
+        protected override void OnBoundsChanged()
+        {
+            if (vscroll == null || hscroll == null)
+                return;
+            vscroll.PageSize = vscroll.PageIncrement = Bounds.Height;
+            hscroll.PageSize = hscroll.PageIncrement = Bounds.Width;
+        }
+
+
+        /// <summary>
+        /// Draw Json classes!
+        /// </summary>
+        /// <param name="data"></param>
         void DrawJson(Dictionary<string, ParserItem> data)
         {
             int i = data.Keys.Count;
             foreach (KeyValuePair<string, ParserItem> pair in data)
             {
+                // Last item?
                 i--;
 
                 // Print Items
@@ -86,6 +230,7 @@ namespace Director.Forms.Inputs
             }
         }
 
+        // Draw item from parser:
         void DrawParserItem(string key, ParserItem item, bool comma = false)
         {
 
@@ -176,56 +321,65 @@ namespace Director.Forms.Inputs
 
         void DrawProperty(string key, string value, bool comma = true)
         {
-            // Draw item
-            var Item = CreateTextLayout(string.Format("\"{0}\" : ", key));
-            CTX.DrawTextLayout(Item, X, Y);
-
-            double newX = X + Item.GetSize().Width;
-
-            // Create value
-            var Value = new TextLayout();
-            Value.Font.WithSize(10);
-            Value.Text = value;
-            var s = Value.GetSize();
-            var rect = new Rectangle(newX, Y, s.Width, s.Height).Inflate(0.2, 0.2);
-            CTX.SetColor(Colors.DarkBlue);
-            CTX.SetLineWidth(1);
-            CTX.Rectangle(rect);
-            CTX.Stroke();
-            CTX.SetColor(Colors.Blue);
-            CTX.Rectangle(rect);
-            CTX.Fill();
-            CTX.SetColor(Colors.White);
-            CTX.DrawTextLayout(Value, newX, Y);
-            CTX.SetColor(Colors.Black);
-
-            if (comma)
+            if (CanDraw)
             {
-                var end = CreateTextLayout(",");
-                CTX.DrawTextLayout(end, newX + s.Width + 8, Y);
+                // Draw item
+                var Item = CreateTextLayout(string.Format("\"{0}\" : ", key));
+                CTX.DrawTextLayout(Item, X, Y);
+
+                double newX = X + Item.GetSize().Width;
+
+                // Create value
+                var Value = new TextLayout();
+                Value.Font.WithSize(10);
+                Value.Text = value;
+                var s = Value.GetSize();
+                var rect = new Rectangle(newX, Y, s.Width, s.Height).Inflate(0.2, 0.2);
+                CTX.SetColor(Colors.DarkBlue);
+                CTX.SetLineWidth(1);
+                CTX.Rectangle(rect);
+                CTX.Stroke();
+                CTX.SetColor(Colors.Blue);
+                CTX.Rectangle(rect);
+                CTX.Fill();
+                CTX.SetColor(Colors.White);
+                CTX.DrawTextLayout(Value, newX, Y);
+                CTX.SetColor(Colors.Black);
+
+                if (comma)
+                {
+                    var end = CreateTextLayout(",");
+                    CTX.DrawTextLayout(end, newX + s.Width + 8, Y);
+                }
             }
         }
 
         void DrawText(string data)
         {
-            var text = new TextLayout();
-            text.Font = this.Font.WithSize(12);
-            text.Text = data;
-            CTX.DrawTextLayout(text, X, Y);
+            if (CanDraw)
+            {
+                var text = new TextLayout();
+                text.Font = this.Font.WithSize(12);
+                text.Text = data;
+                CTX.DrawTextLayout(text, X, Y);
+            }
         }
 
         void DrawText(string data, Color color, int start, int end)
         {
-            var text = new TextLayout();
-            text.Font = this.Font.WithSize(10);
-            CTX.SetColor(color);
-            if (color != null)
+            if (CanDraw)
             {
-                text.SetBackground(color, start, end);
+                var text = new TextLayout();
+                text.Font = this.Font.WithSize(10);
+                CTX.SetColor(color);
+                if (color != null)
+                {
+                    text.SetBackground(color, start, end);
+                }
+                CTX.SetColor(Colors.Black);
+                text.Text = data;
+                CTX.DrawTextLayout(text, X, Y);
             }
-            CTX.SetColor(Colors.Black);
-            text.Text = data;
-            CTX.DrawTextLayout(text, X, Y);
         }
     }
 }

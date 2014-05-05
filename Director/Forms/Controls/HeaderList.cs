@@ -311,7 +311,7 @@ namespace Director
                 TabIndex = ParentList.TAB_INDEX
             };
             Types.Changed += delegate { ActiveHeader.Name = Types.Text; };
-            Types.GotFocus += GotChildFocusHandler;
+            Types.HelperGotFocus += GotChildFocusHandler;
 
             // Value
             Values = new TextEntryHelper()
@@ -324,7 +324,7 @@ namespace Director
                 TabIndex = ParentList.TAB_INDEX
             };
             Values.Changed += delegate { ActiveHeader.Value = Values.Text; };
-            Values.GotFocus += GotChildFocusHandler;
+            Values.HelperGotFocus += GotChildFocusHandler;
 
             // Parent list contains Scenario
             if (ParentList.ActiveScenario != null)

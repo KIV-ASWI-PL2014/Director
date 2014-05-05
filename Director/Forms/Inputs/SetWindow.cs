@@ -53,6 +53,9 @@ namespace Director.Forms.Inputs
             // This window can not be maximalized
             Resizable = true;
 
+            // Icon
+            Icon = Image.FromResource(DirectorImages.EDIT_ICON);
+
             // Set content
             Title = Director.Properties.Resources.SetContentTitle;
 

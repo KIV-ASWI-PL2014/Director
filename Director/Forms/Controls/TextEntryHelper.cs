@@ -83,7 +83,7 @@ namespace Director.Forms.Controls
         /// <summary>
         /// Got item focus.
         /// </summary>
-        public event EventHandler GotFocus
+        public event EventHandler HelperGotFocus
         {
             add { got_focus += value; }
             remove { got_focus -= value; }
