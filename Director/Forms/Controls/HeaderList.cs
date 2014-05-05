@@ -381,7 +381,7 @@ namespace Director
             var expressionDialog = new Dialog()
             {
                 InitialLocation = WindowLocation.CenterParent,
-                Width = 320,
+                Width = 370,
                 Resizable = false
             };
 
@@ -392,8 +392,7 @@ namespace Director
             VBox t = new VBox()
             {
                 ExpandHorizontal = true,
-                ExpandVertical = true,
-                Margin = 10
+                ExpandVertical = true
             };
 
             // Text before
@@ -457,8 +456,24 @@ namespace Director
             TextAfter.Changed += ExpressionSolver;
             Variables.SelectionChanged += ExpressionSolver;
 
+            // Image
+            HBox ContentBox = new HBox()
+            {
+                ExpandHorizontal = true,
+                ExpandVertical = true
+            };
+
+            // Image view
+            ImageView ImageIcon = new ImageView(Image.FromResource(DirectorImages.HEADER_EDIT_IMAGE))
+            {
+                WidthRequest = 32, HeightRequest = 32,
+                Margin = 20
+            };
+            ContentBox.PackStart(ImageIcon, false, false);
+            ContentBox.PackStart(t, true, true);
+
             // Set content
-            expressionDialog.Content = t;
+            expressionDialog.Content = ContentBox;
 
             // Prepare buttons
             expressionDialog.Buttons.Add(new DialogButton(Director.Properties.Resources.OkComand, Command.Ok));
