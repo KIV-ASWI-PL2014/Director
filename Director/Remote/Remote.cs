@@ -48,7 +48,11 @@ namespace Director.Remote
             
             // Set headers
             foreach (var h in _request.Headers)
-                request.AddHeader(h.Name, h.Value);
+            {
+                // TODO: Catch exception
+                ParserResult result = Parser.parseHeader(h.Value, _request.ParentScenario.customVariables);
+                request.AddHeader(h.Name, result.getResult());
+            }
 
             // Add files
             foreach (var f in _request.Files)

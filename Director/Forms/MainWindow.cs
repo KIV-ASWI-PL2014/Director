@@ -187,6 +187,9 @@ namespace Director.Forms
             /// Title and Initial size
             Title = Director.Properties.Resources.MainWindowTitle;
 
+            // Icon
+            Icon = Image.FromResource(DirectorImages.ROOT_ICON);
+
             // Set default size
             Width = 750;
             Height = 630;

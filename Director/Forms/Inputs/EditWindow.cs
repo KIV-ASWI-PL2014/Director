@@ -76,6 +76,9 @@ namespace Director.Forms.Inputs
             // Set title
             Title = "Request: " + _request.Name;
 
+            // Icon
+            Icon = Image.FromResource(DirectorImages.ROOT_ICON);
+
             // Center screen
             InitialLocation = WindowLocation.CenterScreen;
 
@@ -216,7 +219,7 @@ namespace Director.Forms.Inputs
         private void _initializeTabs()
         {
             RequestSettings.Add(new OverviewWidget(ActiveRequest), Director.Properties.Resources.RequestOverview);
-            RequestSettings.Add(new HeaderList(ActiveRequest.Headers), Director.Properties.Resources.RequestHeaders);
+            RequestSettings.Add(new HeaderList(ActiveRequest.Headers, ActiveRequest.ParentScenario), Director.Properties.Resources.RequestHeaders);
             RequestSettings.Add(new FileList(ActiveRequest.Files), Director.Properties.Resources.RequestFiles);
             RequestSettings.Add(new RequestWidget(ActiveRequest), Director.Properties.Resources.RequestTab);
             RequestSettings.Add(new ResponseWidget(ActiveRequest), Director.Properties.Resources.RequestResponse);

@@ -226,6 +226,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        internal static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose running option.
         /// </summary>
         internal static string ChooseRunningOptions {
@@ -511,6 +520,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Example.
+        /// </summary>
+        internal static string Example {
+            get {
+                return ResourceManager.GetString("Example", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap exit {
@@ -603,6 +621,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expression creator.
+        /// </summary>
+        internal static string HeaderSettings {
+            get {
+                return ResourceManager.GetString("HeaderSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap help {
@@ -655,6 +682,16 @@ namespace Director.Properties {
         internal static string Informations {
             get {
                 return ResourceManager.GetString("Informations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap insert {
+            get {
+                object obj = ResourceManager.GetObject("insert", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -976,12 +1013,30 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There are no variables in this scenario, make please a new one from successfull request!.
+        /// </summary>
+        internal static string NoVariablesFound {
+            get {
+                return ResourceManager.GetString("NoVariablesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap ok {
             get {
                 object obj = ResourceManager.GetObject("ok", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string OkComand {
+            get {
+                return ResourceManager.GetString("OkComand", resourceCulture);
             }
         }
         
@@ -1748,6 +1803,24 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Text after.
+        /// </summary>
+        internal static string TextAfter {
+            get {
+                return ResourceManager.GetString("TextAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text before.
+        /// </summary>
+        internal static string TextBefore {
+            get {
+                return ResourceManager.GetString("TextBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Time delay in seconds.
         /// </summary>
         internal static string TimeDelayInSeconds {
@@ -1780,6 +1853,15 @@ namespace Director.Properties {
         internal static string Username {
             get {
                 return ResourceManager.GetString("Username", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variable.
+        /// </summary>
+        internal static string Variable {
+            get {
+                return ResourceManager.GetString("Variable", resourceCulture);
             }
         }
         
