@@ -178,7 +178,16 @@ namespace Director.Forms.Export
                     ExportScenarios.Add(item.ScenarioInstance);
                 
                 // Start serialization
-                Serialization.SerializeAll(ActiveServer, ExportPath.Text, ExportScenarios);
+                Boolean res = Serialization.SerializeAll(ActiveServer, ExportPath.Text, ExportScenarios);
+
+                String messageType = "Export of result ";
+                if(!Serialization.errorMessage.Equals("") && res == true)
+                    messageType += "info:";
+                else if(res == false)
+                    messageType += "error:";
+
+                if(!Serialization.errorMessage.Equals(""))
+                    MessageDialog.ShowMessage(messageType, Serialization.errorMessage);
 
                 // Close dialog window
                 Close();
