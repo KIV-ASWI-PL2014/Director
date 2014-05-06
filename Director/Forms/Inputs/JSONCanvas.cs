@@ -299,16 +299,16 @@ namespace Director.Forms.Inputs
             {
                 if (key != null)
                 {
-                    DrawProperty(key, (String)item.value, item, comma);
+                    DrawProperty(key, string.Format("\"{0}\"", (string) item.value), item, comma);
                 }
                 else
                     DrawText(item.value + commaStr);
             }
-            else if (item.value is System.Int64 || item.value is System.Double)
+            else if (item.value is System.Int64 || item.value is System.Int32 || item.value is System.Double)
             {
                 if (key != null)
                 {
-                    DrawProperty(key, item.value + "", item, comma);
+                    DrawProperty(key, (item.value + "").Replace(',', '.'), item, comma);
                 }
                 else
                     DrawText(item.value + commaStr);

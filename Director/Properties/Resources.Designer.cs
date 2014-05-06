@@ -393,6 +393,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit variable.
+        /// </summary>
+        internal static string EditVariable {
+            get {
+                return ResourceManager.GetString("EditVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
         internal static string Email {
@@ -594,6 +603,24 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Format directive.
+        /// </summary>
+        internal static string FormatDirective {
+            get {
+                return ResourceManager.GetString("FormatDirective", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Format guide.
+        /// </summary>
+        internal static string FormatGuide {
+            get {
+                return ResourceManager.GetString("FormatGuide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Frequency.
         /// </summary>
         internal static string FrequencyLabel {
@@ -724,6 +751,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Input has to be number!.
+        /// </summary>
+        internal static string InvalidNumberInput {
+            get {
+                return ResourceManager.GetString("InvalidNumberInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request name is invalid!.
         /// </summary>
         internal static string InvalidRequestName {
@@ -792,6 +828,15 @@ namespace Director.Properties {
         internal static string InvalidWaitTime {
             get {
                 return ResourceManager.GetString("InvalidWaitTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value.
+        /// </summary>
+        internal static string JsonValue {
+            get {
+                return ResourceManager.GetString("JsonValue", resourceCulture);
             }
         }
         
