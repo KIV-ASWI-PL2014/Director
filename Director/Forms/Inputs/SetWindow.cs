@@ -1,4 +1,5 @@
-﻿using Director.Forms.Controls;
+﻿using Director.Formatters;
+using Director.Forms.Controls;
 using Director.ParserLib;
 using System;
 using System.Collections.Generic;
@@ -73,11 +74,11 @@ namespace Director.Forms.Inputs
             };
             if (ReqWidget != null)
             {
-                TextInput.Text = ReqWidget.ActiveRequest.RequestTemplate;
+                TextInput.Text = JSONFormatter.Format(ReqWidget.ActiveRequest.RequestTemplate);
             }
             else if (ResWidget != null)
             {
-                TextInput.Text = ResWidget.ActiveRequest.ResponseTemplate;
+                TextInput.Text = JSONFormatter.Format(ReqWidget.ActiveRequest.RequestTemplate);
             }
 
             ScrollView ScrollTextInput = new ScrollView()
@@ -115,9 +116,9 @@ namespace Director.Forms.Inputs
         /// </summary>
         void ConfirmButton_Clicked(object sender, EventArgs e)
         {
-            Parser p = new Parser();
-            ParserResult _results = p.generateRequest(TextInput.Text, new Dictionary<string,string>());
-            if (_results.isSuccess())
+            List<ParserError> errors = new List<ParserError>();
+            Dictionary<string, ParserItem> result = Parser.deserialize(TextInput.Text, errors, "json");
+            if (errors.Count == 0)
             {
                 if (ReqWidget != null)
                 {
@@ -134,7 +135,7 @@ namespace Director.Forms.Inputs
             }
             else
             {
-                ErrorReport.Markdown = _results.GetMarkdownReport();
+                ErrorReport.Markdown = ParserResult.CreateMarkdownReport(errors);
             }
         }
 

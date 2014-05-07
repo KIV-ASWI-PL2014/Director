@@ -90,6 +90,7 @@
     <Compile Include="ExportLib\Export.cs" />
     <Compile Include="ExportLib\Serialization.cs" />
     <Compile Include="ExportLib\ZipUtil.cs" />
+    <Compile Include="Formatters\JSONFormatter.cs" />
     <Compile Include="Forms\About\About.cs" />
     <Compile Include="Forms\Controls\EmailList.cs" />
     <Compile Include="Forms\Controls\FileList.cs" />

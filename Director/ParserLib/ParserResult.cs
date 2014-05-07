@@ -37,6 +37,11 @@ namespace Director.ParserLib
             if (isSuccess())
                 return "";
 
+            return CreateMarkdownReport(errors);
+        }
+
+        public static string CreateMarkdownReport(List<ParserError> errors)
+        {
             string ret = "";
 
             ret += "# Errors found\n";
