@@ -33,8 +33,8 @@ namespace Director.Remote
 				ParserResult result = p.generateRequest (_request.RequestTemplate, _request.ParentScenario.customVariables);
 
 
-            if (result.isSuccess() == false)
-                throw new InvalidOperationException();
+                if (result.isSuccess() == false)
+                    throw new InvalidOperationException();
             
     	        // Set body
 	            request.AddParameter("application/json", result.getResult(), ParameterType.RequestBody);

@@ -8,6 +8,7 @@ using System.IO;
 using Director.DataStructures.SupportStructures;
 using Xwt;
 using RestSharp;
+using Director.Formatters;
 
 namespace Director.DataStructures
 {
@@ -190,6 +191,10 @@ namespace Director.DataStructures
         {
             string text = "";
 
+            // Url
+            text += "# " + Director.Properties.Resources.RequestUrl + "\n";
+            text += "* " + Url + "\n\n";
+
             // Request method
             text += "# " + Director.Properties.Resources.RequestMethod + "\n";
             if (HTTP_METHOD == null)
@@ -208,6 +213,52 @@ namespace Director.DataStructures
                 foreach (var h in Headers)
                 {
                     text += "* " + h.Name + " - " + h.Value + "\n";
+                }
+                text += "\n";
+            }
+
+            // Files
+            if (Files.Count > 0)
+            {
+                text += "# " + Director.Properties.Resources.RequestFiles + "\n";
+                foreach (var f in Files)
+                {
+                    text += "* " + f.FileName + "\n";
+                }
+                text += "\n";
+            }
+
+            // Request
+            if (RequestTemplate != null && RequestTemplate.Length > 0)
+            {
+                text += "# " + Director.Properties.Resources.RequestTemplate + "\n";
+
+                if (RequestTemplate.Trim().StartsWith("{"))
+                {
+                    text += "```json\n";
+                    text += JSONFormatter.Format(RequestTemplate);
+                    text += "```\n\n";
+                }
+            }
+
+            // Requested code
+            if (ExpectedStatusCode > 0)
+            {
+                text += "# " + Director.Properties.Resources.ExpectedStatusCode + "\n";
+                text += "* " + ExpectedStatusCode + "\n\n";
+            }
+
+
+            // Request
+            if (ResponseTemplate != null && ResponseTemplate.Length > 0)
+            {
+                text += "# " + Director.Properties.Resources.ResponseTemplate + "\n";
+
+                if (ResponseTemplate.Trim().StartsWith("{"))
+                {
+                    text += "```json\n";
+                    text += JSONFormatter.Format(ResponseTemplate);
+                    text += "```\n\n";
                 }
             }
 

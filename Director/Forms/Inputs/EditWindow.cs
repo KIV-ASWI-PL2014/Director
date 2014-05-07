@@ -177,6 +177,8 @@ namespace Director.Forms.Inputs
                 {
                     InvalidRequestUrl.Show();
                 }
+                if (RequestSettings.CurrentTab.Child is OverviewWidget)
+                    ((OverviewWidget)RequestSettings.CurrentTab.Child).RefreshOverview();
             };
 
             // Create Notebook

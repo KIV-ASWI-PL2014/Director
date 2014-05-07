@@ -4,6 +4,7 @@ using Director.Forms.Controls;
 using Director.DataStructures;
 using Xwt.Drawing;
 using Director.DataStructures.SupportStructures;
+using System.Collections.Generic;
 
 namespace Director.Forms.Panels
 {
@@ -218,6 +219,19 @@ namespace Director.Forms.Panels
             {
                 ret += "- " + i.Name + "\n";
             }
+
+            ret += "\n";
+
+            // Variables
+            ret += "# Variables\n";
+
+            foreach (KeyValuePair<string, string> pair in ActiveScenario.customVariables)
+            {
+                ret += string.Format("* {0} - {1}\n", pair.Key, pair.Value);
+            }
+
+            ret += "\n";
+
             return ret;
         }
 

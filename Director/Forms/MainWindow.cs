@@ -11,6 +11,7 @@ using Director.Forms.Inputs;
 using Director.ExportLib;
 using RestSharp;
 using Director.ParserLib;
+using Director.Formatters;
 
 namespace Director.Forms
 {
@@ -239,12 +240,14 @@ namespace Director.Forms
             MainBox.PackStart(CurrentServer);
 
             // Prepare content box
-            ContentBox = new VBox();
-            ContentBox.MarginLeft = 10;
+            ContentBox = new VBox()
+            {
+                MarginLeft = 10
+            };
             SetContentBoxControl(DirectorHomepage);
 
             // Add to panel
-            MainBox.PackStart(ContentBox, true, true);
+            MainBox.PackStart(ContentBox, expand: true, fill: true);
 
             // Control box with bottom info panel
             VBox MainContent = new VBox();
@@ -1080,7 +1083,10 @@ namespace Director.Forms
 
                         // Response
                         Parser p = new Parser();
-                        ParserResult res = p.parseResponse(r.ResponseTemplate, response.Content, s.customVariables, true);
+                        ParserResult res = null;
+                        
+                        if (r.ResponseTemplate != null && r.ResponseTemplate.Length > 0)
+                            res = p.parseResponse(r.ResponseTemplate, response.Content, s.customVariables, true);
 
                         // Valid?
                         bool valid = false;
@@ -1094,7 +1100,7 @@ namespace Director.Forms
                             // Set error message:
                             r.RequestRemoteResult += string.Format(Director.Properties.Resources.InvalidReturnCode + "\n\n", r.ExpectedStatusCode, (int)response.StatusCode);
                         }
-                        else if (!res.isSuccess())
+                        else if (res is ParserResult && !res.isSuccess())
                         {
                             foreach( var er in res.getErrors())
                                 r.RequestRemoteResult += "* " + er.getMessage() + "\n";
@@ -1111,7 +1117,21 @@ namespace Director.Forms
                         if (response.Content != null && response.Content.Length > 0)
                         {
                             r.RequestRemoteResult += string.Format("# {0}\n", Director.Properties.Resources.Response);
-                            r.RequestRemoteResult += response.Content;
+
+                            String formatted = JSONFormatter.Format(response.Content);
+
+                            r.RequestRemoteResult += "```json\n";
+
+                            if (formatted != null)
+                            {
+                                r.RequestRemoteResult += formatted;
+                            }
+                            else
+                            {
+                                r.RequestRemoteResult += response.Content;
+                            }
+
+                            r.RequestRemoteResult += "\n```\n";
                         }
 
                         // Remove from running
@@ -1186,6 +1206,7 @@ namespace Director.Forms
                 UpdateControlView(null, null);
                 DisableServerButtons();
             }
+            RunningObjects.Clear();
         }
 
         /// <summary>

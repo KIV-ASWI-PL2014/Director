@@ -739,4 +739,16 @@
   <data name="JsonValue" xml:space="preserve">
     <value>Value</value>
   </data>
+  <data name="Output" xml:space="preserve">
+    <value>Output:</value>
+  </data>
+  <data name="PasteInput" xml:space="preserve">
+    <value>Paste input:</value>
+  </data>
+  <data name="RequestTemplate" xml:space="preserve">
+    <value>Request template</value>
+  </data>
+  <data name="ResponseTemplate" xml:space="preserve">
+    <value>Response template</value>
+  </data>
 </root>

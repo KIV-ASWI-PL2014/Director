@@ -38,8 +38,6 @@ namespace Director
             sc.customVariables.Add("test", "hovadina");
             test.ParentScenario = sc;
 
-
-
             //EditWindow _mainWindow = new EditWindow(null, test);
 
             // Create main window and show

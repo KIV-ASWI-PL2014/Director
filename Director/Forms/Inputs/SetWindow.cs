@@ -78,18 +78,18 @@ namespace Director.Forms.Inputs
             }
             else if (ResWidget != null)
             {
-                TextInput.Text = JSONFormatter.Format(ReqWidget.ActiveRequest.RequestTemplate);
+                TextInput.Text = JSONFormatter.Format(ResWidget.ActiveRequest.ResponseTemplate);
             }
 
             ScrollView ScrollTextInput = new ScrollView()
             {
                 Content = TextInput
             };
-            InputArea.PackStart(new Label("Paste input:"));
+            InputArea.PackStart(new Label() { Markup = "<b>" + Director.Properties.Resources.PasteInput + "</b>" });
             InputArea.PackStart(ScrollTextInput, true, true);
 
             // Prepare output
-            InputArea.PackStart(new Label("Output: "));
+            InputArea.PackStart(new Label() { Markup = "<b>" + Director.Properties.Resources.Output + "</b>" });
             ErrorReport = new MarkdownView();
             InputArea.PackStart(ErrorReport, true, true);
 

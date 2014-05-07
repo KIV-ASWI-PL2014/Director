@@ -71,6 +71,9 @@ namespace Director.Forms.Panels
         /// </summary>
         public override void _initializeComponents()
         {
+            ExpandVertical = false;
+            ExpandHorizontal = false;
+
             // Frame Request Name
             Frame RequestNameFrame = new Frame()
             {
@@ -101,8 +104,6 @@ namespace Director.Forms.Panels
             RequestOverview = new MarkdownView();
             RequestFrame.Content = new ScrollView()
             {
-                ExpandHorizontal = true,
-                ExpandVertical = true,
                 Content = RequestOverview
             };
             RRPanel.PackStart(RequestFrame, true, true);
@@ -119,17 +120,16 @@ namespace Director.Forms.Panels
             RRPanel.PackStart(EditBtn, expand: false, hpos: WidgetPlacement.End);
 
             // Response
+            RequestStatus = new MarkdownView();
             Frame ResponseFrame = new Frame()
             {
                 Label = Director.Properties.Resources.RequestResponse,
-                Padding = 10
+                Padding = 10,
             };
-            RequestStatus = new MarkdownView()
+            ResponseFrame.Content = new ScrollView()
             {
-                ExpandHorizontal = false,
-                ExpandVertical = false
+                Content = RequestStatus
             };
-            ResponseFrame.Content = RequestStatus;
             RRPanel.PackStart(ResponseFrame, true, true);
             PackStart(RRPanel, true, true);
         }

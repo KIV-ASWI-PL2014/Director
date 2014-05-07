@@ -1142,6 +1142,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Output:.
+        /// </summary>
+        internal static string Output {
+            get {
+                return ResourceManager.GetString("Output", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select output file!.
         /// </summary>
         internal static string OutputFileNotSelected {
@@ -1451,6 +1460,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Paste input:.
+        /// </summary>
+        internal static string PasteInput {
+            get {
+                return ResourceManager.GetString("PasteInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap processing {
@@ -1589,6 +1607,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Request template.
+        /// </summary>
+        internal static string RequestTemplate {
+            get {
+                return ResourceManager.GetString("RequestTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to URL.
         /// </summary>
         internal static string RequestUrl {
@@ -1612,6 +1639,15 @@ namespace Director.Properties {
         internal static string ResponseContent {
             get {
                 return ResourceManager.GetString("ResponseContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response template.
+        /// </summary>
+        internal static string ResponseTemplate {
+            get {
+                return ResourceManager.GetString("ResponseTemplate", resourceCulture);
             }
         }
         

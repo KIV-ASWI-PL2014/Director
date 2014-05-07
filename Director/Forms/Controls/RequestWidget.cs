@@ -269,7 +269,7 @@ namespace Director.Forms.Controls
 
             // Widht height
             Width = 450;
-            Height = 380;
+            //Height = 250;
 
             // Init content
             _initializeComponents();
@@ -382,7 +382,7 @@ namespace Director.Forms.Controls
             }
             else if (Directive.Active)
             {
-                return ValueText.Text;
+                return DirectiveText.Text;
             }
             else
             {
@@ -458,7 +458,7 @@ namespace Director.Forms.Controls
             ContentBox.PackStart(DirectiveText, false, true);
 
             // Add Guide
-            ContentBox.PackStart(Guide);
+            /**ContentBox.PackStart(Guide);
 
             // Add guide item
             AddGuideItem = new Button(Image.FromResource(DirectorImages.ADD_ICON))
@@ -486,7 +486,7 @@ namespace Director.Forms.Controls
             {
                 Sensitive = false
             };
-            ContentBox.PackStart(OutputExampleLabel, expand: false, fill: true);
+            ContentBox.PackStart(OutputExampleLabel, expand: false, fill: true);*/
 
             // Set content box
             Content = ContentBox;
@@ -547,9 +547,9 @@ namespace Director.Forms.Controls
             DirectiveText.Sensitive = Directive.Active;
 
             // Guide options
-            GuideOptions.Sensitive = Guide.Active;
+            /*GuideOptions.Sensitive = Guide.Active;
             OutputExampleLabel.Sensitive = Guide.Active;
-            AddGuideItem.Sensitive = Guide.Active;
+            AddGuideItem.Sensitive = Guide.Active;*/
         }
     }
 }
