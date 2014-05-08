@@ -485,6 +485,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error when generating template.
+        /// </summary>
+        internal static string ErrorWhenGeneratingTemplate {
+            get {
+                return ResourceManager.GetString("ErrorWhenGeneratingTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Every 10 minutes.
         /// </summary>
         internal static string Every10Minutes {

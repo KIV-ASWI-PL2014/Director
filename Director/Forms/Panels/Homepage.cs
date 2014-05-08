@@ -27,7 +27,7 @@ Director is project for testing REST APIs by scenarios.
 - XML tranformations
 - Last open files
 - Languages
-- Fix parser
+- TextEdit in request overview replace with tabs?
 
 # Changelog
 

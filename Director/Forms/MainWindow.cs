@@ -1187,20 +1187,57 @@ namespace Director.Forms
                         ChangeIcon(r.TreePosition, text: r.Name);
                     }
 
-                    // Send
-                    RestResponse response = Director.Remote.Remote.SendRemoteRequest(r);
-
                     // Clear result
                     r.ClearResults();
 
+                    // Prepare values
+                    String RequestBody = null;
+                    String RequestParameter = null;
+
+                    // Parser
+                    Parser p = new Parser();
+
+                    // Prepare template
+                    if (r.RequestTemplate != null && r.RequestTemplate.Length > 0)
+                    {
+                        ParserResult result = p.generateRequest(r.RequestTemplate, r.ParentScenario.customVariables);
+
+                        // Cannot generate reqeust!
+                        if (result.isSuccess() == false)
+                        {
+                            // Write errors!
+                            r.AddResultViewItem(1, Director.Properties.Resources.ErrorWhenGeneratingTemplate + ":");
+
+                            // Errors
+                            foreach (var i in result.getErrors())
+                            {
+                                r.AddResultViewItem(2, i.getMessage());
+                            }
+
+                            // Change icon
+                            ChangeIcon(r.TreePosition, ERORImage);
+                            success = false;
+                            break;
+                        }
+                            
+                        // Prepare body
+                        RequestBody = result.getResult();
+
+                        // Parameter
+                        RequestParameter = "application/json";
+                    }
+
                     // Prepare error...
                     r.AddResultViewItem(1, Director.Properties.Resources.Error + ":");
+
+                    // Send
+                    RestResponse response = Director.Remote.Remote.SendRemoteRequest(r, RequestBody, RequestParameter);
 
                     // Valid?
                     bool valid = false;
 
                     // Response
-                    Parser p = new Parser();
+                    p = new Parser();
                     ParserResult res = null;
                         
                     if (r.ResponseTemplate != null && r.ResponseTemplate.Length > 0)
@@ -1238,11 +1275,25 @@ namespace Director.Forms
                         String formatted = JSONFormatter.Format(response.Content);
 
                         // Request box
-
                         if (formatted != null)
                             r.AddResultViewItem(3, formatted);                       
                         else
                             r.AddResultViewItem(3,  response.Content);  
+                    }
+
+                    // Add request content
+                    if (RequestBody != null && RequestBody.Length > 0)
+                    {
+                        r.AddResultViewItem(1, Director.Properties.Resources.RequestTab + ":");
+
+                        // Response
+                        String formatted = JSONFormatter.Format(RequestBody);
+
+                        // Request box
+                        if (formatted != null)
+                            r.AddResultViewItem(3, formatted);
+                        else
+                            r.AddResultViewItem(3, RequestBody);  
                     }
 
                     // Refresh UI

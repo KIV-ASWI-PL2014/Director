@@ -11,7 +11,7 @@ namespace Director.Remote
         /// <summary>
         /// Send request.
         /// </summary>
-        public static RestResponse SendRemoteRequest(Request _request)
+        public static RestResponse SendRemoteRequest(Request _request, String body, String BodyParameter)
         {
             // Create client
             var client = new RestClient(_request.Url);
@@ -23,26 +23,10 @@ namespace Director.Remote
             // Create request
             var request = new RestRequest(_request.RequestMethod);
 
-            // Create custom variables if not exists!
-            if (_request.ParentScenario.customVariables == null)
-                _request.ParentScenario.customVariables = new Dictionary<string, string>();
-
             // Create request from template
-			if (_request.RequestTemplate != null && _request.RequestTemplate.Length > 0) {
-				Parser p = new Parser ();
-				ParserResult result = p.generateRequest (_request.RequestTemplate, _request.ParentScenario.customVariables);
-
-
-                if (result.isSuccess() == false)
-                    throw new InvalidOperationException();
-            
-    	        // Set body
-	            request.AddParameter("application/json", result.getResult(), ParameterType.RequestBody);
-
-				// Set body
-				request.AddBody(result.getResult());
-			}
-            
+            if (body != null)
+                request.AddParameter(BodyParameter, body, ParameterType.RequestBody);
+          
             // Set headers
             foreach (var h in _request.Headers)
             {

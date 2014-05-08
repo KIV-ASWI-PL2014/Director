@@ -179,7 +179,7 @@
     <value>..\Resources\save.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Authorization" xml:space="preserve">
-    <value>Authorization</value>
+    <value>Autorizace</value>
   </data>
   <data name="AuthorizationSettings" xml:space="preserve">
     <value>Authorization settings</value>
@@ -335,7 +335,7 @@
     <value>Choose running option</value>
   </data>
   <data name="Confirm" xml:space="preserve">
-    <value>Close</value>
+    <value>Zavřít</value>
   </data>
   <data name="edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -473,13 +473,13 @@
     <value>Invalid Director file!</value>
   </data>
   <data name="AboutMenu" xml:space="preserve">
-    <value>About</value>
+    <value>Nápověda</value>
   </data>
   <data name="add_content" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\add_content.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ConfirmInput" xml:space="preserve">
-    <value>Confirm</value>
+    <value>Potvrdit</value>
   </data>
   <data name="EditContent" xml:space="preserve">
     <value>Set content</value>
@@ -665,13 +665,13 @@
     <value>For apply changes, you have to restart application!</value>
   </data>
   <data name="About" xml:space="preserve">
-    <value>About Director</value>
+    <value>O Direktoru</value>
   </data>
   <data name="Authors" xml:space="preserve">
-    <value>Authors</value>
+    <value>Autoři</value>
   </data>
   <data name="Close" xml:space="preserve">
-    <value>Close</value>
+    <value>Zavřít</value>
   </data>
   <data name="HomepageUrl" xml:space="preserve">
     <value>Homepage</value>
@@ -686,7 +686,7 @@
     <value>Version</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Zrušit</value>
   </data>
   <data name="Example" xml:space="preserve">
     <value>Example</value>
