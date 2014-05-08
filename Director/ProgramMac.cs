@@ -2,6 +2,7 @@
 using Xwt;
 using Director.DataStructures;
 using Director.Forms.Inputs;
+using Director.Forms;
 
 namespace Director
 {
@@ -18,7 +19,7 @@ namespace Director
           	Application.Initialize(Config.GetAppType());
 
 
-			//MainWindow _mainWindow = new MainWindow();
+			MainWindow _mainWindow = new MainWindow();
 
 			Server s = new Server() { Name = "OCR" };
 			s.DefaultHeaders.Add(new Header() { Name = "content/type", Value = "application/json" });
@@ -30,7 +31,7 @@ namespace Director
 			test.ParentScenario = sc;
 
 
-			EditWindow _mainWindow = new EditWindow (null, test);
+			//EditWindow _mainWindow = new EditWindow (null, test);
 
 			// Close window handlers
 

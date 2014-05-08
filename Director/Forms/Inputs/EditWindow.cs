@@ -64,7 +64,7 @@ namespace Director.Forms.Inputs
         {
             // Set default size
             Width = 770;
-            Height = 700;
+			Height = 680;
 
             // This window can not be maximalized
             Resizable = true;

@@ -920,7 +920,6 @@ namespace Director.Forms
             {
                 if (ScenarioClipboard == null)
                     PasteScenario.Clicked += PasteScenario_Clicked;
-
                 ScenarioClipboard = (Scenario)s;
                 PasteScenario.Sensitive = true;
             }
@@ -1074,6 +1073,12 @@ namespace Director.Forms
                 // Increase
                 LastIndex = (LastIndex + 1) > 7 ? 0 : LastIndex + 1;
 
+				// Refresh server
+				if (RefreshCurrentServer) {
+					UpdateControlView(null, null);
+					RefreshCurrentServer = false;
+				}
+
                 return true;
             });
         }
@@ -1095,7 +1100,6 @@ namespace Director.Forms
         /// <summary>
         /// Running request worker.
         /// </summary>
-        /// <param name="RunningObject"></param>
         public static void ThreadWorker(object RunningObject)
         {
             // Clear running objects
@@ -1232,7 +1236,15 @@ namespace Director.Forms
 
             // Remove all running objects
             RunningObjects.Clear();
+
+            // Refresh UI
+            RefreshCurrentServer = true;
         }
+
+		/// <summary>
+		/// Refresh current server for Timer!
+		/// </summary>
+		public static bool RefreshCurrentServer = false;
 
         /// <summary>
         /// Change icon or text.
@@ -1249,7 +1261,6 @@ namespace Director.Forms
         {
             Thread WorkingThread = new Thread(ThreadWorker);
             WorkingThread.IsBackground = true;
-            WorkingThread.Start(UServer);
         }
 
         /// <summary>

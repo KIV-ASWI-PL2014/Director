@@ -5,7 +5,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.netbrick.Director</string>
 	<key>CFBundleName</key>
-	<string>MacTest</string>
+	<string>Director</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSMinimumSystemVersion</key>
@@ -16,5 +16,9 @@
 	<string>public.app-category.developer-tools</string>
 	<key>CFBundleDisplayName</key>
 	<string>Director</string>
+	<key>CFBundleIconFile</key>
+	<string>server_lightning</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1</string>
 </dict>
 </plist>
