@@ -792,7 +792,7 @@ namespace Xwt.GtkBackend
 			a.X = args.Event.X;
 			a.Y = args.Event.Y;
 
-			
+			a.Button = (PointerButton) args.Event.Button;
 			if (args.Event.Type == Gdk.EventType.TwoButtonPress)
 				a.MultiplePress = 2;
 			else if (args.Event.Type == Gdk.EventType.ThreeButtonPress)
