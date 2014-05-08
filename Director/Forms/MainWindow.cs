@@ -166,6 +166,11 @@ namespace Director.Forms
         private MenuItem RunAllMenu { get; set; }
 
         /// <summary>
+        /// Stop menu.
+        /// </summary>
+        private MenuItem StopThreadMenu { get; set; }
+
+        /// <summary>
         /// Caption font!
         /// </summary>
         public static Font CaptionFont { get; set; }
@@ -647,6 +652,14 @@ namespace Director.Forms
             };
             _runSubmenu.Items.Add(RunAllMenu);
 
+            // Stop
+            StopThreadMenu = new MenuItem(Director.Properties.Resources.Stop)
+            {
+                Image = Image.FromResource(DirectorImages.CROSS_ICON),
+                Sensitive = false
+            };
+            _runSubmenu.Items.Add(StopThreadMenu);
+
             return _runSubmenu;
         }
 
@@ -1026,10 +1039,12 @@ namespace Director.Forms
             OpenServerMenu.Sensitive = true;
 
             RunAllMenu.Sensitive = false;
+            StopThreadMenu.Sensitive = false;
 			try {
 				RunAllMenu.Clicked -= RunAllMenu_Clicked;
 				SaveServerMenu.Clicked -= SaveServer;
 				CloseServer.Clicked -= CloseServer_Clicked;
+                StopThreadMenu.Clicked -= StopThreadMenu_Clicked;
 			} catch {
 
 			}
@@ -1128,6 +1143,9 @@ namespace Director.Forms
                     ChangeIcon(r.TreePosition, RequestImage);
             }
 
+            // First
+            bool first = true;
+
             // Run scenarios in specific order
             foreach (var s in Scenarios.OrderBy(n => n.Position))
             {
@@ -1136,6 +1154,20 @@ namespace Director.Forms
 
                 // Scenariio is running!
                 RunningObjects.Add(s.TreePosition);
+
+                // Waiting time
+                if (first == false && s.TimeAfterPrevious > 0)
+                {
+                    int time = s.TimeAfterPrevious;
+                    while (time > 0)
+                    {
+                        ChangeIcon(s.TreePosition, text: string.Format("{0} ({1} s)", s.Name, time));
+                        Thread.Sleep(1000);
+                        time--;
+                    }
+                    ChangeIcon(s.TreePosition, text: s.Name);
+                }
+                first = false;
 
                 foreach (var r in s.Requests.OrderBy(n => n.Position))
                 {
@@ -1213,6 +1245,9 @@ namespace Director.Forms
                             r.AddResultViewItem(3,  response.Content);  
                     }
 
+                    // Refresh UI
+                    RefreshCurrentServer = true;
+
                     // Remove from running
                     RunningObjects.Remove(r.TreePosition);
 
@@ -1237,14 +1272,19 @@ namespace Director.Forms
             // Remove all running objects
             RunningObjects.Clear();
 
-            // Refresh UI
-            RefreshCurrentServer = true;
+            // Remove thread
+            WorkingThread = null;
         }
 
 		/// <summary>
 		/// Refresh current server for Timer!
 		/// </summary>
 		public static bool RefreshCurrentServer = false;
+
+        /// <summary>
+        /// Running thread?
+        /// </summary>
+        public static Thread WorkingThread = null;
 
         /// <summary>
         /// Change icon or text.
@@ -1259,8 +1299,32 @@ namespace Director.Forms
         /// </summary>
         void RunAllMenu_Clicked(object sender, EventArgs e)
         {
-            Thread WorkingThread = new Thread(ThreadWorker);
+            if (WorkingThread != null)
+            {
+                MessageDialog.ShowError(Director.Properties.Resources.CanNotStartScenario);
+                return;
+            }
+
+            WorkingThread = new Thread(ThreadWorker);
             WorkingThread.IsBackground = true;
+            WorkingThread.Start(UServer);
+        }
+
+        /// <summary>
+        /// Stop thread menu.
+        /// </summary>
+        void StopThreadMenu_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                WorkingThread.Abort();
+            }
+            catch
+            {
+
+            }
+            WorkingThread = null;
+            RunningObjects.Clear();
         }
 
         /// <summary>
@@ -1289,6 +1353,8 @@ namespace Director.Forms
             SaveServerMenu.Clicked += SaveServer;
             CloseServer.Sensitive = true;
             CloseServer.Clicked += CloseServer_Clicked;
+            StopThreadMenu.Sensitive = true;
+            StopThreadMenu.Clicked += StopThreadMenu_Clicked;
         }
 
         /// <summary>
@@ -1487,10 +1553,17 @@ namespace Director.Forms
 
             if (data is Scenario)
             {
+                if (WorkingThread != null)
+                {
+                    MessageDialog.ShowError(Director.Properties.Resources.CanNotStartScenario);
+                    return;
+                }
+
                 Scenario s = (Scenario)data;
-                Thread t = new Thread(ThreadWorker);
-                t.IsBackground = true;
-                t.Start(s);
+
+                WorkingThread = new Thread(ThreadWorker);
+                WorkingThread.IsBackground = true;
+                WorkingThread.Start(s);
             }
         }
 

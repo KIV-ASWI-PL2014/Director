@@ -245,6 +245,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot start next scenario, wait until previous finished!.
+        /// </summary>
+        internal static string CanNotStartScenario {
+            get {
+                return ResourceManager.GetString("CanNotStartScenario", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose running option.
         /// </summary>
         internal static string ChooseRunningOptions {
@@ -1963,6 +1972,15 @@ namespace Director.Properties {
             get {
                 object obj = ResourceManager.GetObject("splashscreen", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
+        /// </summary>
+        internal static string Stop {
+            get {
+                return ResourceManager.GetString("Stop", resourceCulture);
             }
         }
         

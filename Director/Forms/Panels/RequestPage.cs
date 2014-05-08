@@ -70,6 +70,7 @@ namespace Director.Forms.Panels
             RequestName.Changed += RequestName_Changed;
             ActiveRequest.CreateResult(RequestStatus, CaptionFont);
             ActiveRequest.CreateOverview(RequestOverview, CaptionFont);
+            
         }
 
         /// <summary>
