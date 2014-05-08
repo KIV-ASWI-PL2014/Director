@@ -236,7 +236,7 @@ namespace Director.Forms.Inputs
         /// Overview widget.
         /// </summary>
         /// <value>The overview.</value>
-        private MarkdownView Overview { get; set; }
+        private VBox Overview { get; set; }
 
         /// <summary>
         /// Scroll overview.
@@ -258,10 +258,11 @@ namespace Director.Forms.Inputs
             ExpandVertical = true;
 
             // Create markdown
-            Overview = new MarkdownView();
+            Overview = new VBox();
             ScrollOverview = new ScrollView()
             {
-                Content = Overview
+                Content = Overview,
+                MarginTop = 5
             };
             PackStart(ScrollOverview, expand: true, fill: true);
 
@@ -274,7 +275,7 @@ namespace Director.Forms.Inputs
         /// </summary>
         public void RefreshOverview()
         {
-            Overview.Markdown = ActiveRequest.GetMarkdownInfo();
+            ActiveRequest.CreateOverview(Overview, Font.WithSize(17).WithWeight(FontWeight.Bold));
         }
     }
 }

@@ -166,6 +166,11 @@ namespace Director.Forms
         private MenuItem RunAllMenu { get; set; }
 
         /// <summary>
+        /// Caption font!
+        /// </summary>
+        public static Font CaptionFont { get; set; }
+
+        /// <summary>
         /// Default constructor initiate components!
         /// </summary>
         public MainWindow()
@@ -192,6 +197,9 @@ namespace Director.Forms
             // Set default size
             Width = 770;
             Height = 630;
+
+            // Caption font
+            CaptionFont = Font.SystemFont.WithSize(17).WithWeight(FontWeight.Bold);
 
             // Center screen
             InitialLocation = WindowLocation.CenterScreen;
@@ -913,8 +921,6 @@ namespace Director.Forms
                 if (ScenarioClipboard == null)
                     PasteScenario.Clicked += PasteScenario_Clicked;
 
-                Console.WriteLine("Scenario in clipboard");
-
                 ScenarioClipboard = (Scenario)s;
                 PasteScenario.Sensitive = true;
             }
@@ -1105,14 +1111,18 @@ namespace Director.Forms
                 Scenarios.Add((Scenario)RunningObject);
 
             // Set all scenarios to before-running time!
-            //ChangeTreeImagesSem.WaitOne();
             foreach (var s in Scenarios)
             {
+                // Change icon
                 ChangeIcon(s.TreePosition, ScenarioImage);
+
+                // Clear variables
+                s.customVariables = new Dictionary<string, string>();
+
+                // Change icons
                 foreach (var r in s.Requests)
                     ChangeIcon(r.TreePosition, RequestImage);
             }
-            //ChangeTreeImagesSem.Release();
 
             // Run scenarios in specific order
             foreach (var s in Scenarios.OrderBy(n => n.Position))
@@ -1144,8 +1154,14 @@ namespace Director.Forms
                     // Send
                     RestResponse response = Director.Remote.Remote.SendRemoteRequest(r);
 
+                    // Clear result
+                    r.ClearResults();
+
                     // Prepare error...
-                    r.RequestRemoteResult = string.Format("# {0}\n\n", Director.Properties.Resources.Error);
+                    r.AddResultViewItem(1, Director.Properties.Resources.Error + ":");
+
+                    // Valid?
+                    bool valid = false;
 
                     // Response
                     Parser p = new Parser();
@@ -1154,51 +1170,43 @@ namespace Director.Forms
                     if (r.ResponseTemplate != null && r.ResponseTemplate.Length > 0)
                         res = p.parseResponse(r.ResponseTemplate, response.Content, s.customVariables, true);
 
-                    // Valid?
-                    bool valid = false;
 
                     // Parse response
                     if (response.ResponseStatus != ResponseStatus.Completed)
                     {
-                        r.RequestRemoteResult += string.Format(Director.Properties.Resources.RequestNotSuccessfull + "\n\n", response.ResponseStatus.ToString());
+                        r.AddResultViewItem(2, string.Format(Director.Properties.Resources.RequestNotSuccessfull, response.ResponseStatus.ToString()));
                     }
                     else if (r.ExpectedStatusCode != -1 && ((int)response.StatusCode) != r.ExpectedStatusCode)
                     {
                         // Set error message:
-                        r.RequestRemoteResult += string.Format(Director.Properties.Resources.InvalidReturnCode + "\n\n", r.ExpectedStatusCode, (int)response.StatusCode);
+                        r.AddResultViewItem(2, string.Format(Director.Properties.Resources.InvalidReturnCode, r.ExpectedStatusCode, (int)response.StatusCode));
                     }
                     else if (res is ParserResult && !res.isSuccess())
                     {
                         foreach (var er in res.getErrors())
-                            r.RequestRemoteResult += "* " + er.getMessage() + "\n";
-
-                        r.RequestRemoteResult += "\n\n";
+                            r.AddResultViewItem(2, er.getMessage());
                     }
                     else
                     {
                         valid = true;
-                        r.RequestRemoteResult = string.Format("# {0}\n\n", Director.Properties.Resources.ResultIsOk);
+                        r.ClearResults();
+                        r.AddResultViewItem(1, Director.Properties.Resources.ResultIsOk);
                     }
 
                     // Add response content
                     if (response.Content != null && response.Content.Length > 0)
                     {
-                        r.RequestRemoteResult += string.Format("# {0}\n", Director.Properties.Resources.Response);
+                        r.AddResultViewItem(1, Director.Properties.Resources.Response + ":");
 
+                        // Response
                         String formatted = JSONFormatter.Format(response.Content);
 
-                        r.RequestRemoteResult += "```json\n";
+                        // Request box
 
                         if (formatted != null)
-                        {
-                            r.RequestRemoteResult += formatted;
-                        }
+                            r.AddResultViewItem(3, formatted);                       
                         else
-                        {
-                            r.RequestRemoteResult += response.Content;
-                        }
-
-                        r.RequestRemoteResult += "\n```\n";
+                            r.AddResultViewItem(3,  response.Content);  
                     }
 
                     // Remove from running

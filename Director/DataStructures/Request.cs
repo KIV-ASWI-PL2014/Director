@@ -9,6 +9,8 @@ using Director.DataStructures.SupportStructures;
 using Xwt;
 using RestSharp;
 using Director.Formatters;
+using Xwt.Drawing;
+using Director.Forms.Controls;
 
 namespace Director.DataStructures
 {
@@ -106,21 +108,99 @@ namespace Director.DataStructures
         /// <summary>
         /// Request remote result.
         /// </summary>
-        private String requestRemoteResult;
-        public String RequestRemoteResult
+        [XmlIgnore]
+        public List<ResultViewItem> RequestRemoteResult { get; set; }
+
+        /// <summary>
+        /// Result view items
+        /// </summary>
+        public struct ResultViewItem
         {
-            get
+            public int Type; // 1 title, 2 item, 3 text edit
+            public String Data;
+        }
+
+        /// <summary>
+        /// Clear result items.
+        /// </summary>
+        internal void ClearResults()
+        {
+            if (RequestRemoteResult == null)
+                RequestRemoteResult = new List<ResultViewItem>();
+            else
+                RequestRemoteResult.Clear();
+        }
+
+        /// <summary>
+        /// Add result item to view.
+        /// </summary>
+        public void AddResultViewItem(int type, String ret)
+        {
+            RequestRemoteResult.Add(new ResultViewItem()
             {
-                if (requestRemoteResult == null)
+                Type = type, Data = ret
+            });
+        }
+
+        /// <summary>
+        /// Create result vbox data item.
+        /// </summary>
+        public void CreateResult(VBox RequestStatus, Font CaptionFont)
+        {
+            // Clear
+            RequestStatus.Clear();
+
+            // Nothing to do!
+            if (RequestRemoteResult == null)
+            {
+                RequestStatus.PackStart(new Label(Director.Properties.Resources.NoResponse)
                 {
-                    return "";
+                    Font = CaptionFont
+                });
+                return;
+            }
+
+            // iterate
+            bool first = true;
+            foreach (var i in RequestRemoteResult)
+            {
+                if (i.Type == 1)
+                {
+                    RequestStatus.PackStart(new Label(i.Data)
+                    {
+                        Font = CaptionFont,
+                        MarginTop = (first) ? 0 : 20
+                    }, false, false);
+                }
+                else if (i.Type == 2)
+                {
+                    RequestStatus.PackStart(new ListItem(i.Data));
                 }
                 else
-                    return requestRemoteResult;
-            }
-            set
-            {
-                requestRemoteResult = value;
+                {
+                    MultiLineTextEntry RequestTextEntry = new MultiLineTextEntry()
+                    {
+                        Margin = 10,
+                        Text = i.Data
+                    };
+                    RequestStatus.PackStart(RequestTextEntry);
+                    Button ClipboardButtonReq = new Button(Image.FromResource(DirectorImages.COPY_ICON), "")
+                    {
+                        WidthRequest = 30,
+                        HeightRequest = 30,
+                        ExpandHorizontal = false,
+                        ExpandVertical = false,
+                        MarginRight = 10,
+                        TooltipText = Director.Properties.Resources.CopyInClipboard
+                    };
+                    ClipboardButtonReq.Clicked += delegate
+                    {
+                        Clipboard.SetText(RequestTextEntry.Text);
+                    };
+                    RequestStatus.PackStart(ClipboardButtonReq, hpos: WidgetPlacement.End);
+                }
+
+                first = false;
             }
         }
 
@@ -180,89 +260,157 @@ namespace Director.DataStructures
             t.Position = this.ParentScenario.Requests.Max(n => n.Position) + 1;
 
             // Tree position is set by GUI
-
             return t;
         }
 
         /// <summary>
-        /// Get string markdown info.
+        /// Create overview!
         /// </summary>
-        public String GetMarkdownInfo()
+        public void CreateOverview(VBox RequestOverview, Font CaptionFont)
         {
-            string text = "";
+            // Overview clear
+            RequestOverview.Clear();
 
-            // Url
-            text += "# " + Director.Properties.Resources.RequestUrl + "\n";
-            text += "* " + Url + "\n\n";
-
-            // Request method
-            text += "# " + Director.Properties.Resources.RequestMethod + "\n";
-            if (HTTP_METHOD == null)
+            // Information
+            RequestOverview.PackStart(new Label(Director.Properties.Resources.RequestUrl + ":")
             {
-                text += "* " + Director.Properties.Resources.NoRequestMethod + "\n\n";
-            }
-            else
-                text += "* " + HTTP_METHOD + "\n\n";
+                Font = CaptionFont
+
+            }, false, false);
+
+            // Create URL
+            RequestOverview.PackStart(new LinkLabel(Url)
+            {
+                Uri = new Uri(Url),
+                MarginLeft = 10
+            }, false, false);
+
+            // Method
+            RequestOverview.PackStart(new Label(Director.Properties.Resources.RequestMethod + ":")
+            {
+                Font = CaptionFont,
+                MarginTop = 20
+            }, false, false);
+
+            // Create URL
+            RequestOverview.PackStart(new Label(HTTP_METHOD)
+            {
+                MarginLeft = 10
+            }, false, false);
 
             // Headers
             if (Headers.Count > 0)
             {
-                text += "# " + Director.Properties.Resources.RequestHeaders + "\n";
-
-                // Get all headers
-                foreach (var h in Headers)
+                RequestOverview.PackStart(new Label(Director.Properties.Resources.RequestHeaders + ":")
                 {
-                    text += "* " + h.Name + " - " + h.Value + "\n";
-                }
-                text += "\n";
+                    Font = CaptionFont,
+                    MarginTop = 20
+                }, false, false);
+                foreach (var h in Headers)
+                    RequestOverview.PackStart(new ListItem(string.Format("{0} - {1}", h.Name, h.Value)));
             }
 
             // Files
             if (Files.Count > 0)
             {
-                text += "# " + Director.Properties.Resources.RequestFiles + "\n";
-                foreach (var f in Files)
+                RequestOverview.PackStart(new Label(Director.Properties.Resources.RequestFiles + ":")
                 {
-                    text += "* " + f.FileName + "\n";
-                }
-                text += "\n";
+                    Font = CaptionFont,
+                    MarginTop = 20
+                }, false, false);
+                foreach (var h in Files)
+                    RequestOverview.PackStart(new ListItem(h.FileName));
             }
 
             // Request
+            // Request
             if (RequestTemplate != null && RequestTemplate.Length > 0)
             {
-                text += "# " + Director.Properties.Resources.RequestTemplate + "\n";
+                RequestOverview.PackStart(new Label(Director.Properties.Resources.RequestTemplate + ":")
+                {
+                    Font = CaptionFont,
+                    MarginTop = 20
+                }, false, false);
+
+                MultiLineTextEntry RequestTextEntry = new MultiLineTextEntry()
+                {
+                    Margin = 10
+                };
 
                 if (RequestTemplate.Trim().StartsWith("{"))
                 {
-                    text += "```json\n";
-                    text += JSONFormatter.Format(RequestTemplate);
-                    text += "```\n\n";
+                    RequestTextEntry.Text = JSONFormatter.Format(RequestTemplate);
                 }
+                else
+                {
+                    RequestTextEntry.Text = RequestTemplate;
+                }
+                RequestOverview.PackStart(RequestTextEntry);
+                Button ClipboardButtonReq = new Button(Image.FromResource(DirectorImages.COPY_ICON), "")
+                {
+                    WidthRequest = 30,
+                    HeightRequest = 30,
+                    ExpandHorizontal = false,
+                    ExpandVertical = false,
+                    MarginRight = 10,
+                    TooltipText = Director.Properties.Resources.CopyInClipboard
+                };
+                ClipboardButtonReq.Clicked += delegate
+                {
+                    Clipboard.SetText(RequestTextEntry.Text);
+                };
+                RequestOverview.PackStart(ClipboardButtonReq, hpos: WidgetPlacement.End);
             }
 
             // Requested code
             if (ExpectedStatusCode > 0)
             {
-                text += "# " + Director.Properties.Resources.ExpectedStatusCode + "\n";
-                text += "* " + ExpectedStatusCode + "\n\n";
+                RequestOverview.PackStart(new Label(Director.Properties.Resources.ExpectedStatusCode + ":")
+                {
+                    Font = CaptionFont
+                }, false, false);
+                RequestOverview.PackStart(new ListItem(ExpectedStatusCode + ""));
             }
 
 
             // Request
             if (ResponseTemplate != null && ResponseTemplate.Length > 0)
             {
-                text += "# " + Director.Properties.Resources.ResponseTemplate + "\n";
+                RequestOverview.PackStart(new Label(Director.Properties.Resources.ResponseTemplate + ":")
+                {
+                    Font = CaptionFont,
+                    MarginTop = (ExpectedStatusCode > 0) ? 20 : 0
+                }, false, false);
+
+                MultiLineTextEntry ResponseTextEntry = new MultiLineTextEntry()
+                {
+                    Margin = 10
+                };
 
                 if (ResponseTemplate.Trim().StartsWith("{"))
                 {
-                    text += "```json\n";
-                    text += JSONFormatter.Format(ResponseTemplate);
-                    text += "```\n\n";
+                    ResponseTextEntry.Text = JSONFormatter.Format(ResponseTemplate);
                 }
+                else
+                {
+                    ResponseTextEntry.Text = ResponseTemplate;
+                }
+                RequestOverview.PackStart(ResponseTextEntry);
+                Button ClipboardButton = new Button(Image.FromResource(DirectorImages.COPY_ICON), "")
+                {
+                    WidthRequest = 30,
+                    HeightRequest = 30,
+                    ExpandHorizontal = false,
+                    ExpandVertical = false,
+                    MarginRight = 10,
+                    TooltipText = Director.Properties.Resources.CopyInClipboard
+                };
+                ClipboardButton.Clicked += delegate
+                {
+                    Clipboard.SetText(ResponseTextEntry.Text);
+                };
+                RequestOverview.PackStart(ClipboardButton, hpos: WidgetPlacement.End);
             }
-
-            return text;
         }
 
         /// <summary>

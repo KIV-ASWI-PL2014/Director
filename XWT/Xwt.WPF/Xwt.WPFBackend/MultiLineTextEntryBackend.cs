@@ -52,6 +52,7 @@ namespace Xwt.WPFBackend
             TextBox.Loaded += TextBox_Loaded;
             TextBox.VerticalContentAlignment = VerticalAlignment.Center;
             MultiLine = true;
+            TextBox.TextWrapping = TextWrapping.Wrap;
         }
 
 

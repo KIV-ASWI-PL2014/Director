@@ -94,6 +94,7 @@
     <Compile Include="Forms\About\About.cs" />
     <Compile Include="Forms\Controls\EmailList.cs" />
     <Compile Include="Forms\Controls\FileList.cs" />
+    <Compile Include="Forms\Controls\ListItem.cs" />
     <Compile Include="Forms\Controls\RequestWidget.cs" />
     <Compile Include="Forms\Controls\ResponseWidget.cs" />
     <Compile Include="Forms\Controls\TextEntryHelper.cs" />
@@ -386,5 +387,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="directoricon.ico" />
+    <EmbeddedResource Include="Resources\bullet_blue.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

@@ -24,12 +24,12 @@ namespace Director.Forms.Panels
         /// <summary>
         /// Request overview.
         /// </summary>
-        private MarkdownView RequestOverview { get; set; }
+        private VBox RequestOverview { get; set; }
 
         /// <summary>
         /// Request status - response.
         /// </summary>
-        private MarkdownView RequestStatus { get; set; }
+        private VBox RequestStatus { get; set; }
 
         /// <summary>
         /// Invalid request name description.
@@ -50,7 +50,13 @@ namespace Director.Forms.Panels
         public RequestPage(MainWindow _window)
             : base(_window, Director.Properties.Resources.RequestInfoBox, DirectorImages.REQUEST_IMAGE)
         {
+            CaptionFont = Font.WithSize(17).WithWeight(FontWeight.Bold);
         }
+
+        /// <summary>
+        /// Caption font.
+        /// </summary>
+        public Font CaptionFont { get; set; }
 
         /// <summary>
         /// Set request.
@@ -62,8 +68,8 @@ namespace Director.Forms.Panels
             RequestName.Changed -= RequestName_Changed;
             RequestName.Text = request.Name;
             RequestName.Changed += RequestName_Changed;
-            RequestOverview.Markdown = ActiveRequest.GetMarkdownInfo();
-            RequestStatus.Markdown = ActiveRequest.RequestRemoteResult;
+            ActiveRequest.CreateResult(RequestStatus, CaptionFont);
+            ActiveRequest.CreateOverview(RequestOverview, CaptionFont);
         }
 
         /// <summary>
@@ -101,7 +107,7 @@ namespace Director.Forms.Panels
                 Label = Director.Properties.Resources.RequestRequest,
                 Padding = 10
             };
-            RequestOverview = new MarkdownView();
+            RequestOverview = new VBox();
             RequestFrame.Content = new ScrollView()
             {
                 Content = RequestOverview
@@ -120,7 +126,7 @@ namespace Director.Forms.Panels
             RRPanel.PackStart(EditBtn, expand: false, hpos: WidgetPlacement.End);
 
             // Response
-            RequestStatus = new MarkdownView();
+            RequestStatus = new VBox();
             Frame ResponseFrame = new Frame()
             {
                 Label = Director.Properties.Resources.RequestResponse,

@@ -23,7 +23,6 @@ Director is project for testing REST APIs by scenarios.
 
 # Missing parts
 
-- Performace optimalization (Markdown views is slow)
 - Better edit of Response template
 - XML tranformations
 - Last open files

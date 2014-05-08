@@ -226,6 +226,16 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap bullet_blue {
+            get {
+                object obj = ResourceManager.GetObject("bullet_blue", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         internal static string Cancel {
@@ -304,6 +314,15 @@ namespace Director.Properties {
             get {
                 object obj = ResourceManager.GetObject("copy", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        internal static string CopyInClipboard {
+            get {
+                return ResourceManager.GetString("CopyInClipboard", resourceCulture);
             }
         }
         
@@ -548,7 +567,7 @@ namespace Director.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expected status code:.
+        ///   Looks up a localized string similar to Expected status code.
         /// </summary>
         internal static string ExpectedStatusCode {
             get {
@@ -1064,6 +1083,15 @@ namespace Director.Properties {
         internal static string NoRequestMethod {
             get {
                 return ResourceManager.GetString("NoRequestMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No response yet, run scenario first!.
+        /// </summary>
+        internal static string NoResponse {
+            get {
+                return ResourceManager.GetString("NoResponse", resourceCulture);
             }
         }
         
@@ -1589,6 +1617,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Requests.
+        /// </summary>
+        internal static string Requests {
+            get {
+                return ResourceManager.GetString("Requests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request settings.
         /// </summary>
         internal static string RequestSettings {
@@ -1989,6 +2026,15 @@ namespace Director.Properties {
         internal static string Variable {
             get {
                 return ResourceManager.GetString("Variable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Variables.
+        /// </summary>
+        internal static string Variables {
+            get {
+                return ResourceManager.GetString("Variables", resourceCulture);
             }
         }
         

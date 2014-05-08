@@ -68,9 +68,9 @@ namespace Director.Forms.Panels
         private RadioButton TimeDelayRunning { get; set; }
 
         /// <summary>
-        /// Scenario information message.
+        /// Scenario informations.
         /// </summary>
-        private MarkdownView ScenarioInformationMessage { get; set; }
+        private VBox ScenarioInformation { get; set; }
 
         /// <summary>
         /// Default constructor.
@@ -105,7 +105,43 @@ namespace Director.Forms.Panels
             ChangeFrequencyOption(null, null);
 
             // Markdown summary
-            ScenarioInformationMessage.Markdown = GetScenarioSummary();
+            RefreshScenarioSummary();
+        }
+
+        /// <summary>
+        /// Refresh scenario summary.
+        /// </summary>
+        private void RefreshScenarioSummary()
+        {
+            // Clear
+            ScenarioInformation.Clear();
+
+            // Set requests
+            Font CaptionFont = Font.WithSize(17).WithWeight(FontWeight.Bold);
+
+            ScenarioInformation.PackStart(new Label(Director.Properties.Resources.Requests + ":")
+            {
+                Font = CaptionFont
+
+            }, false, false);
+            
+            // All requests
+            foreach (var i in ActiveScenario.Requests)
+                ScenarioInformation.PackStart(new ListItem(i.Name));
+
+            // Variables
+            if (ActiveScenario.customVariables.Count > 0)
+            {
+                ScenarioInformation.PackStart(new Label(Director.Properties.Resources.Variables + ":")
+                {
+                    Font = CaptionFont
+
+                }, false, false);
+
+                foreach (KeyValuePair<string, string> pair in ActiveScenario.customVariables)
+                    ScenarioInformation.PackStart(new ListItem(string.Format("{0} - {1}\n", pair.Key, pair.Value)));
+            }
+
         }
 
         /// <summary>
@@ -186,20 +222,19 @@ namespace Director.Forms.Panels
 
 
             // Scenario information
+            ScenarioInformation = new VBox();
+            ScrollView ScenarioInformationScrollView = new ScrollView()
+            {
+                VerticalScrollPolicy = ScrollPolicy.Automatic,
+                Content = ScenarioInformation
+            };
+
             Frame si = new Frame()
             {
                 Label = Director.Properties.Resources.ScenarioOverview,
-                Padding = 10
+                Padding = 10,
+                Content = ScenarioInformationScrollView
             };
-
-            ScrollView ScenarioInformationScrollView = new ScrollView()
-            {
-                VerticalScrollPolicy = ScrollPolicy.Automatic
-            };
-
-            ScenarioInformationMessage = new MarkdownView();
-            ScenarioInformationScrollView.Content = ScenarioInformationMessage;
-            si.Content = ScenarioInformationScrollView;
             PackStart(si, true, true);
         }
 
