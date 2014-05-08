@@ -27,7 +27,7 @@ namespace Director.Forms.Controls
             {
                 WidthRequest = 20, HeightRequest = 20, MarginTop = 2
             });
-            PackStart(new Label(text) { MarginTop = 3 });
+            PackStart(new Label(text) { MarginTop = 1 });
         }
     }
 }

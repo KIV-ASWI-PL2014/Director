@@ -403,6 +403,7 @@ namespace Director.DataStructures
                     ExpandHorizontal = false,
                     ExpandVertical = false,
                     MarginRight = 10,
+                    MarginBottom = 10,
                     TooltipText = Director.Properties.Resources.CopyInClipboard
                 };
                 ClipboardButton.Clicked += delegate
