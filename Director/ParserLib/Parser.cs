@@ -118,7 +118,7 @@ namespace Director.ParserLib
         // global variables
         //
         private Random random = new Random();
-        private CultureInfo culture = new CultureInfo("en-GB");
+        private static CultureInfo culture = new CultureInfo("en-GB");
 
         /// <summary>
         /// This method will deserialize JSON reveived in "template" parameter, parse it's special syntax and returns ParserResult object which will
@@ -139,14 +139,9 @@ namespace Director.ParserLib
                 customVariables = new Dictionary<string, string>();
 
             // try to deserialize JSON template into internal parser structures
-            try
+            root = deserialize(template, errors, SOURCE_TEMPLATE);
+            if (errors.Count > 0)
             {
-                root = deserialize(template, errors, SOURCE_TEMPLATE);
-            }
-            catch (JsonException e)
-            {
-                // an error occured during deserializon => basic syntax of json template is wrong
-                errors.Add(createError(e.Message, SOURCE_TEMPLATE));
                 // add error to the error list and return empty result
                 return new ParserResult(errors, null);
             }
@@ -178,14 +173,9 @@ namespace Director.ParserLib
                 customVariables = new Dictionary<string, string>();
 
             // try to deserialize JSON template into internal parser structures
-            try
+            root = deserialize(template, errors, SOURCE_TEMPLATE);
+            if (errors.Count > 0)
             {
-                root = deserialize(template, errors, SOURCE_TEMPLATE);
-            }
-            catch (JsonException e)
-            {
-                // an error occured during deserializon => basic syntax of json template is wrong
-                errors.Add(createError(e.Message, SOURCE_TEMPLATE));
                 // add error to the error list and return empty result
                 return new ParserResult(errors, null);
             }
@@ -217,27 +207,17 @@ namespace Director.ParserLib
                 customVariables = new Dictionary<string, string>();
 
             // try to deserialize JSON template into internal parser structures
-            try
+            template_root = deserialize(template, errors, SOURCE_TEMPLATE);
+            if (errors.Count > 0)
             {
-                template_root = deserialize(template, errors, SOURCE_TEMPLATE);
-            }
-            catch (JsonException e)
-            {
-                // an error occured during deserializon => basic syntax of json template is wrong
-                errors.Add(createError(e.Message, SOURCE_TEMPLATE));
                 // add error to the error list and return empty result
                 return new ParserResult(errors, null);
             }
 
             // try to deserialize received JSON into internal parser structures
-            try
+            response_root = deserialize(response, errors, SOURCE_RESPONSE);
+            if (errors.Count > 0)
             {
-                response_root = deserialize(response, errors, SOURCE_RESPONSE);
-            }
-            catch (JsonException e)
-            {
-                // an error occured during deserializon => basic syntax of received json is wrong
-                errors.Add(createError(e.Message, SOURCE_RESPONSE));
                 // add error to the error list and return empty result
                 return new ParserResult(errors, null);
             }
@@ -331,7 +311,7 @@ namespace Director.ParserLib
             return result;
         }
 
-        private ParserError createError(string errorMessage, string source)
+        private static ParserError createError(string errorMessage, string source)
         {
             const string LINE_DEF = ", line ";
             const string POSITION_DEF = ", position ";
@@ -354,52 +334,83 @@ namespace Director.ParserLib
             List<object> indent_path = new List<object>();
             string found_key = null;
 
-            while (reader.Read())
+            try
             {
-                if (reader.TokenType == JsonToken.PropertyName)
+                while (reader.Read())
                 {
-                    found_key = (string) reader.Value;
-                }
-
-                // simple type
-                if  (  
-                    reader.TokenType == JsonToken.String || 
-                    reader.TokenType == JsonToken.Integer ||
-                    reader.TokenType == JsonToken.Float ||
-                    reader.TokenType == JsonToken.Boolean ||
-                    reader.TokenType == JsonToken.Null
-                )
-                {
-                    if (indent_path.Count > 0)
+                    if (reader.TokenType == JsonToken.PropertyName)
                     {
-                        ParserItem item = new ParserItem(reader.LineNumber, reader.LinePosition, reader.Value);
+                        found_key = (string)reader.Value;
+                    }
 
-                        if (indent_path.Last() is Dictionary<string, ParserItem>)
+                    // simple type
+                    if (
+                        reader.TokenType == JsonToken.String ||
+                        reader.TokenType == JsonToken.Integer ||
+                        reader.TokenType == JsonToken.Float ||
+                        reader.TokenType == JsonToken.Boolean ||
+                        reader.TokenType == JsonToken.Null
+                    )
+                    {
+                        if (indent_path.Count > 0)
                         {
-                            // we are parsing element of object on this level
-                            ((Dictionary<string, ParserItem>)indent_path.Last()).Add(found_key, item);
-                            found_key = null;
+                            ParserItem item = new ParserItem(reader.LineNumber, reader.LinePosition, reader.Value);
+
+                            if (indent_path.Last() is Dictionary<string, ParserItem>)
+                            {
+                                // we are parsing element of object on this level
+                                ((Dictionary<string, ParserItem>)indent_path.Last()).Add(found_key, item);
+                                found_key = null;
+                            }
+                            else
+                            {
+                                // we are parsing element of array on this level
+                                ((List<ParserItem>)indent_path.Last()).Add(item);
+                            }
+                        }
+                        else
+                            errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "{"), source));
+                    }
+
+
+                    if (reader.TokenType == JsonToken.StartObject)
+                    {
+                        if (indent_path.Count == 0)
+                        {
+                            indent_path.Add(result);
                         }
                         else
                         {
-                            // we are parsing element of array on this level
-                            ((List<ParserItem>)indent_path.Last()).Add(item);
+                            Dictionary<string, ParserItem> sub_node = new Dictionary<string, ParserItem>(); // create new node for new object
+                            ParserItem item = new ParserItem(reader.LineNumber, reader.LinePosition, sub_node);
+
+                            if (indent_path.Last() is Dictionary<string, ParserItem>)
+                            {
+                                // we are parsing element of object on this level
+                                ((Dictionary<string, ParserItem>)indent_path.Last()).Add(found_key, item);
+                                found_key = null;
+                            }
+                            else
+                            {
+                                // we are parsing element of array on this level
+                                ((List<ParserItem>)indent_path.Last()).Add(item);
+                            }
+
+                            indent_path.Add(sub_node); // add new active saving location to the end of this list
                         }
                     }
-                    else
-                        errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "{"), source));
-                }
 
-
-                if (reader.TokenType == JsonToken.StartObject)
-                {
-                    if (indent_path.Count == 0)
+                    if (reader.TokenType == JsonToken.EndObject)
                     {
-                        indent_path.Add(result);
+                        if (indent_path.Count > 0)
+                            indent_path.RemoveAt(indent_path.Count - 1); // remove last element
+                        else // too many of closing parentheses
+                            errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "{"), source));
                     }
-                    else
+
+                    if (reader.TokenType == JsonToken.StartArray)
                     {
-                        Dictionary<string, ParserItem> sub_node = new Dictionary<string, ParserItem>(); // create new node for new object
+                        List<ParserItem> sub_node = new List<ParserItem>(); // create new node for new array
                         ParserItem item = new ParserItem(reader.LineNumber, reader.LinePosition, sub_node);
 
                         if (indent_path.Last() is Dictionary<string, ParserItem>)
@@ -416,52 +427,29 @@ namespace Director.ParserLib
 
                         indent_path.Add(sub_node); // add new active saving location to the end of this list
                     }
+
+                    if (reader.TokenType == JsonToken.EndArray)
+                    {
+                        if (indent_path.Count > 0)
+                            indent_path.RemoveAt(indent_path.Count - 1); // remove last element
+                        else // too many of closing parentheses
+                            errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "["), source));
+                    }
                 }
 
-                if (reader.TokenType == JsonToken.EndObject)
+                // too many of opening parentheses
+                if (indent_path.Count > 0)
                 {
-                    if (indent_path.Count > 0)
-                        indent_path.RemoveAt(indent_path.Count - 1); // remove last element
-                    else // too many of closing parentheses
-                        errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "{"), source));
-                }
-
-                if (reader.TokenType == JsonToken.StartArray)
-                {
-                    List<ParserItem> sub_node = new List<ParserItem>(); // create new node for new array
-                    ParserItem item = new ParserItem(reader.LineNumber, reader.LinePosition, sub_node);
-
                     if (indent_path.Last() is Dictionary<string, ParserItem>)
-                    {
-                        // we are parsing element of object on this level
-                        ((Dictionary<string, ParserItem>)indent_path.Last()).Add(found_key, item);
-                        found_key = null;
-                    }
+                        errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "}"), source));
                     else
-                    {
-                        // we are parsing element of array on this level
-                        ((List<ParserItem>)indent_path.Last()).Add(item);
-                    }
-
-                    indent_path.Add(sub_node); // add new active saving location to the end of this list
-                }
-
-                if (reader.TokenType == JsonToken.EndArray)
-                {
-                    if (indent_path.Count > 0)
-                        indent_path.RemoveAt(indent_path.Count - 1); // remove last element
-                    else // too many of closing parentheses
-                        errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "["), source));
+                        errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "]"), source));
                 }
             }
-
-            // too many of opening parentheses
-            if (indent_path.Count > 0)
+            catch (JsonException e)
             {
-                if (indent_path.Last() is Dictionary<string, ParserItem>)
-                    errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "}"), source));
-                else
-                    errors.Add(new ParserError(reader.LineNumber, reader.LinePosition, string.Format(ERR_MSG_EXPECTING_CHARACTER, "]"), source));
+                // an error occured during deserializon => basic syntax of json template is wrong
+                errors.Add(createError(e.Message, source));
             }
 
             return result;
