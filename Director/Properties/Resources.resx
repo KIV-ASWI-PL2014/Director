@@ -781,4 +781,31 @@
   <data name="Stop" xml:space="preserve">
     <value>Stop</value>
   </data>
+  <data name="ExportDeserialScenariosEx" xml:space="preserve">
+    <value>Exception during deserialization of scenarios:</value>
+  </data>
+  <data name="ExportDeserialServerEx" xml:space="preserve">
+    <value>Exception during deserialization of server:</value>
+  </data>
+  <data name="ExportProcessFilesEx" xml:space="preserve">
+    <value>Exception during processing files:</value>
+  </data>
+  <data name="ExportProcessTempDirEx" xml:space="preserve">
+    <value>Exception during processing temporary directory:</value>
+  </data>
+  <data name="ExportSerialScenariosEx" xml:space="preserve">
+    <value>Exception during serialization of scenarios:</value>
+  </data>
+  <data name="ExportSerialServerEx" xml:space="preserve">
+    <value>Exception during serialization of server:</value>
+  </data>
+  <data name="ExportSkipFileWarning" xml:space="preserve">
+    <value>File {0} in request {1} in scenario {2} has been skipped.\n</value>
+  </data>
+  <data name="ExportZipCompressionEx" xml:space="preserve">
+    <value>Exception during a zip compression:</value>
+  </data>
+  <data name="ExportZipDecompressionEx" xml:space="preserve">
+    <value>Exception during a zip decompression:</value>
+  </data>
 </root>
