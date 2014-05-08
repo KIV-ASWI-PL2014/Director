@@ -223,14 +223,17 @@ namespace Director.Forms.Panels
             ret += "\n";
 
             // Variables
-            ret += "# Variables\n";
-
-            foreach (KeyValuePair<string, string> pair in ActiveScenario.customVariables)
+            if (ActiveScenario.customVariables.Count > 0)
             {
-                ret += string.Format("* {0} - {1}\n", pair.Key, pair.Value);
-            }
+                ret += "# Variables\n";
 
-            ret += "\n";
+                foreach (KeyValuePair<string, string> pair in ActiveScenario.customVariables)
+                {
+                    ret += string.Format("* {0} - {1}\n", pair.Key, pair.Value);
+                }
+
+                ret += "\n";
+            }
 
             return ret;
         }

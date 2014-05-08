@@ -21,6 +21,15 @@ Director is project for testing REST APIs by scenarios.
 - Email: jan.strnadek@gmail.com
 - Webpage: http://director.strnadj.eu/
 
+# Missing parts
+
+- Performace optimalization (Markdown views is slow)
+- Better edit of Response template
+- XML tranformations
+- Last open files
+- Languages
+- Fix parser
+
 # Changelog
 
 - Mac OS X View optimalization
