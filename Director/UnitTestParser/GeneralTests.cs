@@ -83,6 +83,25 @@ namespace UnitTestParser
         }
 
         [TestMethod]
+        public void deserializeJSONWithMissingComma()
+        {
+            // TEMPLATE:
+            //{
+            //    "devise": {
+            //        "appVersionId": 51,
+            //        "locale": "en",
+            //        "countryCode": "CZ"
+            //        "platform": 1,
+            //        "platformVersion": 7000005
+            //    }
+            //}
+            //
+            pr = parser.generateRequest("{ \"devise\": { \"appVersionId\": 51, \"locale\": \"en\", \"countryCode\": \"CZ\" \"platform\": 1, \"platformVersion\": 7000005 } }", null);
+            Assert.IsFalse(pr.isSuccess());
+            Assert.AreEqual(pr.getErrors().Count, 1);
+        }
+
+        [TestMethod]
         public void compareResponseWithExtraKey()
         {
             // TEMPLATE:

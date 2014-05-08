@@ -131,7 +131,6 @@ namespace Director.ParserLib
         /// <returns>ParserResult object containing errors and result</returns>
         public ParserResult generateRequest(string template, Dictionary<string, string> customVariables)
         {
-			Console.WriteLine ("GENERATE REQUEST {0}\n", template);
             List<ParserError> errors = new List<ParserError>();
             Dictionary<string, ParserItem> root = null; // top layer of internal parser structures of deserialized JSON template
 
@@ -1288,6 +1287,9 @@ namespace Director.ParserLib
                     errors.Add(new ParserError(item.line, item.position + original_var_occurrences[i], string.Format(ERR_MSG_UNKNOWN_CUSTOM_VARIABLE, variable_name), SOURCE_TEMPLATE));
                 }
             }
+
+            // update value of the item
+            item.value = value;
 
             // now, we are ready to find and evaluate functions defined in this string
             for (int i = 0; i < fn_occurrences.Count; i += 2)
