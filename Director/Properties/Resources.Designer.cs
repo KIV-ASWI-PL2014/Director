@@ -1150,6 +1150,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New request.
+        /// </summary>
+        internal static string NewRequestName {
+            get {
+                return ResourceManager.GetString("NewRequestName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New scenario.
         /// </summary>
         internal static string NewScenarioName {

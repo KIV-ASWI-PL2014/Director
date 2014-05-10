@@ -808,4 +808,7 @@
   <data name="ExportZipDecompressionEx" xml:space="preserve">
     <value>Exception during a zip decompression:</value>
   </data>
+  <data name="NewRequestName" xml:space="preserve">
+    <value>New request</value>
+  </data>
 </root>
