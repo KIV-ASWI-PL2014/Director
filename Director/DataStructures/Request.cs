@@ -11,6 +11,7 @@ using RestSharp;
 using Director.Formatters;
 using Xwt.Drawing;
 using Director.Forms.Controls;
+using System.Xml;
 
 namespace Director.DataStructures
 {
@@ -93,12 +94,48 @@ namespace Director.DataStructures
         /// <summary>
         /// Request String template.
         /// </summary>
+        [XmlIgnore]
         public String RequestTemplate { get; set; }
+
+        /// <summary>
+        /// Request cdata seriailization.
+        /// </summary>
+        [XmlElement("RequestTemplate")]
+        public XmlCDataSection RequestTemplateCD
+        {
+            get
+            {
+                XmlDocument doc = new XmlDocument();
+                return doc.CreateCDataSection(RequestTemplate);
+            }
+            set
+            {
+                RequestTemplate = value.Value;
+            }
+        }
 
         /// <summary>
         /// Response string template.
         /// </summary>
+        [XmlIgnore]
         public String ResponseTemplate { get; set; }
+
+        /// <summary>
+        /// Response CData serialization.
+        /// </summary>
+        [XmlElement("ResponseTemplate")]
+        public XmlCDataSection ResponseTemplateCD
+        {
+            get
+            {
+                XmlDocument doc = new XmlDocument();
+                return doc.CreateCDataSection(ResponseTemplate);
+            }
+            set
+            {
+                ResponseTemplate = value.Value;
+            }
+        }
 
         /// <summary>
         /// Wait after previous request time! (in seconds)
