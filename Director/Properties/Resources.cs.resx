@@ -811,4 +811,10 @@
   <data name="NewRequestName" xml:space="preserve">
     <value>Nový požadavek</value>
   </data>
+  <data name="ExportResult" xml:space="preserve">
+    <value>Výsledek exportu</value>
+  </data>
+  <data name="ImportResult" xml:space="preserve">
+    <value>Výsledek importu</value>
+  </data>
 </root>

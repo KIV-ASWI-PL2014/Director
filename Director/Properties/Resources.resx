@@ -811,4 +811,10 @@
   <data name="NewRequestName" xml:space="preserve">
     <value>New request</value>
   </data>
+  <data name="ExportResult" xml:space="preserve">
+    <value>Export result</value>
+  </data>
+  <data name="ImportResult" xml:space="preserve">
+    <value>Import result</value>
+  </data>
 </root>

@@ -1441,6 +1441,13 @@ namespace Director.Forms
                 try
                 {
                     UServer = Deserialization.DeserializeAll(dlg.FileNames[0]);
+
+                    String messageType = Director.Properties.Resources.ImportResult;
+                    if (UServer == null)
+                    {
+                        MessageDialog.ShowMessage(messageType, Deserialization.errorMessage);
+                        return;
+                    }
                 }
                 catch
                 {

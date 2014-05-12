@@ -180,11 +180,7 @@ namespace Director.Forms.Export
                 // Start serialization
                 Boolean res = Serialization.SerializeAll(ActiveServer, ExportPath.Text, ExportScenarios);
 
-                String messageType = "Export of result ";
-                if(!Serialization.errorMessage.Equals("") && res == true)
-                    messageType += "info:";
-                else if(res == false)
-                    messageType += "error:";
+                String messageType = Director.Properties.Resources.ExportResult;
 
                 if(!Serialization.errorMessage.Equals(""))
                     MessageDialog.ShowMessage(messageType, Serialization.errorMessage);

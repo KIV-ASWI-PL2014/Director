@@ -649,6 +649,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export result.
+        /// </summary>
+        internal static string ExportResult {
+            get {
+                return ResourceManager.GetString("ExportResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exception during serialization of scenarios:.
         /// </summary>
         internal static string ExportSerialScenariosEx {
@@ -837,6 +846,15 @@ namespace Director.Properties {
         internal static string Icons {
             get {
                 return ResourceManager.GetString("Icons", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import result.
+        /// </summary>
+        internal static string ImportResult {
+            get {
+                return ResourceManager.GetString("ImportResult", resourceCulture);
             }
         }
         
