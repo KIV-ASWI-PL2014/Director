@@ -107,6 +107,7 @@
     <Compile Include="ParserLib\ParserError.cs" />
     <Compile Include="ParserLib\Parser.cs" />
     <Compile Include="ParserLib\ParserItem.cs" />
+    <Compile Include="ParserLib\ParserOccurence.cs" />
     <Compile Include="ParserLib\ParserResult.cs" />
     <Compile Include="Forms\Controls\DirectorImages.cs" />
     <Compile Include="Forms\Controls\InfoBox.cs" />

@@ -1153,7 +1153,7 @@ namespace Director.ParserLib
                 }
             } while (index != -1);
             List<int> original_var_occurrences = new List<int>(var_occurrences); // when we notify the user about parser error we want to refer to the positions from original template
-            
+
             // we need to replace functions surrounded by MAIN_SYNTAX_CHARACTERs with their evaluated result ...
             List<int> fn_occurrences = new List<int>();
             index = 0;
@@ -1376,6 +1376,184 @@ namespace Director.ParserLib
 
             // return modified item
             return item;
+        }
+
+        public static List<ParserOccurence> findMarkUpOccurences(string value, Dictionary<string, string> customVariables, List<ParserError> errors)
+        {
+            // if they are not not passed, initiate custom variables and error list
+            if (customVariables == null)
+                customVariables = new Dictionary<string, string>();
+            if (errors == null)
+                errors = new List<ParserError>();
+
+            // we need to find occurences of VARIABLE_CHARACTER pairs ...
+            List<int> var_occurrences = new List<int>();
+            int index = 0;
+            do
+            {
+                index = value.IndexOf(VARIABLE_CHARACTER, index); // ... so, find all occurrences of variable characters in given string value
+                if (index != -1)
+                {
+                    if (index == 0 || value[index - 1] != ESCAPE_CHARACTER) // either first character or unescaped one
+                        var_occurrences.Add(index);
+                    index++;
+                }
+            } while (index != -1);
+
+            // we need to find occurences of MAIN_SYNTAX_CHARACTER pairs ...
+            List<int> fn_occurrences = new List<int>();
+            index = 0;
+            do
+            {
+                index = value.IndexOf(MAIN_SYNTAX_CHARACTER, index); // ... so, find all occurrences of function characters in given string value
+                if (index != -1)
+                {
+                    if (index == 0 || value[index - 1] != ESCAPE_CHARACTER) // either first character or unescaped one
+                        fn_occurrences.Add(index);
+                    index++;
+                }
+            } while (index != -1);
+
+            if (var_occurrences.Count % 2 != 0)
+            {
+                // last VARIABLE_CHARACTER is missing it's pair ...
+                errors.Add(new ParserError(0, var_occurrences.Last(), ERR_MSG_MISSING_VARIABLE_CHARACTER, null)); // ... notify the user ...
+                var_occurrences.RemoveAt(var_occurrences.Count - 1); // ... and do not try to work with this one in future
+            }
+
+            if (fn_occurrences.Count % 2 != 0)
+            {
+                // last MAIN_SYNTAX_CHARACTER is missing it's pair ...
+                errors.Add(new ParserError(0, fn_occurrences.Last(), ERR_MSG_MISSING_MAIN_SYNTAX_CHARACTER, null)); // ... notify the user ...
+                fn_occurrences.RemoveAt(fn_occurrences.Count - 1); // ... and do not try to work with this one in future
+            }
+
+            // here we need to find out whether VARIABLE_CHARACTER and MAIN_SYNTAX_CHARACTER pairs are not overlaping each other in forbidden way
+            // RULES:
+            //  - MAIN_SYNTAX_CHARACTER pair can have multiple VARIABLE_CHARACTER pairs inside it
+            //  - VARIABLE_CHARACTER pair can not any MAIN_SYNTAX_CHARACTER pairs inside it
+            //  - MAIN_SYNTAX_CHARACTER pair can not overlap with VARIABLE_CHARACTER pair and vice versa
+            if (var_occurrences.Count > 0 && fn_occurrences.Count > 0) // both pair lists must be non empty for this check to make any sense
+            {
+                int var_list_position = 0;
+                int fn_list_position = 0;
+                bool inside_var = false; // whether current position is inside MAIN_SYNTAX_CHARACTER pair or not
+                bool inside_fn = false; // whether current position is inside VARIABLE_CHARACTER pair or not
+
+                while (var_list_position < var_occurrences.Count && fn_list_position < fn_occurrences.Count)
+                {
+                    // current position in both pair lists is not at the end
+                    if (var_occurrences[var_list_position] < fn_occurrences[fn_list_position])
+                    {
+                        inside_var = !inside_var;
+                        var_list_position++;
+                    }
+                    else
+                    {
+                        if (inside_var && !inside_fn)
+                        {
+                            // there is MAIN_SYNTAX_CHARACTER inside VARIABLE_CHARACTERs pair - raise an error
+                            errors.Add(new ParserError(0, fn_occurrences[fn_list_position], ERR_MSG_FN_INSIDE_VAR, null));
+                            // this syntax error is too serious for evaluation to continue - return without any result
+                            return null;
+                        }
+
+                        inside_fn = !inside_fn;
+                        fn_list_position++;
+                    }
+                }
+                // upon leaving this while statement, we can be sure that we made it through at least one of the lists
+                // the rest does not matter now, since there can't be any more overlaps or bad placements
+            }
+
+            // create the return object
+            List<ParserOccurence> result = new List<ParserOccurence>();
+            int current_position = 0;
+
+            // continuosly add items to the return object until both occurence lists are empty
+            while (var_occurrences.Count != 0 && fn_occurrences.Count != 0)
+            {
+                if (var_occurrences.Count == 0 || var_occurrences[0] > fn_occurrences[0])
+                {
+                    // add text if possible
+                    if (current_position < fn_occurrences[0])
+                        result.Add(new ParserOccurence(value.Substring(current_position, fn_occurrences[0] - current_position), "text", null));
+
+                    // add function
+                    string function_string = value.Substring(fn_occurrences[0] + 1, fn_occurrences[1] - fn_occurrences[0] - 1); // grab the function name and it's parameters without MAIN_SYNTAX_CHARACTERs on edges
+                    int left_parenthesis_position = function_string.IndexOf(REQUEST_FN_LEFT_PARENTHESIS);
+                    int right_parenthesis_position = function_string.IndexOf(REQUEST_FN_RIGHT_PARENTHESIS);
+                    // handle all possible syntactical errors
+                    if (left_parenthesis_position == -1) // no left parenthesis
+                        errors.Add(new ParserError(0, fn_occurrences[0], string.Format(ERR_MSG_EXPECTING_CHARACTER, REQUEST_FN_LEFT_PARENTHESIS), null));
+                    if (right_parenthesis_position == -1) // no right parenthesis
+                        errors.Add(new ParserError(0, fn_occurrences[0], string.Format(ERR_MSG_EXPECTING_CHARACTER, REQUEST_FN_RIGHT_PARENTHESIS), null));
+                    if (left_parenthesis_position != -1 && function_string.IndexOf(REQUEST_FN_LEFT_PARENTHESIS, left_parenthesis_position) == -1) // too many left parentheses
+                        errors.Add(new ParserError(0, fn_occurrences[0] + left_parenthesis_position, string.Format(ERR_MSG_INVALID_CHARACTER, REQUEST_FN_LEFT_PARENTHESIS), null));
+                    if (right_parenthesis_position != -1 && function_string.IndexOf(REQUEST_FN_RIGHT_PARENTHESIS, right_parenthesis_position) == -1) // too many right parentheses
+                        errors.Add(new ParserError(0, fn_occurrences[0] + right_parenthesis_position, string.Format(ERR_MSG_INVALID_CHARACTER, REQUEST_FN_RIGHT_PARENTHESIS), null));
+                    if (left_parenthesis_position == 0) // no function name before left parenthesis
+                        errors.Add(new ParserError(0, fn_occurrences[0], ERR_MSG_MISSING_FN_NAME, null));
+                    if (right_parenthesis_position != function_string.Length - 1) // aditional characters after right parenthesis
+                        errors.Add(new ParserError(0, fn_occurrences[0] + right_parenthesis_position, ERR_MSG_UNRECOGNIZED_CHARS_AFTER_FN, null));
+                    if (left_parenthesis_position > right_parenthesis_position) // swapped parentheses
+                        errors.Add(new ParserError(0, fn_occurrences[0] + right_parenthesis_position, ERR_MSG_SWAPPED_PARENTHESES, null));
+                    // if all basic syntactical conditions are met, we can continue
+                    if (left_parenthesis_position > 0 && left_parenthesis_position < right_parenthesis_position && right_parenthesis_position == function_string.Length - 1)
+                    {
+                        string function_name = function_string.Substring(0, left_parenthesis_position);
+                        string[] function_arguments = function_string.Substring(left_parenthesis_position + 1, right_parenthesis_position - left_parenthesis_position - 1).Split(REQUEST_FN_ARGUMENT_SEPARATOR);
+                        List<string> processed_function_arguments = new List<string>();
+                        for (int i = 0; i < function_arguments.Length; i++)
+                            processed_function_arguments.Add(function_arguments[i].Trim()); // trim any white spaces from all arguments
+                        result.Add(new ParserOccurence(function_name, "function", processed_function_arguments));
+                    }
+                    else
+                    {
+                        // we are unable to parse function name and it's arguments due to syntactiocal errors => return entire function string as it's name
+                        result.Add(new ParserOccurence(function_string, "function", null));
+                    }
+
+                    // update current position and remove two first elements from the list
+                    current_position = fn_occurrences[1] + 1;
+                    fn_occurrences.RemoveRange(0, 2);
+
+                    // lastly, delete all occurences of variables inside this function - we want to ignore those
+                    while (current_position > var_occurrences[0])
+                    {
+                        var_occurrences.RemoveRange(0, 2);
+                        if (var_occurrences.Count == 0)
+                            break;
+                    }
+
+                    continue;
+                }
+                if (fn_occurrences.Count == 0 || var_occurrences[0] < fn_occurrences[0])
+                {
+                    // add text if possible
+                    if (current_position < var_occurrences[0])
+                        result.Add(new ParserOccurence(value.Substring(current_position, var_occurrences[0] - current_position), "text", null));
+
+                    // add variable
+                    string variable_name = value.Substring(var_occurrences[0] + 1, var_occurrences[1] - var_occurrences[0] - 1); // grab variable name without VARIABLE_CHARACTERs on edges
+                    if (!customVariables.ContainsKey(variable_name)) // is this variable defined in passed custom variables?
+                        errors.Add(new ParserError(0, var_occurrences[0], string.Format(ERR_MSG_UNKNOWN_CUSTOM_VARIABLE, variable_name), null)); // add error
+                    result.Add(new ParserOccurence(variable_name, "variable", null));
+                    
+                    // update current position and remove two first elements from the list
+                    current_position = var_occurrences[1] + 1;
+                    var_occurrences.RemoveRange(0, 2);
+
+                    continue;
+                }
+            }
+
+            // add the rest of the text if possible
+            if (current_position < value.Length)
+                result.Add(new ParserOccurence(value.Substring(current_position), "text", null));
+
+            // return the result
+            return result;
         }
 
         /// <summary>
