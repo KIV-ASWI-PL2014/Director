@@ -3,6 +3,7 @@ using Xwt;
 using Director.DataStructures;
 using Director.Forms.Inputs;
 using Director.Forms;
+using System.Threading;
 
 namespace Director
 {
@@ -14,6 +15,9 @@ namespace Director
         [STAThread]
         private static void Main()
         {
+			// Locales
+			Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(Director.Properties.Settings.Default.language);
+
 			// Set toolkit type
 			Config.SetAppType (ToolkitType.Gtk); 
           	Application.Initialize(Config.GetAppType());

@@ -59,7 +59,6 @@ namespace Director.DataStructures
         /// <summary>
         /// Custom variables for parser.
         /// </summary>
-        [XmlIgnore]
         public Dictionary<string, string> customVariables { get; set; }
 
         /// <summary>

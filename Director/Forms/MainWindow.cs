@@ -1135,8 +1135,9 @@ namespace Director.Forms
                 // Change icon
                 ChangeIcon(s.TreePosition, ScenarioImage);
 
-                // Clear variables
-                s.customVariables = new Dictionary<string, string>();
+				// Create variables if not exists
+				if (s.customVariables == null)
+                	s.customVariables = new Dictionary<string, string>();
 
                 // Change icons
                 foreach (var r in s.Requests)

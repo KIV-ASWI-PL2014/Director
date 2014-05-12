@@ -70,22 +70,6 @@ namespace Director.DataStructures
         public int ExpectedStatusCode { get; set; }
 
         /// <summary>
-        /// Authentication name.
-        /// </summary>
-        public String AuthName { get; set; }
-
-        /// <summary>
-        /// Authentication password.
-        /// </summary>
-        /// <value>The auth password.</value>
-        public String AuthPassword { get; set; }
-
-        /// <summary>
-        /// Use http authentication.
-        /// </summary>
-        public Boolean Authentication { get; set; }
-
-        /// <summary>
         /// Request Method (POST|GET|PUT)
         /// </summary>
         public String HTTP_METHOD { get; set; }
