@@ -1347,29 +1347,29 @@ namespace Director.ParserLib
                         value = value.Insert(fn_occurrences[i], function_result); // insert function result on the original position
                         // after we changed length of original string by replacing entire function string by function result, we need to change all occurrence indices accordingly
                         shift_occurrences(fn_occurrences, fn_occurrences[i], function_result.Length - function_string.Length - 2);
-                    }
 
-                    if (type_result) // the entire "value" string is occupied only by one function, we must type the result to desired one
-                    {
-                        switch (function_name)
+                        if (type_result) // the entire "value" string is occupied only by one function, we must type the result to desired one
                         {
-                            case REQUEST_FN_RAND_INT:
-                                item.value = Convert.ToInt32(value, culture); // type to integer
-                                break;
-                            case REQUEST_FN_RAND_FLOAT:
-                                item.value = Convert.ToSingle(value, culture); // type to float
-                                break;
-                            case REQUEST_FN_SEQUENCE:
-                                item.value = Convert.ToInt32(value, culture); // type to integer
-                                break;
-                            default:
-                                item.value = value;
-                                break;
+                            switch (function_name)
+                            {
+                                case REQUEST_FN_RAND_INT:
+                                    item.value = Convert.ToInt32(value, culture); // type to integer
+                                    break;
+                                case REQUEST_FN_RAND_FLOAT:
+                                    item.value = Convert.ToSingle(value, culture); // type to float
+                                    break;
+                                case REQUEST_FN_SEQUENCE:
+                                    item.value = Convert.ToInt32(value, culture); // type to integer
+                                    break;
+                                default:
+                                    item.value = value;
+                                    break;
+                            }
                         }
-                    }
-                    else // don't type result to differen type and assign regular string
-                    {
-                        item.value = value;
+                        else // don't type result to differen type and assign regular string
+                        {
+                            item.value = value;
+                        }
                     }
                 }
             }
@@ -1604,9 +1604,8 @@ namespace Director.ParserLib
             }
             else
             {
-                // replace custom variable name by it's value
-                function_arguments[3] = customVariables[function_arguments[3]];
-                current_value = parse_integer_function_argument(function_arguments[3], errors, item, parsing_offset); // value of custom variable passed in 4th argument must contain integer value
+                // value of custom variable passed in 4th argument must contain integer value
+                current_value = parse_integer_function_argument(customVariables[function_arguments[3]], errors, item, parsing_offset);
             }
             if (errors.Count > original_errors_count) // if some new errors occured during parsing of the arguments ...
                 return null; // ... stop evaluating and leave this code block
