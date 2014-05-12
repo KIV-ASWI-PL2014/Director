@@ -182,157 +182,157 @@
     <value>Autorizace</value>
   </data>
   <data name="AuthorizationSettings" xml:space="preserve">
-    <value>Authorization settings</value>
+    <value>Nastavení autorizace</value>
   </data>
   <data name="ContextMenuAddRequest" xml:space="preserve">
-    <value>Add request</value>
+    <value>Přidat požadavek</value>
   </data>
   <data name="ContextMenuRemoveRequest" xml:space="preserve">
-    <value>Remove request</value>
+    <value>Odstranit požadavek</value>
   </data>
   <data name="ContextMenuRemoveScenario" xml:space="preserve">
-    <value>Remove scenario</value>
+    <value>Odstranit scénář</value>
   </data>
   <data name="DialogOpenScenario" xml:space="preserve">
-    <value>Select scenario file</value>
+    <value>Vybrat scénář</value>
   </data>
   <data name="Email" xml:space="preserve">
     <value>Email</value>
   </data>
   <data name="EmailNotifications" xml:space="preserve">
-    <value>Email notifications</value>
+    <value>Oznámení emailem</value>
   </data>
   <data name="Errors" xml:space="preserve">
-    <value>Errors</value>
+    <value>Chyby</value>
   </data>
   <data name="Every10Minutes" xml:space="preserve">
-    <value>Every 10 minutes</value>
+    <value>Každých 10 minut</value>
   </data>
   <data name="Every12Hours" xml:space="preserve">
-    <value>Every 12 hours</value>
+    <value>Každých 12 hodin</value>
   </data>
   <data name="Every30Minutes" xml:space="preserve">
-    <value>Every 30 minutes</value>
+    <value>Každých 30 minut</value>
   </data>
   <data name="Every3Hours" xml:space="preserve">
-    <value>Every 3 hours</value>
+    <value>Každé 3 hodiny</value>
   </data>
   <data name="Every5Minutes" xml:space="preserve">
-    <value>Every 5 minutes</value>
+    <value>Každých 5 minut</value>
   </data>
   <data name="Every6Hours" xml:space="preserve">
-    <value>Every 6 hours</value>
+    <value>Každých 6 hodin</value>
   </data>
   <data name="EveryDay" xml:space="preserve">
-    <value>Every day</value>
+    <value>Každý den</value>
   </data>
   <data name="EveryHour" xml:space="preserve">
-    <value>Every hour</value>
+    <value>Každou hodinu</value>
   </data>
   <data name="ExportDialog" xml:space="preserve">
-    <value>Export scenarios</value>
+    <value>Export scénářů</value>
   </data>
   <data name="InvalidScenarioName" xml:space="preserve">
-    <value>Invalid scnario name!</value>
+    <value>Nesprávné jméno scénáře!</value>
   </data>
   <data name="InvalidServerName" xml:space="preserve">
-    <value>Server name cannot be empty!</value>
+    <value>Jméno serveru nesmí být prázdné!</value>
   </data>
   <data name="InvalidServerURL" xml:space="preserve">
-    <value>Invalid server url!</value>
+    <value>Nesprávná URL serveru!</value>
   </data>
   <data name="MainWindowTitle" xml:space="preserve">
     <value>Api Director</value>
   </data>
   <data name="MenuAddScenario" xml:space="preserve">
-    <value>Add scenario</value>
+    <value>Přidat scénář</value>
   </data>
   <data name="MenuExitProgram" xml:space="preserve">
-    <value>Exit</value>
+    <value>Konec</value>
   </data>
   <data name="MenuNewServer" xml:space="preserve">
-    <value>New server</value>
+    <value>Nový server</value>
   </data>
   <data name="MenuOpenScenario" xml:space="preserve">
-    <value>Open scenario</value>
+    <value>Otevřít scénář</value>
   </data>
   <data name="MenuSaveServer" xml:space="preserve">
-    <value>Save server</value>
+    <value>Uložit server</value>
   </data>
   <data name="MenuServer" xml:space="preserve">
     <value>Server</value>
   </data>
   <data name="MessageBoxRemoveScenario" xml:space="preserve">
-    <value>Are you sure you want to remove this scenario?</value>
+    <value>Opravdu chcete odebrat tento scénář?</value>
   </data>
   <data name="NewScenarioName" xml:space="preserve">
-    <value>New scenario</value>
+    <value>Nový scénář</value>
   </data>
   <data name="NewServerString" xml:space="preserve">
-    <value>New server</value>
+    <value>Nový server</value>
   </data>
   <data name="NewServerURL" xml:space="preserve">
     <value>http://api.example.com/</value>
   </data>
   <data name="Notification" xml:space="preserve">
-    <value>Notification</value>
+    <value>Oznámení</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>Password</value>
+    <value>Heslo</value>
   </data>
   <data name="RequestInfoBox" xml:space="preserve">
-    <value>Request</value>
+    <value>Požadavek</value>
   </data>
   <data name="RunningPeriodicity" xml:space="preserve">
-    <value>Default running periodicity</value>
+    <value>Implicitní periodicita spouštění</value>
   </data>
   <data name="ScenarioInfoBox" xml:space="preserve">
-    <value>Scenario</value>
+    <value>Scénář</value>
   </data>
   <data name="ScenarioName" xml:space="preserve">
-    <value>Name</value>
+    <value>Jméno</value>
   </data>
   <data name="ScenarioSettings" xml:space="preserve">
-    <value>Scenario settings</value>
+    <value>Nastavení scénářů</value>
   </data>
   <data name="ServerInfoBox" xml:space="preserve">
     <value>Server</value>
   </data>
   <data name="ServerName" xml:space="preserve">
-    <value>Server name</value>
+    <value>Jméno serveru</value>
   </data>
   <data name="ServerSettings" xml:space="preserve">
-    <value>Server settings</value>
+    <value>Nastavení serveru</value>
   </data>
   <data name="ServerURL" xml:space="preserve">
-    <value>Default server URL</value>
+    <value>Implicitní URL serveru</value>
   </data>
   <data name="TreeStoreInformation" xml:space="preserve">
-    <value>Information</value>
+    <value>Informace</value>
   </data>
   <data name="Username" xml:space="preserve">
-    <value>Username</value>
+    <value>Uživatelské jméno</value>
   </data>
   <data name="DialogSaveScenario" xml:space="preserve">
-    <value>Save scenario</value>
+    <value>Uložit scénář</value>
   </data>
   <data name="NoScenarioSelected" xml:space="preserve">
-    <value>Please select at least one scenario to export!</value>
+    <value>Prosím vyberte alespoň jeden scénář!</value>
   </data>
   <data name="OutputFileNotSelected" xml:space="preserve">
-    <value>Please select output file!</value>
+    <value>Prosím vyberte cílový soubor!</value>
   </data>
   <data name="SaveServer" xml:space="preserve">
-    <value>Save</value>
+    <value>Uložit</value>
   </data>
   <data name="SelectAll" xml:space="preserve">
-    <value>Select all scenarios</value>
+    <value>Vybrat všechny scénáře</value>
   </data>
   <data name="SelectScenarios" xml:space="preserve">
-    <value>Select scenarios to export</value>
+    <value>Vyberte scénáře k exportu</value>
   </data>
   <data name="ChooseRunningOptions" xml:space="preserve">
-    <value>Choose running option</value>
+    <value>Vyber volby spuštění</value>
   </data>
   <data name="Confirm" xml:space="preserve">
     <value>Zavřít</value>
@@ -341,61 +341,61 @@
     <value>..\Resources\edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="FrequencyLabel" xml:space="preserve">
-    <value>Frequency</value>
+    <value>Frekvence</value>
   </data>
   <data name="InvalidRequestName" xml:space="preserve">
-    <value>Request name is invalid!</value>
+    <value>Nesprávné jméno požadavku!</value>
   </data>
   <data name="InvalidTimeDelay" xml:space="preserve">
-    <value>Time delay must be a number and greather or equal to 0!</value>
+    <value>Čas odložení musí být číslo větší nebo rovno 0!</value>
   </data>
   <data name="MenuEditRequest" xml:space="preserve">
-    <value>Edit request</value>
+    <value>Upravit požadavek</value>
   </data>
   <data name="RequestName" xml:space="preserve">
-    <value>Request name</value>
+    <value>Jméno požadavku</value>
   </data>
   <data name="RequestRequest" xml:space="preserve">
-    <value>Request specification</value>
+    <value>Specifikace požadavku</value>
   </data>
   <data name="RequestResponse" xml:space="preserve">
-    <value>Response specification</value>
+    <value>Specifikace odpovědi</value>
   </data>
   <data name="RequestSettings" xml:space="preserve">
-    <value>Request settings</value>
+    <value>Nastavení požadavku</value>
   </data>
   <data name="RunningOptionsLabel" xml:space="preserve">
-    <value>Running options</value>
+    <value>Volby spuštění</value>
   </data>
   <data name="ScenarioLabel" xml:space="preserve">
-    <value>Scenario</value>
+    <value>Scénář</value>
   </data>
   <data name="ScenarioOverview" xml:space="preserve">
-    <value>Scenario overview</value>
+    <value>Přehled scénářů</value>
   </data>
   <data name="TimeDelayInSeconds" xml:space="preserve">
-    <value>Time delay in seconds</value>
+    <value>Čas odložení v sekundách</value>
   </data>
   <data name="TimeDelayLabel" xml:space="preserve">
-    <value>Time delay after previous scenario</value>
+    <value>Čas odložení po dokončení předchozího scénáře</value>
   </data>
   <data name="default_headers" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\default_headers.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="MenuCopyRequest" xml:space="preserve">
-    <value>Copy request</value>
+    <value>Zkopírovat požadavek</value>
   </data>
   <data name="MenuCopyScenario" xml:space="preserve">
-    <value>Copy scenario</value>
+    <value>Zkopírovat scénář</value>
   </data>
   <data name="MenuEditDefaultHeaders" xml:space="preserve">
-    <value>Edit default headers</value>
+    <value>Upravit implicitní hlavičku</value>
   </data>
   <data name="MenuPasteRequest" xml:space="preserve">
-    <value>Paste request</value>
+    <value>Vložit požadavek</value>
   </data>
   <data name="MenuPasteScenario" xml:space="preserve">
-    <value>Paste scenario</value>
+    <value>Vložit scénář</value>
   </data>
   <data name="page_copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\page_copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -404,55 +404,55 @@
     <value>..\Resources\page_paste.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ErroInvalidRequest" xml:space="preserve">
-    <value>Invalid request URL!</value>
+    <value>Nesprávné URL požadavku!</value>
   </data>
   <data name="HeaderHeaderType" xml:space="preserve">
-    <value>Type:</value>
+    <value>Typ:</value>
   </data>
   <data name="HeaderHeaderValue" xml:space="preserve">
-    <value>Value:</value>
+    <value>Hodnota:</value>
   </data>
   <data name="NoRequestMethod" xml:space="preserve">
-    <value>Not set</value>
+    <value>Nevyplněno</value>
   </data>
   <data name="RequestFiles" xml:space="preserve">
-    <value>Files</value>
+    <value>Soubory</value>
   </data>
   <data name="RequestHeaders" xml:space="preserve">
-    <value>Headers</value>
+    <value>Hlavičky</value>
   </data>
   <data name="RequestMethod" xml:space="preserve">
-    <value>Method</value>
+    <value>Metoda</value>
   </data>
   <data name="RequestOverview" xml:space="preserve">
-    <value>Overview</value>
+    <value>Přehled</value>
   </data>
   <data name="RequestTab" xml:space="preserve">
-    <value>Request</value>
+    <value>Požadavek</value>
   </data>
   <data name="RequestUrl" xml:space="preserve">
     <value>URL</value>
   </data>
   <data name="ResposneTab" xml:space="preserve">
-    <value>Response</value>
+    <value>Odpověď</value>
   </data>
   <data name="DefaultServerHeaders" xml:space="preserve">
-    <value>Default headers</value>
+    <value>Implicitní hlavičky</value>
   </data>
   <data name="settings" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\settings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ExpectedStatusCode" xml:space="preserve">
-    <value>Expected status code</value>
+    <value>Očekávaný status kód</value>
   </data>
   <data name="FileName" xml:space="preserve">
-    <value>File name</value>
+    <value>Jméno souboru</value>
   </data>
   <data name="FileNameAlreadyExists" xml:space="preserve">
-    <value>This name of file already exists!</value>
+    <value>Soubor s tímto jménem již existuje!</value>
   </data>
   <data name="FilePath" xml:space="preserve">
-    <value>File path</value>
+    <value>Cesta k souboru</value>
   </data>
   <data name="arrow_down" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arrow_down.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -461,16 +461,16 @@
     <value>..\Resources\arrow_up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="MessageBoxRemoveRequest" xml:space="preserve">
-    <value>Are you sure you want to remove this request?</value>
+    <value>Opravdu chcete odebrat tento požadavek?</value>
   </data>
   <data name="OrderDOWN" xml:space="preserve">
-    <value>DOWN</value>
+    <value>DOLŮ</value>
   </data>
   <data name="OrderUP" xml:space="preserve">
-    <value>UP</value>
+    <value>NAHORU</value>
   </data>
   <data name="DialogInvalidFile" xml:space="preserve">
-    <value>Invalid Director file!</value>
+    <value>Nesprávný Director soubor!</value>
   </data>
   <data name="AboutMenu" xml:space="preserve">
     <value>Nápověda</value>
@@ -482,46 +482,46 @@
     <value>Potvrdit</value>
   </data>
   <data name="EditContent" xml:space="preserve">
-    <value>Set content</value>
+    <value>Změnit obsah</value>
   </data>
   <data name="HelpMenu" xml:space="preserve">
-    <value>Help</value>
+    <value>Nápověda</value>
   </data>
   <data name="HelpMenuItem" xml:space="preserve">
-    <value>Help</value>
+    <value>Nápověda</value>
   </data>
   <data name="InvalidStatusCode" xml:space="preserve">
-    <value>Invalid status code</value>
+    <value>Nesprávný status kód</value>
   </data>
   <data name="InvalidWaitTime" xml:space="preserve">
-    <value>Invalid time!</value>
+    <value>Nesprávný čas!</value>
   </data>
   <data name="MenuCloseScenario" xml:space="preserve">
-    <value>Close scenario</value>
+    <value>Zavřít scénář</value>
   </data>
   <data name="MenuRun" xml:space="preserve">
-    <value>Run</value>
+    <value>Spustit</value>
   </data>
   <data name="MessageBoxCloseScenario" xml:space="preserve">
-    <value>Do you want to close scenario?</value>
+    <value>Chcete zavřít scénář?</value>
   </data>
   <data name="RequestContent" xml:space="preserve">
-    <value>Request content:</value>
+    <value>Obsah požadavku:</value>
   </data>
   <data name="ResponseContent" xml:space="preserve">
-    <value>Response content</value>
+    <value>Obsah odpovědi</value>
   </data>
   <data name="RunAllMenu" xml:space="preserve">
-    <value>Run all!</value>
+    <value>Spustit vše!</value>
   </data>
   <data name="SetContentTitle" xml:space="preserve">
-    <value>Set request or response</value>
+    <value>Změň požadavek nebo odpověď</value>
   </data>
   <data name="SettingsMenu" xml:space="preserve">
-    <value>Settings</value>
+    <value>Nastavení</value>
   </data>
   <data name="WaitPreviousRequest" xml:space="preserve">
-    <value>Wait in seconds after sucessfull previous request:</value>
+    <value>Čas čekání po předchozím úspěšném požadavku v sekundách</value>
   </data>
   <data name="_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\0.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -548,106 +548,106 @@
     <value>..\Resources\7.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="PARSER_ERR_MSG_ARGUMENTS_WRONG_SIZED" xml:space="preserve">
-    <value>Argument no. {0} ("{1}") must be smaller than argument no. {2} ("{3}").</value>
+    <value>Argument č. {0} ("{1}") musí být menší než argument č. {2} ("{3}").</value>
   </data>
   <data name="PARSER_ERR_MSG_ARGUMENT_INVALID" xml:space="preserve">
-    <value>Argument "{0}" is invalid.</value>
+    <value>Argument "{0}" je neplatný.</value>
   </data>
   <data name="PARSER_ERR_MSG_ARGUMENT_NOT_FLOAT" xml:space="preserve">
-    <value>Argument "{0}" is not a valid float.</value>
+    <value>Argument "{0}" není validní float.</value>
   </data>
   <data name="PARSER_ERR_MSG_ARGUMENT_NOT_INTEGER" xml:space="preserve">
-    <value>Argument "{0}" is not a valid integer.</value>
+    <value>Argument "{0}" není validní integer.</value>
   </data>
   <data name="PARSER_ERR_MSG_ARGUMENT_TOO_BIG" xml:space="preserve">
-    <value>Argument "{0}" is too big of a number.</value>
+    <value>Argument "{0}" je příliš velké číslo.</value>
   </data>
   <data name="PARSER_ERR_MSG_COMPARE_OPERATION" xml:space="preserve">
-    <value>Operation "{0} {1} {2}" returned false.</value>
+    <value>Operace "{0} {1} {2}" vrátila false.</value>
   </data>
   <data name="PARSER_ERR_MSG_COMPARE_TYPES" xml:space="preserve">
-    <value>Types "{0}" defined in template and "{1}" received in response don't match.</value>
+    <value>Typy "{0}" definované v šabloně a "{1}" obdržené v odpovědi se neshodují.</value>
   </data>
   <data name="PARSER_ERR_MSG_COMPARE_VALUES" xml:space="preserve">
-    <value>Values "{0}" defined in template and "{1}" received in response don't match.</value>
+    <value>Hodnoty "{0}"definované v šabloně a "{1}" obdržené v odpovědi se neshodují.</value>
   </data>
   <data name="PARSER_ERR_MSG_EXPECTING_CHARACTER" xml:space="preserve">
-    <value>Expecting "{0}".</value>
+    <value>Očekáváno "{0}".</value>
   </data>
   <data name="PARSER_ERR_MSG_FN_INSIDE_VAR" xml:space="preserve">
-    <value>Illegal function definition inside variable name.</value>
+    <value>Neplatná definice funkce uvnitř jména proměnné.</value>
   </data>
   <data name="PARSER_ERR_MSG_ILLEGAL_KEY_IN_RESPONSE" xml:space="preserve">
-    <value>Response JSON contains "{0}" key, that is not defined in the template.</value>
+    <value>Odpověď JSON obsahuje "{0}" klíč, který není definovaný v šabloně.</value>
   </data>
   <data name="PARSER_ERR_MSG_INVALID_CHARACTER" xml:space="preserve">
-    <value>Invalid character "{0}".</value>
+    <value>Nesprávný znak "{0}".</value>
   </data>
   <data name="PARSER_ERR_MSG_INVALID_NUMBER_OF_ARGUMENTS" xml:space="preserve">
-    <value>Invalid number of arguments.</value>
+    <value>Nesprávný počet argumentů.</value>
   </data>
   <data name="PARSER_ERR_MSG_MISING_TYPE_FOR_OPERATION" xml:space="preserve">
-    <value>Missing type for operation. If you want to compare the value, type must be specified.</value>
+    <value>Chybí typ pro vykonání operace. Pokud chcete porovnat hodnotu, musí být specifikovaný typ.</value>
   </data>
   <data name="PARSER_ERR_MSG_MISSING_FN_NAME" xml:space="preserve">
-    <value>Missing function name.</value>
+    <value>Chybí jméno funkce.</value>
   </data>
   <data name="PARSER_ERR_MSG_MISSING_KEY_IN_RESPONSE" xml:space="preserve">
-    <value>Response JSON does not contain "{0}" key, that is defined as mandatory in the template.</value>
+    <value>Odpověď JSON neobsahuje "{0}" klíč, který je v šabloně definovaný jako povinný.</value>
   </data>
   <data name="PARSER_ERR_MSG_MISSING_MAIN_SYNTAX_CHARACTER" xml:space="preserve">
-    <value>Missing closing function character ({0}). Either provide one or escape this one like {1} .</value>
+    <value>Chybí znak ({0}) ukončující funkci. Je potřeba ho doplnit nebo escapovat tento {1} .</value>
   </data>
   <data name="PARSER_ERR_MSG_MISSING_VARIABLE_CHARACTER" xml:space="preserve">
-    <value>Missing closing variable character ({0}). Either provide one or escape this one like {1} .</value>
+    <value>Chybí znak ({0}) ukončující proměnnout.  Je potřeba ho doplnit nebo escapovat tento {1} .</value>
   </data>
   <data name="PARSER_ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE" xml:space="preserve">
-    <value>Operation "{0}" does not support "{1}" type.</value>
+    <value>Operace "{0}" nepodporuje "{1}" typ.</value>
   </data>
   <data name="PARSER_ERR_MSG_REGEX_PARSER" xml:space="preserve">
-    <value>Regular expression parser raised following exception: {0}</value>
+    <value>Při parsování regulárního výrazu došlo k následující chybě: {0}</value>
   </data>
   <data name="PARSER_ERR_MSG_SWAPPED_PARENTHESES" xml:space="preserve">
-    <value>Possible swapped parentheses - "{0}" must be closed with "{1}".</value>
+    <value>Možná záměna závorek - "{0}" musí být uzavřena pomocí "{1}".</value>
   </data>
   <data name="PARSER_ERR_MSG_UNKNOWN_CUSTOM_VARIABLE" xml:space="preserve">
-    <value>Variable "{0}" is not defined.</value>
+    <value>Proměnná "{0}" není definovaná.</value>
   </data>
   <data name="PARSER_ERR_MSG_UNKNOWN_OPERATION" xml:space="preserve">
-    <value>Unknown operation type "{0}".</value>
+    <value>Neznámý typ operace "{0}".</value>
   </data>
   <data name="PARSER_ERR_MSG_UNKNOWN_TYPE" xml:space="preserve">
-    <value>Unknown type "{0}".</value>
+    <value>Neznámy typ "{0}".</value>
   </data>
   <data name="PARSER_ERR_MSG_UNRECOGNIZED_CHARS_AFTER_FN" xml:space="preserve">
-    <value>Unrecognized characters after defined function.</value>
+    <value>Nerozeznýny znaky za definicí funkce.</value>
   </data>
   <data name="PARSER_ERR_MSG_UNRECOGNIZED_FN" xml:space="preserve">
-    <value>Unrecognized function.</value>
+    <value>Nerozeznána funkce.</value>
   </data>
   <data name="PARSER_ERR_MSG_VALUES_DIFFER_IN_TYPE" xml:space="preserve">
-    <value>Values for matched key "{0}" differ in their type ("{1}" and "{2}").</value>
+    <value>Hodnoty pro klíč "{0}" se liší v typu ("{1}" a "{2}").</value>
   </data>
   <data name="PARSER_ERR_MSG_VALUE_UNCONVERTABLE_TO_TYPE" xml:space="preserve">
-    <value>Provided value "{0}" couldn't be converted to "{1}" type.</value>
+    <value>Poskytnutá hodnota "{0}" nemůže být převedena na "{1}" typ.</value>
   </data>
   <data name="Error" xml:space="preserve">
-    <value>Error</value>
+    <value>Chyba</value>
   </data>
   <data name="InvalidReturnCode" xml:space="preserve">
-    <value>Expected: {0} code but request ends with: {1}.</value>
+    <value>Očekáván: {0} kód, ale požadavek skončil: {1}.</value>
   </data>
   <data name="RequestNotSuccessfull" xml:space="preserve">
-    <value>Request was not successfull ({0})!</value>
+    <value>Požadavek nebyl úspěšný ({0})!</value>
   </data>
   <data name="Response" xml:space="preserve">
-    <value>Response</value>
+    <value>Odpověď</value>
   </data>
   <data name="ResultBody" xml:space="preserve">
-    <value>Result body</value>
+    <value>Tělo odpovědi</value>
   </data>
   <data name="ResultIsOk" xml:space="preserve">
-    <value>Request is OK</value>
+    <value>Požadavek je v pořádku</value>
   </data>
   <data name="cs" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cs.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -656,13 +656,13 @@
     <value>..\Resources\en.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Language" xml:space="preserve">
-    <value>Language</value>
+    <value>Jazyk</value>
   </data>
   <data name="list" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\list.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="RestartApp" xml:space="preserve">
-    <value>For apply changes, you have to restart application!</value>
+    <value>Pro zobrazení změn je třeba restartovat aplikaci!</value>
   </data>
   <data name="About" xml:space="preserve">
     <value>O Direktoru</value>
@@ -674,111 +674,141 @@
     <value>Zavřít</value>
   </data>
   <data name="HomepageUrl" xml:space="preserve">
-    <value>Homepage</value>
+    <value>Domovská stránka</value>
   </data>
   <data name="Informations" xml:space="preserve">
-    <value>Informations</value>
+    <value>Informace</value>
   </data>
   <data name="splashscreen" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\splashscreen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Version" xml:space="preserve">
-    <value>Version</value>
+    <value>Verze</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Zrušit</value>
   </data>
   <data name="Example" xml:space="preserve">
-    <value>Example</value>
+    <value>Příklad</value>
   </data>
   <data name="HeaderSettings" xml:space="preserve">
-    <value>Expression creator</value>
+    <value>Vytvoření výrazu</value>
   </data>
   <data name="insert" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\insert.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="NoVariablesFound" xml:space="preserve">
-    <value>There are no variables in this scenario, make please a new one from successfull request!</value>
+    <value>Nenalezeny žádné proměnné ve scénáři, prosím vytvořte nové z úspěšného požadavku.</value>
   </data>
   <data name="OkComand" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="TextAfter" xml:space="preserve">
-    <value>Text after</value>
+    <value>Text za</value>
   </data>
   <data name="TextBefore" xml:space="preserve">
-    <value>Text before</value>
+    <value>Text před</value>
   </data>
   <data name="Variable" xml:space="preserve">
-    <value>Variable</value>
+    <value>Proměnná</value>
   </data>
   <data name="header_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\header_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Icons" xml:space="preserve">
-    <value>Icons by</value>
+    <value>Ikony od</value>
   </data>
   <data name="InputPrompt" xml:space="preserve">
-    <value>Paste input:</value>
+    <value>Vložit vstup:</value>
   </data>
   <data name="OutputMessage" xml:space="preserve">
-    <value>Output:</value>
+    <value>Výstup:</value>
   </data>
   <data name="EditVariable" xml:space="preserve">
-    <value>Edit variable</value>
+    <value>Změnit proměnnou</value>
   </data>
   <data name="FormatDirective" xml:space="preserve">
-    <value>Format directive</value>
+    <value>Formátovací direktiva</value>
   </data>
   <data name="FormatGuide" xml:space="preserve">
-    <value>Format guide</value>
+    <value>Průvodce formátování</value>
   </data>
   <data name="InvalidNumberInput" xml:space="preserve">
-    <value>Input has to be number!</value>
+    <value>Na vstupu je očekáváno číslo!</value>
   </data>
   <data name="JsonValue" xml:space="preserve">
-    <value>Value</value>
+    <value>Hodnota</value>
   </data>
   <data name="Output" xml:space="preserve">
-    <value>Output:</value>
+    <value>Výstup:</value>
   </data>
   <data name="PasteInput" xml:space="preserve">
-    <value>Paste input:</value>
+    <value>Vložit vstup:</value>
   </data>
   <data name="RequestTemplate" xml:space="preserve">
-    <value>Request template</value>
+    <value>Šablona požadavku</value>
   </data>
   <data name="ResponseTemplate" xml:space="preserve">
-    <value>Response template</value>
+    <value>Šablona odpovědi</value>
   </data>
   <data name="bullet_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\bullet_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="CopyInClipboard" xml:space="preserve">
-    <value>Copy</value>
+    <value>Zkopírovat</value>
   </data>
   <data name="NoResponse" xml:space="preserve">
-    <value>No response yet, run scenario first!</value>
+    <value>Zatím žádná odpověd, je třeba spustit scénář!</value>
   </data>
   <data name="Requests" xml:space="preserve">
-    <value>Requests</value>
+    <value>Požadavky</value>
   </data>
   <data name="RunScenario" xml:space="preserve">
-    <value>Run scenario</value>
+    <value>Spustit scénář</value>
   </data>
   <data name="Variables" xml:space="preserve">
-    <value>Variables</value>
+    <value>Proměnné</value>
   </data>
   <data name="Wait" xml:space="preserve">
-    <value>waiting</value>
+    <value>čekání</value>
   </data>
   <data name="CanNotStartScenario" xml:space="preserve">
-    <value>Cannot start next scenario, wait until previous finished!</value>
+    <value>Nelze spustit následující scénář, čeká se na dokončení předchozího.</value>
   </data>
   <data name="ErrorWhenGeneratingTemplate" xml:space="preserve">
-    <value>Error when generating template</value>
+    <value>Chyba při generování šablony</value>
   </data>
   <data name="Stop" xml:space="preserve">
-    <value>Stop</value>
+    <value>Zastavit</value>
+  </data>
+  <data name="ExportDeserialScenariosEx" xml:space="preserve">
+    <value>Chyba během deserializace scénářů:</value>
+  </data>
+  <data name="ExportDeserialServerEx" xml:space="preserve">
+    <value>Chyba během deserializace serveru:</value>
+  </data>
+  <data name="ExportProcessFilesEx" xml:space="preserve">
+    <value>Chyba během zpracování souborů:</value>
+  </data>
+  <data name="ExportProcessTempDirEx" xml:space="preserve">
+    <value>Chyba během manipulace s temporárním adresářem:</value>
+  </data>
+  <data name="ExportSerialScenariosEx" xml:space="preserve">
+    <value>Chyba během serializace scénářů:</value>
+  </data>
+  <data name="ExportSerialServerEx" xml:space="preserve">
+    <value>Chyba během serializace serveru:</value>
+  </data>
+  <data name="ExportSkipFileWarning" xml:space="preserve">
+    <value>Soubor {0} v požadavku {1} ve scénáři {2} byl přeskočen.\n</value>
+  </data>
+  <data name="ExportZipCompressionEx" xml:space="preserve">
+    <value>Chyba během zip komprese:</value>
+  </data>
+  <data name="ExportZipDecompressionEx" xml:space="preserve">
+    <value>Chyba během zip dekomprese:</value>
+  </data>
+  <data name="NewRequestName" xml:space="preserve">
+    <value>Nový požadavek</value>
   </data>
 </root>

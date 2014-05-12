@@ -31,7 +31,7 @@ namespace Director.ExportLib
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception during processing temporary directory: " + e.Message);
+                Console.WriteLine(Director.Properties.Resources.ExportProcessTempDirEx + e.Message);
                 return null;
             }
             return tmpDirectory;

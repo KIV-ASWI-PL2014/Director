@@ -127,5 +127,115 @@ namespace UnitTestParser
             result = result.Replace("}", "");
             Assert.AreEqual("\"2\"", result);
         }
+
+
+        [TestMethod]
+        public void SequenceTestBasic()
+        {
+            ParserResult pr;
+            String result;
+            String currentSequenceVal;
+            Dictionary<string, string> values = new Dictionary<string, string>
+            {
+                {"curr", "10"},
+            };
+            pr = parser.generateRequest("{ \"foo\": \"#sequence(10, 4, -2, curr)#\" }", values);
+            Assert.IsNotNull(pr);
+            Assert.IsTrue(pr.isSuccess());
+            result = pr.getResult().Replace(" ", "");
+            result = result.Substring(result.IndexOf(":") + 1);
+            result = result.Replace("}", "");
+            Assert.AreEqual(result, "8");
+            values.TryGetValue("curr", out currentSequenceVal);
+            Assert.AreEqual(currentSequenceVal, "8");
+            Assert.AreEqual(values.Count, 1);
+        }
+
+        [TestMethod]
+        public void SequenceTestNoVariable()
+        {
+            ParserResult pr;
+            String result;
+            String currentSequenceVal;
+            Dictionary<string, string> values = new Dictionary<string, string>();
+            pr = parser.generateRequest("{ \"foo\": \"#sequence(10, 4, -2, curr)#\" }", values);
+            Assert.IsNotNull(pr);
+            Assert.IsTrue(pr.isSuccess());
+            result = pr.getResult().Replace(" ", "");
+            result = result.Substring(result.IndexOf(":") + 1);
+            result = result.Replace("}", "");
+            Assert.AreEqual(result, "10");
+            values.TryGetValue("curr", out currentSequenceVal);
+            Assert.AreEqual(currentSequenceVal, "10");
+        }
+
+        [TestMethod]
+        public void SequenceReverseMinMax()
+        {
+            ParserResult pr;
+            String result;
+            String currentSequenceVal;
+            Dictionary<string, string> values = new Dictionary<string, string>();
+            pr = parser.generateRequest("{ \"foo\": \"#sequence(10, 0, 5, curr)#\" }", values);
+            pr = parser.generateRequest("{ \"foo\": \"#sequence(10, 0, 5, curr)#\" }", values);
+            Assert.IsNotNull(pr);
+            Assert.IsTrue(pr.isSuccess());
+            result = pr.getResult().Replace(" ", "");
+            result = result.Substring(result.IndexOf(":") + 1);
+            result = result.Replace("}", "");
+            Assert.AreEqual(result, "10");
+            values.TryGetValue("curr", out currentSequenceVal);
+            Assert.AreEqual(currentSequenceVal, "10");
+            Assert.AreEqual(values.Count, 1);
+        }
+
+        [TestMethod]
+        public void SequenceWithoutMax()
+        {
+            ParserResult pr;
+            String result;
+            String currentSequenceVal;
+            Dictionary<string, string> values = new Dictionary<string, string>();
+            int repeat = 5;
+            while (repeat-- > 0)
+            {
+                pr = parser.generateRequest("{ \"foo\": \"#sequence(4, , -1, curr)#\" }", values);
+                Assert.IsNotNull(pr);
+                Assert.IsTrue(pr.isSuccess());
+                result = pr.getResult().Replace(" ", "");
+                result = result.Substring(result.IndexOf(":") + 1);
+                result = result.Replace("}", "");
+                Assert.AreEqual(result, Convert.ToString(repeat));
+                values.TryGetValue("curr", out currentSequenceVal);
+                Assert.AreEqual(currentSequenceVal, Convert.ToString(repeat));
+                Assert.AreEqual(values.Count, 1);
+            }
+        }
+
+        [TestMethod]
+        public void SequenceWithDoubleVariable()
+        {
+            ParserResult pr;
+            Dictionary<string, string> values = new Dictionary<string, string>
+            {
+                {"curr", "10.5"},
+            };
+            pr = parser.generateRequest("{ \"foo\": \"#sequence(11, 10, -0.1, curr)#\" }", values);
+            Assert.IsNotNull(pr);
+            Assert.IsFalse(pr.isSuccess());
+        }
+
+        [TestMethod]
+        public void SequenceWithStringVariable()
+        {
+            ParserResult pr;
+            Dictionary<string, string> values = new Dictionary<string, string>
+            {
+                {"curr", "xx"},
+            };
+            pr = parser.generateRequest("{ \"foo\": \"#sequence(1, 10, 2, curr)#\" }", values);
+            Assert.IsNotNull(pr);
+            Assert.IsFalse(pr.isSuccess());
+        }
     }
 }

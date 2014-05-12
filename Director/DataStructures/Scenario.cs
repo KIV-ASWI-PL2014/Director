@@ -141,7 +141,7 @@ namespace Director.DataStructures
             }
 
             // Create request
-            Request ret = new Request(_requestId, _position, "New request")
+            Request ret = new Request(_requestId, _position, Director.Properties.Resources.NewRequestName)
             {
                 ParentScenario = this,
                 Url = ParentServer.GetUrl(),

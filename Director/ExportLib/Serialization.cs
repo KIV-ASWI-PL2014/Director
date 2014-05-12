@@ -36,7 +36,7 @@ namespace Director.ExportLib
             }
             catch (Exception e)
             {
-                errorMessage = "Exception during serialization of scenarios: " + e.Message;
+                errorMessage = Director.Properties.Resources.ExportSerialScenariosEx + e.Message;
                 return false;
             }
 
@@ -47,7 +47,7 @@ namespace Director.ExportLib
             }
             catch(Exception e)
             {
-                errorMessage = "Exception during a zip compression : " + e.Message;
+                errorMessage = Director.Properties.Resources.ExportZipCompressionEx + e.Message;
                 return false;
             }
             return true;
@@ -76,7 +76,7 @@ namespace Director.ExportLib
             }
             catch (Exception e)
             {
-                errorMessage = "Exception during serialization of scenarios: " + e.Message;
+                errorMessage = Director.Properties.Resources.ExportSerialScenariosEx + e.Message;
                 return false;
             }
             return true;
@@ -96,7 +96,7 @@ namespace Director.ExportLib
                     {
                         if (f.FilePath == null) 
                         {
-                            errorMessage += string.Format("File {0} in request {1} in scenario {2} has been skipped.\n", f.FileName,
+                            errorMessage += string.Format(Director.Properties.Resources.ExportSkipFileWarning, f.FileName,
                                 req.Name, sc.Name);
                             continue;
                         }
@@ -108,7 +108,7 @@ namespace Director.ExportLib
                     }
                     catch (Exception e)
                     {
-                        errorMessage = "Exception during processing files: " + e.Message;
+                        errorMessage = Director.Properties.Resources.ExportProcessFilesEx + e.Message;
                         return false;
                     }
                 }
@@ -132,7 +132,7 @@ namespace Director.ExportLib
             }
             catch (Exception e)
             {
-                errorMessage = "Exception during serialization of server: " + e.Message;
+                errorMessage = Director.Properties.Resources.ExportSerialServerEx + e.Message;
                 return false;
             }
             return true;

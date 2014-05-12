@@ -24,7 +24,7 @@ namespace Director.ExportLib
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception during a zip decompression: " + e.Message);
+                Console.WriteLine(Director.Properties.Resources.ExportZipDecompressionEx + e.Message);
                 return null;
             }
 
@@ -56,7 +56,7 @@ namespace Director.ExportLib
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception during deserialization of scenarios: " + e.Message);
+                Console.WriteLine(Director.Properties.Resources.ExportDeserialScenariosEx + e.Message);
                 return null;
             }
 
@@ -107,7 +107,7 @@ namespace Director.ExportLib
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception during deserialization of server " + e.Message);
+                Console.WriteLine(Director.Properties.Resources.ExportDeserialServerEx + e.Message);
                 return null;
             }
             return server;
