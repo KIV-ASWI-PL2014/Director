@@ -476,6 +476,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error has occured, when exporting variables, try it again!.
+        /// </summary>
+        internal static string ErrorExportVariables {
+            get {
+                return ResourceManager.GetString("ErrorExportVariables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Errors.
         /// </summary>
         internal static string Errors {
@@ -681,6 +690,15 @@ namespace Director.Properties {
         internal static string ExportSkipFileWarning {
             get {
                 return ResourceManager.GetString("ExportSkipFileWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export variables.
+        /// </summary>
+        internal static string ExportVariablesStates {
+            get {
+                return ResourceManager.GetString("ExportVariablesStates", resourceCulture);
             }
         }
         
@@ -1991,6 +2009,16 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap script_import {
+            get {
+                object obj = ResourceManager.GetObject("script_import", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select all scenarios.
         /// </summary>
         internal static string SelectAll {
@@ -2161,6 +2189,15 @@ namespace Director.Properties {
         internal static string Variable {
             get {
                 return ResourceManager.GetString("Variable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export was successfull!.
+        /// </summary>
+        internal static string VariableExportSuccess {
+            get {
+                return ResourceManager.GetString("VariableExportSuccess", resourceCulture);
             }
         }
         

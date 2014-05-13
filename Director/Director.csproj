@@ -88,6 +88,7 @@
     <Compile Include="DataStructures\SupportStructures\Frequency.cs" />
     <Compile Include="ExportLib\Deserialization.cs" />
     <Compile Include="ExportLib\Export.cs" />
+    <Compile Include="ExportLib\ExportVariables.cs" />
     <Compile Include="ExportLib\Serialization.cs" />
     <Compile Include="ExportLib\ZipUtil.cs" />
     <Compile Include="Formatters\JSONFormatter.cs" />
@@ -398,6 +399,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="directoricon.ico" />
+    <EmbeddedResource Include="Resources\script_import.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\bullet_blue.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>

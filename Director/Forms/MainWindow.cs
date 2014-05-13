@@ -166,6 +166,11 @@ namespace Director.Forms
         private MenuItem RunAllMenu { get; set; }
 
         /// <summary>
+        /// Export variables state!
+        /// </summary>
+        private MenuItem ExportVariablesMenu { get; set; }
+
+        /// <summary>
         /// Stop menu.
         /// </summary>
         private MenuItem StopThreadMenu { get; set; }
@@ -662,6 +667,17 @@ namespace Director.Forms
             };
             _runSubmenu.Items.Add(StopThreadMenu);
 
+            // Separator
+            _runSubmenu.Items.Add(new SeparatorMenuItem());
+
+            // Export variables
+            ExportVariablesMenu = new MenuItem(Director.Properties.Resources.ExportVariablesStates)
+            {
+                Image = Image.FromResource(DirectorImages.EXPORT_VARIABLES_ICON),
+                Sensitive = false
+            };
+            _runSubmenu.Items.Add(ExportVariablesMenu);
+
             return _runSubmenu;
         }
 
@@ -1042,16 +1058,35 @@ namespace Director.Forms
 
             RunAllMenu.Sensitive = false;
             StopThreadMenu.Sensitive = false;
+            ExportVariablesMenu.Sensitive = false;
 			try {
 				RunAllMenu.Clicked -= RunAllMenu_Clicked;
 				SaveServerMenu.Clicked -= SaveServer;
 				CloseServer.Clicked -= CloseServer_Clicked;
                 StopThreadMenu.Clicked -= StopThreadMenu_Clicked;
+                ExportVariablesMenu.Clicked -= ExportVariablesMenu_Clicked;
 			} catch {
 
 			}
             SaveServerMenu.Sensitive = false;
             CloseServer.Sensitive = false;
+        }
+
+        /// <summary>
+        /// Export variables.
+        /// </summary>
+        void ExportVariablesMenu_Clicked(object sender, EventArgs e)
+        {
+            SaveFileDialog dlg = new SaveFileDialog(Director.Properties.Resources.ExportVariablesStates)
+            {
+                Multiselect = false,
+                InitialFileName = "variables.xml"
+            };
+            dlg.Filters.Add(new FileDialogFilter("XML format document", "*.xml"));
+            if (dlg.Run() && dlg.FileNames.Count() == 1)
+            {
+                ExportVariables.Export(UServer, dlg.FileName);
+            }
         }
 
         /// <summary>
@@ -1268,6 +1303,21 @@ namespace Director.Forms
                         r.AddResultViewItem(1, Director.Properties.Resources.ResultIsOk);
                     }
 
+                    // Add request content
+                    if (RequestBody != null && RequestBody.Length > 0)
+                    {
+                        r.AddResultViewItem(1, Director.Properties.Resources.RequestTab + ":");
+
+                        // Response
+                        String formatted = JSONFormatter.Format(RequestBody);
+
+                        // Request box
+                        if (formatted != null)
+                            r.AddResultViewItem(3, formatted);
+                        else
+                            r.AddResultViewItem(3, RequestBody);
+                    }
+
                     // Add response content
                     if (response.Content != null && response.Content.Length > 0)
                     {
@@ -1281,21 +1331,6 @@ namespace Director.Forms
                             r.AddResultViewItem(3, formatted);                       
                         else
                             r.AddResultViewItem(3,  response.Content);  
-                    }
-
-                    // Add request content
-                    if (RequestBody != null && RequestBody.Length > 0)
-                    {
-                        r.AddResultViewItem(1, Director.Properties.Resources.RequestTab + ":");
-
-                        // Response
-                        String formatted = JSONFormatter.Format(RequestBody);
-
-                        // Request box
-                        if (formatted != null)
-                            r.AddResultViewItem(3, formatted);
-                        else
-                            r.AddResultViewItem(3, RequestBody);  
                     }
 
                     // Refresh UI
@@ -1402,6 +1437,8 @@ namespace Director.Forms
 
             RunAllMenu.Sensitive = true;
             RunAllMenu.Clicked += RunAllMenu_Clicked;
+            ExportVariablesMenu.Sensitive = true;
+            ExportVariablesMenu.Clicked += ExportVariablesMenu_Clicked;
             SaveServerMenu.Sensitive = true;
             SaveServerMenu.Clicked += SaveServer;
             CloseServer.Sensitive = true;
