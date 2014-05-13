@@ -940,37 +940,37 @@ namespace Director.ParserLib
                                 errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type), SOURCE_TEMPLATE));
                             break;
                         case RESPONSE_OPERATION_NOT_EQUAL:
-                            if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
+                            if (RESPONSE_OPERATION_NOT_EQUAL_ALLOWED_TYPES.Contains(type))
                                 op = ops_item;
                             else
                                 errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type), SOURCE_TEMPLATE));
                             break;
                         case RESPONSE_OPERATION_LESS_THAN:
-                            if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
+                            if (RESPONSE_OPERATION_LESS_THAN_ALLOWED_TYPES.Contains(type))
                                 op = ops_item;
                             else
                                 errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type), SOURCE_TEMPLATE));
                             break;
                         case RESPONSE_OPERATION_LESS_THAN_OR_EQUAL:
-                            if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
+                            if (RESPONSE_OPERATION_LESS_THAN_OR_EQUAL_ALLOWED_TYPES.Contains(type))
                                 op = ops_item;
                             else
                                 errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type), SOURCE_TEMPLATE));
                             break;
                         case RESPONSE_OPERATION_GREATER_THAN:
-                            if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
+                            if (RESPONSE_OPERATION_GREATER_THAN_ALLOWED_TYPES.Contains(type))
                                 op = ops_item;
                             else
                                 errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type), SOURCE_TEMPLATE));
                             break;
                         case RESPONSE_OPERATION_GREATER_THAN_OR_EQUAL:
-                            if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
+                            if (RESPONSE_OPERATION_GREATER_THAN_OR_EQUAL_ALLOWED_TYPES.Contains(type))
                                 op = ops_item;
                             else
                                 errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type), SOURCE_TEMPLATE));
                             break;
                         case RESPONSE_OPERATION_MATCHING_REGEXP_PATTERN:
-                            if (RESPONSE_OPERATION_EQUAL_ALLOWED_TYPES.Contains(type))
+                            if (RESPONSE_OPERATION_MATCHING_REGEXP_PATTERN_ALLOWED_TYPES.Contains(type))
                                 op = ops_item;
                             else
                                 errors.Add(new ParserError(item.line, item.position + original_occurrences[1] + 1, string.Format(ERR_MSG_OPERATION_DOESNT_SUPPORT_TYPE, ops_item, type), SOURCE_TEMPLATE));
