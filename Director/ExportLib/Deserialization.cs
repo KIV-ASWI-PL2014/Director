@@ -17,8 +17,10 @@ namespace Director.ExportLib
             errorMessage = "";
             tmpDirectory = Export.createTempDirectory(false);
             if (tmpDirectory == null)
+            {
+                errorMessage = Export.errorMessage;
                 return null;
-
+            }
             try
             {
                 ZipUtil.ExtractZipFile(adfeFile, tmpDirectory.FullName);

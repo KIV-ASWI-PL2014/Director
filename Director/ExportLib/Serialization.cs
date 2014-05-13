@@ -18,8 +18,10 @@ namespace Director.ExportLib
             errorMessage = "";
             tmpDirectory = Export.createTempDirectory(true);
             if (tmpDirectory == null)
+            {
+                errorMessage = Export.errorMessage;
                 return false;
-
+            }
             //serialization of server
             if (!SerializeServer(server))
                 return false;
