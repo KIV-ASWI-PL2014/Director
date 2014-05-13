@@ -32,6 +32,11 @@ namespace Director.Forms.Panels
         private VBox RequestStatus { get; set; }
 
         /// <summary>
+        /// Request details.
+        /// </summary>
+        private Notebook RequestDetails { get; set; }
+
+        /// <summary>
         /// Invalid request name description.
         /// </summary>
         private Label InvalidRequestName = new Label()
@@ -99,21 +104,32 @@ namespace Director.Forms.Panels
             RequestNameFrame.Content = RequestNameBox;
             PackStart(RequestNameFrame);
 
-            // Initialize HPaned for Request Response
-            VBox RRPanel = new VBox();
-
-            // Request
-            Frame RequestFrame = new Frame()
+            // Init notebook
+            RequestDetails = new Notebook()
             {
-                Label = Director.Properties.Resources.RequestRequest,
-                Padding = 10
+                ExpandHorizontal = true,
+                ExpandVertical = true,
+                TabOrientation = NotebookTabOrientation.Top
             };
+
+            // Prepare tabs
+            PackStart(RequestDetails, true, true);
+
+            // Request overview
             RequestOverview = new VBox();
-            RequestFrame.Content = new ScrollView()
+            ScrollView RequestOverviewSV = new ScrollView()
             {
                 Content = RequestOverview
             };
-            RRPanel.PackStart(RequestFrame, true, true);
+            RequestDetails.Add(RequestOverviewSV, Director.Properties.Resources.RequestRequest);
+
+            // Response overview
+            RequestStatus = new VBox();
+            ScrollView RequestStatusSV = new ScrollView()
+            {
+                Content = RequestStatus
+            };
+            RequestDetails.Add(RequestStatusSV, Director.Properties.Resources.RequestResponse);
 
             // Add edit button
             Button EditBtn = new Button(Image.FromResource(DirectorImages.EDIT_ICON),
@@ -124,21 +140,7 @@ namespace Director.Forms.Panels
                 ExpandVertical = false
             };
             EditBtn.Clicked += delegate { CurrentMainWindow.OpenEditRequest(ActiveRequest); };
-            RRPanel.PackStart(EditBtn, expand: false, hpos: WidgetPlacement.End);
-
-            // Response
-            RequestStatus = new VBox();
-            Frame ResponseFrame = new Frame()
-            {
-                Label = Director.Properties.Resources.RequestResponse,
-                Padding = 10,
-            };
-            ResponseFrame.Content = new ScrollView()
-            {
-                Content = RequestStatus
-            };
-            RRPanel.PackStart(ResponseFrame, true, true);
-            PackStart(RRPanel, true, true);
+            PackStart(EditBtn, expand: false, hpos: WidgetPlacement.End);
         }
 
         /// <summary>

@@ -10,10 +10,11 @@ namespace Director.ExportLib
     class Deserialization
     {
         public static DirectoryInfo tmpDirectory;
-
+        public static String errorMessage { get; set; }
 
         public static Server DeserializeAll(String adfeFile)
         {
+            errorMessage = "";
             tmpDirectory = Export.createTempDirectory(false);
             if (tmpDirectory == null)
                 return null;
@@ -24,7 +25,7 @@ namespace Director.ExportLib
             }
             catch (Exception e)
             {
-                Console.WriteLine(Director.Properties.Resources.ExportZipDecompressionEx + e.Message);
+                errorMessage = Director.Properties.Resources.ExportZipDecompressionEx + e.Message;
                 return null;
             }
 
@@ -56,7 +57,7 @@ namespace Director.ExportLib
             }
             catch (Exception e)
             {
-                Console.WriteLine(Director.Properties.Resources.ExportDeserialScenariosEx + e.Message);
+                errorMessage = Director.Properties.Resources.ExportDeserialScenariosEx + e.Message;
                 return null;
             }
 
@@ -107,7 +108,7 @@ namespace Director.ExportLib
             }
             catch (Exception e)
             {
-                Console.WriteLine(Director.Properties.Resources.ExportDeserialServerEx + e.Message);
+                errorMessage = Director.Properties.Resources.ExportDeserialServerEx + e.Message;
                 return null;
             }
             return server;

@@ -811,4 +811,19 @@
   <data name="NewRequestName" xml:space="preserve">
     <value>Nový požadavek</value>
   </data>
+  <data name="ExportResult" xml:space="preserve">
+    <value>Výsledek exportu</value>
+  </data>
+  <data name="ImportResult" xml:space="preserve">
+    <value>Výsledek importu</value>
+  </data>
+  <data name="ErrorExportVariables" xml:space="preserve">
+    <value>Při exportu se stala chyba, zkuste to prosím znovu!</value>
+  </data>
+  <data name="ExportVariablesStates" xml:space="preserve">
+    <value>Exportovat stavy proměnných</value>
+  </data>
+  <data name="VariableExportSuccess" xml:space="preserve">
+    <value>Export byl úspěšný!</value>
+  </data>
 </root>

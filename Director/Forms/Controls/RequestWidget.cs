@@ -253,6 +253,7 @@ namespace Director.Forms.Controls
         public const int TYPE_INT = 1;
         public const int TYPE_DOUBLE = 2;
         public const int TYPE_NULL = 3;
+        public const int TYPE_BOOL = 4;
 
         /// <summary>
         /// Constructor.
@@ -289,7 +290,14 @@ namespace Director.Forms.Controls
         {
             ParserItem it = ActiveItem;
 
-            if (it.value is System.Int64 || it.value is System.Int32)
+            if (it.value is System.Boolean)
+            {
+                Variables.Add(new RequestVariable()
+                {
+                    Text = ((System.Boolean)it.value) ? "true" : "false",
+                    Type = TYPE_BOOL
+                });
+            } else if (it.value is System.Int64 || it.value is System.Int32)
             {
                 Variables.Add(new RequestVariable()
                 {
@@ -361,6 +369,10 @@ namespace Director.Forms.Controls
                     {
                         return 0;
                     }
+                }
+                else if (i == TYPE_BOOL)
+                {
+                    return text.Trim() == "true" || text.Trim() == "1";
                 }
                 else if (i == TYPE_DOUBLE)
                 {
@@ -435,6 +447,7 @@ namespace Director.Forms.Controls
             ValueOptions.Items.Add("Integer");
             ValueOptions.Items.Add("Double");
             ValueOptions.Items.Add("Null");
+            ValueOptions.Items.Add("Boolean");
             ValueOptions.SelectedIndex = 0;
             ValueBox.PackStart(ValueOptions);
 
