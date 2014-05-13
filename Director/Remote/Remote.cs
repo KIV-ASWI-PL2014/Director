@@ -17,8 +17,9 @@ namespace Director.Remote
             var client = new RestClient(_request.Url);
 
             // Authentication?
-            if (_request.Authentication)
-                client.Authenticator = new HttpBasicAuthenticator(_request.AuthName, _request.AuthPassword);
+			Server server = _request.ParentScenario.ParentServer;
+			if (server.Authentication)
+				client.Authenticator = new HttpBasicAuthenticator (server.AuthName, server.AuthPassword);
 
             // Create request
             var request = new RestRequest(_request.RequestMethod);

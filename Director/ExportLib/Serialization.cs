@@ -102,7 +102,7 @@ namespace Director.ExportLib
                                 req.Name, sc.Name);
                             continue;
                         }
-                        String newFileName = string.Format("{0}_{1}_{2}", prefix, counter, Export.getFileNameFromAbsolutePath(f.FilePath));
+						String newFileName = string.Format("{0}_{1}_{2}", prefix, counter, Path.GetFileName(f.FilePath));
                         String resourceDir = Path.Combine(tmpDirectory.FullName, Export.resourceDirectory);
                         File.Copy(f.FilePath, Path.Combine(resourceDir, newFileName), true);
                         f.FilePath = newFileName;

@@ -59,6 +59,7 @@ namespace Director.DataStructures
         /// <summary>
         /// Custom variables for parser.
         /// </summary>
+		[XmlIgnore]
         public Dictionary<string, string> customVariables { get; set; }
 
         /// <summary>
@@ -144,14 +145,10 @@ namespace Director.DataStructures
             Request ret = new Request(_requestId, _position, Director.Properties.Resources.NewRequestName)
             {
                 ParentScenario = this,
-                Url = ParentServer.GetUrl(),
-                Authentication = ParentServer.Authentication,
-                AuthName = ParentServer.AuthName,
-                AuthPassword = ParentServer.AuthPassword
+                Url = ParentServer.GetUrl()
             };
 
             // Copy Server Headers
-            // TODO: Use marshalling for that!
             foreach (var h in ParentServer.DefaultHeaders)
                 ret.Headers.Add(new Header(h));
 

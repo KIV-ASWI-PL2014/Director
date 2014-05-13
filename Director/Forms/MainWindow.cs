@@ -494,7 +494,7 @@ namespace Director.Forms
             AboutMenu.Clicked += delegate
             {
                 About.About AboutWindow = new About.About();
-                var d = AboutWindow.Run();
+                AboutWindow.Run();
                 AboutWindow.Dispose();
             };
 
@@ -847,7 +847,7 @@ namespace Director.Forms
         private void MenuEditDefaultHeaders_Clicked(object sender, EventArgs e)
         {
             ServerHeaders ServerHeadersWindow = new ServerHeaders(this, UServer);
-            var d = ServerHeadersWindow.Run();
+            ServerHeadersWindow.Run();
             ServerHeadersWindow.Dispose();
         }
 

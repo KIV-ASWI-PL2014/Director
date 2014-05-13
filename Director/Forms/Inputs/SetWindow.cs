@@ -117,7 +117,7 @@ namespace Director.Forms.Inputs
         void ConfirmButton_Clicked(object sender, EventArgs e)
         {
             List<ParserError> errors = new List<ParserError>();
-            Dictionary<string, ParserItem> result = Parser.deserialize(TextInput.Text, errors, "json");
+            Parser.deserialize(TextInput.Text, errors, "json");
             if (errors.Count == 0)
             {
                 if (ReqWidget != null)

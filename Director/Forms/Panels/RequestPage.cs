@@ -119,7 +119,7 @@ namespace Director.Forms.Panels
             RequestOverview = new VBox();
             ScrollView RequestOverviewSV = new ScrollView()
             {
-                Content = RequestOverview
+				Content = RequestOverview, Margin = (Config.Windows()) ? 0 : 10
             };
             RequestDetails.Add(RequestOverviewSV, Director.Properties.Resources.RequestRequest);
 
@@ -127,7 +127,7 @@ namespace Director.Forms.Panels
             RequestStatus = new VBox();
             ScrollView RequestStatusSV = new ScrollView()
             {
-                Content = RequestStatus
+				Content = RequestStatus, Margin = (Config.Windows()) ? 0 : 10
             };
             RequestDetails.Add(RequestStatusSV, Director.Properties.Resources.RequestResponse);
 

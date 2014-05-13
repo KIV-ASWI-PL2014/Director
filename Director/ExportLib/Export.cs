@@ -38,18 +38,5 @@ namespace Director.ExportLib
             }
             return tmpDirectory;
         }
-
-
-        public static String getFileNameFromAbsolutePath(String absPath)
-        {
-            int pos = absPath.LastIndexOf('\\');
-            //backslash not found
-            if (pos == -1)
-                return absPath;
-            //backslash at the end of string
-            else if(pos == absPath.Length - 1)
-                return "";
-            return absPath.Substring(pos + 1);
-        }
     }
 }

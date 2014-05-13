@@ -92,6 +92,7 @@
     <Compile Include="Formatters\JSONFormatter.cs" />
     <Compile Include="Forms\Controls\ListItem.cs" />
     <Compile Include="Forms\Controls\EmailList.cs" />
+    <Compile Include="ExportLib\ExportVariables.cs" />
     <Compile Include="Forms\Controls\FileList.cs" />
     <Compile Include="Forms\Controls\RequestWidget.cs" />
     <Compile Include="Forms\Controls\ResponseWidget.cs" />
@@ -115,10 +116,26 @@
     <Compile Include="Forms\Panels\RequestPage.cs" />
     <Compile Include="Forms\Panels\ScenarioPage.cs" />
     <Compile Include="Forms\Panels\ServerPage.cs" />
+    <Compile Include="ParserLib\ParserOccurence.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProgramMac.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Remote\Remote.cs" />
+    <Compile Include="Properties\Resources.cs.Designer.cs">
+      <DependentUpon>Resources.cs.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.cs.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.cs.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -129,11 +146,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -190,12 +202,6 @@
   <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Resources\homepage.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
@@ -303,7 +309,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="favicon %282%29.ico" />
     <EmbeddedResource Include="Resources\arrow_up.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -394,9 +399,14 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="directoricon.ico" />
+    <EmbeddedResource Include="Resources\script_import.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\bullet_blue.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\database_lightning.icns" />
   </ItemGroup>
 </Project>

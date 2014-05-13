@@ -4,6 +4,9 @@ using Director.DataStructures;
 using Director.Forms.Inputs;
 using Director.Forms;
 using System.Threading;
+using System.IO;
+using System.Xml.Serialization;
+using System.Collections.Generic;
 
 namespace Director
 {
@@ -15,6 +18,7 @@ namespace Director
         [STAThread]
         private static void Main()
         {
+
 			// Locales
 			Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(Director.Properties.Settings.Default.language);
 

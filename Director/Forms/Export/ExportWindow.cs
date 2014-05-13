@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xwt;
 using Xwt.Drawing;
+using System.IO;
 
 namespace Director.Forms.Export
 {
@@ -117,8 +118,12 @@ namespace Director.Forms.Export
                     InitialFileName = ActiveServer.Name
                 };
                 dlg.Filters.Add(new FileDialogFilter("Director files", "*.adfe"));
-                if (dlg.Run() && dlg.FileNames.Count() == 1)
+				if (dlg.Run() && dlg.FileNames.Count() == 1) {
                     ExportPath.Text = dlg.FileName;
+					if (Path.GetExtension(dlg.FileName) != "adfe") {
+						ExportPath.Text += ".adfe";
+					}
+				}
             };
             Frame save = new Frame()
             {
@@ -178,7 +183,7 @@ namespace Director.Forms.Export
                     ExportScenarios.Add(item.ScenarioInstance);
                 
                 // Start serialization
-                Boolean res = Serialization.SerializeAll(ActiveServer, ExportPath.Text, ExportScenarios);
+                Serialization.SerializeAll(ActiveServer, ExportPath.Text, ExportScenarios);
 
                 String messageType = Director.Properties.Resources.ExportResult;
 

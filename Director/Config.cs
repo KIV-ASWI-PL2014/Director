@@ -30,6 +30,11 @@ namespace Director
             AppType = type;
         }
 
+		public static bool Windows()
+		{
+			return AppType == ToolkitType.Wpf;
+		}
+
         public static ToolkitType GetAppType()
         {
             return AppType;

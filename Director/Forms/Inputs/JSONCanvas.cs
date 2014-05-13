@@ -418,22 +418,5 @@ namespace Director.Forms.Inputs
                 CTX.DrawTextLayout(text, X, Y);
             }
         }
-
-        void DrawText(string data, Color color, int start, int end)
-        {
-            if (CanDraw)
-            {
-                var text = new TextLayout();
-                text.Font = this.Font.WithSize(10);
-                CTX.SetColor(color);
-                if (color != null)
-                {
-                    text.SetBackground(color, start, end);
-                }
-                CTX.SetColor(Colors.Black);
-                text.Text = data;
-                CTX.DrawTextLayout(text, X, Y);
-            }
-        }
     }
 }

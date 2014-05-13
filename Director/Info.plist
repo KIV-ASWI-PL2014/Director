@@ -17,7 +17,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>Director</string>
 	<key>CFBundleIconFile</key>
-	<string>server_lightning</string>
+	<string>database_lightning</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1</string>
 </dict>
