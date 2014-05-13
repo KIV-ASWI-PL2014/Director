@@ -313,6 +313,14 @@ namespace Director.Forms.Inputs
                 else
                     DrawText(item.value + commaStr);
             }
+            else if (item.value is System.Boolean)
+            {
+                if (key != null)
+                { 
+                    DrawProperty(key, ((System.Boolean) item.value) ? "true" : "false", item, comma);
+                } else
+                    DrawText((((System.Boolean) item.value) ? "true" : "false") + commaStr);
+            }
             else if (item.value == null)
             {
                 if (key != null)

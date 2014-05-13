@@ -455,6 +455,7 @@ namespace Director.Forms
             LocaleEnglish.Clicked += delegate
             {
                 Director.Properties.Settings.Default.language = "en";
+                Director.Properties.Settings.Default.Save();
                 MessageDialog.ShowMessage(Director.Properties.Resources.RestartApp);
             };
 
@@ -467,6 +468,7 @@ namespace Director.Forms
             LocaleCzech.Clicked += delegate
             {
                 Director.Properties.Settings.Default.language = "cs";
+                Director.Properties.Settings.Default.Save();
                 MessageDialog.ShowMessage(Director.Properties.Resources.RestartApp);
             };
 
