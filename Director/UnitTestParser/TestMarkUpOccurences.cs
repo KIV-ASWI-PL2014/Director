@@ -40,7 +40,7 @@ namespace UnitTestParser
             Assert.AreEqual(occurences[2].name, "randString");
             Assert.AreEqual(occurences[2].type, "function");
             Assert.AreEqual(occurences[2].arguments[0], "1");
-            Assert.AreEqual(occurences[2].arguments[1], "2");
+            Assert.AreEqual(occurences[2].arguments[1], "3");
             Assert.AreEqual(occurences[2].arguments[2], "A1a");
         }
 
@@ -62,7 +62,7 @@ namespace UnitTestParser
             Assert.AreEqual(occurences[1].arguments[0], "10");
             Assert.AreEqual(occurences[1].arguments[1], "4");
             Assert.AreEqual(occurences[1].arguments[2], "-1");
-            Assert.AreEqual(occurences[1].arguments[2], "x");
+            Assert.AreEqual(occurences[1].arguments[3], "x");
 
             Assert.AreEqual(occurences[2].name, "franta");
             Assert.AreEqual(occurences[2].type, "text");
@@ -172,7 +172,7 @@ namespace UnitTestParser
             occurences = Parser.findMarkUpOccurences("$first$$unknown$ \\$\\#\\$thing $first$ and #randString( 1,  ,A1  )# for sure. \\#And other #randString$x$,A1)#", custom_variables, errors);
 
             Assert.IsNotNull(occurences);
-            Assert.AreEqual(errors.Count, 2);
+            Assert.AreEqual(errors.Count, 1);
             Assert.AreEqual(occurences.Count, 8);
 
             Assert.AreEqual(occurences[0].name, "first");
