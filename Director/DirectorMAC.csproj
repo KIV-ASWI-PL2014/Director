@@ -153,6 +153,10 @@
     </Compile>
     <Compile Include="Forms\Controls\HeaderList.cs" />
     <Compile Include="DataStructures\SupportStructures\Header.cs" />
+    <Compile Include="Forms\Inputs\SelectVariables.cs" />
+    <EmbeddedResource Include="Resources\run_var.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -405,8 +409,5 @@
     <EmbeddedResource Include="Resources\bullet_blue.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\database_lightning.icns" />
   </ItemGroup>
 </Project>

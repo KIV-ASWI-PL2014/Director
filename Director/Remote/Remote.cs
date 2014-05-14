@@ -11,30 +11,16 @@ namespace Director.Remote
         /// <summary>
         /// Send request.
         /// </summary>
-        public static RestResponse SendRemoteRequest(Request _request, String body, String BodyParameter)
+		public static RestResponse SendRemoteRequest(Request _request, RestRequest request, String URL)
         {
             // Create client
-            var client = new RestClient(_request.Url);
+			var client = new RestClient(URL);
 
             // Authentication?
 			Server server = _request.ParentScenario.ParentServer;
 			if (server.Authentication)
 				client.Authenticator = new HttpBasicAuthenticator (server.AuthName, server.AuthPassword);
 
-            // Create request
-            var request = new RestRequest(_request.RequestMethod);
-
-            // Create request from template
-            if (body != null)
-                request.AddParameter(BodyParameter, body, ParameterType.RequestBody);
-          
-            // Set headers
-            foreach (var h in _request.Headers)
-            {
-                // TODO: Catch exception
-                ParserResult result = Parser.parseHeader(h.Value, _request.ParentScenario.customVariables);
-                request.AddHeader(h.Name, result.getResult());
-            }
 
             // Add files
             foreach (var f in _request.Files)

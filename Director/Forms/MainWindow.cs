@@ -273,9 +273,9 @@ namespace Director.Forms
             MainContent.PackStart(MainBox, expand: true, fill: true);
 
             // Create Info label with link
-            LinkLabel _info = new LinkLabel("© NetBrick, s.r.o.")
+			LinkLabel _info = new LinkLabel("Copyright 2014 NetBrick, s.r.o.")
             {
-                Uri = new Uri("http://director.strnadj.eu/")
+				Uri = new Uri("http://director.strnadj.eu/")
             };
             MainContent.PackStart(_info, vpos: WidgetPlacement.End, hpos: WidgetPlacement.End);
 
@@ -551,6 +551,13 @@ namespace Director.Forms
             ScenarioMenu.Items.Add(MenuRunScenario);
             MenuRunScenario.Clicked += RunScenario;
 
+			MenuItem MenuRunScVariables = new MenuItem ("Run scenario with variables")
+			{
+				Image = Image.FromResource(DirectorImages.RUN_WITH_VAR)
+			};
+			ScenarioMenu.Items.Add (MenuRunScVariables);
+			MenuRunScVariables.Clicked += RunScenarioWithVariables;
+
             // Separator
             ScenarioMenu.Items.Add(new SeparatorMenuItem());
 
@@ -680,6 +687,43 @@ namespace Director.Forms
 
             return _runSubmenu;
         }
+
+		/// <summary>
+		/// Run scenario with variables.
+		/// </summary>
+		private void RunScenarioWithVariables(object sender, EventArgs e)
+		{
+			TreePosition tmp = CurrentServer.SelectedRow;
+
+			if (tmp == null)
+				return;
+
+			var data = ServerStore.GetNavigatorAt(tmp).GetValue(ColumnType);
+
+			if (data is Scenario)
+			{
+				if (WorkingThread != null)
+				{
+					MessageDialog.ShowError(Director.Properties.Resources.CanNotStartScenario);
+					return;
+				}
+
+				Scenario s = (Scenario)data;
+
+				// Show dialog
+				var variableDialog = new SelectVariables (s);
+
+				// Ok run
+				if (variableDialog.Run () == Command.Ok)
+				{
+					s.customVariables = variableDialog.NewVariableList ();
+					WorkingThread = new Thread(ThreadWorker);
+					WorkingThread.IsBackground = true;
+					WorkingThread.Start(s);
+				}
+				variableDialog.Dispose ();
+			}
+		}
 
         /// <summary>
         /// Remove scenario context menu item clicked!
@@ -1228,17 +1272,39 @@ namespace Director.Forms
                     // Clear result
                     r.ClearResults();
 
-                    // Prepare values
-                    String RequestBody = null;
-                    String RequestParameter = null;
-
                     // Parser
                     Parser p = new Parser();
+
+					// Prepare URL
+					ParserResult result = Parser.parseHeader(r.Url, r.ParentScenario.customVariables);
+					if (result.isSuccess () == false) {
+						// Headers
+						r.AddResultViewItem(1, "Error when generating URL" + ":");
+
+						// Errors
+						foreach (var i in result.getErrors())
+						{
+							r.AddResultViewItem(2, i.getMessage());
+						}
+
+						// Change icon
+						ChangeIcon(r.TreePosition, ERORImage);
+						success = false;
+						break;
+					}
+					// Erro result
+					String URL = result.getResult ();
+
+					// Body
+					String RequestBody = null;
+
+					// Create RestRequest
+					var request = new RestRequest(r.RequestMethod);
 
                     // Prepare template
                     if (r.RequestTemplate != null && r.RequestTemplate.Length > 0)
                     {
-                        ParserResult result = p.generateRequest(r.RequestTemplate, r.ParentScenario.customVariables);
+                        result = p.generateRequest(r.RequestTemplate, r.ParentScenario.customVariables);
 
                         // Cannot generate reqeust!
                         if (result.isSuccess() == false)
@@ -1258,18 +1324,38 @@ namespace Director.Forms
                             break;
                         }
                             
-                        // Prepare body
-                        RequestBody = result.getResult();
-
                         // Parameter
-                        RequestParameter = "application/json";
+						if (result.getResult() != null && result.getResult().Length > 0)
+							request.AddParameter( "application/json", result.getResult(), ParameterType.RequestBody);
                     }
+						
+					// Prepare headers
+					foreach (var h in r.Headers) {
+						result = Parser.parseHeader(h.Value, r.ParentScenario.customVariables);
+						if (result.isSuccess () == false) {
+							// Headers
+							r.AddResultViewItem(1, "Error when generating headers" + ":");
+
+							// Errors
+							foreach (var i in result.getErrors())
+							{
+								r.AddResultViewItem(2, i.getMessage());
+							}
+
+							// Change icon
+							ChangeIcon(r.TreePosition, ERORImage);
+							success = false;
+							break;
+						}
+						// Add header
+						request.AddHeader (h.Name, result.getResult ());
+					}
 
                     // Prepare error...
                     r.AddResultViewItem(1, Director.Properties.Resources.Error + ":");
 
                     // Send
-                    RestResponse response = Director.Remote.Remote.SendRemoteRequest(r, RequestBody, RequestParameter);
+					RestResponse response = Director.Remote.Remote.SendRemoteRequest(r, request, URL);
 
                     // Valid?
                     bool valid = false;

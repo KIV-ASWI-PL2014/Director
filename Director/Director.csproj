@@ -398,6 +398,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\run_var.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="directoricon.ico" />
     <EmbeddedResource Include="Resources\script_import.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
