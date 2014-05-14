@@ -523,9 +523,6 @@
   <data name="WaitPreviousRequest" xml:space="preserve">
     <value>Wait in seconds after sucessfull previous request:</value>
   </data>
-  <data name="_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\0.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\1.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -828,5 +825,29 @@
   </data>
   <data name="VariableExportSuccess" xml:space="preserve">
     <value>Export was successfull!</value>
+  </data>
+  <data name="ErrorGeneratingUrl" xml:space="preserve">
+    <value>Error occured, when generating URL</value>
+  </data>
+  <data name="ErrorWhenGeneratingHeaders" xml:space="preserve">
+    <value>Error occured, when generating headers</value>
+  </data>
+  <data name="ButtonRunAndSave" xml:space="preserve">
+    <value>Save and run</value>
+  </data>
+  <data name="ButtonSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="ButtonStorno" xml:space="preserve">
+    <value>Zrušit</value>
+  </data>
+  <data name="SetVariables" xml:space="preserve">
+    <value>Set start variables</value>
+  </data>
+  <data name="variables1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\variables.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\0.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

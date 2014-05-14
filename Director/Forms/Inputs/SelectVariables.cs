@@ -48,19 +48,16 @@ namespace Director
 			ActiveScenario = _scenario;
 			Width = 500;
 			Height = 300;
-			Title = "Run scenario with specific variables";
+			Title = Director.Properties.Resources.SetVariables;
+            Icon = Image.FromResource(DirectorImages.VARIABLES_ICON);
 
 			// Init components
 			_initializeComponents ();
 
 			// CLose btns
-			Buttons.Add (new DialogButton ("Ok", Command.Ok));
-			Buttons.Add (new DialogButton ("Storno", Command.Cancel));
-
-			// Refresh header list
-			foreach (KeyValuePair<string, string> s in _scenario.customVariables) {
-
-			}
+            Buttons.Add (new DialogButton (Director.Properties.Resources.ButtonRunAndSave, Command.Ok));
+			Buttons.Add (new DialogButton (Director.Properties.Resources.ButtonSave, Command.Save));
+			Buttons.Add (new DialogButton (Director.Properties.Resources.ButtonStorno, Command.Cancel));
 		}
 
 
@@ -153,8 +150,13 @@ namespace Director
 			Dictionary<String, String> ret = new Dictionary<string, string> ();
 
 			// Iterate variables
-			foreach (var v in Variables)
-				ret.Add (v.Key, v.Value);
+            foreach (var v in Variables)
+            {
+                if (ret.ContainsKey(v.Key))
+                    ret.Remove(v.Key);
+                
+                ret.Add(v.Key, v.Value);
+            }
 
 			return ret;
 		}

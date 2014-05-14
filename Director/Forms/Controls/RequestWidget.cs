@@ -189,8 +189,8 @@ namespace Director.Forms.Controls
 
     struct RequestVariable
     {
-        public int Start, End, DecimalPlaces, Type;
-        public string Text, Pattern, Method;
+        public int Type;
+        public string Text;
         public bool Format;
     }
 

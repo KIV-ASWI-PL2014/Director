@@ -826,4 +826,22 @@
   <data name="VariableExportSuccess" xml:space="preserve">
     <value>Export byl úspěšný!</value>
   </data>
+  <data name="ErrorGeneratingUrl" xml:space="preserve">
+    <value>Chyba při generování URL</value>
+  </data>
+  <data name="ErrorWhenGeneratingHeaders" xml:space="preserve">
+    <value>Chyba při generování hlaviček</value>
+  </data>
+  <data name="ButtonRunAndSave" xml:space="preserve">
+    <value>Ulož a spusť</value>
+  </data>
+  <data name="ButtonSave" xml:space="preserve">
+    <value>Uložit</value>
+  </data>
+  <data name="ButtonStorno" xml:space="preserve">
+    <value>Zrušit</value>
+  </data>
+  <data name="SetVariables" xml:space="preserve">
+    <value>Nastavit počáteční proměnné</value>
+  </data>
 </root>

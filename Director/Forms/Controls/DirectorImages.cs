@@ -38,6 +38,7 @@ namespace Director.Forms.Controls
         public const string BULLET_ICON = "Director.Resources.bullet_blue.png";
         public const string EXPORT_VARIABLES_ICON = "Director.Resources.script_import.png";
 		public const string RUN_WITH_VAR = "Director.Resources.run_var.png";
+        public const string VARIABLES_ICON = "Director.Resources.variables.png";
 
         /// <summary>
         /// Running icons.

@@ -551,9 +551,9 @@ namespace Director.Forms
             ScenarioMenu.Items.Add(MenuRunScenario);
             MenuRunScenario.Clicked += RunScenario;
 
-			MenuItem MenuRunScVariables = new MenuItem ("Run scenario with variables")
+            MenuItem MenuRunScVariables = new MenuItem(Director.Properties.Resources.SetVariables)
 			{
-				Image = Image.FromResource(DirectorImages.RUN_WITH_VAR)
+				Image = Image.FromResource(DirectorImages.VARIABLES_ICON)
 			};
 			ScenarioMenu.Items.Add (MenuRunScVariables);
 			MenuRunScVariables.Clicked += RunScenarioWithVariables;
@@ -713,14 +713,24 @@ namespace Director.Forms
 				// Show dialog
 				var variableDialog = new SelectVariables (s);
 
-				// Ok run
-				if (variableDialog.Run () == Command.Ok)
-				{
-					s.customVariables = variableDialog.NewVariableList ();
-					WorkingThread = new Thread(ThreadWorker);
-					WorkingThread.IsBackground = true;
-					WorkingThread.Start(s);
-				}
+                // Status
+                var stat = variableDialog.Run();
+
+				// Save and run | Ok - save variables
+                if (stat != null && stat != Command.Cancel)
+                    s.customVariables = variableDialog.NewVariableList();
+            
+                // Run
+                if (stat == Command.Ok)
+                {
+                    WorkingThread = new Thread(ThreadWorker);
+                    WorkingThread.IsBackground = true;
+                    WorkingThread.Start(s);
+                }
+
+                // Update view
+                UpdateControlView(sender, e);
+
 				variableDialog.Dispose ();
 			}
 		}
@@ -1279,7 +1289,7 @@ namespace Director.Forms
 					ParserResult result = Parser.parseHeader(r.Url, r.ParentScenario.customVariables);
 					if (result.isSuccess () == false) {
 						// Headers
-						r.AddResultViewItem(1, "Error when generating URL" + ":");
+						r.AddResultViewItem(1, Director.Properties.Resources.ErrorGeneratingUrl + ":");
 
 						// Errors
 						foreach (var i in result.getErrors())
@@ -1334,7 +1344,7 @@ namespace Director.Forms
 						result = Parser.parseHeader(h.Value, r.ParentScenario.customVariables);
 						if (result.isSuccess () == false) {
 							// Headers
-							r.AddResultViewItem(1, "Error when generating headers" + ":");
+							r.AddResultViewItem(1, Director.Properties.Resources.ErrorWhenGeneratingHeaders + ":");
 
 							// Errors
 							foreach (var i in result.getErrors())

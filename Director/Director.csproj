@@ -405,6 +405,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="directoricon.ico" />
+    <EmbeddedResource Include="Resources\variables.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\script_import.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
