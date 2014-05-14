@@ -22,6 +22,87 @@ namespace UnitTestParser
         }
 
         [TestMethod]
+        public void simpleSequenceParse()
+        {
+            occurences = Parser.findMarkUpOccurences("test#sequence(10,4,-1, x)#franta", custom_variables, errors);
+
+            Assert.IsNotNull(occurences);
+            Assert.AreEqual(errors.Count, 0);
+            Assert.AreEqual(occurences.Count, 3);
+
+            Assert.AreEqual(occurences[0].name, "test");
+            Assert.AreEqual(occurences[0].type, "text");
+            Assert.AreEqual(occurences[0].arguments, null);
+
+            Assert.AreEqual(occurences[1].name, "sequence");
+            Assert.AreEqual(occurences[1].type, "function");
+            Assert.AreEqual(occurences[1].arguments[0], "10");
+            Assert.AreEqual(occurences[1].arguments[1], "4");
+            Assert.AreEqual(occurences[1].arguments[2], "-1");
+            Assert.AreEqual(occurences[1].arguments[2], "x");
+
+            Assert.AreEqual(occurences[2].name, "franta");
+            Assert.AreEqual(occurences[2].type, "text");
+            Assert.AreEqual(occurences[2].arguments, null);
+        }
+
+
+        [TestMethod]
+        public void simpleFloatMarkupOccurencseWithoutExistingVariables()
+        {
+            occurences = Parser.findMarkUpOccurences("$first$ thing and #randFloat($var1$,$var2$,2)# for sure", custom_variables, errors);
+
+            Assert.IsNotNull(occurences);
+            Assert.AreEqual(errors.Count, 0);
+            Assert.AreEqual(occurences.Count, 4);
+
+            Assert.AreEqual(occurences[0].name, "first");
+            Assert.AreEqual(occurences[0].type, "variable");
+            Assert.AreEqual(occurences[0].arguments, null);
+
+            Assert.AreEqual(occurences[1].name, " thing and ");
+            Assert.AreEqual(occurences[1].type, "text");
+            Assert.AreEqual(occurences[1].arguments, null);
+
+            Assert.AreEqual(occurences[2].name, "randFloat");
+            Assert.AreEqual(occurences[2].type, "function");
+            Assert.AreEqual(occurences[2].arguments[0], "$var1$");
+            Assert.AreEqual(occurences[2].arguments[1], "$var2$");
+            Assert.AreEqual(occurences[2].arguments[2], "2");
+
+            Assert.AreEqual(occurences[3].name, " for sure");
+            Assert.AreEqual(occurences[3].type, "text");
+            Assert.AreEqual(occurences[3].arguments, null);
+        }
+
+        [TestMethod]
+        public void simpleIntMarkUpOccurences()
+        {
+            occurences = Parser.findMarkUpOccurences("$first$ thing and #randInt(1,2)# for sure", custom_variables, errors);
+
+            Assert.IsNotNull(occurences);
+            Assert.AreEqual(errors.Count, 0);
+            Assert.AreEqual(occurences.Count, 4);
+
+            Assert.AreEqual(occurences[0].name, "first");
+            Assert.AreEqual(occurences[0].type, "variable");
+            Assert.AreEqual(occurences[0].arguments, null);
+
+            Assert.AreEqual(occurences[1].name, " thing and ");
+            Assert.AreEqual(occurences[1].type, "text");
+            Assert.AreEqual(occurences[1].arguments, null);
+
+            Assert.AreEqual(occurences[2].name, "randInt");
+            Assert.AreEqual(occurences[2].type, "function");
+            Assert.AreEqual(occurences[2].arguments[0], "1");
+            Assert.AreEqual(occurences[2].arguments[1], "2");
+
+            Assert.AreEqual(occurences[3].name, " for sure");
+            Assert.AreEqual(occurences[3].type, "text");
+            Assert.AreEqual(occurences[3].arguments, null);
+        }
+
+        [TestMethod]
         public void simpleMarkUpOccurences()
         {
             // test 1
