@@ -1471,7 +1471,7 @@ namespace Director.ParserLib
             int current_position = 0;
 
             // continuosly add items to the return object until both occurence lists are empty
-            while (var_occurrences.Count != 0 && fn_occurrences.Count != 0)
+            while (var_occurrences.Count != 0 || fn_occurrences.Count != 0)
             {
                 if (var_occurrences.Count == 0 || var_occurrences[0] > fn_occurrences[0])
                 {
@@ -1519,11 +1519,14 @@ namespace Director.ParserLib
                     fn_occurrences.RemoveRange(0, 2);
 
                     // lastly, delete all occurences of variables inside this function - we want to ignore those
-                    while (current_position > var_occurrences[0])
+                    if (var_occurrences.Count > 0)
                     {
-                        var_occurrences.RemoveRange(0, 2);
-                        if (var_occurrences.Count == 0)
-                            break;
+                        while (current_position > var_occurrences[0])
+                        {
+                            var_occurrences.RemoveRange(0, 2);
+                            if (var_occurrences.Count == 0)
+                                break;
+                        }
                     }
 
                     continue;
@@ -1536,8 +1539,8 @@ namespace Director.ParserLib
 
                     // add variable
                     string variable_name = value.Substring(var_occurrences[0] + 1, var_occurrences[1] - var_occurrences[0] - 1); // grab variable name without VARIABLE_CHARACTERs on edges
-                    if (!customVariables.ContainsKey(variable_name)) // is this variable defined in passed custom variables?
-                        errors.Add(new ParserError(0, var_occurrences[0], string.Format(ERR_MSG_UNKNOWN_CUSTOM_VARIABLE, variable_name), null)); // add error
+                    //if (!customVariables.ContainsKey(variable_name)) // is this variable defined in passed custom variables?
+                    //    errors.Add(new ParserError(0, var_occurrences[0], string.Format(ERR_MSG_UNKNOWN_CUSTOM_VARIABLE, variable_name), null)); // add error
                     result.Add(new ParserOccurence(variable_name, "variable", null));
                     
                     // update current position and remove two first elements from the list
