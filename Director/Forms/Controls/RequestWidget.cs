@@ -122,7 +122,7 @@ namespace Director.Forms.Controls
             if (ActiveParserItem == null) return;
 
             // Create dialog
-            EditRequestVariable _edit = new EditRequestVariable(ActiveParserItem);
+            EditVariable _edit = new EditVariable(ActiveParserItem, ActiveRequest);
 
             // Run dialog
             var d = _edit.Run();
@@ -153,7 +153,6 @@ namespace Director.Forms.Controls
                 if (item != null)
                 {
                     ActiveParserItem = item;
-                    //RequestHelperMenu.Items[0].Label = string.Format("{0} - {1}", item.value.GetType().ToString(), item.value.ToString());
                     RequestHelperMenu.Popup();
                 }
             }
@@ -187,104 +186,112 @@ namespace Director.Forms.Controls
         }
     }
 
-    struct RequestVariable
-    {
-        public int Type;
-        public string Text;
-        public bool Format;
-    }
-
-    internal class EditRequestVariable : Dialog
+    internal class EditVariable : Dialog
     {
         /// <summary>
-        /// Active item.
+        /// Item.
         /// </summary>
         private ParserItem ActiveItem { get; set; }
 
         /// <summary>
+        /// Request.
+        /// </summary>
+        private Request ActiveRequest { get; set; }
+
+        /// <summary>
         /// Value.
         /// </summary>
-        public RadioButton Value { get; set; }
+        private RadioButton Value { get; set; }
 
         /// <summary>
-        /// Format directive.
+        /// Value type.
         /// </summary>
-        public RadioButton Directive { get; set; }
+        private ComboBox ValueType { get; set; }
 
         /// <summary>
-        /// Guide.
+        /// Data types enum.
         /// </summary>
-        public RadioButton Guide { get; set; }
+        private enum DataType : int {
+            TYPE_STRING = 0,
+            TYPE_INT = 1,
+            TYPE_DOUBLE = 2,
+            TYPE_NULL = 3,
+            TYPE_BOOL = 4
+        }
 
         /// <summary>
         /// Value text.
         /// </summary>
-        public TextEntry ValueText { get; set; }
+        private TextEntry ValueText { get; set; }
 
         /// <summary>
-        /// Value options.
+        /// Format guide.
         /// </summary>
-        public ComboBox ValueOptions { get; set; }
-
-        /// <summary>
-        /// Directive text.
-        /// </summary>
-        public TextEntry DirectiveText { get; set; }
+        private RadioButton FormatGuide { get; set; }
 
         /// <summary>
         /// Variables.
         /// </summary>
-        public List<RequestVariable> Variables { get; set; }
+        public List<ParserOccurence> Occurences { get; set; }
 
         /// <summary>
-        /// Output example label.
+        /// Format value items.
         /// </summary>
-        public Label OutputExampleLabel { get; set; }
+        public List<FormatValue> FormatValues { get; set; }
 
         /// <summary>
-        /// Output example string.
+        /// Format wrapper package.
         /// </summary>
-        public String OutputExample { get; set; }
+        public VBox FormatWrapper { get; set; }
 
         /// <summary>
-        /// Types.
+        /// Foramt items.
         /// </summary>
-        public const int TYPE_STRING = 0;
-        public const int TYPE_INT = 1;
-        public const int TYPE_DOUBLE = 2;
-        public const int TYPE_NULL = 3;
-        public const int TYPE_BOOL = 4;
+        public VBox FormatItems { get; set; }
+
+        /// <summary>
+        /// New format.
+        /// </summary>
+        public Button NewFormat { get; set; }
+
+        /// <summary>
+        /// Example output.
+        /// </summary>
+        public Label ExampleOutput { get; set; }
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="item"></param>
-        public EditRequestVariable(ParserItem item)
+        public EditVariable(ParserItem _item, Request _request)
         {
-            // Title and dialog variables
+            // Set title, icon, resizable
             Title = Director.Properties.Resources.EditVariable;
             Icon = Image.FromResource(DirectorImages.EDIT_CONTENT_ICON);
             Resizable = false;
-            ActiveItem = item;
-            Variables = new List<RequestVariable>();
+
+            // Set variables
+            ActiveItem = _item;
+            ActiveRequest = _request;
+            Occurences = new List<ParserOccurence>();
+            FormatValues = new List<FormatValue>();
 
             // Widht height
-            Width = 450;
-            //Height = 250;
+            Width = 520;
+            Height = 390;
 
-            // Init content
+            // Init components
             _initializeComponents();
 
-            // Buttons
+            // Add buttons
             Buttons.Add(new DialogButton(Director.Properties.Resources.ConfirmInput, Command.Ok));
             Buttons.Add(new DialogButton(Director.Properties.Resources.Cancel, Command.Cancel));
 
-            // Set data
+            // Parse data
             ParseData();
         }
 
         /// <summary>
-        /// Set data.
+        /// Parse data.
         /// </summary>
         private void ParseData()
         {
@@ -292,74 +299,209 @@ namespace Director.Forms.Controls
 
             if (it.value is System.Boolean)
             {
-                Variables.Add(new RequestVariable()
-                {
-                    Text = ((System.Boolean)it.value) ? "true" : "false",
-                    Type = TYPE_BOOL
-                });
-            } else if (it.value is System.Int64 || it.value is System.Int32)
+                ValueType.SelectedIndex = (int) DataType.TYPE_BOOL;
+                ValueText.Text = ((System.Boolean)it.value) ? "true" : "false";
+            }
+            else if (it.value is System.Int64 || it.value is System.Int32)
             {
-                Variables.Add(new RequestVariable()
-                {
-                    Text = it.value + "",
-                    Type = TYPE_INT
-                });
+                ValueType.SelectedIndex = (int) DataType.TYPE_INT;
+                ValueText.Text = it.value + "";
             }
             else if (it.value is System.Double)
             {
-                Variables.Add(new RequestVariable()
-                {
-                    Text = (it.value + "").Replace(',', '.'),
-                    Type = TYPE_DOUBLE
-                });
+                ValueType.SelectedIndex = (int) DataType.TYPE_DOUBLE;
+                ValueText.Text = (it.value + "").Replace(',', '.');
             }
             else if (it.value == null)
             {
-                Variables.Add(new RequestVariable()
-                {
-                    Text = "",
-                    Type = TYPE_NULL
-                });
+                ValueType.SelectedIndex = (int) DataType.TYPE_NULL;
+                ValueText.Text = "";
             }
             else
             {
-                Variables.Add(new RequestVariable()
+                // Parse occurrences
+                List<ParserError> errors = new List<ParserError>();
+                Occurences = Parser.findMarkUpOccurences((String)it.value, ActiveRequest.ParentScenario.customVariables, errors);
+                if (Occurences.Count == 1 && errors.Count == 0 && Occurences[0].type == "text")
                 {
-                    Text = it.value.ToString(),
-                    Type = TYPE_STRING
-                });
-            }
-
-            // One variable parse
-            if (Variables.Count == 1)
-            {
-                var i = Variables[0];
-
-                if (i.Format)
-                {
-                    Directive.Active = true;
+                    ValueType.SelectedIndex = (int)DataType.TYPE_STRING;
+                    ValueText.Text = (String)it.value;
                 }
                 else
-                {
-                    Value.Active = true;
-                    ValueOptions.SelectedIndex = i.Type;
-                    ValueText.Text = i.Text;
-                }
-
+                    RefreshOccurencies();
             }
         }
 
         /// <summary>
-        /// Return new value.
+        /// Refresh occurences.
         /// </summary>
-        public object GetValue()
+        private void RefreshOccurencies()
+        {
+            FormatGuide.Active = true;
+            FormatValues.Clear();
+            FormatWrapper.Clear();
+
+            // Iterate occurencies
+            foreach (var p in Occurences)
+            {
+                var tmp = new FormatValue(p, this, (FormatValues.Count % 2 == 0) ? Colors.LightGray : Colors.White);
+                FormatValues.Add(tmp);
+                FormatWrapper.PackStart(tmp);
+            }
+        }
+
+        /// <summary>
+        /// Remove item from view.
+        /// </summary>
+        /// <param name="v"></param>
+        public void RemoveItem(FormatValue v)
+        {
+            FormatValues.Add(v);
+            FormatWrapper.Remove(v);
+            // Recolorized!
+            int i = 0;
+            foreach (var s in FormatValues)
+            {
+                s.BackgroundColor = (i % 2 == 0) ? Colors.LightGray : Colors.White;
+                i++;
+            }
+        }
+
+        /// <summary>
+        /// Init components.
+        /// </summary>
+        private void _initializeComponents()
+        {
+            VBox ContentBox = new VBox();
+
+            // First value
+            Value = new RadioButton(Director.Properties.Resources.JsonValue);
+            ContentBox.PackStart(Value);
+
+            // Horizontal
+            HBox ValueBox = new HBox();
+
+            // Options
+            ValueType = new ComboBox()
+            {
+                WidthRequest = 80
+            };
+            ValueType.Items.Add(DataType.TYPE_STRING, "String");
+            ValueType.Items.Add(DataType.TYPE_INT, "Integer");
+            ValueType.Items.Add(DataType.TYPE_DOUBLE, "Double");
+            ValueType.Items.Add(DataType.TYPE_NULL, "Null");
+            ValueType.Items.Add(DataType.TYPE_BOOL, "Boolean");
+            ValueType.SelectedIndex = 0;
+            ValueBox.PackStart(ValueType);
+
+            // Value
+            ValueText = new TextEntry()
+            {
+                ExpandVertical = false,
+                ExpandHorizontal = true,
+                MinWidth = 250
+            };
+            ValueBox.PackStart(ValueText);
+            ContentBox.PackStart(ValueBox);
+
+            // Guide
+            FormatGuide = new RadioButton(Director.Properties.Resources.FormatGuide);
+            ContentBox.PackStart(FormatGuide);
+            Value.Group = FormatGuide.Group;
+            Value.Active = true;
+            Value.Group.ActiveRadioButtonChanged += Group_ActiveRadioButtonChanged;
+
+            // First line
+            HBox FirstLine = new HBox();
+
+            // Value option
+            Label Variable = new Label(Director.Properties.Resources.VariableType)
+            {
+                HorizontalPlacement = WidgetPlacement.Center,
+                ExpandHorizontal = true,
+                ExpandVertical = false,
+                MarginLeft = 10
+            };
+            Label VariableValue = new Label(Director.Properties.Resources.VariableValue) {
+                ExpandHorizontal = true,
+                ExpandVertical = false,
+                HorizontalPlacement = WidgetPlacement.Center
+            };
+            NewFormat = new Button(Image.FromResource(DirectorImages.ADD_ICON))
+            {
+                MinWidth = 30,
+                WidthRequest = 30,
+                MarginRight = 30
+            };
+            FirstLine.PackStart(Variable, true, true);
+            FirstLine.PackStart(VariableValue, true, true);
+            FirstLine.PackStart(NewFormat, false, false);
+            ContentBox.PackStart(FirstLine);
+            NewFormat.Clicked += NewFormat_Clicked;
+
+            // Variables
+            FormatWrapper = new VBox();
+            ScrollView FormatWrapperSV = new ScrollView()
+            {
+                HorizontalScrollPolicy = ScrollPolicy.Never,
+                VerticalScrollPolicy = ScrollPolicy.Always,
+                Content = FormatWrapper,
+                BackgroundColor = Colors.LightGray
+            };
+            ContentBox.PackStart(FormatWrapperSV, true, true);
+
+            // Example output
+            ExampleOutput = new Label()
+            {
+                ExpandHorizontal = true
+            };
+            ContentBox.PackStart(ExampleOutput, false, true);
+
+
+            Content = ContentBox;
+        }
+
+        /// <summary>
+        /// Add new format.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void NewFormat_Clicked(object sender, EventArgs e)
+        {
+            var tmp = FormatValue.CreateFormatValue(this, (FormatValues.Count % 2 == 0) ? Colors.LightGray : Colors.White);
+            FormatValues.Add(tmp);
+            FormatWrapper.PackStart(tmp);
+            int i = 0;
+            foreach (var s in FormatValues)
+            {
+                s.BackgroundColor = (i % 2 == 0) ? Colors.LightGray : Colors.White;
+                i++;
+            }
+        }
+
+        /// <summary>
+        /// Radio button active changed.
+        /// </summary>
+        void Group_ActiveRadioButtonChanged(object sender, EventArgs e)
+        {
+            ValueType.Sensitive = Value.Active;
+            ValueText.Sensitive = Value.Active;
+            NewFormat.Sensitive = !Value.Active;
+            FormatWrapper.Sensitive = !Value.Active;
+        }
+
+        /// <summary>
+        /// Return object.
+        /// </summary>
+        /// <returns></returns>
+        internal object GetValue()
         {
             if (Value.Active)
             {
-                var i = ValueOptions.SelectedIndex;
+                var i = (DataType) ValueType.SelectedItem;
                 var text = ValueText.Text;
 
-                if (i == TYPE_INT)
+                if (i == DataType.TYPE_INT)
                 {
                     try
                     {
@@ -370,11 +512,11 @@ namespace Director.Forms.Controls
                         return 0;
                     }
                 }
-                else if (i == TYPE_BOOL)
+                else if (i == DataType.TYPE_BOOL)
                 {
                     return text.Trim() == "true" || text.Trim() == "1";
                 }
-                else if (i == TYPE_DOUBLE)
+                else if (i == DataType.TYPE_DOUBLE)
                 {
                     try
                     {
@@ -385,184 +527,677 @@ namespace Director.Forms.Controls
                         return 0.0;
                     }
                 }
-                else if (i == TYPE_STRING)
+                else if (i == DataType.TYPE_NULL)
+                {
+                    return null;
+                }
+                else
                 {
                     return ValueText.Text;
                 }
-                else
-                    return null;
-            }
-            else if (Directive.Active)
-            {
-                return DirectiveText.Text;
             }
             else
             {
-                return null;
+                string ret = "";
+                foreach (var i in FormatValues)
+                {
+                    ret += i.GetValue();
+                }
+                return ret;
             }
+        }
+    }
+
+    /// <summary>
+    /// Form Value.
+    /// </summary>
+    internal class FormatValue : VBox
+    {
+        /// <summary>
+        /// Ocurence.
+        /// </summary>
+        public ParserOccurence Occruence { get; set; }
+
+        /// <summary>
+        /// Parent edit variable.
+        /// </summary>
+        public EditVariable ParentEdit { get; set; }
+
+        /// <summary>
+        /// Type.
+        /// </summary>
+        public ComboBox Type { get; set; }
+
+        /// <summary>
+        /// Format value.
+        /// </summary>
+        /// <param name="_window"></param>
+        /// <param name="_color"></param>
+        public static FormatValue CreateFormatValue(EditVariable _window, Color _color)
+        {
+            List<string> vars = new List<string>();
+            ParserOccurence p = new ParserOccurence("", "text", vars);
+            return new FormatValue(p, _window, _color);
         }
 
         /// <summary>
-        /// Guide options.
+        /// Parserv value new.
         /// </summary>
-        private ScrollView GuideOptions { get; set; }
-
-        /// <summary>
-        /// Guide items.
-        /// </summary>
-        private VBox GuideItems { get; set; }
-
-        /// <summary>
-        /// Add guide item.
-        /// </summary>
-        private Button AddGuideItem { get; set; }
-
-        /// <summary>
-        /// Create components.
-        /// </summary>
-        private void _initializeComponents()
+        public FormatValue(ParserOccurence occurence, EditVariable _window, Color _color)
         {
-            VBox ContentBox = new VBox();
+            // Parent occurence
+            Occruence = occurence;
 
-            // Options
-            Value = new RadioButton(Director.Properties.Resources.JsonValue);
-            Directive = new RadioButton(Director.Properties.Resources.FormatDirective);
-            Guide = new RadioButton(Director.Properties.Resources.FormatGuide);
-            Value.Group = Directive.Group = Guide.Group;
-            Value.Active = true;
+            // Parent window
+            ParentEdit = _window;
 
-            // Prepare
-            Value.ActiveChanged += Value_ActiveChanged;
+            // Color
+            BackgroundColor = _color;
 
-            // Add VALUE
-            ContentBox.PackStart(Value);
-            HBox ValueBox = new HBox();
+            // Horizontal resize true
+            ExpandHorizontal = true;
 
-            // Value option
-            ValueOptions = new ComboBox()
+            // No margins
+            Margin = 0;
+            MinHeight = 30;
+
+            // Init components
+            _initComponents();
+        }
+
+        /// <summary>
+        /// Active component.
+        /// </summary>
+        public Widget ActiveComponent { get; set; }
+
+        /// <summary>
+        /// Component content.
+        /// </summary>
+        public VBox ComponentContent { get; set; }
+
+        private enum WidgetTypes : int
+        {
+            TEXT = 1, VARIABLE, RAND_INT, RAND_STRING, RAND_FLOAT, SEQUENCE
+        };
+
+
+        /// <summary>
+        /// Generate components.
+        /// </summary>
+        private void _initComponents()
+        {
+            Type = new ComboBox()
             {
-                WidthRequest = 80
+                MarginLeft = 5,
+                VerticalPlacement = WidgetPlacement.Center,
+                HorizontalPlacement = WidgetPlacement.Fill,
+                MarginRight = 5,
+                MarginTop = 5
             };
-            ValueOptions.Items.Add("String");
-            ValueOptions.Items.Add("Integer");
-            ValueOptions.Items.Add("Double");
-            ValueOptions.Items.Add("Null");
-            ValueOptions.Items.Add("Boolean");
-            ValueOptions.SelectedIndex = 0;
-            ValueBox.PackStart(ValueOptions);
+            Type.Items.Add(WidgetTypes.TEXT, "Text");
+            Type.Items.Add(WidgetTypes.VARIABLE, "Variable");
+            Type.Items.Add(WidgetTypes.RAND_INT, "Random integer");
+            Type.Items.Add(WidgetTypes.RAND_STRING, "Random string");
+            Type.Items.Add(WidgetTypes.RAND_FLOAT, "Random float");
+            Type.Items.Add(WidgetTypes.SEQUENCE, "Sequence");
 
-            // Value text edit
-            ValueText = new TextEntry()
+            HBox HorizontalOption = new HBox();
+            HorizontalOption.PackStart(Type, expand: true);
+
+            Button RemoveBtn = new Button(Image.FromResource(DirectorImages.CROSS_ICON))
             {
+                MarginRight = 5,
+                HorizontalPlacement = WidgetPlacement.Center,
+                VerticalPlacement = WidgetPlacement.Center,
+                ExpandHorizontal = false,
                 ExpandVertical = false,
+                MarginTop = 5
+            };
+            HorizontalOption.PackStart(RemoveBtn, expand: false, fill: false);
+            RemoveBtn.Clicked += RemoveBtn_Clicked;
+            PackStart(HorizontalOption, expand: true);
+
+            // Prepare contents
+            ComponentContent = new VBox()
+            {
+                MarginBottom = (BackgroundColor == Colors.White) ? 10 : 5
+            };
+            PackStart(ComponentContent, expand: true);
+
+            // Bind handler
+            Type.SelectionChanged += Type_SelectionChanged;
+
+            // Select text default
+            Type.SelectedIndex = 0;
+
+            // Prepare occurences
+            var type = Occruence.type;
+            var fct = Occruence.name;
+
+            if (type == "text")
+            {
+                Type.SelectedItem = WidgetTypes.TEXT;
+            }
+            else if (type == "variable")
+            {
+                Type.SelectedItem = WidgetTypes.VARIABLE;
+            }
+            else
+            {
+                if (fct == "randInt")
+                {
+                    Type.SelectedItem = WidgetTypes.RAND_INT;
+                }
+                else if (fct == "randString")
+                {
+                    Type.SelectedItem = WidgetTypes.RAND_STRING;
+                }
+                else if (fct == "randFloat")
+                {
+                    Type.SelectedItem = WidgetTypes.RAND_FLOAT;
+                }
+                else
+                {
+                    Type.SelectedItem = WidgetTypes.SEQUENCE;
+                }
+            }
+
+            // Set data
+            ((IVariable)ActiveComponent).SetData(Occruence.name, Occruence.arguments);
+        }
+
+        /// <summary>
+        /// Remove.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RemoveBtn_Clicked(object sender, EventArgs e)
+        {
+            ParentEdit.RemoveItem(this);
+        }
+
+        private TextVariable TextVariableComponent = null;
+        private VariableVariable VariableComponent = null;
+        private NumberVariable NumberComponent = null;
+        private FloatVariable FloatComponent = null;
+        private StringVariable StringComponent = null;
+        private SequenceVariable SequenceComponent = null;
+
+        /// <summary>
+        /// Change items.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Type_SelectionChanged(object sender, EventArgs e)
+        {
+            if (ActiveComponent != null)
+                ComponentContent.Remove(ActiveComponent);
+
+            WidgetTypes type = (WidgetTypes)Type.SelectedItem;
+
+            switch (type)
+            {
+                case WidgetTypes.SEQUENCE:
+                    if (SequenceComponent == null)
+                        SequenceComponent = new SequenceVariable();
+                    ActiveComponent = SequenceComponent;
+                    SequenceComponent.ClearData();
+                    ComponentContent.PackStart(SequenceComponent, true, true);
+                    break;
+
+                case WidgetTypes.VARIABLE:
+                    if (VariableComponent == null)
+                        VariableComponent = new VariableVariable();
+                    ActiveComponent = VariableComponent;
+                    VariableComponent.ClearData();
+                    ComponentContent.PackStart(VariableComponent, true, true);
+                    break;
+
+                case WidgetTypes.RAND_INT:
+                    if (NumberComponent == null)
+                        NumberComponent = new NumberVariable();
+                    ActiveComponent = NumberComponent;
+                    NumberComponent.ClearData();
+                    ComponentContent.PackStart(NumberComponent, true, true);
+                    break;
+
+                case WidgetTypes.RAND_STRING:
+                    if (StringComponent == null)
+                        StringComponent = new StringVariable();
+                    ActiveComponent = StringComponent;
+                    StringComponent.ClearData();
+                    ComponentContent.PackStart(StringComponent, true, true);
+                    break;
+
+                case WidgetTypes.RAND_FLOAT:
+                    if (FloatComponent == null)
+                        FloatComponent = new FloatVariable();
+                    ActiveComponent = FloatComponent;
+                    FloatComponent.ClearData();
+                    ComponentContent.PackStart(FloatComponent, true, true);
+                    break;
+
+
+                default:
+                    if (TextVariableComponent == null)
+                        TextVariableComponent = new TextVariable();
+                    ActiveComponent = TextVariableComponent;
+                    TextVariableComponent.ClearData();
+                    ComponentContent.PackStart(TextVariableComponent, true, true);
+                    break;
+            }
+        }   
+
+        /// <summary>
+        /// Get value.
+        /// </summary>
+        /// <returns></returns>
+        public String GetValue()
+        {
+            if (ActiveComponent != null)
+            {
+                return ((IVariable)ActiveComponent).GetRepresentation();
+            }
+            return "";
+        }
+    
+    }
+
+    public interface IVariable
+    {
+        String GetRepresentation();
+        void ClearData();
+        void SetData(String data, List<string> variables);
+    }
+
+    internal class SequenceVariable : VBox, IVariable
+    {
+        TextEntry Min { get; set; }
+        TextEntry Max { get; set; }
+        TextEntry Add { get; set; }
+        TextEntry Vars { get; set; }
+
+        public SequenceVariable()
+        {
+            HBox FL = new HBox()
+            {
                 ExpandHorizontal = true
             };
-            ValueBox.PackStart(ValueText);
-            ValueText.Changed += ValueText_Changed;
-            ContentBox.PackStart(ValueBox);
-
-
-            // Add Directive
-            ContentBox.PackStart(Directive);
-            DirectiveText = new TextEntry()
+            HBox SL = new HBox()
             {
-                Sensitive = false
+                ExpandHorizontal = true
             };
-            ContentBox.PackStart(DirectiveText, false, true);
-
-            // Add Guide
-            /**ContentBox.PackStart(Guide);
-
-            // Add guide item
-            AddGuideItem = new Button(Image.FromResource(DirectorImages.ADD_ICON))
+            FL.PackStart(new Label("Start: ")
             {
-                MinWidth = 30,
-                WidthRequest = 30,
-                Sensitive = false
-            };
-            AddGuideItem.Clicked += AddGuideItem_Clicked;
-            ContentBox.PackStart(AddGuideItem, vpos: WidgetPlacement.Center, hpos: WidgetPlacement.End);
-
-            // Guide options
-            GuideOptions = new ScrollView()
+                MarginLeft = 5
+            });
+            Min = new TextEntry()
             {
-                ExpandHorizontal = true,
-                ExpandVertical = true,
-                HorizontalScrollPolicy = ScrollPolicy.Never,
-                VerticalScrollPolicy = ScrollPolicy.Always,
-                Sensitive = false
+                MarginLeft = 5,
+                MarginRight = 5
             };
-            ContentBox.PackStart(GuideOptions, expand: true, fill: true);
+            FL.PackStart(Min, true, true);
 
-
-            OutputExampleLabel = new Label()
+            FL.PackStart(new Label("End: "));
+            Max = new TextEntry()
             {
-                Sensitive = false
+                MarginLeft = 5,
+                MarginRight = 5
             };
-            ContentBox.PackStart(OutputExampleLabel, expand: false, fill: true);*/
+            FL.PackStart(Max, true, true);
 
-            // Set content box
-            Content = ContentBox;
+            SL.PackStart(new Label("Add: ")
+            {
+                MarginLeft = 5
+            });
+
+            Add = new TextEntry()
+            {
+                MarginLeft = 5,
+                MarginRight = 5
+            };
+            SL.PackStart(Add, true, true);
+
+            SL.PackStart(new Label("Var: "));
+
+            Vars = new TextEntry()
+            {
+                MarginLeft = 5,
+                MarginRight = 5
+            };
+            SL.PackStart(Vars, true, true);
+
+            PackStart(FL, true, true);
+            PackStart(SL, true, true);
         }
 
         /// <summary>
-        /// Add item.
+        /// Return string representation.
         /// </summary>
-        void AddGuideItem_Clicked(object sender, EventArgs e)
+        /// <returns></returns>
+        public String GetRepresentation()
         {
-            
+            return string.Format("#sequence({0},{1},{2},{3})#", Min.Text, Max.Text, Add.Text, Vars.Text);
         }
 
         /// <summary>
-        /// Control propriet type.
+        /// Clear data.
         /// </summary>
-        void ValueText_Changed(object sender, EventArgs e)
+        public void ClearData()
         {
-            String text = ValueText.Text;
-            var i = ValueOptions.SelectedIndex;
+            Min.Text = Max.Text = Add.Text = Vars.Text = "";
+        }
 
-            if (i == TYPE_INT)
+        /// <summary>
+        /// Set data.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="variables"></param>
+        public void SetData(String data, List<string> variables)
+        {
+            if (variables.Count == 4)
             {
-                try
-                {
-                    ValueText.Text = int.Parse(text) + "";
-                }
-                catch
-                {
-                    ValueText.Text = "0";
-                    MessageDialog.ShowError(Director.Properties.Resources.InvalidNumberInput);
-                }
-            }
-            else if (i == TYPE_DOUBLE)
-            {
-                try
-                {
-                    ValueText.Text = double.Parse(text, CultureInfo.InvariantCulture.NumberFormat) + "";
-                }
-                catch
-                {
-                    ValueText.Text = "0.0";
-                    MessageDialog.ShowError(Director.Properties.Resources.InvalidNumberInput);
-                }
+                Min.Text = variables[0] + "";
+                Max.Text = variables[1] + "";
+                Add.Text = variables[2] + "";
+                Vars.Text = variables[3] + "";
             }
         }
+    }
+
+    internal class StringVariable : HBox, IVariable
+    {
+        TextEntry Min { get; set; }
+        TextEntry Max { get; set; }
+        TextEntry Characters { get; set; }
+
+        public StringVariable()
+        {
+            PackStart(new Label("Min: ")
+            {
+                MarginLeft = 5
+            });
+            Min = new TextEntry()
+            {
+                MarginLeft = 5,
+                MarginRight = 5
+            };
+            PackStart(Min, true, true);
+
+            PackStart(new Label("Max: "));
+            Max = new TextEntry()
+            {
+                MarginLeft = 5,
+                MarginRight = 5
+            };
+            PackStart(Max, true, true);
+
+            PackStart(new Label("Symbols: "));
+
+            Characters = new TextEntry()
+            {
+                MarginLeft = 5,
+                MarginRight = 5
+            };
+            PackStart(Characters, true, true);
+        }
 
         /// <summary>
-        /// Change value.
+        /// Return string representation.
         /// </summary>
-        void Value_ActiveChanged(object sender, EventArgs e)
+        /// <returns></returns>
+        public String GetRepresentation()
         {
-            // Value active
-            ValueOptions.Sensitive = Value.Active;
-            ValueText.Sensitive = Value.Active;
+            return string.Format("#randString({0},{1},{2})#", Min.Text, Max.Text, Characters.Text);
+        }
 
-            // Directive active
-            DirectiveText.Sensitive = Directive.Active;
+        /// <summary>
+        /// Clear data.
+        /// </summary>
+        public void ClearData()
+        {
+            Min.Text = Max.Text = Characters.Text = "";
+        }
 
-            // Guide options
-            /*GuideOptions.Sensitive = Guide.Active;
-            OutputExampleLabel.Sensitive = Guide.Active;
-            AddGuideItem.Sensitive = Guide.Active;*/
+        /// <summary>
+        /// Set data.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="variables"></param>
+        public void SetData(String data, List<string> variables)
+        {
+            if (variables.Count == 3)
+            {
+                Min.Text = variables[0] + "";
+                Max.Text = variables[1] + "";
+                Characters.Text = variables[2] + "";
+            }
+        }
+    }
+
+    internal class FloatVariable : HBox, IVariable
+    {
+        TextEntry Min { get; set; }
+        TextEntry Max { get; set; }
+        TextEntry Precision { get; set; }
+
+        public FloatVariable()
+        {
+            PackStart(new Label("Min: ")
+            {
+                MarginLeft = 5
+            });
+            Min = new TextEntry()
+            {
+                MarginLeft = 5,
+                MarginRight = 5
+            };
+            PackStart(Min, true, true);
+
+            PackStart(new Label("Max: "));
+            Max = new TextEntry()
+            {
+                MarginLeft = 5,
+                MarginRight = 5
+            };
+            PackStart(Max, true, true);
+
+            PackStart(new Label("Precision: "));
+
+            Precision = new TextEntry()
+            {
+                MarginLeft = 5,
+                MarginRight = 5
+            };
+            PackStart(Precision, true, true);
+        }
+
+        /// <summary>
+        /// Return string representation.
+        /// </summary>
+        /// <returns></returns>
+        public String GetRepresentation()
+        {
+            return string.Format("#randFloat({0},{1},{2})#", Min.Text, Max.Text, Precision.Text);
+        }
+
+        /// <summary>
+        /// Clear data.
+        /// </summary>
+        public void ClearData()
+        {
+            Min.Text = Max.Text = Precision.Text = "";
+        }
+
+        /// <summary>
+        /// Set data.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="variables"></param>
+        public void SetData(String data, List<string> variables)
+        {
+            if (variables.Count == 3)
+            {
+                Min.Text = variables[0] + "";
+                Max.Text = variables[1] + "";
+                Precision.Text = variables[2] + "";
+            }
+        }
+    }
+
+    internal class NumberVariable : HBox, IVariable
+    {
+        TextEntry Min { get; set; }
+        TextEntry Max { get; set; }
+
+        public NumberVariable()
+        {
+            PackStart(new Label("Min: ")
+            {
+                MarginLeft = 5
+            });
+            Min = new TextEntry()
+            {
+                MarginLeft = 5,
+                MarginRight = 5
+            };
+            PackStart(Min, true, true);
+
+            PackStart(new Label("Max: "));
+            Max = new TextEntry()
+            {
+                MarginLeft = 5,
+                MarginRight = 5
+            };
+            PackStart(Max, true, true);
+        }
+
+        /// <summary>
+        /// Return string representation.
+        /// </summary>
+        /// <returns></returns>
+        public String GetRepresentation()
+        {
+            return string.Format("#randInt({0},{1})#", Min.Text, Max.Text);
+        }
+
+        /// <summary>
+        /// Clear data.
+        /// </summary>
+        public void ClearData()
+        {
+            Min.Text = Max.Text = "";
+        }
+
+        /// <summary>
+        /// Set data.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="variables"></param>
+        public void SetData(String data, List<string> variables)
+        {
+            if (variables.Count == 2)
+            {
+                Min.Text = variables[0] + "";
+                Max.Text = variables[1] + "";
+            }
+        }
+    }
+
+    internal class VariableVariable : VBox, IVariable
+    {
+        /// <summary>
+        /// Text entry.
+        /// </summary>
+        public TextEntry Text { get; set; }
+
+        /// <summary>
+        /// Text variable.
+        /// </summary>
+        public VariableVariable()
+        {
+            Text = new TextEntry()
+            {
+                MarginLeft = 5,
+                MarginRight = 5
+            };
+            PackStart(Text, true, true);
+        }
+
+        /// <summary>
+        /// Clear data.
+        /// </summary>
+        public void ClearData()
+        {
+            Text.Text = "";
+        }
+
+        /// <summary>
+        /// Set data.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="variables"></param>
+        public void SetData(String data, List<string> variables)
+        {
+            Text.Text = data;    
+        }
+
+
+        /// <summary>
+        /// Return string representation.
+        /// </summary>
+        /// <returns></returns>
+        public String GetRepresentation()
+        {
+            return string.Format("${0}$", Text.Text);
+        }
+
+    }
+
+    internal class TextVariable : VBox, IVariable 
+    {
+        /// <summary>
+        /// Text entry.
+        /// </summary>
+        public TextEntry Text { get; set; }
+
+        /// <summary>
+        /// Text variable.
+        /// </summary>
+        public TextVariable()
+        {
+            Text = new TextEntry()
+            {
+                MarginLeft = 5,
+                MarginRight = 5
+            };
+            PackStart(Text, true, true);
+        }
+
+        /// <summary>
+        /// Return string representation.
+        /// </summary>
+        public String GetRepresentation()
+        {
+            return Text.Text;
+        }
+
+        /// <summary>
+        /// Clear data.
+        /// </summary>
+        public void ClearData()
+        {
+            Text.Text = "";
+        }
+
+        /// <summary>
+        /// Set data.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="variables"></param>
+        public void SetData(String data, List<string> variables)
+        {
+            Text.Text = data;    
         }
     }
 }

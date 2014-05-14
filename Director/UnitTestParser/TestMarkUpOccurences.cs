@@ -24,7 +24,7 @@ namespace UnitTestParser
         [TestMethod]
         public void RandStringWithVariable()
         {
-            occurences = Parser.findMarkUpOccurences("ahoj$x$#randString(1,3, A1a)#", custom_variables, errors);
+            occurences = Parser.findMarkUpOccurences("ahoj$x$#randString(1,3,A1a)#", custom_variables, errors);
             Assert.IsNotNull(occurences);
             Assert.AreEqual(errors.Count, 0);
             Assert.AreEqual(occurences.Count, 3);
@@ -47,7 +47,7 @@ namespace UnitTestParser
         [TestMethod]
         public void simpleSequenceParse()
         {
-            occurences = Parser.findMarkUpOccurences("test#sequence(10,4,-1, x)#franta", custom_variables, errors);
+            occurences = Parser.findMarkUpOccurences("test#sequence(10,4,-1,x)#franta", custom_variables, errors);
 
             Assert.IsNotNull(occurences);
             Assert.AreEqual(errors.Count, 0);

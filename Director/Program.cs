@@ -32,9 +32,16 @@ namespace Director
             s.DefaultHeaders.Add(new Header() { Name = "Token", Value = "application/json" });
             s.SetUrl("http://localhost:3000/api/");
             Scenario sc = s.CreateNewScenario();
+            sc.customVariables.Add("x", "franta");
+            sc.customVariables.Add("first", "Firstik");
             sc.Name = "test";
             sc.ParentServer = s;
             Request test = sc.CreateNewRequest();
+
+            test.RequestTemplate = @"{
+  'Name': 'Bad Boys',
+  'ReleaseDate': '$first$ thing and #randString(1,$x$,A1)# for sure'
+}"; ;
 
             sc.customVariables.Add("test", "hovadina");
             test.ParentScenario = sc;

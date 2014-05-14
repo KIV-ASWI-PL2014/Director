@@ -95,7 +95,6 @@ namespace Director.Import.Postman
                         Name = h.name, Value = h.value
                     });
                 }
-
             }
 
             return true;
