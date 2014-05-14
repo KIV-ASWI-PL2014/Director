@@ -22,6 +22,29 @@ namespace UnitTestParser
         }
 
         [TestMethod]
+        public void RandStringWithVariable()
+        {
+            occurences = Parser.findMarkUpOccurences("ahoj$x$#randString(1,3, A1a)#", custom_variables, errors);
+            Assert.IsNotNull(occurences);
+            Assert.AreEqual(errors.Count, 0);
+            Assert.AreEqual(occurences.Count, 3);
+
+            Assert.AreEqual(occurences[0].name, "ahoj");
+            Assert.AreEqual(occurences[0].type, "text");
+            Assert.AreEqual(occurences[0].arguments, null);
+
+            Assert.AreEqual(occurences[1].name, "x");
+            Assert.AreEqual(occurences[1].type, "variable");
+            Assert.AreEqual(occurences[1].arguments, null);
+
+            Assert.AreEqual(occurences[2].name, "randString");
+            Assert.AreEqual(occurences[2].type, "function");
+            Assert.AreEqual(occurences[2].arguments[0], "1");
+            Assert.AreEqual(occurences[2].arguments[1], "2");
+            Assert.AreEqual(occurences[2].arguments[2], "A1a");
+        }
+
+        [TestMethod]
         public void simpleSequenceParse()
         {
             occurences = Parser.findMarkUpOccurences("test#sequence(10,4,-1, x)#franta", custom_variables, errors);
