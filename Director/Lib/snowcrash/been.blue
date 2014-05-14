@@ -1,0 +1,2252 @@
+FORMAT: 1A
+
+
+# eMan BEEN
+Popis rozhraní pro komunikaci mezi MA - BE - BEEI
+
+## Stavy odpovedi
+
+* **200** `OK` - pozadavek byl uspesny, v pripade vytvareni zaznamu je nahrazeno stavem 201
+* **201** `Created` - zaznam byl uspesne vytvoren
+* **204** `No Content` - pozadavek byl uspesny, ale nejsou pro ne data (pro zadany limit a offset nejsou zadna data)
+* **304** `Not Modified` - data nebyla zmenena, u lastUpdate aktualizaci
+* **400** `Bad Request` - chybny dotaz
+* **401** `Unauthorized` - uzevatel neni prihlasen, nebo ma jiz neplatny token
+* **404** `Not Found` - neexistujici zaznam, uzivatelsky vstup je spatny
+* **403** `Forbidden` - uzevatel je prihlasen, ale nema dostatecna prava
+* **405** `Method Not Allowed` - metoda neni podporovana, vsechny ostatni dotazy nez zde popsane
+* **409** `Conflict` - vkladany zaznam zpusobuje konflikt
+* **422** `Unprocessable Entity` - nezpracovatelny pozadavek, sementicky spatna
+* **500** `Internal Server Error` - Obecná chybová zpráva. Při zpracovávání požadavku došlo ke blíže nespecifikované chybě
+* **502** `Bad Gateway` - Server integrace nedokáže získat od serverů třetích stran (BEE či jiné)
+
+## Kolekce zaznamu s podporou strankovani
+
+Pokud ma sluzba podporovat strankovani, ma povinne parametry
+
+* `limit` - urcuje maximalni pocet, ktery muze byt v odpovedi
+* `offset` - urcuje index prvniho zaznamu v odpovedi, index se cisluje od 0
+
+jejich kombinace urcuje, od ktereho zaznamu a kolik zaznamu se ma maximalne zobrazit v odpovedi
+
+pokud server ma pouze cast pozadovanych dat, odpovida standardne stavem `200` a dostupne zaznamy odesila v tele
+
+pokud server nema pro dotaz zadne odpovedi vraci stav `204` a prazdne telo
+
+## Android
+* Aplikace pro komunikaci se serverem vyuziva **Service** tak, aby veskera komunikace mohla probihat i na pozadi
+* Pro trackovani polohy se vyuziva Service a nove Location API <https://developer.android.com/reference/com/google/android/gms/location/LocationRequest.html>. Poloha se aktualizuje na zaklade zmeny polohy, nikoliv casu.
+* Aplikace ma registrovany Broadcast na internetove pripojeni. Po jeho ziskani ihned odesila nasbiranou polohu a pripadne odesila smlouvy ve fronte pro odeslani.
+* Odesilani smluv je pro uzivatele neblokujici, prubeh je zobrazen v notifikacni oblasti (pocet zbyvajicich priloh, atd.)
+* Aktualizace konfigurace probiha primarne na zaklade PUSH notifikaci a na pozadi. Je zapotrebi zajistit integritu dat behem aktualizace (pouzivame content providers), tak aby se dalo dale pracovat. O probihajici aktualizaci je uzivatel informovan v notifikacni casti.
+* Informace o aktualizacich je dale zjistovano pri prechodu aplikace na popredi, **ale pouze v pripade, ze nedorazila zadna PUSH, nebo byla tato kontrola provedena v ramci poslednich X hodin**
+
+## Update
+`22.1.`
+
+* **Login** - popis platnosti tokenu, změna chybového stavu na `400` aby nebyl konflikt s neplatnym tokenem
+* **Contract** - vytvoření smlouvy změna metody na `POST`. Úprava smlouvy změna metody na `PUT` - urpavuje se celý objekt, ok stav zmenen na `200` (nic noveho se nevytvari)
+* **Contract** - upraveno flow nahravani smlouvy + nahravani priloh
+* **Contract Numbers** - upraven popis sluzby, vzdy vraci X cisel kvuli synchronizaci cisel v pripade vymazani dat
+* **Config** - konfigurace mobilni aplikace, PUSH notifikace + stazeni ciselniku
+
+`24.1.`
+
+* každý request z mobilní aplikace obsahuje nově hlavičky pro odeslání aktuální pozice, server ke každému requestu loguje i aktuální čas
+* **/contract/{contractId}** `POST` a `PUT` krome smlouvy obsahuje i informaci o miste a casu, kde byla vytvorena/editovana. Cas je **UNIX Time Stamp** (vteriny od 1.1.1970 0:00:00 UTC)
+* nova metoda **/location** `POST` pro odesilani polohy
+* strucny popis Android aplikace
+
+`28.1.`
+
+* zmena endpointu **contract/** na  **contracts/**
+* urpava chybovych stavu pri zakladani a editaci smlouvy
+
+`29.1.`
+
+* pridana hlavicka If-Modified-Since pro lastUpdate u konfigurace
+* sluzba pro registraci push tokenu ma novy endpoint
+
+`5.2.`
+
+* zmena sluzby pro editaci smlouvy
+* pridana sluzba pro storno smlouvy
+
+`6.2.`
+
+* ukazka nahrani prilohy - odesilame pouze jeden file
+
+`14.2.`
+
+* Upravena metoda na contracts (seznam smluv). Vyhozeny parametry v getu a do hlavicky pridan lastupdate
+* Metoda se bude pouzivat jako synchronizacni 
+* Je doplnen zkraceny seznam smlouvy do response
+* Smazana sluzba pro storno smlouvy. Tablet muze stornovat smlouvu jen v pripade ze vytvori na jejim zaklade novou cili v nove bude puvodni parentID smlouvy
+
+`17.2.`
+
+* u prilohy se odesila typ
+* objekt pri ziskavani detailu smlouvy obsahuje pole s objekty odkazujicimi na stazeni priloh
+* pridan popis push notifikaci
+
+`18.2.`
+
+* uprava lastUpdate aktualizaci. Posila se hlavicka **If-Modified-Since** do ktere se nevyplnuje lokalni cas update, ale to co chodi ze serveru v odpovedi v hlavicce **Last-Modified**, ktera se vraci jak pri odpovedi `200` tak i `304`
+* pridana metoda pro update adres (RUIAN)
+
+`24.2.`
+
+* doplnene sablony do GET /config
+* doplneni parametru do GET /contracts parametr consumptionPlaces
+
+`25.2.`
+
+* doplneni parametru do GET /contracts parametr customerAccount
+
+`28.2.`
+
+* upravena mock json pro GET / contracts/{contractId}
+* pridam parametr json pro get / contracts, polozka "rejectDescription" - duvod proc byl smlouva odmitnuta
+
+`3.3.`
+
+* upravena mock json pro GET / contracts/{contractId} a GET contract
+
+`5.3.`
+
+* upraven mock json pro GET / contracts/{contractId} pridani testovacih priloh pro vyzkouseni stahovani podpisu
+
+`6.3.`
+
+* upraven mock json pro GET / config pridani pruvodniho dokumentu do ciselniku priloh
+
+`11.3.`
+
+* upraven mock json pro GET / contract{contractId} a contracts upraveno cislo smlouvy na z 002 na 008, pro odzkouseni docasneho zamknuti parent smlouvy na tabletu
+
+`12.3.`
+
+* Upraveny parametry GET / config, změna za stringu na int - "promoPartnerType": 1, "distributionPartnerType": 1, "productLinePartnerType": 1
+* Přidány parametry GET / config, parametry "suppliersElZisId": 970900 a "suppliersGasZisId": 970900
+* Přidán parametr do JSON pro smlouvu "contract": -> "citySigned": "Praha", pro potreby odeslani do integrace
+
+`14.3.`
+
+* Uprava push zprav, pouzivame pouze s2s notifikace
+
+`25.3.`
+
+* Upraven popis pro GET / contract{contractId}, při stahování přílo musí být v hlavičce token uživatele
+
+`09.04.`
+
+* Přidán md5 hash ke všem souborům stahovanýn do tabletu
+* Upravena metoda GET /config - přidán md5 hash + upraveny promněné pro logo na objekty s přidaným hash 
+* Upravena metoda GET contracts/{contractId} přidán hash k přílohám
+
+`23.04.`
+
+* Zmena objektu promoProduct na promo - pridani parametru, zmena se tyka /config a synchronizace ciselniku s integraci
+* Pridani polozky do objektu contract - "discountId": 12, Položka se bude odesílat z tabletu metodou contract a měla by být vracena v seznamu smluv /contracts a detailu smlouvy /contract
+
+
+
+
+
+## JSON struktura smlouvy s popiskama
+
+* Struktura se shoduje s xml odesilanym do Bohemi Energy
+
+        {
+            "header": {
+                "accountCircleId": 99999999999,                                         SERVER podle loginu - Ucetni okruh
+                "kind": "S",                                                            Staticka hodnota "S"
+                "process": 1,                                                           1 - zmena dodavatele, 2 - prepis se zmenou dodavatele
+                "annotation": "poznamka ke smlouve"                                     max 4000 znaku
+            },
+            "contract": {
+                "contractNumber": "cislo smlouvy",
+                "dateSigned": "31.01.2014",
+                "citySigned": "Praha",                                                  Mesto kde doslo k podpisu 
+                "dealer": "id obchodnika",                                              SERVER podle loginu
+                "validityFixedLength": true,                                            na dobu urcitou
+                "validityLengthDateTo": "31.01.2014",                                   konecne datum smlouvy
+                "validityLengthCnt": 123,                                               pocet roku, po ktere smlouva trva
+                "validityLengthUnit": "Y",                                              staticky "Y" years
+                "discountId": 12,                                                       zis id promo produktu 
+                "insurFlag": true                                                       zda klient pozaduje pojisteni
+            },
+            "partner": {
+                "isCorporation": false,                                                 false - domacnost|true - firma/podnikatel
+                "firstName": "",                                                        jmeno, v pripade firmy nic
+                "lastName": "",                                                         prijmeni, v pripade firmy jeji nazev
+                "titleBefore": "",
+                "titleAfter": "",
+                "identifications": [                                                    1 - 4 krat
+                    {
+                        "identificationCode": "ic",                                     ic - IC|dateOfBirth
+                        "identificationValue": "8909211234"                             datum narozeni ve formatu DDMMRRRR
+                    }
+                ],
+                "dic": "XY12345678"
+            },
+            "Addresses": [                                                              1 - 2 krat (trvala, dorucovaci)
+                {
+                    "type": "postal",                                                   postal - zasilaci adresa|default - trvala adresa
+                    "street": "",
+                    "streetNumber": "",
+                    "recipient": "John Doe",
+                    "houseNumber": "",
+                    "city": "",
+                    "cityPart": "",
+                    "zip": ""
+                }
+            ],
+            "Contacts": [
+                {
+                    "contactType": "TEL",                                               TEL|EMAIL|FAX|DBOX - datova schranka|OPROS - opravnena osoba
+                    "contactValue": ""
+                }
+            ],
+            "customerAccount": {
+                "productLine": "",                                                      produktova rada napr. "GARANCE"
+                "InvoicesWaysOfDelivery": "",                                           D - dopis|P - doporucene|E - email|X - datovka      zpusob doruceni vyuctovani
+                "paymentMethodAdvances": "",                                            P - prevod|I - inkaso|SIPO      uhrada zaloh a vyuctovani
+                "paymentMethodAdvancesBankAccountField": {
+                    "accountNumber": "",
+                    "bankCode": ""                                                      v pripade sipo vyplnit "SIPO"
+                },
+                "paymentMethodOverPayment": "",                                         P - prevod|SL - slozenkou     vraceni preplatku
+                "paymentMethodOverPaymentBankAccountField": {                           vyplnit stejny ucet jako pro uhradu zaloh, pozor na SIPO
+                    "accountNumber": "",
+                    "bankCode": ""
+                }
+                "feeLine": 95                                                           poplatkova rada
+            },
+            "consumptionPlaces": [                                                      1 - n krat
+                {
+                    "type": "",                                                         Electricity|Gas
+                    "EANEIC": "",                                                       ean nebo eic kod
+                    "OPMaddress": {
+                        "type": "opm",                                                  hodnota staticka "opm"
+                        "street": "",
+                        "streetNumber": "",
+                        "houseNumber": "",
+                        "city": "",
+                        "cityPart": "",
+                        "zip": ""
+                    },
+                    "PreviousSupplier": 123,                                            soucasny dodavatel podle ciselniku
+                    "DistributionTariff": "",                                           distribucni sazba
+                    "DateOfContractCancelation": "31.01.2014",                          platnost soucasne smlouvy do, v pripade doby neurcite, nevyplnovat a nezapomenout na OldContractType
+                    "AdvancesCount": 1,                                                 pocet zaloh
+                    "AdvancesAmount": 0.12,                                             vyse zaloh
+                    "CircuitBreakerA": 0.35,                                            jistic proud
+                    "CircuitBreakerP": 3,                                               jistic pocet fazi
+                    "YearConsumptionHT": 0.17,                                          odhad spotreby VT - pokud neni VT a NT vyplnit pouze VT
+                    "YearConsumptionLT": 7.25,                                          odhad spotreby NT
+                    "OldContractType": ""                                               U - na dobu urcitou|N - na dobu neurcitou     typ smlouvy s predchozim dodavatelem
+                }
+            ],
+            "properties": {                                                             Hodnoty specialne pro jeden okruh (Xenergie)
+                "promoXe": "codePromo",                                                 Hodnota polozky promo
+                "bonusClub": "Y"                                                        Jestli chce uzivatel slevovou kartu Y/N
+            },
+            "contractStatus":"new",                                                     stav smlouvy
+            "codeList":"identifikator ciselniku",                                       identifikator ceniku vybraneho pro tuto smlouvu
+            "parentContractNumber": "cislo smlouvy",                                    cislo stornovane smlouvy (pri vraceni k oprave)
+            "createStamp":{                                                             razitko vzniku smlouvy
+                "latitude": 50.072129,
+                "longitude": 14.492048,
+                "localTime": 1390564484
+            },
+            "signStamp":{                                                               razitko potvrzeni smlouvy vyfocenim podepsaneho papiru
+                "latitude": 50.072129,
+                "longitude": 14.492048,
+                "localTime": 1390564484
+            }
+        }
+
+# Group Mobilni aplikace
+Popis služeb pro komunikaci  mobilní aplikace a backend serveru
+
+## Login [/login]
+### login [POST]
+Heslo je šifrované v SHA1
+
+Platnost získaného tokenu je X dní. Platnost se po každém jeho použití prodlužuje. Pokud platnost tokenu vyprší, server na všechny dotazy vyžadující autorizaci odpovídá stavem `401`, na kterou aplikace reguje zobrazením formuláře pro přihlášení.
+
+Offline expirace se řeší pomocí nastavení timeru při minimalizaci aplikace.
++ Request (application/json)
+    + Headers
+    
+            Position-Latitude: 50.072129
+            Position-Longitude: 14.492048
+
+    + Body
+
+            { 
+                "login": "pepa",
+                "pass": "955db0b81ef1989b4a4dfeae8061a9a6"
+            }
+
++ Response 200 (application/json)
+
+        {
+            "token": "kaaslijalxlaskjd",
+            "accountCircleId": 81,
+            "dealer": "id obchodnika"
+        }
+
++ Response 400
+
+### logout [DELETE]
+Odhlaseni uzivatele, server zneplatni token
++ Request
+    + Headers
+    
+            Token: sdf4e6sd49fe321vx9e
+            Position-Latitude: 50.072129
+            Position-Longitude: 14.492048
+
++ Response 200
++ Response 401
+
+
+## Contract [/contracts/{contractId}]
+### Získání detailu smlouvy [GET]
+Objekt contract obsahuje URL pro získání příloh. 
+Při stahování příloh musí být v hlavičce token uživatele.
++ Request
+    + Headers
+    
+            Token: sdf4e6sd49fe321vx9e
+            Position-Latitude: 50.072129
+            Position-Longitude: 14.492048
+
++ Response 200 (application/json)
+
+        {
+          "header": {
+            "accountCircleId": "81",
+            "annotation": "",
+            "kind": "S",
+            "process": 1
+          },
+          "contract": {
+            "contractNumber": "BAD620008",
+            "dateSigned": "03.03.2014",
+            "citySigned": "Praha",
+            "dealer": "testidobchodnika",
+            "validityLengthCnt": 0,
+            "validityFixedLength": false,
+            "discountId": 12,
+            "insurFlag": true
+          },
+          "partner": {
+            "firstName": "P",
+            "identifications": [
+              {
+                "identificationCode": "dateOfBirth",
+                "identificationValue": "03031996"
+              }
+            ],
+            "titleBefore": "",
+            "lastName": "B",
+            "titleAfter": "",
+            "isCorporation": false
+          },
+          "Addresses": [
+            {
+              "city": "Decow",
+              "cityPart": "",
+              "houseNumber": "",
+              "recipient": "",
+              "street": "Wis",
+              "streetNumber": "1",
+              "type": "default",
+              "zip": "11111"
+            },
+            {
+              "city": "Dec",
+              "cityPart": "",
+              "houseNumber": "",
+              "recipient": "John Doe",
+              "street": "W",
+              "streetNumber": "1",
+              "type": "postal",
+              "zip": "11111"
+            }
+          ],
+          "Contacts": [
+            {
+              "contactType": "TEL",
+              "contactValue": "123456789"
+            },
+            {
+              "contactType": "EMAIL",
+              "contactValue": "s@n.com"
+            },
+            {
+              "contactType": "OPROS",
+              "contactValue": "Ing. Josef Novák"
+            }
+          ],
+          "customerAccount": {
+            "InvoicesWaysOfDelivery": "D",
+            "paymentMethodAdvances": "SIPO",
+            "paymentMethodAdvancesBankAccountField": {
+              "accountNumber": "5555555555",
+              "bankCode": "SIPO"
+            },
+            "paymentMethodInvoices": "SIPO",
+            "paymentMethodOverPayment": "P",
+            "paymentMethodOverPaymentBankAccountField": {
+              "accountNumber": "0510-1234567899",
+              "bankCode": "0300"
+            },
+            "productLine": "Fix",
+            "feeLine": 95
+          },
+          "consumptionPlaces": [
+            {
+              "OPMaddress": {
+                "city": "Dec",
+                "cityPart": "",
+                "houseNumber": "",
+                "recipient": "",
+                "street": "W",
+                "streetNumber": "1",
+                "type": "opm",
+                "zip": "11111"
+              },
+              "type": "Electricity",
+              "OldContractType": "U",
+              "EANEIC": "859182400122222221",
+              "DateOfContractCancelation": "10.10.2014",
+              "DistributionTariff": "D2DA",
+              "DistributionCompany": 0,
+              "YearConsumptionLT": 4,
+              "CircuitBreakerA": 22,
+              "YearConsumptionHT": 6,
+              "AdvancesAmount": 1200,
+              "AdvancesCount": 1,
+              "PreviousSupplier": 1,
+              "CircuitBreakerP": 3
+            },
+            {
+              "OPMaddress": {
+                "city": "Dec",
+                "cityPart": "",
+                "houseNumber": "",
+                "recipient": "",
+                "street": "W",
+                "streetNumber": "1",
+                "type": "opm",
+                "zip": "11111"
+              },
+              "type": "Gas",
+              "OldContractType": "U",
+              "EANEIC": "27ZGRWERWEFWEFWE",
+              "DateOfContractCancelation": "05.04.2014",
+              "DistributionTariff": "",
+              "DistributionCompany": 0,
+              "YearConsumptionLT": 0,
+              "CircuitBreakerA": 0,
+              "YearConsumptionHT": 20,
+              "AdvancesAmount": 100,
+              "AdvancesCount": 12,
+              "PreviousSupplier": 2,
+              "CircuitBreakerP": 1
+            }
+          ],
+          "codeList": "",
+          "parentContractNumber": "",
+          "contractStatus": "REJECTED_TO_REPAIR_CONTRACT",
+          "rejectDescription": "Neni vlozeno vyuctovani za plyn.",
+          "createStamp": {
+            "latitude": 50.7579319,
+            "localTime": 1393833428,
+            "longitude": 14.1895718
+          },
+          "properties": {
+            "promoXe": "codePromo",
+            "bonusClub": "Y"
+          },
+          "signStamp": {
+            "latitude": 50.7579319,
+            "localTime": 1393833397,
+            "longitude": 14.1895718
+          },
+           "attachments": [
+            {
+              "type": "ACCOMPANYING_DOCUMENT",
+              "url": "http://s17.postimg.org/lfpzemcrj/pruvodni_dokument.jpg",
+              "hash": "4DCE16D178B1A35790D4C190B60CC93A"
+            },
+            {
+              "type": "GAS_BILL",
+              "url": "http://s28.postimg.org/bhp7yrfp9/vyuctovani_plyn.jpg",
+              "hash": "5802994D51633739B86B7E0121ECA633"
+            },
+            {
+              "type": "EL_BILL",
+              "url": "http://s17.postimg.org/fg6tophcv/vyuctovani_ele_1.jpg",
+              "hash": "948BE7EEA1B4E795B286D61534148F71"
+            },
+            {
+              "type": "OP_COPY",
+              "url": "http://s22.postimg.org/t7kpllwsh/obcansky_prukaz.jpg",
+              "hash": "BC9BC6A1B1F56DBA4BB5B848116427C1"
+            }
+          ]
+        }
+        
++ Response 401
++ Response 403
++ Response 404
+
+
+### Vytvoření smlouvy [POST]
+* `400` v pripade nevalidni smlouvy, napr. neexistuje cislo smlouvy
+* `409` v pripade znovupouziti cisla smlouvy
+
++ Request (application/json)
+    + Headers
+
+            Token: sdf4e6sd49fe321vx9e
+            Position-Latitude: 50.072129
+            Position-Longitude: 14.492048
+    + Body
+
+            {
+                "header": {
+                    "accountCircleId": 99999999999,
+                    "kind": "S",
+                    "process": 1,
+                    "annotation": "poznamka ke smlouve"
+                },
+                "contract": {
+                    "contractNumber": "cislo smlouvy",
+                    "dateSigned": "31.01.2014",
+                    "citySigned": "Praha",
+                    "dealer": "id obchodnika",
+                    "validityFixedLength": true,
+                    "validityLengthDateTo": "31.01.2014",
+                    "validityLengthCnt": 123,
+                    "validityLengthUnit": "Y",
+                    "discountId": 12
+                },
+                "partner": {
+                    "isCorporation": false,
+                    "firstName": "",
+                    "lastName": "",
+                    "titleBefore": "",
+                    "identifications": [
+                        {
+                            "identificationCode": "ic",
+                            "identificationValue": "8909211234"
+                        }
+                    ],
+                    "dic": "XY12345678"
+                },
+                "Addresses": [
+                    {
+                        "type": "postal",
+                        "street": "",
+                        "streetNumber": "",
+                        "houseNumber": "",
+                        "city": "",
+                        "cityPart": "",
+                        "zip": ""
+                    }
+                ],
+                "Contacts": [
+                    {
+                        "contactType": "TEL",
+                        "contactValue": ""
+                    }
+                ],
+                "customerAccount": {
+                    "productLine": "",
+                    "InvoicesWaysOfDelivery": "",
+                    "paymentMethodAdvances": "",
+                    "paymentMethodAdvancesBankAccountField": {
+                        "accountNumber": "",
+                        "bankCode": ""
+                    },
+                    "paymentMethodOverPayment": "",
+                    "paymentMethodOverPaymentBankAccountField": {
+                        "accountNumber": "",
+                        "bankCode": ""
+                    }
+                },
+                "consumptionPlaces": [
+                    {
+                        "type": "",
+                        "EANEIC": "",
+                        "OPMaddress": {
+                            "type": "opm",
+                            "street": "",
+                            "streetNumber": "",
+                            "houseNumber": "",
+                            "city": "",
+                            "cityPart": "",
+                            "zip": ""
+                        },
+                        "PreviousSupplier": 123,
+                        "DistributionTariff": "",
+                        "DateOfContractCancelation": "31.01.2014",
+                        "AdvancesCount": 1,
+                        "AdvancesAmount": 0.12,
+                        "CircuitBreakerA": 0.35,
+                        "CircuitBreakerP": 3,
+                        "YearConsumptionHT": 0.17,
+                        "YearConsumptionLT": 7.25,
+                        "OldContractType": ""
+                    }
+                ],
+                "contractStatus": "REJECTED_TO_REPAIR_CONTRACT",
+                "rejectDescription": "Neni vlozeno vyuctovani za plyn.",
+                "codeList": "identifikator ciselniku",
+                "parentContractNumber": "cislo smlouvy",
+                "createStamp": {
+                    "latitude": 50.072129,
+                    "longitude": 14.492048,
+                    "localTime": 1390564484
+                },
+                "signStamp": {
+                    "latitude": 50.072129,
+                    "longitude": 14.492048,
+                    "localTime": 1390564484
+                }
+            }
+
++ Response 201
++ Response 400
++ Response 401
++ Response 403
++ Response 409
+
+### Oprava smlouvy [PUT]
+* slouzi pro znovu odemceni smlouvy pro nahravani priloh
++ Request
+    + Headers
+    
+            Token: sdf4e6sd49fe321vx9e
+            Position-Latitude: 50.072129
+            Position-Longitude: 14.492048
+
++ Response 200
++ Response 401
++ Response 404
++ Response 403
+
+
+## Attachment [/contracts/{contractId}/attachment]
+### Vlozeni prilohy [POST]
+* prilohy se posilaji po jednom souboru
+* jako prilohu pocitame fotky (jpeg) a xml soubor se smlouvou
+* dodatecne parametry prilohy (typ) se posilaji jako dalsi polozky mulipart
+* pokud nesedni md5 neprijmout prilohu
+
+`405` pri pokusu o nahrani prilohy do uzavrene smlouvy
+
++ Request (multipart/form-data; boundary=bb439e946042)
+    + Headers
+
+            Token: sdf4e6sd49fe321vx9e
+            Position-Latitude: 50.072129
+            Position-Longitude: 14.492048
+            Hash: md5 souboru
+    + Body
+
+            --bb439e946042
+            Content-Disposition: form-data; name="file"; filename="test.jpg"
+            Content-Type: image/jpeg
+    
+            <binary data here>
+            --bb439e946042
+            
+            Content-Disposition: form-data; name="type"
+            OP_COPY
+            --bb439e946042
+
++ Response 201
++ Response 401
++ Response 403
++ Response 405
++ Response 409
+
+## Close [/contracts/{contractId}/close]
+### Uzavření smlouvy [POST]
+Nahrání smlouvy má následující flow:
+
+* Vytvoření smlouvy `POST` nebo update `PUT` tim dojde k odemknuti smlouvy pro nahravani priloh
+* vložení příloh `POST /attachment` je nutne zachovat unikatnost nazvu
+* uzavření smlouvy po nahrani vsech priloh (i kdyz nejsou zadne prilohy) `POST /close`
+
++ Request
+    + Headers
+
+            Token: sdf4e6sd49fe321vx9e
+            Position-Latitude: 50.072129
+            Position-Longitude: 14.492048
+
++ Response 200
++ Response 401
++ Response 403
++ Response 409
+
+## Contracts [/contracts]
+
+
+### Seznam smluv [GET]
++ Request
+    + Headers
+
+            Token: sdf4e6sd49fe321vx9e
+            Position-Latitude: 50.072129
+            Position-Longitude: 14.492048
+            If-Modified-Since: Sat, 29 Oct 1994 19:43:31 GMT
+            
++ Response 200 (application/json)
+    + Headers
+    
+            Last-Modified: Tue, 15 Nov 1994 12:45:26 GMT
+
+    + Body
+        
+            [
+                  {
+                    "header": {
+                      "accountCircleId": "99999999999",
+                      "annotation": "",
+                      "kind": "S",
+                      "process": 1
+                    },
+                    "contract": {
+                      "contractNumber": "BAD620010",
+                      "dateSigned": "24.02.2014",
+                      "dealer": "testidobchodnika",
+                      "validityLengthUnit": "Y",
+                      "validityLengthDateTo": "24.02.2019",
+                      "validityLengthCnt": 5,
+                      "validityFixedLength": true,
+                      "discountId": 12
+                    },
+                    "partner": {
+                      "firstName": "Jan",
+                      "identifications": [
+                        {
+                          "identificationCode": "dateOfBirth",
+                          "identificationValue": "24021996"
+                        }
+                      ],
+                      "titleBefore": "ing",
+                      "lastName": "Novak",
+                      "isCorporation": false
+                    },
+                    "Addresses": [
+                      {
+                        "city": "Praha",
+                        "cityPart": "Letna",
+                        "houseNumber": "",
+                        "recipient": "",
+                        "street": "Jeremenkova ",
+                        "streetNumber": "2",
+                        "type": "default",
+                        "zip": "12345"
+                      }
+                    ],
+                    "Contacts": [
+                      {
+                        "contactType": "TEL",
+                        "contactValue": "123456798"
+                      },
+                      {
+                        "contactType": "EMAIL",
+                        "contactValue": "ss@m.com"
+                      }
+                    ],
+                    "contractStatus": "REJECTED_TO_REPAIR_ATTACHMENT",
+                    "parentContractNumber": "",
+                    "rejectDescription": "Neni vlozeno vyuctovani za plyn.",
+                    "createStamp": {
+                      "latitude": 50.072129,
+                      "longitude": 14.492048,
+                      "localTime": 1390564484
+                    },
+                    "consumptionPlaces": [
+                        {
+                            "type": "Electricity",
+                            "state":"OPM_ACTIVE"
+                        },
+                        {
+                            "type": "Electricity",
+                            "state":"OPM_CANCELLED_OVER_90"
+                        },
+                        {
+                            "type": "Gas",
+                            "state":"OPM_ACTIVE"
+                        }
+                    ],
+                    "customerAccount": {
+                        "InvoicesWaysOfDelivery": "D",
+                        "paymentMethodAdvances": "I",
+                        "paymentMethodAdvancesBankAccountField": {
+                          "accountNumber": "4234234234",
+                          "bankCode": "0300"
+                        },
+                        "paymentMethodInvoices": "I",
+                        "paymentMethodOverPayment": "P",
+                        "paymentMethodOverPaymentBankAccountField": {
+                          "accountNumber": "4234234234",
+                          "bankCode": "0300"
+                        },
+                        "productLine": "Garance2013"
+                      }
+                  },
+                  {
+                      "header": {
+                        "accountCircleId": "81",
+                        "annotation": "",
+                        "kind": "S",
+                        "process": 1
+                      },
+                      "contract": {
+                        "contractNumber": "BAD620008",
+                        "dateSigned": "03.03.2014",
+                        "dealer": "testidobchodnika",
+                        "validityLengthCnt": 0,
+                        "validityFixedLength": false,
+                        "discountId": 12
+                      },
+                      "partner": {
+                        "firstName": "P",
+                        "identifications": [
+                          {
+                            "identificationCode": "dateOfBirth",
+                            "identificationValue": "03031996"
+                          }
+                        ],
+                        "titleBefore": "",
+                        "lastName": "B",
+                        "titleAfter": "",
+                        "isCorporation": false
+                      },
+                      "Addresses": [
+                        {
+                          "city": "Dec",
+                          "cityPart": "",
+                          "houseNumber": "",
+                          "recipient": "",
+                          "street": "W",
+                          "streetNumber": "1",
+                          "type": "default",
+                          "zip": "11111"
+                        }
+                      ],
+                      "Contacts": [
+                        {
+                          "contactType": "TEL",
+                          "contactValue": "123456789"
+                        },
+                        {
+                          "contactType": "EMAIL",
+                          "contactValue": "s@n.com"
+                        },
+                        {
+                          "contactType": "OPROS",
+                          "contactValue": "Ing. Josef Novák"
+                        }
+                      ],
+                      "customerAccount": {
+                        "InvoicesWaysOfDelivery": "D",
+                        "paymentMethodAdvances": "SIPO",
+                        "paymentMethodAdvancesBankAccountField": {
+                          "accountNumber": "0000000000",
+                          "bankCode": "SIPO"
+                        },
+                        "paymentMethodInvoices": "SIPO",
+                        "paymentMethodOverPayment": "P",
+                        "paymentMethodOverPaymentBankAccountField": {
+                          "accountNumber": "0000000000",
+                          "bankCode": "SIPO"
+                        },
+                        "productLine": "Fix"
+                      },
+                      "consumptionPlaces": [
+                        {
+                          "type": "Electricity",
+                          "state": "OPM_ACTIVE"
+                        },
+                        {
+                          "type": "Electricity",
+                          "state": "OPM_CANCELLED_OVER_90"
+                        },
+                        {
+                          "type": "Gas",
+                          "state": "OPM_ACTIVE"
+                        }
+                      ],
+                      "codeList": "",
+                      "parentContractNumber": "",
+                      "contractStatus": "REJECTED_TO_REPAIR_CONTRACT",
+                      "lastStatusChange": 1393833428,
+                      "rejectDescription": "Neni vlozeno vyuctovani za plyn.",
+                      "createStamp": {
+                        "latitude": 50.7579319,
+                        "localTime": 1393833428,
+                        "longitude": 14.1895718
+                      },
+                      "signStamp": {
+                        "latitude": 50.7579319,
+                        "localTime": 1393833397,
+                        "longitude": 14.1895718
+                      }
+                    },
+                  {
+                    "header": {
+                      "accountCircleId": "99999999999",
+                      "annotation": "",
+                      "kind": "S",
+                      "process": 2
+                    },
+                    "contract": {
+                      "contractNumber": "BAD620005",
+                      "dateSigned": "24.02.2014",
+                      "dealer": "testidobchodnika",
+                      "validityLengthUnit": "Y",
+                      "validityLengthDateTo": "24.02.2019",
+                      "validityLengthCnt": 5,
+                      "validityFixedLength": true,
+                      "discountId": 12
+                    },
+                    "partner": {
+                      "firstName": "Michal",
+                      "identifications": [
+                        {
+                          "identificationCode": "dateOfBirth",
+                          "identificationValue": "24021996"
+                        }
+                      ],
+                      "titleBefore": "ing",
+                      "lastName": "Kaktus",
+                      "isCorporation": false
+                    },
+                    "Addresses": [
+                      {
+                        "city": "Decin",
+                        "cityPart": "Letna",
+                        "houseNumber": "",
+                        "recipient": "",
+                        "street": "Na Skrivance",
+                        "streetNumber": "10",
+                        "type": "default",
+                        "zip": "40501"
+                      }
+                    ],
+                    "Contacts": [
+                      {
+                        "contactType": "TEL",
+                        "contactValue": "123456798"
+                      },
+                      {
+                        "contactType": "EMAIL",
+                        "contactValue": "ssdfsd@fdsf.com"
+                      },
+                      {
+                        "contactType": "OPROS",
+                        "contactValue": "Ing. Josef Novák"
+                      }
+                    ],
+                    "contractStatus": "BE_NEW",
+                    "lastStatusChange": 1393833428,
+                    "parentContractNumber": "",
+                    "rejectDescription": "Neni vlozeno vyuctovani za plyn.",
+                    "createStamp": {
+                      "latitude": 50.072129,
+                      "longitude": 14.492048,
+                      "localTime": 1390564484
+                    },
+                    "consumptionPlaces": [
+                        {
+                            "type": "Gas",
+                            "state":"OPM_CANCELLED_BELOW_90"
+                        }
+                    ],
+                         "customerAccount": {
+                        "InvoicesWaysOfDelivery": "D",
+                        "paymentMethodAdvances": "I",
+                        "paymentMethodAdvancesBankAccountField": {
+                          "accountNumber": "4234234234",
+                          "bankCode": "0300"
+                        },
+                        "paymentMethodInvoices": "I",
+                        "paymentMethodOverPayment": "P",
+                        "paymentMethodOverPaymentBankAccountField": {
+                          "accountNumber": "4234234234",
+                          "bankCode": "0300"
+                        },
+                        "productLine": "Garance2013"
+                      }
+                },
+                {
+                  "header": {
+                    "accountCircleId": "99999999999",
+                    "annotation": "",
+                    "kind": "S",
+                    "process": 1
+                  },
+                  "contract": {
+                    "contractNumber": "BAD620002",
+                    "dateSigned": "24.02.2014",
+                    "dealer": "testidobchodnika",
+                    "validityLengthUnit": "Y",
+                    "validityLengthDateTo": "24.02.2019",
+                    "validityLengthCnt": 5,
+                    "validityFixedLength": true,
+                    "discountId": 12
+                  },
+                  "partner": {
+                    "firstName": "Jan",
+                    "identifications": [
+                      {
+                        "identificationCode": "dateOfBirth",
+                        "identificationValue": "24021996"
+                      }
+                    ],
+                    "titleBefore": "ing",
+                    "lastName": "Novak",
+                    "isCorporation": false
+                  },
+                  "Addresses": [
+                    {
+                      "city": "Praha",
+                      "cityPart": "Letna",
+                      "houseNumber": "",
+                      "recipient": "",
+                      "street": "Jeremenkova ",
+                      "streetNumber": "2",
+                      "type": "default",
+                      "zip": "12345"
+                    }
+                  ],
+                  "Contacts": [
+                    {
+                      "contactType": "TEL",
+                      "contactValue": "123456798"
+                    },
+                    {
+                      "contactType": "EMAIL",
+                      "contactValue": "ss@m.com"
+                    }
+                  ],
+                  "contractStatus": "REJECTED_TO_REPAIR_ATTACHMENT",
+                  "lastStatusChange": 1393833428,
+                  "parentContractNumber": "",
+                  "rejectDescription": "Neni vlozeno vyuctovani za plyn.",
+                  "createStamp": {
+                    "latitude": 50.072129,
+                    "longitude": 14.492048,
+                    "localTime": 1390564484
+                  },
+                  "consumptionPlaces": [
+                    {
+                      "type": "Electricity",
+                      "state": "OPM_ACTIVE"
+                    },
+                    {
+                      "type": "Electricity",
+                      "state": "OPM_CANCELLED_OVER_90"
+                    },
+                    {
+                      "type": "Gas",
+                      "state": "OPM_ACTIVE"
+                    }
+                  ],
+                  "customerAccount": {
+                    "InvoicesWaysOfDelivery": "D",
+                    "paymentMethodAdvances": "I",
+                    "paymentMethodAdvancesBankAccountField": {
+                      "accountNumber": "4234234234",
+                      "bankCode": "0300"
+                    },
+                    "paymentMethodInvoices": "I",
+                    "paymentMethodOverPayment": "P",
+                    "paymentMethodOverPaymentBankAccountField": {
+                      "accountNumber": "4234234234",
+                      "bankCode": "0300"
+                    },
+                    "productLine": "Garance2013"
+                  }
+                }
+            ]
+
++ Response 304
+    + Headers
+    
+            Last-Modified: Tue, 15 Nov 1994 12:45:26 GMT
+
++ Response 401
++ Response 404
+    
+## Contract Number [/contract_number]
+### Seznam čísel smluv [GET]
+* Vraci seznam cisel smluv pro obchodniho zastupce
+* Ucetni okruh obchodniho zastupce je znam z IDM
+* Vrací vždy X čísel, aplikace tuto metodu volá vždy když jí začnou docházet a jelikož může dojít k vymazání dat, server bude odesílat i ta čísla, která má již aplikace mít u sebe.
+
++ Request
+    + Headers
+
+            Token: sdf4e6sd49fe321vx9e
+            Position-Latitude: 50.072129
+            Position-Longitude: 14.492048
+            
++ Response 200 (application/json)
+
+        [
+            "BAD620002",
+            "BAD620005",
+            "BAD620010",
+            "BAD620011",
+            "BAD620012",
+            "BAD620013",
+            "BAD620014"
+        ]
+        
++ Response 401
++ Response 502
+
+## Push notifikace [/user/push_token]
+### Registrace PUSH tokenu [POST]
+Predpokladame vazbu jeden uzivatel - jedno zarizeni, neni tedy treba uchovavat vice klicu pro jeden login. Token se vzdy prepise
+
+PUSH notifikace pouzivame pro update ciselniku na pozadi, aby byla aplikace pripravena k pouziti a ne, aby po spusteni probihal update
++ Request (application/json)
+    + Headers
+
+            Token: sdf4e6sd49fe321vx9e
+            Position-Latitude: 50.072129
+            Position-Longitude: 14.492048
+    
+    + Body
+    
+            {
+                "pushToken":"sd5f4ew46sd9fe4f4s6d1cs64ef94es4fSEFSFsdf46e4SEFs6e48seFs4d1"
+            }
+
++ Response 200
++ Response 401
+
+## Konfigurace [/config]
+### Zjisteni aktualni konfigurace [GET]
+Pokud prijde notifikace, ze se zmenili ciselniky, nebo po prechodu na popredi (max 1 x za 24 hodin)
+
+LastUpdate se posila pomoci hlavicky If-Modified-Since
+
+Pokud doslo k nejake zmene, vraci ciselniky (vsechno, nebudeme delat diff), jinak `304` not modified
+
+**TODO format ciselniku**
++ Request
+    + Headers
+
+            Token: sdf4e6sd49fe321vx9e
+            Position-Latitude: 50.072129
+            Position-Longitude: 14.492048
+            If-Modified-Since: Sat, 29 Oct 1994 19:43:31 GMT
+
++ Response 200
+    + Headers
+
+            Last-Modified: Tue, 15 Nov 1994 12:45:26 GMT
+        
+    + Body
+
+            {
+                "enumeration": {
+                    "advanceFrequency": [
+                        {
+                            "depositId": 1,
+                            "depositName": "12 - měsíční",
+                            "depositMonthCount": 12
+                        },
+                        {
+                            "depositId": 3,
+                            "depositName": "1 - roční",
+                            "depositMonthCount": 1
+                        }
+                    ],
+                    "productLine": [
+                        {
+                            "productLineId": 1,
+                            "productLineName": "GARANCE 2013",
+                            "productLineCode": "GR2013",
+                            "productLinePartnerType": 1
+                        },
+                        {
+                            "productLineId": 2,
+                            "productLineName": "Fix",
+                            "productLineCode": "FX",
+                            "productLinePartnerType": 1
+                        },
+                        {
+                            "productLineId": 3,
+                            "productLineName": "Garance",
+                            "productLineCode": "GR",
+                            "productLinePartnerType": 2
+                        },
+                        {
+                            "productLineId": 4,
+                            "productLineName": "Basic",
+                            "productLineCode": "B",
+                            "productLinePartnerType": 2
+                        }
+                    ],
+                    "suppliersEl": [
+                        {
+                            "suppliersElId": 19,
+                            "suppliersElName": "CENTROPOL ENERGY, a.s.",
+                            "suppliersElZisId": 970901
+                        },
+                        {
+                            "suppliersElId": 31,
+                            "suppliersElName": "ČEZ Prodej, s.r.o.",
+                            "suppliersElZisId": 970902
+                        }
+                    ],
+                    "suppliersGas": [
+                        {
+                            "suppliersGasId": 7,
+                            "suppliersGasName": "ČEZ Prodej, s.r.o.",
+                            "suppliersGasZisId": 970903
+                        },
+                        {
+                            "suppliersGasId": 13,
+                            "suppliersGasName": "CENTROPOL ENERGY, a.s.",
+                            "suppliersGasZisId": 970904
+                        }
+                    ],
+                    "attachmentType": [
+                      {
+                        "attachmentId": 4,
+                        "attachmentName": "Občanský průkaz",
+                        "attachmentPrefix": "OP_COPY",
+                        "attachmentCommodityType": "ALL",
+                        "attachmentContractType": 2,
+                        "attachmentOrder": 4,
+                        "attachmentPaper": false,
+                        "attachmentObligatory": true,
+                        "attachmentRemovable": false,
+                        "attachmentEditable": false
+                      },
+                      {
+                        "attachmentId": 1,
+                        "attachmentName": "Občanský průkaz",
+                        "attachmentPrefix": "OP_COPY",
+                        "attachmentCommodityType": "ALL",
+                        "attachmentContractType": 1,
+                        "attachmentOrder": 1,
+                        "attachmentPaper": false,
+                        "attachmentObligatory": true,
+                        "attachmentRemovable": false,
+                        "attachmentEditable": false
+                      },
+                      {
+                        "attachmentId": 2,
+                        "attachmentName": "Vyúčtování eletřina",
+                        "attachmentPrefix": "EL_BILL",
+                        "attachmentCommodityType": "EL",
+                        "attachmentContractType": 1,
+                        "attachmentOrder": 2,
+                        "attachmentPaper": true,
+                        "attachmentObligatory": true,
+                        "attachmentRemovable": true,
+                        "attachmentEditable": true
+                      },
+                      {
+                        "attachmentId": 3,
+                        "attachmentName": "Vyúčtování eletřina",
+                        "attachmentPrefix": "EL_BILL",
+                        "attachmentCommodityType": "EL",
+                        "attachmentContractType": 1,
+                        "attachmentOrder": 3,
+                        "attachmentPaper": true,
+                        "attachmentObligatory": true,
+                        "attachmentRemovable": true,
+                        "attachmentEditable": true
+                      },
+                      {
+                        "attachmentId": 6,
+                        "attachmentName": "Vyúčtování plyn",
+                        "attachmentPrefix": "GAS_BILL",
+                        "attachmentCommodityType": "GAS",
+                        "attachmentContractType": 1,
+                        "attachmentOrder": 4,
+                        "attachmentPaper": true,
+                        "attachmentObligatory": false,
+                        "attachmentRemovable": true,
+                        "attachmentEditable": true
+                      },
+                      {
+                        "attachmentId": 5,
+                        "attachmentName": "Průvodní dokument",
+                        "attachmentPrefix": "ACCOMPANYING_DOCUMENT",
+                        "attachmentCommodityType": "ALL",
+                        "attachmentContractType": 1,
+                        "attachmentOrder": 1,
+                        "attachmentPaper": false,
+                        "attachmentObligatory": true,
+                        "attachmentRemovable": false,
+                        "attachmentEditable": false
+                      },
+                      {
+                        "attachmentId": 7,
+                        "attachmentName": "Rodny list",
+                        "attachmentPrefix": "RC_PAPER",
+                        "attachmentCommodityType": "ALL",
+                        "attachmentContractType": 1,
+                        "attachmentOrder": 5,
+                        "attachmentPaper": true,
+                        "attachmentObligatory": true,
+                        "attachmentRemovable": false,
+                        "attachmentEditable": false
+                      },
+                      {
+                        "attachmentId": 8,
+                        "attachmentName": "Rodny list2",
+                        "attachmentPrefix": "RC_PAPER",
+                        "attachmentCommodityType": "ALL",
+                        "attachmentContractType": 1,
+                        "attachmentOrder": 6,
+                        "attachmentPaper": true,
+                        "attachmentObligatory": true,
+                        "attachmentRemovable": false,
+                        "attachmentEditable": false
+                      },
+                      {
+                        "attachmentId": 9,
+                        "attachmentName": "Ostatni prilohy",
+                        "attachmentPrefix": "OTHER_ATTACHEMENT",
+                        "attachmentCommodityType": "ALL",
+                        "attachmentContractType": 1,
+                        "attachmentOrder": 7,
+                        "attachmentPaper": false,
+                        "attachmentObligatory": false,
+                        "attachmentRemovable": true,
+                        "attachmentEditable": true
+                      },
+                      {
+                        "attachmentId": 10,
+                        "attachmentName": "Oddaci list",
+                        "attachmentPrefix": "SOME_PAPER",
+                        "attachmentCommodityType": "EL",
+                        "attachmentContractType": 1,
+                        "attachmentOrder": 8,
+                        "attachmentPaper": true,
+                        "attachmentObligatory": true,
+                        "attachmentRemovable": true,
+                        "attachmentEditable": true
+                      }
+                    ],
+                    "taxLines": [
+                        {
+                            "taxLinesId": 1,
+                            "taxLinesName": "Standard",
+                            "taxLinesZisId": 95
+                        },
+                        {
+                            "taxLinesId": 2,
+                            "taxLinesName": "Individual",
+                            "taxLinesZisId": 96
+                        }
+                    ],
+                    "distributionTariffs": [
+                        {
+                            "distributionId": 15,
+                            "distributionCode": "D26d",
+                            "distributionDesc": "D26d - Test pro domacnost s NT",
+                            "distributionPartnerType": 1,
+                            "distributionLowTariff": true,
+                            "distributionOrder": 1
+                        },
+                        {
+                            "distributionId": 17,
+                            "distributionCode": "C35d",
+                            "distributionDesc": "C35d - Test pro podnikatele s NT",
+                            "distributionPartnerType": 2,
+                            "distributionLowTariff": true,
+                            "distributionOrder": 4
+                        },
+                        {
+                            "distributionId": 22,
+                            "distributionCode": "VVN",
+                            "distributionDesc": "VVN - Test pro podnikatele bez NT",
+                            "distributionPartnerType": 2,
+                            "distributionLowTariff": false,
+                            "distributionOrder": 3
+                        },
+                        {
+                            "distributionId": 18,
+                            "distributionCode": "D01d",
+                            "distributionDesc": "D01d - Test pro domacnost bez NT",
+                            "distributionPartnerType": 1,
+                            "distributionLowTariff": false,
+                            "distributionOrder": 2
+                        }
+                    ],
+                    "BankCodes": [
+                        {
+                            "bankId": 1,
+                            "bankCode": "0800",
+                            "bankName": "Česká Spořitelna",
+                            "bankOrder": 4
+                        },
+                        {
+                            "bankId": 2,
+                            "bankCode": "0300",
+                            "bankName": "Československá obchodní banka (+ Era/Poštovní spořitelna)",
+                            "bankOrder": 5
+                        },
+                        {
+                            "bankId": 3,
+                            "bankCode": "0600",
+                            "bankName": "GE Money Bank",
+                            "bankOrder": 3
+                        },
+                        {
+                            "bankId": 4,
+                            "bankCode": "2700",
+                            "bankName": "UniCredit Bank",
+                            "bankOrder": 2
+                        },
+                        {
+                            "bankId": 5,
+                            "bankCode": "2200",
+                            "bankName": "Peněžní dům, spořitelní družstvo",
+                            "bankOrder": 1
+                        }
+                    ]
+                },
+                "templates":[
+                    {
+                        "documentType": "CONTRACT_TEMPLATE",
+                        "dataUrl": "https://dl.dropboxusercontent.com/s/qoop2uqbx8cmf7b/XE_contract.zip?dl=1&token_hash=AAHdClmlRyNnQydDMYa8oHmRlY3o22jdh5ptSAp49KIQbQ",
+                        "hash": "093AB8EEA49348E170DB682514EDB0DC"
+                    },
+                    {
+                        "documentType": "POWER_OF_ATTORNEY_TEMPLATE",
+                        "dataUrl": "https://docs.google.com/uc?export=download&id=0B-uy75Qe5fghTWoxaDRrbGpfcGs",
+                        "hash": "28207AF90913C4FDE2A9C20777011112"
+                    }
+                ],
+                "priceLists":[
+                    {
+                        "originalFileName": "BE_EL_DO_GR2013_CR_2013-02.pdf",
+                        "dataUrl": "http://www.bohemiaenergy.cz/res/files/cz_VOP_elektrina_NN.pdf",
+                        "hash": "CDBB54C7ABC824EB621350EAFBD5455D"
+                    },
+                    {
+                        "originalFileName": "BE_EL_DO_GR2013_MO_2013-02.pdf",
+                        "dataUrl": "http://www.bohemiaenergy.cz/res/files/cz_VOP_elektrina_NN.pdf",
+                        "hash": "CDBB54C7ABC824EB621350EAFBD5455D"
+                    },
+                    {
+                        "originalFileName": "BE_EL_DO_GR2013_PH_2013-02.pdf",
+                        "dataUrl": "http://www.bohemiaenergy.cz/res/files/cz_VOP_elektrina_NN.pdf",
+                        "hash": "CDBB54C7ABC824EB621350EAFBD5455D"
+                    },
+                    {
+                        "originalFileName": "BE_PL_DO_GR2013_RWE_2013-02.pdf",
+                        "dataUrl": "http://www.bohemiaenergy.cz/res/files/cz_VOP_elektrina_NN.pdf",
+                        "hash": "CDBB54C7ABC824EB621350EAFBD5455D"
+                    },
+                    {
+                        "originalFileName": "BE_PL_DO_STANDARD_RWE_2013-02.pdf",
+                        "dataUrl": "http://www.bohemiaenergy.cz/res/files/cz_VOP_elektrina_NN.pdf",
+                        "hash": "CDBB54C7ABC824EB621350EAFBD5455D"
+                    }
+                ],
+                "DateOfContractCancelationHelp":
+                    {
+                        "originalFileName": "Test.pdf",
+                        "dataUrl": "http://www.bohemiaenergy.cz/res/files/cz_VOP_elektrina_NN.pdf",
+                        "hash": "CDBB54C7ABC824EB621350EAFBD5455D"
+                    },
+                "promo": [
+                    {
+                        "promoId": 1,
+                        "promoPartnerType": 1,
+                        "promoProductLineId": 1,
+                        "promoCommodities": "ALL",
+                        "promoName": "Promo akce - žárovky",
+                        "promoZisId": 8
+                    }
+                ],
+                "distributorsEl": [
+                    {
+                        "distributorsElId": 1,
+                        "distributorsElName": "test1",
+                        "distributorsElCodeFrom": 1,
+                        "distributorsElCodeTo": 1,
+                        "distributorsElZisId": 1
+                    },
+                     {
+                        "distributorsElId": 2,
+                        "distributorsElName": "test2",
+                        "distributorsElCodeFrom": 1,
+                        "distributorsElCodeTo": 1,
+                        "distributorsElZisId": 2
+                    }
+                ],
+                "distributorsGas": [
+                    {
+                        "distributorsGasId": 1,
+                        "distributorsGasName": "test",
+                        "distributorsGasCodeFrom": 1,
+                        "distributorsGasCodeTo": 1,
+                        "distributorsGasZisId": 1
+                    },
+                    {
+                        "distributorsGasId": 2,
+                        "distributorsGasName": "test2",
+                        "distributorsGasCodeFrom": 1,
+                        "distributorsGasCodeTo": 1,
+                        "distributorsGasZisId": 2
+                    }
+                ],
+                "logo": 
+                {
+                    "dataUrl":"https://docs.google.com/uc?export=download&id=0B-uy75Qe5fghUkRfNGUwVFBWNzg",
+                    "hash": "6D0413313BAF9EE937F748054C9C30B1"
+                },
+                "abLogo":
+                {
+                    "dataUrl":"https://docs.google.com/uc?export=download&id=0B-uy75Qe5fghaXd5SHJ0TzkyOWM",
+                    "hash": "5FDD4DE86DF4D177C98764CDFED58443"
+                },
+                "notifLogo":
+                {
+                    "dataUrl":"https://docs.google.com/uc?export=download&id=0B-uy75Qe5fgha05iVjNsXzFIMVk",
+                    "hash": "175E3CA443A00DC5FB575EA4DFE79E00"
+                },
+                "baseColor":"#FF2468",
+                "baseColorPressed":"#3EFFC4"
+            }
+
++ Response 304
+    + Headers
+
+            Last-Modified: Tue, 15 Nov 1994 12:45:26 GMT
+
++ Response 401
+
+## Lokace [/location]
+### Odeslani historie polohy [POST]
+Aplikace bude trackovat svou polohu. Poloha se bude trackova na zaklade zmeny polohy, nikoliv casu (setrime baterie). Pokud je zarizeni online, je zmena polohy odeslana ihned, pokud je offline, je zaznam polohy odeslan az s novym pripojenim.
++ Request (application/json)
+    + Headers
+
+            Token: sdf4e6sd49fe321vx9e
+            Position-Latitude: 50.072129
+            Position-Longitude: 14.492048
+    
+    + Body
+    
+            [
+                {
+                    "latitude": 50.072129,
+                    "longitude": 14.492048,
+                    "localTime": 1390564484
+                },
+                {
+                    "latitude": 50.072129,
+                    "longitude": 14.492048,
+                    "localTime": 1390564484
+                }
+            ]
+
++ Response 201
++ Response 401
+
+## Address [/address]
+### Ziskani aktualizace adres RUIAN [GET]
+* více na gDrive (https://docs.google.com/a/eman.cz/document/d/1i1fNPJUmtUiJndhLiEDhPrXkb5PNiTwnbpQlPG5ktms/edit)
+
++ Request
+    + Headers
+
+            Token: sdf4e6sd49fe321vx9e
+            Position-Latitude: 50.072129
+            Position-Longitude: 14.492048
+            If-Modified-Since: Sat, 29 Oct 1994 19:43:31 GMT
+
++ Response 200 (application/json)
+    + Headers
+    
+            Last-Modified: Tue, 15 Nov 1994 12:45:26 GMT
+    
+    + Body
+
+            {
+                "regions": [
+                    {
+                        "id": 1,
+                        "name": "Hlavní město Praha"
+                    }
+                ],
+                "districts": [
+                    {
+                        "id": 1,
+                        "name": "Benešov",
+                        "regionID": 1
+                    }
+                ],
+                "cities": [
+                    {
+                        "id": 1,
+                        "name": "Praha",
+                        "districtID": 1
+                    }
+                ],
+                "cityParts": [
+                    {
+                        "id": 1,
+                        "name": "Podchlumí",
+                        "cityID": 1
+                    }
+                ],
+                "MOMCs": [
+                    {
+                        "id": 1,
+                        "name": "Brno - střed",
+                        "cityID": 1
+                    }
+                ],
+                "MOPs": [
+                    {
+                        "id": 1,
+                        "name": "Praha 5",
+                        "cityID": 1
+                    }
+                ],
+                "streets": [
+                    {
+                        "id": 1,
+                        "name": "Kafkova"
+                    }
+                ],
+                "zipCodes": [
+                    {
+                        "zip": 10000
+                    }
+                ],
+                "addressPoints": [
+                    {
+                        "id": 1,
+                        "e": 1,
+                        "p": 1,
+                        "o": 1,
+                        "char": "a",
+                        "longitude": 15.458,
+                        "latitude": 50.4585,
+                        "cityID": 1,
+                        "streetID": 1,
+                        "zipCodeID": 1
+                    }
+                ]
+            }
+
++ Response 304
+    + Headers
+    
+            Last-Modified: Tue, 15 Nov 1994 12:45:26 GMT
+
++ Response 401
+
+# Group PUSH notifikace
+
+## Synchronizace
+* Budeme pouzivat pouze Send to Sync notifikace (s2s)
+* Budeme rozlisovat tri druhy notifikaci jednu pro `GET /config`, druhou pro `GET /address` a treti pro stazeni seznamu smluv `GET /contracts` a tedy i trojici prislusnych collapse key **"config"**, **"address"** a **"contractsList"**
+* Vic info o s2s napr.: http://www.doubleencore.com/2013/09/push-dont-poll-how-to-use-gcm-to-update-app-data/
+
+### Klasicka PUSH s payload
+
+        {
+            "message":"Delej ty smlouvy poradne!"
+        }
+
+# Group Integrace synchronni
+Popis služeb pro komunikaci s integrační platformou v BEEI
+
+
+* Vsechny sluzby jsou volany synchronne pomoci webovych sluzeb, vse je na protokolu JSON-REST
+* URL na webove sluzby - http://192.168.250.110/beei/1/
+
+## Contract Number [/beei/1/contractNumbers]
+### Seznam čísel smluv [POST]
+BE se bude v případě nedostatku smluv dotazovat integrace. Dotaz bude zvlást pro kazdy ucetni okruh.
+
+* **accountingCircleId** je číselník účetních okruhů: 
+        * `X` : X Energy
+        * `B` : Bohemia EE
+        * `C` : Comfort E
+
++ Request (application/json)
+
+        { 
+            "count": "100" 
+            "accountingCircleId": "X"
+        }
+
++ Response 200 (application/json)
+
+        [
+            "BAD620002",
+            "BAD620005",
+            "BAD620010"
+        ]
+        
++ Response 500
+
++ Response 502
+
+## Enumeration [/beei/1/enumerations]
+### Seznam číselníků [GET]
+BE se bude dotazovat BEEI na update ciselniku. Bude na zaklade servisniho zasahu nebo po iniciaci asynchronni message BEEI upozornujici na zmenu. Ciselniky se posilaji vzdy vsechny neni tedy treba verzovat ci vyhledavat zmeny.
+
++ Response 200 (application/json)
+
+        {
+            "enumeration": {
+                "accountCircle": [
+                    {
+                        accountCircleId: 1,
+                        accountCircleName: "Bohemia Eenergy"
+                    },
+                    {
+                        accountCircleId: 2,
+                        accountCircleName: "X Energie"
+                    }
+                ],
+                "advanceFrequency": [
+                    {
+                        "depositId": 1,
+                        "depositCircleId" : 1,
+                        "depositName": "roční",
+                        "depositMonthCount": 12
+                    },
+                    {
+                        "depositId": 3,
+                        "depositCircleId" : 1,
+                        "depositName": "měsíční",
+                        "depositMonthCount": 1
+                    }
+                ],
+                "productLine": [
+                    {
+                        "productLineId": 1,
+                        "productLineCircleId": 1,
+                        "productLineName": "Garance2013",
+                        "productLineCode": "GR2013",
+                        "productLinePartnerType": 1
+                        
+                    },
+                    {
+                        "productLineId": 2,
+                        "productLineCircleId": 1,
+                        "productLineName": "Fix",
+                        "productLineCode": "FX",
+                        "productLinePartnerType": 1
+                    }
+                ],
+                "suppliersEl": [
+                    {
+                        "suppliersElId": 1,
+                        "suppliersElCircleId": 1,
+                        "suppliersElName": "ČEZ Prodej, a.s.",
+                        "suppliersElZisId": 970900
+                    },
+                    {
+                        "suppliersElId": 2,
+                        "suppliersElCircleId": 1,
+                        "suppliersElName": "RWEProdej, a.s.",
+                        "suppliersElZisId": 970900
+                    }
+                ],
+                "suppliersGas": [
+                    {
+                        "suppliersGasId": 1,
+                        "suppliersGasCircleId": 1,
+                        "suppliersGasName": "ČEZ Prodej, a.s.",
+                        "suppliersGasZisId": 970900
+                    },
+                    {
+                        "suppliersGasId": 2,
+                        "suppliersGasCircleId": 1,
+                        "suppliersGasName": "RWEProdej, a.s.",
+                        "suppliersGasZisId": 970900
+                    }
+                ],
+                "attachmentType": [
+                    {
+                        attachmentId: 1,
+                        attachmentCircleId: 1,
+                        attachmentName: "Občanský průkaz",
+                        attachmentPrefix: "OP_COPY",
+                        attachmentCommodityType: "ALL",
+                        attachmentContractType: 1,
+                        attachmentOrder: 2,
+                        attachmentPaper: true,
+                        attachmentObligatory: true,
+                        attachmentRemovable: false,
+                        attachmentEditable: false,
+                        attachmentMergeOrder: 1
+                    },
+                    {
+                        attachmentId: 2,
+                        attachmentCircleId: 1,
+                        attachmentName: "Vyúčtování plyn",
+                        attachmentPrefix: "EL_BILL",
+                        attachmentCommodityType: "EL",
+                        attachmentContractType: 0,
+                        attachmentOrder: 3,
+                        attachmentPaper: true,
+                        attachmentObligatory: true,
+                        attachmentRemovable: false,
+                        attachmentEditable: false,
+                        attachmentMergeOrder: 1
+                    }
+                ],
+                "taxLines": [
+                    {
+                        taxLinesId: 1,
+                        taxLinesCircleId: 1,
+                        taxLinesName: "Standard"
+                    },
+                    {
+                        taxLinesId: 2,
+                        taxLinesCircleId: 1,
+                        taxLinesName: "Individual"
+                    }
+                ],
+                "distributionTariffs": [
+                    {
+                        distributionId: 1,
+                        distributionCircleId: 1,
+                        distributionCode: "D2S3",
+                        distributionDesc: "Sazba pro elektromobily",
+                        distributionPartnerType: 1,
+                        distributionLowTariff: true,
+                        distributionOrder: 1
+                    },
+                    {
+                        distributionId: 2,
+                        distributionCircleId: 1,
+                        distributionCode: "D2DA",
+                        distributionDesc: "Příklad ...",
+                        distributionPartnerType: 1,
+                        distributionLowTariff: false,
+                        distributionOrder: 2
+                    }
+                ],
+                "BankCodes" : [
+                    {
+                        bankId: 1,
+                        bankCircleId: 1,
+                        bankCode: "0800",
+                        bankName: "Česká Spořitelna",
+                        bankOrder: 2
+                    },
+                    {
+                        bankId: 2,
+                        bankCircleId: 1,
+                        bankCode: "1234",
+                        bankName: "mBank",
+                        bankOrder: 3
+                    }
+                ],
+                "promo": [
+                    {
+                        "promoId": 1,
+                        "promoCircleId": 71,
+                        "promoPartnerType": 1,
+                        "promoProductLineId": 1,
+                        "promoCommodities": "ALL",
+                        "promoName": "Promo akce - žárovky",
+                        "promoZisId": 8
+                    }
+                ],
+                “distributorsEl": [
+                    {
+                        "distributorsElId": 1,
+                        "distributorsElCircleId": 1,
+                        "distributorsElName": "test",
+                        "distributorsElCodeFrom": 1,
+                        "distributorsElCodeTo": 1,
+                        "distributorsElZisId": 1
+                    }
+                ],
+                "distributorsGas": [
+                    {
+                        "distributorsGasId": 1,
+                        "distributorsGasCircleId": 1,
+                        "distributorsGasName": "test",
+                        "distributorsGasCodeFrom": 1,
+                        "distributorsGasCodeTo": 1,
+                        "distributorsGasZisId": 1
+                    }
+                ]
+            } 
+        
++ Response 500
+
++ Response 502
+
+## Repository [/beei/1/templateRepository]
+### Seznam sablon [GET]
+BE se bude dotazovat BEEI na update sablon. Bude na zaklade servisniho zasahu nebo po iniciaci asynchronni message BEEI upozornujici na zmenu. Sablony se posilaji vzdy vsechny, nemusi se tak resit rozdily 
+
+* Číselník účetních okruhů: 
+        * `X` : X Energy
+        * `B` : Bohemia EE
+        * `C` : Comfort E
+        
+* Typy možných souborů :
+        * `CONTRACT_TEMPLATE` : sablona pro smlouvu 
+        * `POWER_OF_ATTORNEY_TEMPLATE` : sablona plne moci 
+        * `PRICE_LIST`: Cenik
+        * `DATE_OF_CONTRACT_CANCELATION_HELP`: Nápověda k datumu ukončení smlouvy předchozího dodavatele
+
+* Priklad slozeni nazvu prilohy: 
+        * B-POWER_OF_ATTORNEY_TEMPLATE-sablona.zip
+        
++ Response 200 (application/json)
+
+        {
+            "files": [
+                {
+                    "id": "fdbd92de-7c63-4a71-b98b-459756c2cfbc",
+                    "byteSize": 5,
+                    "originalFileName": "test2",
+                    "dataUrl": "test2",
+                    "updated": 1392126661917
+                },
+                {
+                    "id": "a3e1bc07-4c58-4e40-bb89-50b9a31bcb75",
+                    "byteSize": 5,
+                    "originalFileName": "test3",
+                    "dataUrl": "test3",
+                    "updated": 1392127328010
+                }
+            ]
+        }
+        
++ Response 500
+
+
+# Group Integrace asynchronni
+Popis služeb pro komunikaci s integrační platformou. 
+* Popis zprav posilanych mezi BE a BEEI. Apiary na to nema zadnou podporu, ale pokusil jsem se to sem alespon popsat aby to nekde bylo i kdyz to nepujde mockovat
+* Komunikace bude probihat pres messaging kde telo zpravy bude v JSON formatu. 
+* Jako messaging server bude pouzit ActiveMQ
+* URL na ActiveMQ - stomp://192.168.250.110:61613
+
+##  Contract [/beei/1/contract]
+
+* Sluzby volane z eMan BE na BEEI
+
+### Vytvoření smlouvy [PUT]
+* **QUEUE NAME** 
+        * v1.ContractQueue
+
+* **MESSAGE PROPERTIES (STOMP)**
+        * **message-id**: UUID pozadavku
+        * **state**: NEW -- contractState z contract body
+        * **contract-id**: cislo smlouvy
+
+
+* **Stavy smlouvy posilane do BEEI** 
+        * `NEW` - nová smlouva ke kontrole
+        * `CANCELED_NEW` - nová smlouva stornovaná v průběhu verifikace
+        
+
++ Request (application/json)
+
+        {
+            "contractId": "BAD620002",
+            "dataUrl": "http://bee.cz/BAD620002/BAD620002.xml",
+            "attachments": [
+                {
+                    "documentId": "generovane UUID, ci jiny univerzalni ident",
+                    "type": "PDF_BUNDLE",
+                    "dataUrl": "www.api.cz/data/xxx",
+                    "mimeType": "application/pdf",
+                    "properties": {
+                        "customProperty": "custom string value"
+                    }
+                },
+                {
+                    "documentId": "550e8400-e29b-41d4-a716-446655440000",
+                    "type": "OBCANSKY_PRUKAZ",
+                    "dataUrl": "www.api...40000",
+                    "mimeType": "image/jpeg",
+                    "properties": {
+                        "customProperty": "custom string value"
+                    }
+                },
+                {
+                    "documentId": "550e8400-e29b-41d4-a716-446655440000",
+                    "type": "PRUVODNI_DOKUMENT",
+                    "dataUrl": "www.api...40000",
+                    "mimeType": "image/jpeg",
+                    "properties": {
+                        "locationGps": {
+                            "lng": 2.5491619,
+                            "lat": 5.5262626
+                        }
+                    }
+                }
+            ]
+            "contractSigningInfo": {
+                "customerSignature": {
+                    "data": "BASE64-ENCODED-PNG-NO-ALPHA=="
+                },
+                "dealerInfo": {
+                    "dealerId": "ktro2626",
+                    "name": {
+                        "firstName": "Kamil",
+                        "lastName": "Trojan"
+                    },
+                    "title": "Ing.",
+                    "position": "Vrchni obchodni zastupce pro serverni Moravu"
+                },
+                "dealerSignature": {
+                    "data": "BASE64-ENCODED-PNG-NO-ALPHA=="
+                },
+                "signingDate": "2013-12-15T00:06:21Z", 
+                "signingLocation": {
+                    "locationGps": {
+                        "lng": 2.5491619,
+                        "lat": 5.5262626
+                    },
+                    "address": {
+                        "city": "Ostrava"
+                    }
+                }
+            }
+        }
+
++ Response 200 
+
+##  Contract Patch [/beei/1/contract_patch]
+### Oprava smlouvy [PUT]
+* **QUEUE NAME** 
+        * v1.ContractQueue
+
+* **MESSAGE PROPERTIES (STOMP)**
+        * **message-id**: UUID pozadavku
+        * **state**: CHANGED_ATTACHMENTS -- contractState z contract body
+        * **contract-id**: cislo smlouvy
+
+
+* **Stavy smlouvy posilane do BEEI** 
+        * `CHANGED_ATTACHMENTS` - Ke kontrole - oprava příloh existujicí smlouvy 
+        * `CANCELED_EXISTING` - Storno existujici smlouvy
+
+
+
++ Request (application/json)
+
+        {
+            "contractId": "BAD620002",
+            "dataUrl": "http://bee.cz/BAD620002/BAD620002.xml",
+            "attachments": [
+                {
+                    "documentId": "generovane UUID, ci jiny univerzalni ident",
+                    "type": "PDF_BUNDLE",
+                    "dataUrl": "www.api.cz/data/xxx",
+                    "mimeType": "application/pdf",
+                    "properties": {
+                        "customProperty": "custom string value"
+                    }
+                },
+                {
+                    "documentId": "550e8400-e29b-41d4-a716-446655440000",
+                    "type": "OBCANSKY_PRUKAZ",
+                    "dataUrl": "www.api...40000",
+                    "mimeType": "image/jpeg",
+                    "properties": {
+                        "customProperty": "custom string value"
+                    }
+                },
+                {
+                    "documentId": "550e8400-e29b-41d4-a716-446655440000",
+                    "type": "PRUVODNI_DOKUMENT",
+                    "dataUrl": "www.api...40000",
+                    "mimeType": "image/jpeg",
+                    "properties": {
+                        "locationGps": {
+                            "lng": 2.5491619,
+                            "lat": 5.5262626
+                        }
+                    }
+                }
+            ]
+            "contractSigningInfo": {
+                "customerSignature": {
+                    "data": "BASE64-ENCODED-PNG-NO-ALPHA=="
+                },
+                "dealerInfo": {
+                    "dealerId": "ktro2626",
+                    "name": {
+                        "firstName": "Kamil",
+                        "lastName": "Trojan"
+                    },
+                    "title": "Ing.",
+                    "position": "Vrchni obchodni zastupce pro serverni Moravu"
+                },
+                "dealerSignature": {
+                    "data": "BASE64-ENCODED-PNG-NO-ALPHA=="
+                },
+                "signingDate": "2013-12-15T00:06:21Z", 
+                "signingLocation": {
+                    "locationGps": {
+                        "lng": 2.5491619,
+                        "lat": 5.5262626
+                    },
+                    "address": {
+                        "city": "Ostrava"
+                    }
+                }
+            }
+        }
+
++ Response 200
+
+##  Contract State [/eman/contract/state]
+* Sluzby volane z BEEI na eMan BE
+
+### Změna stavu smlouvy [PUT]
+* **QUEUE NAME** 
+        * v1.ContractStateQueue
+        
+* **Error fronta pokud se nepodari zpravu zpracovat**
+        * v1.ContractStateQueue.Failure
+
+* **MESSAGE PROPERTIES (STOMP)**
+        * **message-id**: UUID pozadavku
+        * **type**: contract_state_update
+        * **contract-id**: cislo smlouvy
+
+
+* **Stavy pro, ktere prichazi z BEEI** 
+        * `STORE_AF200_OK` - Prijato do aktivního formuláře
+        * `MISSING_ATTACHMENT` - Neni soucasti povinna priloha 
+        * `STORE_AF200_ERROR` - Nepodařilo se uložit do aktivního formuláře
+        * `PROCESSED_TO_ZIS` - Prijato do ZIS
+        * `REJECTED_TO_REPAIR_ATTACHMENT` - Smlouvu je potreba opravit z duvodu priloh - pri tomto stavu je povinny parametr **description** jinak je volitenlny
+        * `REJECTED_TO_REPAIR_CONTRACT` - Smlouvu je potreba opravit z duvodu priloh - pri tomto stavu je povinny parametr **description** jinak je volitenlny
+        * `CANCELLED_ZIS_DUPLICITY` - Smlouva byla stornovana z duvodu duplicity 
+
++ Request (application/json)
+        
+        {
+            "contractId": "BAX1000002",
+            "state": "PROCESSED_TO_ZIS",
+            “description”: "nafotte znovu op"
+        }
+
++ Response 200
+
+
+##  OPM State [/eman/contract/opm]
+
+### Změna stavu OPM  [PUT]
+
+Po zapisu smlouvy do ZIS je pracovano nikoliv ze smlouvou ale s jednotlivymi OPM, jediny stav, ktery muze prijit nad OPM po zapisu do ZIS je STORNO OPM
+
+
+
+* **QUEUE NAME** 
+        * v1.OpmStateQueue
+        
+* **Error fronta pokud se nepodari zpravu zpracovat**
+        * v1.OpmStateQueue.Failure
+
+* **MESSAGE PROPERTIES (STOMP)**
+        * **message-id**: UUID pozadavku
+        * **type**: opm_state_update
+        * **opm-type**: ciselnik 
+        * **contract-id**: cislo smlouvy
+        
+* **Stavy pro, ktere prichazi z BEEI** 
+        * `OPM_CANCELLED_BELOW_90` - Stornovano OPM pred 90 dni
+        * `OPM_CANCELLED_OVER_90` - Stornovano OPM po 90 dnech 
+
+* **Ciselnik typu OPM** 
+        * `GAS` - Pro plyn je pouzit parametr **opmEIC**
+        * `ELECTRICITY` - Pro elektrinu je pouzit parametr **opmEAN**
+
+        
+
++ Request (application/json)
+        
+        {
+            "opmType": "ELECTRICITY",
+            "contractId": "BAX1000002",
+            "opmNumber": "XXX0_EIC",
+            "state": "OPM_CANCELLED_OVER_90"
+        }
+
++ Response 200
+
+##  Enumeration [/eman/enumerations]
+
+### Update číselníků [PUT]
+Zprava pro eMan BE aby si stahnul nove ciselniky ze na nich byla provedena zmena. Po prijeti teto zpravy se vola synchrnni sluzba viz. **/beei/enumeration**. 
+
+* **TOPIC NAME** 
+        * v1.EnumerationsUpdateTopic
+
+* **MESSAGE PROPERTIES (STOMP)**
+        * **message-id**: UUID pozadavku
+        * **type**: enumerations_updated_notification
+
++ Request (application/json)
+        
+        {
+            "updated": "1994-11-05T13:15:30Z"
+        }
+
++ Response 200
+
+##  Repository [/eman/repository]
+
+### Update sablon [PUT]
+Zprava pro eMan BE aby si stahnul nove sablony ze na nich byla provedena zmena. Po prijeti teto zpravy se vola synchrnni sluzba viz. **/beei/respository**. 
+
+* **TOPIC NAME** 
+        * v1.RepositoryUpdateTopic
+
+* **MESSAGE PROPERTIES (STOMP)**
+        * **message-id**: UUID pozadavku
+        * **type**: repository_updated_notification
+
++ Request (application/json)
+        
+        {
+            "updated": "1994-11-05T13:15:30Z"
+        }
+
++ Response 200
+
+
+
+
+
+
+

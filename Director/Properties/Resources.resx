@@ -832,6 +832,9 @@
   <data name="ErrorWhenGeneratingHeaders" xml:space="preserve">
     <value>Error occured, when generating headers</value>
   </data>
+  <data name="apiary" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\apiary.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ButtonRunAndSave" xml:space="preserve">
     <value>Save and run</value>
   </data>
@@ -839,7 +842,31 @@
     <value>Save</value>
   </data>
   <data name="ButtonStorno" xml:space="preserve">
-    <value>Zrušit</value>
+    <value>Cancel</value>
+  </data>
+  <data name="CannotReadFromFile" xml:space="preserve">
+    <value>Cannot read from file!</value>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="ImportApiary" xml:space="preserve">
+    <value>Import from Apiary(snowcrash)</value>
+  </data>
+  <data name="ImportPostman" xml:space="preserve">
+    <value>Import from Postman</value>
+  </data>
+  <data name="InfoApiarySnowcrash" xml:space="preserve">
+    <value>In next dialog, please select ApiaryJson file, which can be created by Snowcrash utility! (snowcrash source.blueprint -o source.json -f json)</value>
+  </data>
+  <data name="InvalidApiaryFile" xml:space="preserve">
+    <value>Invalid apiary file!</value>
+  </data>
+  <data name="postman" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\postman.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SelectJsonFile" xml:space="preserve">
+    <value>Select json file</value>
   </data>
   <data name="SetVariables" xml:space="preserve">
     <value>Set start variables</value>
@@ -849,5 +876,17 @@
   </data>
   <data name="_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\0.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ButtonOK" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="FillEndPointUrl" xml:space="preserve">
+    <value>Please fill valid endpoint API url: </value>
+  </data>
+  <data name="InvalidPostmanFile" xml:space="preserve">
+    <value>Invalid postman export file!</value>
+  </data>
+  <data name="InvalidUrlError" xml:space="preserve">
+    <value>Invalid URL!</value>
   </data>
 </root>

@@ -181,6 +181,16 @@ namespace Director.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap apiary {
+            get {
+                object obj = ResourceManager.GetObject("apiary", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap arrow_down {
             get {
                 object obj = ResourceManager.GetObject("arrow_down", resourceCulture);
@@ -236,6 +246,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Confirm.
+        /// </summary>
+        internal static string ButtonOK {
+            get {
+                return ResourceManager.GetString("ButtonOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save and run.
         /// </summary>
         internal static string ButtonRunAndSave {
@@ -254,7 +273,7 @@ namespace Director.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Zrušit.
+        ///   Looks up a localized string similar to Cancel.
         /// </summary>
         internal static string ButtonStorno {
             get {
@@ -268,6 +287,15 @@ namespace Director.Properties {
         internal static string Cancel {
             get {
                 return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot read from file!.
+        /// </summary>
+        internal static string CannotReadFromFile {
+            get {
+                return ResourceManager.GetString("CannotReadFromFile", resourceCulture);
             }
         }
         
@@ -793,6 +821,15 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please fill valid endpoint API url: .
+        /// </summary>
+        internal static string FillEndPointUrl {
+            get {
+                return ResourceManager.GetString("FillEndPointUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Format directive.
         /// </summary>
         internal static string FormatDirective {
@@ -913,11 +950,47 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        internal static string Import {
+            get {
+                return ResourceManager.GetString("Import", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import from Apiary(snowcrash).
+        /// </summary>
+        internal static string ImportApiary {
+            get {
+                return ResourceManager.GetString("ImportApiary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import from Postman.
+        /// </summary>
+        internal static string ImportPostman {
+            get {
+                return ResourceManager.GetString("ImportPostman", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Import result.
         /// </summary>
         internal static string ImportResult {
             get {
                 return ResourceManager.GetString("ImportResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In next dialog, please select ApiaryJson file, which can be created by Snowcrash utility! (snowcrash source.blueprint -o source.json -f json).
+        /// </summary>
+        internal static string InfoApiarySnowcrash {
+            get {
+                return ResourceManager.GetString("InfoApiarySnowcrash", resourceCulture);
             }
         }
         
@@ -950,11 +1023,29 @@ namespace Director.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid apiary file!.
+        /// </summary>
+        internal static string InvalidApiaryFile {
+            get {
+                return ResourceManager.GetString("InvalidApiaryFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input has to be number!.
         /// </summary>
         internal static string InvalidNumberInput {
             get {
                 return ResourceManager.GetString("InvalidNumberInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid postman export file!.
+        /// </summary>
+        internal static string InvalidPostmanFile {
+            get {
+                return ResourceManager.GetString("InvalidPostmanFile", resourceCulture);
             }
         }
         
@@ -1018,6 +1109,15 @@ namespace Director.Properties {
         internal static string InvalidTimeDelay {
             get {
                 return ResourceManager.GetString("InvalidTimeDelay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid URL!.
+        /// </summary>
+        internal static string InvalidUrlError {
+            get {
+                return ResourceManager.GetString("InvalidUrlError", resourceCulture);
             }
         }
         
@@ -1688,6 +1788,16 @@ namespace Director.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap postman {
+            get {
+                object obj = ResourceManager.GetObject("postman", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap processing {
             get {
                 object obj = ResourceManager.GetObject("processing", resourceCulture);
@@ -2069,6 +2179,15 @@ namespace Director.Properties {
         internal static string SelectAll {
             get {
                 return ResourceManager.GetString("SelectAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select json file.
+        /// </summary>
+        internal static string SelectJsonFile {
+            get {
+                return ResourceManager.GetString("SelectJsonFile", resourceCulture);
             }
         }
         

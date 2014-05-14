@@ -105,6 +105,8 @@
     <Compile Include="Forms\Inputs\JSONCanvas.cs" />
     <Compile Include="Forms\Inputs\SetWindow.cs" />
     <Compile Include="Forms\Inputs\ServerHeaders.cs" />
+    <Compile Include="Import\Apiary\Apiary.cs" />
+    <Compile Include="Import\Postman\PostMan.cs" />
     <Compile Include="ParserLib\ParserCompareDefinition.cs" />
     <Compile Include="ParserLib\ParserError.cs" />
     <Compile Include="ParserLib\Parser.cs" />
@@ -405,6 +407,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="directoricon.ico" />
+    <EmbeddedResource Include="Resources\postman.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\apiary.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\variables.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -415,4 +423,5 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
 </Project>

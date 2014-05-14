@@ -361,6 +361,9 @@ namespace Director.DataStructures
                 if (RequestTemplate.Trim().StartsWith("{"))
                 {
                     RequestTextEntry.Text = JSONFormatter.Format(RequestTemplate);
+                    
+                    if (RequestTextEntry.Text == null || RequestTextEntry.Text.Trim().Length == 0)
+                        RequestTextEntry.Text = RequestTemplate;
                 }
                 else
                 {

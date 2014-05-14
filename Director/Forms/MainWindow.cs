@@ -13,6 +13,8 @@ using RestSharp;
 using Director.ParserLib;
 using Director.Formatters;
 using System.Threading;
+using Director.Import.Apiary;
+using Director.Import.Postman;
 
 namespace Director.Forms
 {
@@ -432,6 +434,11 @@ namespace Director.Forms
             // Add
             menu.Items.Add(RunMenu);
 
+            // Import menu
+            MenuItem ImportMenu = new MenuItem(Director.Properties.Resources.Import);
+            menu.Items.Add(ImportMenu);
+            ImportMenu.SubMenu = _createImportMenu();
+
             // Settings
             MenuItem SettingsMenu = new MenuItem(Director.Properties.Resources.SettingsMenu);
             menu.Items.Add(SettingsMenu);
@@ -648,6 +655,111 @@ namespace Director.Forms
             };
             RequestMenu.Items.Add(MenuRemoveRequest);
             MenuRemoveRequest.Clicked += MenuRemoveRequest_Clicked;
+        }
+
+        /// <summary>
+        /// Create import menu.
+        /// </summary>
+        /// <returns></returns>
+        private Menu _createImportMenu()
+        {
+            Menu _imM = new Menu();
+
+            // Apiary
+            MenuItem ApiaryImport = new MenuItem(Director.Properties.Resources.ImportApiary)
+            {
+                Image = Image.FromResource(DirectorImages.APIARY_ICON)
+            };
+            _imM.Items.Add(ApiaryImport);
+            ApiaryImport.Clicked += ApiaryImport_Clicked;
+
+            // Postman
+            MenuItem PostmanImport = new MenuItem(Director.Properties.Resources.ImportPostman)
+            {
+                Image = Image.FromResource(DirectorImages.POSTMAN_ICON)
+            };
+            _imM.Items.Add(PostmanImport);
+            PostmanImport.Clicked += PostmanImport_Clicked;
+
+
+            // Return
+            return _imM;
+        }
+
+        /// <summary>
+        /// Postman import.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void PostmanImport_Clicked(object sender, EventArgs e)
+        {
+
+            // Show open file dialog
+            OpenFileDialog of = new OpenFileDialog(Director.Properties.Resources.SelectJsonFile);
+            of.Multiselect = false;
+            of.Filters.Add(new FileDialogFilter("Json files", "*.json"));
+            if (of.Run())
+            {
+                Server tmp = UServer;
+                if (tmp == null)
+                {
+                    tmp = new Server();
+                }
+
+                // Process result
+                Boolean result = PostMan.ProcessPostmanFile(tmp, of.FileName);
+
+                // Set again
+                UServer = tmp;
+
+                if (result)
+                {
+                    // Refresh tree
+                    RefreshServerTreeView();
+
+                    // Enable close sceanrio
+                    EnableServerButtons();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Start apiary import.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void ApiaryImport_Clicked(object sender, EventArgs e)
+        {
+            // Info
+            MessageDialog.ShowMessage(Director.Properties.Resources.InfoApiarySnowcrash);
+
+            // Show open file dialog
+            OpenFileDialog of = new OpenFileDialog(Director.Properties.Resources.SelectJsonFile);
+            of.Multiselect = false;
+            of.Filters.Add(new FileDialogFilter("Json files", "*.json"));
+            if (of.Run())
+            {
+                Server tmp = UServer;
+                if (tmp == null)
+                {
+                    tmp = new Server();
+                }
+
+                // Process result
+                Boolean result = Apiary.ProcessApiaryFile(tmp, of.FileName);
+
+                // Set again
+                UServer = tmp;
+
+                if (result)
+                {
+                    // Refresh tree
+                    RefreshServerTreeView();
+
+                    // Enable close sceanrio
+                    EnableServerButtons();
+                }
+            }
         }
 
         /// <summary>
@@ -1590,41 +1702,50 @@ namespace Director.Forms
                     MessageDialog.ShowError(Director.Properties.Resources.DialogInvalidFile);
                     return;
                 }
-                
-                // Server tree view reconstruction
-                ClearCurrentServerTree();
-
-                // Add node
-                var tmp = UServer.TreePosition = CreateTreeItem(null, UServer.Name, ServerImage, UServer);
-
-                // Disable server menu
-                NewServer.Sensitive = false;
-
-                // Disable server menu mac!
-                NewServer.Clicked -= CreateNewServer;
-
-                // Create all scenarios and requests
-                foreach (Scenario s in UServer.Scenarios.OrderBy(n => n.Position))
-                {
-                    s.TreePosition = CreateTreeItem(tmp, s.Name, ScenarioImage, s);
-                    s.ParentServer = UServer;
-
-                    foreach (Request r in s.Requests.OrderBy(n => n.Position))
-                    {
-                        r.TreePosition = CreateTreeItem(s.TreePosition, r.Name, RequestImage, r);
-                        r.ParentScenario = s;
-                    }
-                }
-
-                // Select Server and update view
-                CurrentServer.SelectRow(tmp);
-                UpdateControlView(null, null);
+                // Refresh tree
+                RefreshServerTreeView();
 
                 // Enable close sceanrio
                 EnableServerButtons();
             }
 
         }
+
+        /// <summary>
+        /// Refresh server tree view.
+        /// </summary>
+        private void RefreshServerTreeView()
+        {                
+            // Server tree view reconstruction
+            ClearCurrentServerTree();
+
+            // Add node
+            var tmp = UServer.TreePosition = CreateTreeItem(null, UServer.Name, ServerImage, UServer);
+
+            // Disable server menu
+            NewServer.Sensitive = false;
+
+            // Disable server menu mac!
+            NewServer.Clicked -= CreateNewServer;
+
+            // Create all scenarios and requests
+            foreach (Scenario s in UServer.Scenarios.OrderBy(n => n.Position))
+            {
+                s.TreePosition = CreateTreeItem(tmp, s.Name, ScenarioImage, s);
+                s.ParentServer = UServer;
+
+                foreach (Request r in s.Requests.OrderBy(n => n.Position))
+                {
+                    r.TreePosition = CreateTreeItem(s.TreePosition, r.Name, RequestImage, r);
+                    r.ParentScenario = s;
+                }
+            }
+
+            // Select Server and update view
+            CurrentServer.SelectRow(tmp);
+            UpdateControlView(null, null);
+        }
+
 
         /// <summary>
         /// Export scenario.

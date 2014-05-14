@@ -39,6 +39,8 @@ namespace Director.Forms.Controls
         public const string EXPORT_VARIABLES_ICON = "Director.Resources.script_import.png";
 		public const string RUN_WITH_VAR = "Director.Resources.run_var.png";
         public const string VARIABLES_ICON = "Director.Resources.variables.png";
+        public const string APIARY_ICON = "Director.Resources.apiary.png";
+        public const string POSTMAN_ICON = "Director.Resources.postman.png";
 
         /// <summary>
         /// Running icons.

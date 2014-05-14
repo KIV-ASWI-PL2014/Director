@@ -841,6 +841,21 @@
   <data name="ButtonStorno" xml:space="preserve">
     <value>Zrušit</value>
   </data>
+  <data name="Import" xml:space="preserve">
+    <value>Importovat</value>
+  </data>
+  <data name="ImportApiary" xml:space="preserve">
+    <value>Importovat z Apiary(snowcrash)</value>
+  </data>
+  <data name="ImportPostman" xml:space="preserve">
+    <value>Importovat z Postmana</value>
+  </data>
+  <data name="InfoApiarySnowcrash" xml:space="preserve">
+    <value>V dalším dialogu prosím vyberte Apiary JSON soubor, který může být snadno vygenerován přiloženou utilitou snowcrash (snowcrash source.blueprint -o source.json -f json).</value>
+  </data>
+  <data name="SelectJsonFile" xml:space="preserve">
+    <value>Vyberte JSON soubor</value>
+  </data>
   <data name="SetVariables" xml:space="preserve">
     <value>Nastavit počáteční proměnné</value>
   </data>
