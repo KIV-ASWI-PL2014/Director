@@ -895,4 +895,43 @@
   <data name="VariableValue" xml:space="preserve">
     <value>Value</value>
   </data>
+  <data name="ConditionValue" xml:space="preserve">
+    <value>Condition value:</value>
+  </data>
+  <data name="EvalCondIfParIsPresent" xml:space="preserve">
+    <value>Evaluate condition if parameter is present</value>
+  </data>
+  <data name="FormatType" xml:space="preserve">
+    <value>Format type:</value>
+  </data>
+  <data name="Operation" xml:space="preserve">
+    <value>Operation:</value>
+  </data>
+  <data name="OperationEquals" xml:space="preserve">
+    <value>Equals</value>
+  </data>
+  <data name="OperationGreatherThan" xml:space="preserve">
+    <value>Greather than</value>
+  </data>
+  <data name="OperationGreatherThanOrEqual" xml:space="preserve">
+    <value>Greather than or equal</value>
+  </data>
+  <data name="OperationLessThan" xml:space="preserve">
+    <value>Less than</value>
+  </data>
+  <data name="OperationLessThanOrEquals" xml:space="preserve">
+    <value>Less than or equal</value>
+  </data>
+  <data name="OperationMatchingRegex" xml:space="preserve">
+    <value>Matching regexp pattern</value>
+  </data>
+  <data name="OperationNotEquals" xml:space="preserve">
+    <value>Not equals</value>
+  </data>
+  <data name="SaveToVariable" xml:space="preserve">
+    <value>Save to variable:</value>
+  </data>
+  <data name="UseVarInsteadOfValue" xml:space="preserve">
+    <value>Use variable instead of value</value>
+  </data>
 </root>

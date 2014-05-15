@@ -548,7 +548,7 @@ namespace Director.Forms.Controls
 			Value.Group.ActiveRadioButtonChanged += GroupChanged_Event;
 
 			// Type
-			ContentBox.PackStart (new Label ("Format type:") { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
+			ContentBox.PackStart (new Label (Director.Properties.Resources.FormatType) { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
 
 			// Combo box
 			FormatTypeSelect = new ComboBox ();
@@ -564,18 +564,18 @@ namespace Director.Forms.Controls
 				FormatOperationsSelect.Items.Clear();
 
 				if (((String)FormatTypeSelect.SelectedItem) == "boolean") {
-					FormatOperationsSelect.Items.Add ("eq", "Equals");
-					FormatOperationsSelect.Items.Add ("ne", "Not equals");
+					FormatOperationsSelect.Items.Add ("eq", Director.Properties.Resources.OperationEquals);
+					FormatOperationsSelect.Items.Add ("ne", Director.Properties.Resources.OperationNotEquals);
 				} else {
-					FormatOperationsSelect.Items.Add ("eq", "Equals");
-					FormatOperationsSelect.Items.Add ("ne", "Not equals");
-					FormatOperationsSelect.Items.Add ("lt", "Less than");
-					FormatOperationsSelect.Items.Add ("lte", "Less than or equal");
-					FormatOperationsSelect.Items.Add ("gt", "Greather than");
-					FormatOperationsSelect.Items.Add ("gte", "Greather than or equal");
+					FormatOperationsSelect.Items.Add ("eq", Director.Properties.Resources.OperationEquals);
+                    FormatOperationsSelect.Items.Add("ne", Director.Properties.Resources.OperationNotEquals);
+					FormatOperationsSelect.Items.Add ("lt", Director.Properties.Resources.OperationLessThan);
+                    FormatOperationsSelect.Items.Add("lte", Director.Properties.Resources.OperationLessThanOrEquals);
+                    FormatOperationsSelect.Items.Add("gt", Director.Properties.Resources.OperationGreatherThan);
+                    FormatOperationsSelect.Items.Add("gte", Director.Properties.Resources.OperationGreatherThanOrEqual);
 
 					if (((String)FormatTypeSelect.SelectedItem) == "string")
-						FormatOperationsSelect.Items.Add ("mp", "Matching regexp pattern");
+						FormatOperationsSelect.Items.Add ("mp", Director.Properties.Resources.OperationMatchingRegex);
 				}
 
 				FormatOperationsSelect.SelectedItem = selectedItem;
@@ -585,15 +585,15 @@ namespace Director.Forms.Controls
 			ContentBox.PackStart (FormatTypeSelect, true, false);
 
 			// Operations
-			ContentBox.PackStart (new Label ("Operation:") { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
+			ContentBox.PackStart (new Label (Director.Properties.Resources.Operation) { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
 			FormatOperationsSelect = new ComboBox ();
-			FormatOperationsSelect.Items.Add ("eq", "Equals");
-			FormatOperationsSelect.Items.Add ("ne", "Not equals");
-			FormatOperationsSelect.Items.Add ("lt", "Less than");
-			FormatOperationsSelect.Items.Add ("lte", "Less than or equal");
-			FormatOperationsSelect.Items.Add ("gt", "Greather than");
-			FormatOperationsSelect.Items.Add ("gte", "Greather than or equal");
-			FormatOperationsSelect.Items.Add ("mp", "Matching regexp pattern");
+            FormatOperationsSelect.Items.Add("eq", Director.Properties.Resources.OperationEquals);
+            FormatOperationsSelect.Items.Add("ne", Director.Properties.Resources.OperationNotEquals);
+            FormatOperationsSelect.Items.Add("lt", Director.Properties.Resources.OperationLessThan);
+            FormatOperationsSelect.Items.Add("lte", Director.Properties.Resources.OperationLessThanOrEquals);
+            FormatOperationsSelect.Items.Add("gt", Director.Properties.Resources.OperationGreatherThan);
+            FormatOperationsSelect.Items.Add("gte", Director.Properties.Resources.OperationGreatherThanOrEqual);
+            FormatOperationsSelect.Items.Add("mp", Director.Properties.Resources.OperationMatchingRegex);
 			FormatOperationsSelect.SelectedIndex = 0;
 
 			// Select - fill combo box
@@ -603,21 +603,21 @@ namespace Director.Forms.Controls
 			ContentBox.PackStart (FormatOperationsSelect, true, false);
 
 			// Use variable instead of value
-			UseVariable = new CheckBox ("Use variable instead of value");
+            UseVariable = new CheckBox(Director.Properties.Resources.UseVarInsteadOfValue);
 			ContentBox.PackStart (UseVariable, true, false);
 
 			// Evaluate this if present
-			EvalIfPresent = new CheckBox ("Evaluate condition if parameter is present");
+            EvalIfPresent = new CheckBox(Director.Properties.Resources.EvalCondIfParIsPresent);
 			ContentBox.PackStart (EvalIfPresent, true, false);
 
 			// Value
-			ContentBox.PackStart (new Label ("Condition value:") { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
+            ContentBox.PackStart(new Label(Director.Properties.Resources.ConditionValue) { Font = Font.SystemFont.WithWeight(FontWeight.Bold) }, true, false);
 			ConditionValue = new TextEntry ();
 			ContentBox.PackStart (ConditionValue, true, false);
 
 
 			// Save to variable
-			ContentBox.PackStart (new Label ("Save to variable:") { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
+            ContentBox.PackStart(new Label(Director.Properties.Resources.SaveToVariable) { Font = Font.SystemFont.WithWeight(FontWeight.Bold) }, true, false);
 			SaveToVarible = new TextEntry ();
 			ContentBox.PackStart (SaveToVarible, true, false);
 
