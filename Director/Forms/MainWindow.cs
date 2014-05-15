@@ -15,6 +15,8 @@ using Director.Formatters;
 using System.Threading;
 using Director.Import.Apiary;
 using Director.Import.Postman;
+using System.Xml;
+using Newtonsoft.Json;
 
 namespace Director.Forms
 {
@@ -1422,30 +1424,49 @@ namespace Director.Forms
                     // Prepare template
                     if (r.RequestTemplate != null && r.RequestTemplate.Length > 0)
                     {
-                        result = p.generateRequest(r.RequestTemplate, r.ParentScenario.customVariables);
+						if (r.RequestTemplateType == ContentType.PLAIN) {
+							RequestBody = r.RequestTemplate;
+							request.AddParameter ("text/plain", RequestBody, ParameterType.RequestBody);
+						} else {
+							string jsonData = r.RequestTemplate;
 
-                        // Cannot generate reqeust!
-                        if (result.isSuccess() == false)
-                        {
-                            // Write errors!
-                            r.AddResultViewItem(1, Director.Properties.Resources.ErrorWhenGeneratingTemplate + ":");
+							if (r.RequestTemplateType == ContentType.XML) {
+								XmlDocument doc = new XmlDocument ();
+								doc.LoadXml (jsonData);
+								jsonData = Newtonsoft.Json.JsonConvert.SerializeXmlNode (doc);
+							}
 
-                            // Errors
-                            foreach (var i in result.getErrors())
-                            {
-                                r.AddResultViewItem(2, i.getMessage());
-                            }
+							// Generate
+							result = p.generateRequest (jsonData, r.ParentScenario.customVariables);
 
-                            // Change icon
-                            ChangeIcon(r.TreePosition, ERORImage);
-                            success = false;
-                            break;
-                        }
-                            
-                        // Parameter
-						if (result.getResult () != null && result.getResult ().Length > 0) {
-							RequestBody = result.getResult ();
-							request.AddParameter ("application/json", result.getResult (), ParameterType.RequestBody);
+							// Cannot generate reqeust!
+							if (result.isSuccess () == false) {
+								// Write errors!
+								r.AddResultViewItem (1, Director.Properties.Resources.ErrorWhenGeneratingTemplate + ":");
+
+								// Errors
+								foreach (var i in result.getErrors()) {
+									r.AddResultViewItem (2, i.getMessage ());
+								}
+
+								// Change icon
+								ChangeIcon (r.TreePosition, ERORImage);
+								success = false;
+								break;
+							}
+							
+							// Parameter
+							if (result.getResult () != null && result.getResult ().Length > 0) {
+								if (r.RequestTemplateType == ContentType.XML) {
+									RequestBody = JsonConvert.DeserializeXmlNode (result.getResult()).ToString();
+									request.RequestFormat = DataFormat.Xml;
+									request.AddParameter ("application/xml", RequestBody, ParameterType.RequestBody);
+								} else {
+									request.RequestFormat = DataFormat.Json;
+									RequestBody = result.getResult ();
+									request.AddParameter ("application/json", result.getResult (), ParameterType.RequestBody);
+								}
+							}
 						}
                     }
 						
@@ -1484,10 +1505,23 @@ namespace Director.Forms
                     p = new Parser();
                     ParserResult res = null;
                         
-                    if (r.ResponseTemplate != null && r.ResponseTemplate.Length > 0)
-                        res = p.parseResponse(r.ResponseTemplate, response.Content, s.customVariables, true);
+					if (r.ResponseTemplate != null && r.ResponseTemplate.Length > 0) {
+						string json = r.ResponseTemplate;
+						string jsonBody = response.Content;
+						if (r.ResponseTemplateType == ContentType.XML) {
+							// Convert to JSON both of them
+							XmlDocument doc = new XmlDocument ();
+							doc.LoadXml (json);
+							json = Newtonsoft.Json.JsonConvert.SerializeXmlNode (doc);
 
+							doc = new XmlDocument ();
+							doc.LoadXml (jsonBody);
+							jsonBody = Newtonsoft.Json.JsonConvert.SerializeXmlNode (doc);
+						}
 
+						res = p.parseResponse (json, jsonBody, s.customVariables, true);
+					}
+						
                     // Parse response
                     if (response.ResponseStatus != ResponseStatus.Completed)
                     {

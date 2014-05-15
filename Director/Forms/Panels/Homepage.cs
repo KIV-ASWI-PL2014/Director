@@ -23,7 +23,6 @@ Director is project for testing REST APIs by scenarios.
 
 # Missing parts
 
-- Better edit of Response template
 - Last open files
 
 # Changelog

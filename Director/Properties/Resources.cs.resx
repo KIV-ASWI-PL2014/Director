@@ -859,4 +859,43 @@
   <data name="SetVariables" xml:space="preserve">
     <value>Nastavit počáteční proměnné</value>
   </data>
+  <data name="ConditionValue" xml:space="preserve">
+    <value>Hodnota podmínky:</value>
+  </data>
+  <data name="EvalCondIfParIsPresent" xml:space="preserve">
+    <value>Vyhodnoť podmínku pokud je parametr přítomen</value>
+  </data>
+  <data name="FormatType" xml:space="preserve">
+    <value>Typ formátu:</value>
+  </data>
+  <data name="Operation" xml:space="preserve">
+    <value>Operace:</value>
+  </data>
+  <data name="OperationEquals" xml:space="preserve">
+    <value>Rovná se</value>
+  </data>
+  <data name="OperationGreatherThan" xml:space="preserve">
+    <value>Větší než</value>
+  </data>
+  <data name="OperationGreatherThanOrEqual" xml:space="preserve">
+    <value>Větší než nebo rovno</value>
+  </data>
+  <data name="OperationLessThan" xml:space="preserve">
+    <value>Menší než</value>
+  </data>
+  <data name="OperationLessThanOrEquals" xml:space="preserve">
+    <value>Menší než nebo rovno</value>
+  </data>
+  <data name="OperationMatchingRegex" xml:space="preserve">
+    <value>Matching regexp pattern</value>
+  </data>
+  <data name="OperationNotEquals" xml:space="preserve">
+    <value>Nerovná se</value>
+  </data>
+  <data name="SaveToVariable" xml:space="preserve">
+    <value>Ulož do proměnné:</value>
+  </data>
+  <data name="UseVarInsteadOfValue" xml:space="preserve">
+    <value>Použij proměnnou namísto hodnoty</value>
+  </data>
 </root>
