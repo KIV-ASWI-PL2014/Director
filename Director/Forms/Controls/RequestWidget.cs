@@ -191,7 +191,7 @@ namespace Director.Forms.Controls
 		/// </summary>
 		public void RefreshContent() {
 			// Guess type?
-			if (ActiveRequest.RequestTemplateType == ContentType.PLAIN) {
+			if (ActiveRequest.RequestTemplateType == ContentType.PLAIN || ActiveRequest.RequestTemplate == null || ActiveRequest.RequestTemplate.Length == 0) {
 				if (TextEntry == null) {
 					TextEntry = new MultiLineTextEntry () {
 						Sensitive = false

@@ -103,10 +103,10 @@ namespace Director.Forms.Inputs
             else if (ResWidget != null)
             {
 				if (ResWidget.ActiveRequest.ResponseTemplateType == ContentType.JSON) {
-					TextInput.Text = JSONFormatter.Format (ResWidget.ActiveRequest.RequestTemplate);
+					TextInput.Text = JSONFormatter.Format (ResWidget.ActiveRequest.ResponseTemplate);
 				}
 				if (TextInput.Text.Length == 0) {
-					TextInput.Text = ResWidget.ActiveRequest.RequestTemplate;
+					TextInput.Text = ResWidget.ActiveRequest.ResponseTemplate;
 				}
 				ContentTypeSelect.SelectedItem = ResWidget.ActiveRequest.ResponseTemplateType;
 			}

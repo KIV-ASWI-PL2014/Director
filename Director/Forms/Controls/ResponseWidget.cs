@@ -240,7 +240,7 @@ namespace Director.Forms.Controls
 		public void RefreshContent()
 		{
 			// Guess type?
-			if (ActiveRequest.ResponseTemplateType == ContentType.PLAIN) {
+			if (ActiveRequest.ResponseTemplateType == ContentType.PLAIN  || ActiveRequest.ResponseTemplate == null || ActiveRequest.ResponseTemplate.Length == 0) {
 				if (TextEntry == null) {
 					TextEntry = new MultiLineTextEntry () {
 						Sensitive = false
