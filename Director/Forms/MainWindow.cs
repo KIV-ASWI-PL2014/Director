@@ -1447,8 +1447,10 @@ namespace Director.Forms
                         }
                             
                         // Parameter
-						if (result.getResult() != null && result.getResult().Length > 0)
-							request.AddParameter( "application/json", result.getResult(), ParameterType.RequestBody);
+						if (result.getResult () != null && result.getResult ().Length > 0) {
+							RequestBody = result.getResult ();
+							request.AddParameter ("application/json", result.getResult (), ParameterType.RequestBody);
+						}
                     }
 						
 					// Prepare headers
@@ -1539,7 +1541,7 @@ namespace Director.Forms
                         if (formatted != null)
                             r.AddResultViewItem(3, formatted);                       
                         else
-                            r.AddResultViewItem(3,  response.Content);  
+                            r.AddResultViewItem(3, response.Content);  
                     }
 
                     // Refresh UI

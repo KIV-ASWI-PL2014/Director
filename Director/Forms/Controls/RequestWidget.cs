@@ -473,16 +473,11 @@ namespace Director.Forms.Controls
             ValueType.Items.Add(DataType.TYPE_NULL, "Null");
             ValueType.Items.Add(DataType.TYPE_BOOL, "Boolean");
             ValueType.SelectedIndex = 0;
-            ValueBox.PackStart(ValueType);
+			ValueBox.PackStart(ValueType, false, false);
 
             // Value
-            ValueText = new TextEntry()
-            {
-                ExpandVertical = false,
-                ExpandHorizontal = true,
-                MinWidth = 250
-            };
-            ValueBox.PackStart(ValueText);
+            ValueText = new TextEntry();
+			ValueBox.PackStart(ValueText, true, true);
             ContentBox.PackStart(ValueBox);
 
             // Guide

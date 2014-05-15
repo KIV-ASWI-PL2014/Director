@@ -8,6 +8,11 @@ namespace Director.ParserLib
         public int line;
         public int position;
 
+		/// <summary>
+		/// Array item? 
+		/// </summary>
+		public bool ArrayField { get; set; }
+
         public ParserCompareDefinition comp_def { get; set; }
 
         public ParserItem(int line, int position, object value)

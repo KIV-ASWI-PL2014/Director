@@ -40,7 +40,7 @@ namespace Director
 			test.ResponseTemplateType = ContentType.JSON;
 			test.RequestTemplate = @"{
   'Name': 'Bad Boys',
-  'ReleaseDate': '$first$ thing and #randString(1,$x$,A1)# for sure'
+  'ReleaseDate': '$first$ thing and #randString(1,$x$,A1)# for sure', 'franta': [ 2,3,4,5 ]
 }"; ;
 			test.RequestTemplateType = ContentType.JSON;
 			test.ResponseTemplate = @"{

@@ -317,41 +317,19 @@ namespace Director.Forms.Inputs
             }
             else if (item.value is System.String)
             {
-				if (key != null)
-                {
-					if (!DrawVisibleProperty) {
-						DrawText(string.Format("\"{0}\" : \"{1}\"" + comma, key, (String) item.value));
-					} else
-                    	DrawProperty(key, string.Format("\"{0}\"", (string) item.value), item, comma);
-                }
-                else
-                    DrawText(item.value + commaStr);
+				DrawProperty(key, string.Format("\"{0}\"", (string) item.value), item, comma);
             }
             else if (item.value is System.Int64 || item.value is System.Int32 || item.value is System.Double)
             {
-                if (key != null)
-                {
-                    DrawProperty(key, (item.value + "").Replace(',', '.'), item, comma);
-                }
-                else
-                    DrawText(item.value + commaStr);
+               	DrawProperty(key, (item.value + "").Replace(',', '.'), item, comma);
             }
             else if (item.value is System.Boolean)
             {
-                if (key != null)
-                { 
                     DrawProperty(key, ((System.Boolean) item.value) ? "true" : "false", item, comma);
-                } else
-                    DrawText((((System.Boolean) item.value) ? "true" : "false") + commaStr);
             }
             else if (item.value == null)
             {
-                if (key != null)
-                {
                     DrawProperty(key, "null", item, comma);
-                }
-                else
-                    DrawText("null" + commaStr);
             }
             else if (item.value is List<ParserItem>)
             {
@@ -405,7 +383,6 @@ namespace Director.Forms.Inputs
 
 		void DrawArrayProperty(string key, ParserItem it) {
 			if (CanDraw) {
-
 				// Create Key Item
 				var KeyItem = CreateTextLayout(string.Format("\"{0}\"", key));
 
@@ -439,12 +416,18 @@ namespace Director.Forms.Inputs
         {
             if (CanDraw)
             {
-                // Draw item
-                var Item = CreateTextLayout(string.Format("\"{0}\" : ", key));
-                CTX.DrawTextLayout(Item, X, Y);
+				double newX = X;
+				if (key != null) {
+					var Item = CreateTextLayout (string.Format ("\"{0}\" : ", key));
+					CTX.DrawTextLayout (Item, X, Y);
+					newX = X + Item.GetSize ().Width;
+				}
 
-                double newX = X + Item.GetSize().Width;
-
+				if (DrawVisibleProperty == false) {
+					CTX.DrawTextLayout (CreateTextLayout(value), newX, Y);
+					return;
+				}
+					
                 // Create value
                 var Value = new TextLayout();
                 Value.Font.WithSize(10);
