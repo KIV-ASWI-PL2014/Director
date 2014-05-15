@@ -24,9 +24,7 @@ Director is project for testing REST APIs by scenarios.
 # Missing parts
 
 - Better edit of Response template
-- XML tranformations
 - Last open files
-- Import Apiary and Postman
 
 # Changelog
 

@@ -145,35 +145,39 @@ namespace Director.Forms.Controls
 			// Active parser item
 			if (ActiveParserItem == null) return;
 
+			Dialog _edit;
+
 			if (ActiveParserItem.value is List<ParserItem>) {
-
+				_edit = new EditArrayVariable (ActiveParserItem, ActiveRequest);
 			} else {
-				// Create dialog
-				EditResponseVariable _edit = new EditResponseVariable (ActiveParserItem, ActiveRequest);
-
-				// Run dialog
-				var d = _edit.Run ();
-
-				// Ok
-				if (d == Command.Ok) {
-					// Set value
-					ActiveParserItem.value = _edit.GetValue ();
-
-					// Create string
-					string template = Parser.serialize (Template);
-					if (ActiveRequest.ResponseTemplateType == ContentType.XML) {
-						XmlDocument doc = JsonConvert.DeserializeXmlNode (template);
-						Console.WriteLine (doc.ToString ());
-						ActiveRequest.ResponseTemplate = doc.ToString ();
-					} else {
-						ActiveRequest.ResponseTemplate = template;
-					}
-
-					// Test
-					RefreshContent ();
-				}
-				_edit.Dispose();
+				_edit = new EditResponseVariable (ActiveParserItem, ActiveRequest);
 			}
+				
+			var d = _edit.Run ();
+
+			if (d == Command.Ok) {
+				if (_edit is EditArrayVariable) {
+					ActiveParserItem.value = ((EditArrayVariable)_edit).GetValue ();
+				} else {
+					ActiveParserItem.value = ((EditResponseVariable)_edit).GetValue ();
+				}
+
+				// Create string
+				string template = Parser.serialize (Template);
+				if (ActiveRequest.ResponseTemplateType == ContentType.XML) {
+					XmlDocument doc = JsonConvert.DeserializeXmlNode (template);
+					Console.WriteLine (doc.ToString ());
+					ActiveRequest.ResponseTemplate = doc.ToString ();
+				} else {
+					ActiveRequest.ResponseTemplate = template;
+				}
+
+				// Test
+				RefreshContent ();
+			}
+
+			_edit.Dispose ();
+			
 		}
 
         /// <summary>
@@ -323,6 +327,310 @@ namespace Director.Forms.Controls
         }
     }
 
+	internal class EditArrayVariable : Dialog
+	{
+		/// <summary>
+		/// Item.
+		/// </summary>
+		private ParserItem ActiveItem { get; set; }
+
+		/// <summary>
+		/// Request.
+		/// </summary>
+		private Request ActiveRequest { get; set; }
+
+
+		/// <summary>
+		/// Constructor.
+		/// </summary>
+		public EditArrayVariable(ParserItem _item, Request _request)
+		{
+			// Set title, icon, resizable
+			Title = Director.Properties.Resources.EditVariable;
+			Icon = Image.FromResource (DirectorImages.EDIT_CONTENT_ICON);
+			Resizable = false;
+
+			// Set variables
+			ActiveItem = _item;
+			ActiveRequest = _request;
+
+			// Widht height
+			Width = 520;
+			Height = 330;
+
+			// Init components
+			_initializeComponents ();
+
+			// Add buttons
+			Buttons.Add (new DialogButton (Director.Properties.Resources.ConfirmInput, Command.Ok));
+			Buttons.Add (new DialogButton (Director.Properties.Resources.Cancel, Command.Cancel));
+
+			// Parse data
+			ParseData ();
+		}
+
+		/// <summary>
+		/// Compare all items.
+		/// </summary>
+		/// <value>All items template.</value>
+		public RadioButton AllItemsTemplate { get; set; }
+
+		/// <summary>
+		/// Item count.
+		/// </summary>
+		/// <value>The item count.</value>
+		public RadioButton ItemCount { get; set;}
+
+		/// <summary>
+		/// Select.
+		/// </summary>
+		/// <value>The format type select.</value>
+		public ComboBox FormatTypeSelect { get; set; }
+
+		/// <summary>
+		/// Operation type select.
+		/// </summary>
+		/// <value>The format operations select.</value>
+		public ComboBox FormatOperationsSelect { get; set; }
+
+		/// <summary>
+		/// Use variable.
+		/// </summary>
+		/// <value>The use variable.</value>
+		public CheckBox UseVariable { get; set; }
+
+		/// <summary>
+		/// Eval only if present.
+		/// </summary>
+		public CheckBox EvalIfPresent { get; set; }
+
+		/// <summary>
+		/// Save to variable?
+		/// </summary>
+		public TextEntry SaveToVariable { get; set; }
+
+		/// <summary>
+		/// Condition variable.
+		/// </summary>
+		/// <value>The condition variable.</value>
+		public TextEntry ConditionValue { get; set; }
+
+		/// <summary>
+		/// Init.
+		/// </summary>
+		void _initializeComponents ()
+		{
+			// Create content box
+			VBox ContentBox = new VBox ();
+
+			// Create Item count
+			ItemCount = new RadioButton ("Compare item count");
+			ContentBox.PackStart (ItemCount);
+
+			// Create All item template
+			AllItemsTemplate = new RadioButton ("Copare all array item");
+			ContentBox.PackStart (AllItemsTemplate);
+
+			// Set group
+			ItemCount.Group = AllItemsTemplate.Group;
+			ItemCount.Group.ActiveRadioButtonChanged += CompareTypeChanged_Event;
+
+			// Type
+			ContentBox.PackStart (new Label ("Format type:") { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
+
+			// Combo box
+			FormatTypeSelect = new ComboBox ();
+
+			// Add items
+			FormatTypeSelect.Items.Add ("string", "String");
+			FormatTypeSelect.Items.Add ("integer", "Integer");
+			FormatTypeSelect.Items.Add ("real", "Real");
+			FormatTypeSelect.Items.Add ("boolean", "Boolean");
+			FormatTypeSelect.SelectionChanged += FormatTypeSelectionChanged;
+			ContentBox.PackStart (FormatTypeSelect, true, false);
+
+			// Operations
+			ContentBox.PackStart (new Label ("Operation:") { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
+			FormatOperationsSelect = new ComboBox ();
+			FormatOperationsSelect.Items.Add ("eq", "Equals");
+			FormatOperationsSelect.Items.Add ("ne", "Not equals");
+			FormatOperationsSelect.Items.Add ("lt", "Less than");
+			FormatOperationsSelect.Items.Add ("lte", "Less than or equal");
+			FormatOperationsSelect.Items.Add ("gt", "Greather than");
+			FormatOperationsSelect.Items.Add ("gte", "Greather than or equal");
+			FormatOperationsSelect.Items.Add ("mp", "Matching regexp pattern");
+			FormatOperationsSelect.SelectedIndex = 0;
+
+			// Select - fill combo box
+			FormatTypeSelect.SelectedIndex = 0;
+
+			// Add
+			ContentBox.PackStart (FormatOperationsSelect, true, false);
+
+			// Create items
+			UseVariable = new CheckBox ("Use variable instead of value");
+			ContentBox.PackStart (UseVariable, true, false);
+
+			// Evaluate this if present
+			EvalIfPresent = new CheckBox ("Evaluate condition if parameter is present");
+			ContentBox.PackStart (EvalIfPresent, true, false);
+
+			// Value
+			ContentBox.PackStart (new Label ("Condition value:") { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
+			ConditionValue = new TextEntry ();
+			ContentBox.PackStart (ConditionValue, true, false);
+
+			// Save to variable
+			ContentBox.PackStart (new Label ("Save to variable:") { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
+			SaveToVariable = new TextEntry ();
+			ContentBox.PackStart (SaveToVariable, true, false);
+
+			// Set active
+			ItemCount.Active = true;
+
+			// Set content
+			Content = ContentBox;
+		}
+
+		/// <summary>
+		/// Format selection changed.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		void FormatTypeSelectionChanged(object sender, EventArgs e)
+		{
+			var selectedItem = FormatOperationsSelect.SelectedItem;
+			FormatOperationsSelect.Items.Clear();
+
+			var formatTypeSelected = (String)FormatTypeSelect.SelectedItem;
+
+			if (ItemCount.Active)
+				formatTypeSelected = "integer";
+
+			if (formatTypeSelected == "boolean") {
+				FormatOperationsSelect.Items.Add ("eq", "Equals");
+				FormatOperationsSelect.Items.Add ("ne", "Not equals");
+			} else {
+				FormatOperationsSelect.Items.Add ("eq", "Equals");
+				FormatOperationsSelect.Items.Add ("ne", "Not equals");
+				FormatOperationsSelect.Items.Add ("lt", "Less than");
+				FormatOperationsSelect.Items.Add ("lte", "Less than or equal");
+				FormatOperationsSelect.Items.Add ("gt", "Greather than");
+				FormatOperationsSelect.Items.Add ("gte", "Greather than or equal");
+
+				if (formatTypeSelected == "string")
+					FormatOperationsSelect.Items.Add ("mp", "Matching regexp pattern");
+			}
+
+			FormatOperationsSelect.SelectedItem = selectedItem;
+			if (FormatOperationsSelect.SelectedIndex == -1)
+				FormatOperationsSelect.SelectedIndex = 0;
+		}
+
+		/// <summary>
+		/// Compare type events.
+		/// </summary>
+		void CompareTypeChanged_Event(object sender, EventArgs e)
+		{
+			// Format type
+			FormatTypeSelect.Sensitive = ItemCount.Active == false;
+
+			// Change select boxes.
+			FormatTypeSelectionChanged (null, null);
+		}
+
+		/// <summary>
+		/// Parse data.
+		/// </summary>
+		void ParseData()
+		{
+			List<ParserItem> items = (List<ParserItem>)ActiveItem.value;
+
+			if (items.Count == 0)
+				return;
+
+			// First is parser item!
+			ParserItem it = items [0];
+			try {
+				String text = (String)it.value;
+				String[] tokens = text.Split ('#');
+				if (tokens.Length == 6) {
+					// value
+					var value = tokens [3];
+					ConditionValue.Text = value;
+
+					// Var name
+					var variable = tokens [4];
+					SaveToVariable.Text = variable;
+
+					// Method
+					var method = tokens [2];
+
+					// Simple method?
+					UseVariable.State = (method.IndexOf ("uv", 0) >= 0) ? CheckBoxState.On : CheckBoxState.Off;
+					EvalIfPresent.State = (method.IndexOf("ip", 0) >= 0) ? CheckBoxState.On : CheckBoxState.Off;
+
+					// Method name
+					FormatOperationsSelect.SelectedItem = method.Replace("uv_", "").Replace("ip_", "");
+					if (FormatOperationsSelect.SelectedIndex < 0)
+						throw new Exception ("Invalid operation");
+
+					// Type
+					var type = tokens[1];
+
+					if (type == "array") {
+						ItemCount.Active = true;
+					} else  {
+						AllItemsTemplate.Active = true;
+						FormatTypeSelect.SelectedItem = type;
+						if (FormatTypeSelect.SelectedIndex < 0)
+							throw new Exception ("Invalid method");
+					}
+				} else {
+					throw new Exception("Cannot evaluate");
+				}
+			} catch {
+				// Nothing what so ever!
+				ItemCount.Active = true;
+			}
+		}
+
+		/// <summary>
+		/// When called, replace first value item with it.
+		/// </summary>
+		public object GetValue()
+		{
+			List<ParserItem> retArr = new List<ParserItem> ();
+
+			string ret = "#";
+
+			if (ItemCount.Active) {
+				ret += "array#";
+			} else
+				ret += (String) FormatTypeSelect.SelectedItem + "#";
+
+
+			if (EvalIfPresent.Active)
+				ret += "ip_";
+
+			if (UseVariable.Active)
+				ret += "uv_";
+
+			ret += (String)FormatOperationsSelect.SelectedItem + "#";
+
+			// Value
+			ret += string.Format("{0}#{1}#", ConditionValue.Text, SaveToVariable.Text);
+
+			// Create parser item
+			retArr.Add(new ParserItem (0, 0, ret));
+
+			// Return;
+			return retArr;
+		}
+	}
+
+
+
 	internal class EditResponseVariable : Dialog
 	{
 		/// <summary>
@@ -438,10 +746,10 @@ namespace Director.Forms.Controls
 
 					// Var name
 					var variable = tokens [4];
-					SaveToVarible.Text = variable;
+					SaveToVariable.Text = variable;
 
 						// Type
-						var type = tokens[1];
+					var type = tokens[1];
 						FormatTypeSelect.SelectedItem = type;
 
 						if (FormatTypeSelect.SelectedIndex < 0)
@@ -506,7 +814,7 @@ namespace Director.Forms.Controls
 		/// Save to variable.
 		/// </summary>
 		/// <value>The save to varible.</value>
-		public TextEntry SaveToVarible { get; set; }
+		public TextEntry SaveToVariable { get; set; }
 			
 		/// <summary>
 		/// Init components.
@@ -618,8 +926,8 @@ namespace Director.Forms.Controls
 
 			// Save to variable
 			ContentBox.PackStart (new Label ("Save to variable:") { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
-			SaveToVarible = new TextEntry ();
-			ContentBox.PackStart (SaveToVarible, true, false);
+			SaveToVariable = new TextEntry ();
+			ContentBox.PackStart (SaveToVariable, true, false);
 
 			// Content
 			Content = ContentBox;
@@ -639,7 +947,7 @@ namespace Director.Forms.Controls
 			UseVariable.Sensitive = !Value.Active;
 			EvalIfPresent.Sensitive = !Value.Active;
 			ConditionValue.Sensitive = !Value.Active;
-			SaveToVarible.Sensitive = !Value.Active;
+			SaveToVariable.Sensitive = !Value.Active;
 		}
 
 		/// <summary>
@@ -683,7 +991,7 @@ namespace Director.Forms.Controls
 				ret += (String)FormatOperationsSelect.SelectedItem + "#";
 
 				// Value
-				ret += string.Format("{0}#{1}#", ConditionValue.Text, SaveToVarible.Text);
+				ret += string.Format("{0}#{1}#", ConditionValue.Text, SaveToVariable.Text);
 
 				return ret;
 			}

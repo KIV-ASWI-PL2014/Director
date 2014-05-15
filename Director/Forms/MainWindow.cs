@@ -1148,13 +1148,9 @@ namespace Director.Forms
             // Create edit window
             EditWindow editWindow = new EditWindow(this, request);
 
-            // Disable main window
-            Opacity = 0.5;
-
             // Dispozed window opacity to 1
             editWindow.Closed += delegate
             {
-                Opacity = 1;
                 UpdateControlView(null, null);
             };
 
