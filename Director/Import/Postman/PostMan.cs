@@ -84,6 +84,7 @@ namespace Director.Import.Postman
                 var tmp = scNew.CreateNewRequest();
                 tmp.Name = pr.name;
                 tmp.HTTP_METHOD = pr.method;
+				tmp.RequestTemplateType = ContentTypeUtils.GuessContentType (pr.data);
                 tmp.RequestTemplate = pr.data;
                 tmp.Url = pr.url;
 

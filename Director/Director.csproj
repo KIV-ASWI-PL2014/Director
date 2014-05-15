@@ -119,6 +119,7 @@
     <Compile Include="Forms\Panels\Homepage.cs" />
     <Compile Include="Forms\MainWindow.cs" />
     <Compile Include="Forms\Panels\PanelBase.cs" />
+    <Compile Include="DataStructures\SupportStructures\ContentTypes.cs" />
     <Compile Include="Forms\Panels\RequestPage.cs" />
     <Compile Include="Forms\Panels\ScenarioPage.cs" />
     <Compile Include="Forms\Panels\ServerPage.cs" />

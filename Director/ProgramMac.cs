@@ -7,6 +7,7 @@ using System.Threading;
 using System.IO;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace Director
 {
@@ -26,8 +27,7 @@ namespace Director
 			Config.SetAppType (ToolkitType.Gtk); 
           	Application.Initialize(Config.GetAppType());
 
-
-			MainWindow _mainWindow = new MainWindow();
+			//MainWindow _mainWindow = new MainWindow();
 
 			Server s = new Server() { Name = "OCR" };
 			s.DefaultHeaders.Add(new Header() { Name = "content/type", Value = "application/json" });
@@ -37,9 +37,18 @@ namespace Director
 			sc.ParentServer = s;
 			Request test = sc.CreateNewRequest();
 			test.ParentScenario = sc;
+			test.ResponseTemplateType = ContentType.JSON;
+			test.RequestTemplate = @"{
+  'Name': 'Bad Boys',
+  'ReleaseDate': '$first$ thing and #randString(1,$x$,A1)# for sure'
+}"; ;
+			test.RequestTemplateType = ContentType.JSON;
+			test.ResponseTemplate = @"{
+  'Name': 'Bad Boys',
+  'ReleaseDate': '#string#eq#franta#variable#', 'test' : [ 1, 2, 3, 4 ]
+}"; ;
 
-
-			//EditWindow _mainWindow = new EditWindow (null, test);
+			EditWindow _mainWindow = new EditWindow (null, test);
 
 			// Close window handlers
 

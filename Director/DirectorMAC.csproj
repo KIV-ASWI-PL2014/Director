@@ -110,6 +110,8 @@
     <Compile Include="Forms\Controls\DirectorImages.cs" />
     <Compile Include="Forms\Controls\InfoBox.cs" />
     <Compile Include="Forms\Export\ExportWindow.cs" />
+    <Compile Include="Import\Apiary\Apiary.cs" />
+    <Compile Include="Import\Postman\PostMan.cs" />
     <Compile Include="Forms\Panels\Homepage.cs" />
     <Compile Include="Forms\MainWindow.cs" />
     <Compile Include="Forms\Panels\PanelBase.cs" />
@@ -157,6 +159,7 @@
     <EmbeddedResource Include="Resources\run_var.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <Compile Include="DataStructures\SupportStructures\ContentTypes.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -403,11 +406,23 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\postman.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\apiary.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\variables.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\script_import.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\bullet_blue.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Bluenote.icns" />
   </ItemGroup>
 </Project>

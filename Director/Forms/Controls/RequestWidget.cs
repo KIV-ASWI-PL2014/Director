@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using Xwt;
 using Xwt.Drawing;
+using System.Xml;
+using Newtonsoft.Json;
 
 namespace Director.Forms.Controls
 {
@@ -15,11 +17,18 @@ namespace Director.Forms.Controls
         /// Text view.
         /// </summary>
         public TextEntry TextView { get; set; }
+			
+		/// <summary>
+		/// Content box!
+		/// </summary>
+		/// <value>The content box.</value>
+		public VBox ContentBox { get; set; }
 
-        /// <summary>
-        /// Render box
-        /// </summary>
-        public JSONCanvas RenderBox { get; set; }
+		/// <summary>
+		/// Active item.
+		/// </summary>
+		/// <value>The active item.</value>
+		public Widget ActiveItem { get; set; }
 
         /// <summary>
         /// Active request.
@@ -31,15 +40,6 @@ namespace Director.Forms.Controls
         /// </summary>
         private Menu RequestHelperMenu { get; set; }
 
-        /// <summary>
-        /// Canvas scroll view.
-        /// </summary>
-        private ScrollView CanvasScrollView { get; set; }
-
-        /// <summary>
-        /// Dictionary template!
-        /// </summary>
-        private Dictionary<string, ParserItem> Template { get; set; }
 
         /// <summary>
         /// Edit variable item.
@@ -61,35 +61,12 @@ namespace Director.Forms.Controls
             // Create Text view
             PackStart(new Label() { Markup = "<b>" + Director.Properties.Resources.RequestContent + "</b>" });
 
-            // Parse Request
-            if (_request.RequestTemplate != null)
-            {
-                List<ParserError> errors = new List<ParserError>();
-                Template = Parser.deserialize(_request.RequestTemplate, errors, "template");
-            }
-
-            // Create canvas
-            RenderBox = new JSONCanvas()
-            {
-                ExpandHorizontal = true,
-                ExpandVertical = true,
-                Template = Template
-            };
-
-            // Create Scroll view
-            CanvasScrollView = new ScrollView()
-            {
-                HorizontalScrollPolicy = ScrollPolicy.Automatic,
-                VerticalScrollPolicy = ScrollPolicy.Automatic
-            };
-            PackStart(CanvasScrollView, expand: true, fill: true);
-            CanvasScrollView.Content = RenderBox;
-
-            // Set template
-            RenderBox.Template = Template;
-
-            // Action items
-            RenderBox.ButtonPressed += RenderBox_ButtonPressed;
+			// Content box
+			ContentBox = new VBox () {
+				ExpandHorizontal = true,
+				ExpandVertical = true
+			};
+			PackStart(ContentBox, expand: true, fill: true);
 
             // Edit btn
             Button SetContent = new Button(Image.FromResource(DirectorImages.EDIT_CONTENT_ICON), Director.Properties.Resources.EditContent)
@@ -111,6 +88,8 @@ namespace Director.Forms.Controls
             };
             RequestHelperMenu.Items.Add(EditVariable);
             EditVariable.Clicked += EditVariable_Clicked;
+
+			RefreshContent ();
         }
 
         /// <summary>
@@ -130,8 +109,21 @@ namespace Director.Forms.Controls
             // Ok
             if (d == Command.Ok)
             {
+				// Set value
                 ActiveParserItem.value = _edit.GetValue();
-                SetRequest(Parser.serialize(Template));
+
+				// Create string
+				string template = Parser.serialize (Template);
+				if (ActiveRequest.RequestTemplateType == ContentType.XML) {
+					XmlDocument doc = JsonConvert.DeserializeXmlNode(template);
+					Console.WriteLine (doc.ToString());
+					ActiveRequest.RequestTemplate = doc.ToString ();
+				} else {
+					ActiveRequest.RequestTemplate = template;
+				}
+
+				// Test
+				RefreshContent ();
             }
 
             _edit.Dispose();
@@ -161,13 +153,102 @@ namespace Director.Forms.Controls
         /// <summary>
         /// Set request.
         /// </summary>
-        public void SetRequest(String requestTemplate)
+		public void SetRequest(String requestTemplate, ContentType type)
         {
             ActiveRequest.RequestTemplate = requestTemplate;
-            List<ParserError> errors = new List<ParserError>();
-            RenderBox.Template = Template = Parser.deserialize(requestTemplate, errors, "template");
-            RenderBox.QueueDraw();
+			ActiveRequest.RequestTemplateType = type;
+			RefreshContent ();
         }
+
+		/// <summary>
+		/// Canvas scroll view.
+		/// </summary>
+		private ScrollView CanvasScrollView { get; set; }
+
+		/// <summary>
+		/// Dictionary template!
+		/// </summary>
+		private Dictionary<string, ParserItem> Template { get; set; }
+
+		/// <summary>
+		/// Render box
+		/// </summary>
+		public JSONCanvas RenderBox { get; set; }
+
+		/// <summary>
+		/// Render box for plain / text.
+		/// </summary>
+		public MultiLineTextEntry TextEntry { get; set; }
+
+		/// <summary>
+		/// Scroll view.
+		/// </summary>
+		/// <value>The text entry S.</value>
+		public ScrollView TextEntrySV { get; set; }
+
+		/// <summary>
+		/// Refresh content with new types.
+		/// </summary>
+		public void RefreshContent() {
+			// Guess type?
+			if (ActiveRequest.RequestTemplateType == ContentType.PLAIN) {
+				if (TextEntry == null) {
+					TextEntry = new MultiLineTextEntry () {
+						Sensitive = false
+					};
+					TextEntrySV = new ScrollView () {
+						Content = TextEntry,
+						HorizontalScrollPolicy = ScrollPolicy.Automatic,
+						VerticalScrollPolicy = ScrollPolicy.Automatic
+					};
+				}
+				if (ActiveItem != TextEntrySV) {
+					if (ActiveItem != null) {
+						ContentBox.Remove (ActiveItem);
+					}
+					ContentBox.PackStart (TextEntrySV, true, true);
+				}
+				TextEntry.Text = ActiveRequest.RequestTemplate;
+				ActiveItem = TextEntrySV;
+			} else {
+				// From XML to JSON
+				String jsonData = ActiveRequest.RequestTemplate;
+				if (ActiveRequest.RequestTemplateType == ContentType.XML) {
+					XmlDocument doc = new XmlDocument();
+					doc.LoadXml(ActiveRequest.RequestTemplate);
+					jsonData = Newtonsoft.Json.JsonConvert.SerializeXmlNode (doc);
+					Console.WriteLine (jsonData);
+				}
+				// Create render box
+				if (RenderBox == null) {
+					RenderBox = new JSONCanvas () {
+						ExpandVertical = true,
+						ExpandHorizontal = true,
+						Template = null
+					};
+					RenderBox.ButtonPressed += RenderBox_ButtonPressed;
+					CanvasScrollView = new ScrollView () {
+						Content = RenderBox,
+						HorizontalScrollPolicy = ScrollPolicy.Automatic,
+						VerticalScrollPolicy = ScrollPolicy.Automatic
+					};
+				}
+
+				if (ActiveItem != CanvasScrollView) {
+					if (ActiveItem != null) {
+						ContentBox.Remove (ActiveItem);
+					}
+					// Set
+					ActiveItem = CanvasScrollView;
+					ContentBox.PackStart (CanvasScrollView, true, true);
+				}
+
+				// Parse
+				List<ParserError> errors = new List<ParserError>();
+				RenderBox.Template = Template = Parser.deserialize(jsonData, errors, "template");
+				RenderBox.QueueDraw();
+			}
+		}
 
         /// <summary>
         /// Set content.
@@ -905,7 +986,7 @@ namespace Director.Forms.Controls
         }
     }
 
-    internal class StringVariable : HBox, IVariable
+	internal class StringVariable : VBox, IVariable
     {
         TextEntry Min { get; set; }
         TextEntry Max { get; set; }
@@ -913,33 +994,37 @@ namespace Director.Forms.Controls
 
         public StringVariable()
         {
-            PackStart(new Label("Min: ")
+			HBox FL = new HBox ();
+			FL.PackStart(new Label("Min: ")
             {
                 MarginLeft = 5
             });
-            Min = new TextEntry()
+			Min = new TextEntry()
             {
                 MarginLeft = 5,
                 MarginRight = 5
             };
-            PackStart(Min, true, true);
+			FL.PackStart(Min, true, true);
 
-            PackStart(new Label("Max: "));
+			FL.PackStart(new Label("Max: "));
             Max = new TextEntry()
             {
                 MarginLeft = 5,
                 MarginRight = 5
             };
-            PackStart(Max, true, true);
+			FL.PackStart(Max, true, true);
+			PackStart (FL, true, true);
 
-            PackStart(new Label("Symbols: "));
+			HBox NL = new HBox ();
+			NL.PackStart(new Label("Symbols: ") { MarginLeft = 5 });
 
             Characters = new TextEntry()
             {
                 MarginLeft = 5,
                 MarginRight = 5
             };
-            PackStart(Characters, true, true);
+			NL.PackStart(Characters, true, true);
+			PackStart (NL, true, true);
         }
 
         /// <summary>
@@ -975,7 +1060,7 @@ namespace Director.Forms.Controls
         }
     }
 
-    internal class FloatVariable : HBox, IVariable
+	internal class FloatVariable : VBox, IVariable
     {
         TextEntry Min { get; set; }
         TextEntry Max { get; set; }
@@ -983,7 +1068,8 @@ namespace Director.Forms.Controls
 
         public FloatVariable()
         {
-            PackStart(new Label("Min: ")
+			HBox FL = new HBox ();
+			FL.PackStart(new Label("Min: ")
             {
                 MarginLeft = 5
             });
@@ -992,24 +1078,27 @@ namespace Director.Forms.Controls
                 MarginLeft = 5,
                 MarginRight = 5
             };
-            PackStart(Min, true, true);
+			FL.PackStart(Min, true, true);
 
-            PackStart(new Label("Max: "));
+			FL.PackStart(new Label("Max: "));
             Max = new TextEntry()
             {
                 MarginLeft = 5,
                 MarginRight = 5
             };
-            PackStart(Max, true, true);
+			FL.PackStart(Max, true, true);
+			PackStart (FL, true, true);
 
-            PackStart(new Label("Precision: "));
+			HBox NL = new HBox ();
+			NL.PackStart(new Label("Precision: ") { MarginLeft = 5 });
 
             Precision = new TextEntry()
             {
                 MarginLeft = 5,
                 MarginRight = 5
             };
-            PackStart(Precision, true, true);
+			NL.PackStart(Precision, true, true);
+			PackStart (NL, true, true);
         }
 
         /// <summary>

@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xwt;
 using Xwt.Drawing;
+using Director.Formatters;
 
 namespace Director.Import.Apiary
 {
@@ -71,7 +72,6 @@ namespace Director.Import.Apiary
                 d.Content = DialogContent;
 
                 var c = d.Run();
-                d.Dispose();
 
                 if (c == Command.Ok)
                 {
@@ -81,6 +81,7 @@ namespace Director.Import.Apiary
                     if (Uri.TryCreate(NewValidUrl.Text, UriKind.Absolute, out _newUri))
                     {
                         url = _newUri.AbsoluteUri;
+						d.Dispose();
                         break;
                     }
                     else
@@ -90,8 +91,10 @@ namespace Director.Import.Apiary
                 }
                 else
                 {
+					d.Dispose();
                     return false;
                 }
+				d.Dispose();
             }
 
             // Fill data
@@ -113,7 +116,6 @@ namespace Director.Import.Apiary
                     foreach (var action in resource.actions)
                     {
                         var reqNew = scNew.CreateNewRequest();
-                        
                         reqNew.Name = string.Format("{0}/{1}", resource.name, action.name);
                         reqNew.HTTP_METHOD = action.method;
 
@@ -131,7 +133,11 @@ namespace Director.Import.Apiary
 
                         if (req != null)
                         {
+							// Content type
+							reqNew.RequestTemplateType = ContentTypeUtils.GuessContentType (req.body);
                             reqNew.RequestTemplate = req.body;
+
+							// Headers
                             foreach (var h in req.headers)
                             {
                                 reqNew.Headers.Add(new Header()
@@ -143,9 +149,11 @@ namespace Director.Import.Apiary
 
                         if (res != null)
                         {
-                            reqNew.ResponseTemplate = res.body;
+							// Content type
+							reqNew.ResponseTemplateType = ContentTypeUtils.GuessContentType (res.body);
+							// Set body
+							reqNew.ResponseTemplate = res.body;
                         }
-                        scNew.Requests.Add(reqNew);
                     }
                 }
             }

@@ -26,6 +26,24 @@ namespace Director.Forms.Inputs
         ScrollAdjustment hscroll;
         ScrollAdjustment vscroll;
 
+		/// <summary>
+		/// Draw array.
+		/// </summary>
+		private bool _drawArray = false;
+
+		/// <summary>
+		/// Draw array.
+		/// </summary>
+		public Boolean DrawArray { 
+			get { 
+				return _drawArray; 
+			} 
+			set { 
+				_drawArray = value; 
+			} 
+		}
+
+
         /// <summary>
         /// Template.
         /// </summary>
@@ -275,6 +293,8 @@ namespace Director.Forms.Inputs
             }
         }
 
+		public bool DrawVisibleProperty = true;
+
         // Draw item from parser:
         void DrawParserItem(string key, ParserItem item, bool comma = false)
         {
@@ -297,9 +317,12 @@ namespace Director.Forms.Inputs
             }
             else if (item.value is System.String)
             {
-                if (key != null)
+				if (key != null)
                 {
-                    DrawProperty(key, string.Format("\"{0}\"", (string) item.value), item, comma);
+					if (!DrawVisibleProperty) {
+						DrawText(string.Format("\"{0}\" : \"{1}\"" + comma, key, (String) item.value));
+					} else
+                    	DrawProperty(key, string.Format("\"{0}\"", (string) item.value), item, comma);
                 }
                 else
                     DrawText(item.value + commaStr);
@@ -332,7 +355,7 @@ namespace Director.Forms.Inputs
             }
             else if (item.value is List<ParserItem>)
             {
-                DrawArray(key, (List<ParserItem>)item.value, comma);
+				PrintArray(key, item, (List<ParserItem>)item.value, comma);
             }
             else
             {
@@ -341,11 +364,16 @@ namespace Director.Forms.Inputs
             NextLine();
         }
 
-        private void DrawArray(string key, List<ParserItem> list, bool comma = false)
+		private void PrintArray(string key, ParserItem it, List<ParserItem> list, bool comma = false)
         {
             string commaStr = (comma) ? "," : "";
-
-            if (key != null)
+			bool changed = false;
+			// PRint item?
+			if (DrawArray && DrawVisibleProperty) {
+				DrawArrayProperty (key, it);
+				DrawVisibleProperty = false;
+				changed = true;
+			} else if (key != null)
             {
                 DrawText(string.Format("\"{0}\" : ", key) + "[");
             }
@@ -362,6 +390,9 @@ namespace Director.Forms.Inputs
 
             X -= 20;
             DrawText("]" + commaStr);
+
+			if (changed)
+				DrawVisibleProperty = true;
         }
 
         TextLayout CreateTextLayout(string text)
@@ -372,7 +403,39 @@ namespace Director.Forms.Inputs
             return Item;
         }
 
-        void DrawProperty(string key, string value, ParserItem item, bool comma = true)
+		void DrawArrayProperty(string key, ParserItem it) {
+			if (CanDraw) {
+
+				// Create Key Item
+				var KeyItem = CreateTextLayout(string.Format("\"{0}\"", key));
+
+				// Create rectangle
+				var rect = new Rectangle (X, Y, KeyItem.GetSize().Width, KeyItem.GetSize().Height).Inflate (0.2, 0.2);
+
+				// Clikable item
+				CreateClickableItem((double) X, (double)Y, KeyItem.GetSize().Width, KeyItem.GetSize().Height, it);
+
+				// Draw rect
+				CTX.SetColor(Colors.DarkGreen);
+				CTX.Rectangle(rect);
+				CTX.Fill();
+				CTX.SetLineWidth(1);
+				CTX.Stroke();
+				CTX.SetColor(Colors.White);
+				CTX.DrawTextLayout(KeyItem, X, Y);
+				CTX.SetColor(Colors.Black);
+
+				// Draw [
+				double newX = X + KeyItem.GetSize ().Width + 0.2;
+				CTX.DrawTextLayout (CreateTextLayout (" : ["), newX, Y);
+			}
+		}
+			
+		void DrawProperty(string key, string value, ParserItem it, bool comma = true) {
+			DrawColorProperty (key, value, Colors.DarkBlue, it, comma);
+		}
+
+		void DrawColorProperty(string key, string value, Color c, ParserItem item, bool comma = true)
         {
             if (CanDraw)
             {
@@ -389,13 +452,11 @@ namespace Director.Forms.Inputs
                 var s = Value.GetSize();
                 var rect = new Rectangle(newX, Y, s.Width, s.Height).Inflate(0.2, 0.2);
                 CreateClickableItem((double) newX, (double)Y, s.Width, s.Height, item);
-                CTX.SetColor(Colors.DarkBlue);
-                CTX.SetLineWidth(1);
+				CTX.SetColor(c);
                 CTX.Rectangle(rect);
+				CTX.Fill();
+				CTX.SetLineWidth(1);
                 CTX.Stroke();
-                CTX.SetColor(Colors.Blue);
-                CTX.Rectangle(rect);
-                CTX.Fill();
                 CTX.SetColor(Colors.White);
                 CTX.DrawTextLayout(Value, newX, Y);
                 CTX.SetColor(Colors.Black);

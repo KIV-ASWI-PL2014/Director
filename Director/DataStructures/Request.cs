@@ -81,6 +81,27 @@ namespace Director.DataStructures
         [XmlIgnore]
         public String RequestTemplate { get; set; }
 
+		/// <summary>
+		/// Request template types.
+		/// </summary>
+		/// <value>The type of the request template.</value>
+		[XmlIgnore]
+		public ContentType RequestTemplateType { get; set; }
+
+		/// <summary>
+		/// Request template types.
+		/// </summary>
+		/// <value>The type of the request template.</value>
+		[XmlElement("RequestTemplateType")]
+		public String RequestTemplateTypeS { 
+			get {
+				return ContentTypeUtils.ToString (RequestTemplateType);
+			}
+			set {
+				RequestTemplateType = ContentTypeUtils.FromString (value);
+			}
+		}
+
         /// <summary>
         /// Request cdata seriailization.
         /// </summary>
@@ -103,6 +124,29 @@ namespace Director.DataStructures
         /// </summary>
         [XmlIgnore]
         public String ResponseTemplate { get; set; }
+
+
+		/// <summary>
+		/// Response template.
+		/// </summary>
+		/// <value>The response template.</value>
+		[XmlIgnore]
+		public ContentType ResponseTemplateType { get; set; }
+				
+
+		/// <summary>
+		/// Request template types.
+		/// </summary>
+		/// <value>The type of the request template.</value>
+		[XmlElement("ResponseTemplateType")]
+		public String ResponseTemplateTypeS { 
+			get {
+				return ContentTypeUtils.ToString (ResponseTemplateType);
+			}
+			set {
+				ResponseTemplateType = ContentTypeUtils.FromString (value);
+			}
+		}
 
         /// <summary>
         /// Response CData serialization.
@@ -202,7 +246,8 @@ namespace Director.DataStructures
                     MultiLineTextEntry RequestTextEntry = new MultiLineTextEntry()
                     {
                         Margin = 10,
-                        Text = i.Data
+						Text = i.Data,
+						Sensitive = false
                     };
                     RequestStatus.PackStart(RequestTextEntry);
                     Button ClipboardButtonReq = new Button(Image.FromResource(DirectorImages.COPY_ICON), "")
@@ -347,7 +392,7 @@ namespace Director.DataStructures
             // Request
             if (RequestTemplate != null && RequestTemplate.Length > 0)
             {
-                RequestOverview.PackStart(new Label(Director.Properties.Resources.RequestTemplate + ":")
+				RequestOverview.PackStart(new Label(string.Format("{0} ({1}) :", Director.Properties.Resources.RequestTemplate, RequestTemplateTypeS))
                 {
                     Font = CaptionFont,
                     MarginTop = 20
@@ -355,10 +400,10 @@ namespace Director.DataStructures
 
                 MultiLineTextEntry RequestTextEntry = new MultiLineTextEntry()
                 {
-                    Margin = 10
+					Margin = 10, Sensitive = false
                 };
-
-                if (RequestTemplate.Trim().StartsWith("{"))
+						
+				if (RequestTemplateType == ContentType.JSON)
                 {
                     RequestTextEntry.Text = JSONFormatter.Format(RequestTemplate);
                     
@@ -370,6 +415,8 @@ namespace Director.DataStructures
                     RequestTextEntry.Text = RequestTemplate;
                 }
                 RequestOverview.PackStart(RequestTextEntry);
+
+
                 Button ClipboardButtonReq = new Button(Image.FromResource(DirectorImages.COPY_ICON), "")
                 {
                     WidthRequest = 30,
@@ -400,7 +447,7 @@ namespace Director.DataStructures
             // Request
             if (ResponseTemplate != null && ResponseTemplate.Length > 0)
             {
-                RequestOverview.PackStart(new Label(Director.Properties.Resources.ResponseTemplate + ":")
+				RequestOverview.PackStart(new Label(string.Format("{0} ({1}): ", Director.Properties.Resources.ResponseTemplate, ResponseTemplateTypeS))
                 {
                     Font = CaptionFont,
                     MarginTop = (ExpectedStatusCode > 0) ? 20 : 0
@@ -408,7 +455,7 @@ namespace Director.DataStructures
 
                 MultiLineTextEntry ResponseTextEntry = new MultiLineTextEntry()
                 {
-                    Margin = 10
+					Margin = 10, Sensitive = false
                 };
 
                 if (ResponseTemplate.Trim().StartsWith("{"))

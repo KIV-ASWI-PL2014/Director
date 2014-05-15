@@ -1,17 +1,9 @@
-﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="12.5.2014 7:38:50">
+﻿<Properties MonoDevelop.MonoMac.LastXamMacNagTime="15.5.2014 12:47:15">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug Mac" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="DataStructures/SupportStructures/Frequency.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Forms/Controls/RequestWidget.cs">
     <Files>
-      <File FileName="Forms/Inputs/SetWindow.cs" Line="1" Column="1" />
-      <File FileName="ProgramMac.cs" Line="1" Column="1" />
-      <File FileName="Remote/Remote.cs" Line="1" Column="1" />
-      <File FileName="Forms/Controls/RequestWidget.cs" Line="1" Column="1" />
-      <File FileName="Forms/Controls/HeaderList.cs" Line="1" Column="1" />
-      <File FileName="Forms/MainWindow.cs" Line="1439" Column="60" />
-      <File FileName="DataStructures/Server.cs" Line="46" Column="36" />
-      <File FileName="DataStructures/Scenario.cs" Line="61" Column="23" />
-      <File FileName="DataStructures/Request.cs" Line="103" Column="55" />
-      <File FileName="DataStructures/SupportStructures/Frequency.cs" Line="1" Column="1" />
+      <File FileName="Forms/Inputs/SetWindow.cs" Line="166" Column="5" />
+      <File FileName="Forms/Controls/RequestWidget.cs" Line="1094" Column="10" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

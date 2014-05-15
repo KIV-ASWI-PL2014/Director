@@ -18,7 +18,6 @@ namespace Director
         private static void Main()
         {
             // Set language
-            Console.WriteLine("Locale: {0}", Director.Properties.Settings.Default.language);
             Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(Director.Properties.Settings.Default.language);
 
             // Setapp type

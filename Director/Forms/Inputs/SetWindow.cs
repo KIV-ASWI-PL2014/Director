@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using Xwt;
 using Xwt.Drawing;
+using System.Xml;
+using System.IO;
 
 namespace Director.Forms.Inputs
 {
@@ -37,6 +39,12 @@ namespace Director.Forms.Inputs
         /// Response widget.
         /// </summary>
         public ResponseWidget ResWidget { get; set; }
+
+		/// <summary>
+		///  Content type.
+		/// </summary>
+		/// <value>The type of the content.</value>
+		public ComboBox ContentTypeSelect { get; set; }
 
         /// <summary>
         /// Create set window.
@@ -72,14 +80,41 @@ namespace Director.Forms.Inputs
                 ExpandVertical = true,
                 ExpandHorizontal = true
             };
+					
+			TextInput.Text = "";
+
+			// Content type combo box
+			ContentTypeSelect = new ComboBox ();
+			ContentTypeSelect.Items.Add (ContentType.JSON, "JSON");
+			ContentTypeSelect.Items.Add (ContentType.XML, "XML");
+			ContentTypeSelect.Items.Add (ContentType.PLAIN, "PLAIN");
+			ContentTypeSelect.SelectedIndex = 0;
+
             if (ReqWidget != null)
             {
-                TextInput.Text = JSONFormatter.Format(ReqWidget.ActiveRequest.RequestTemplate);
+				if (ReqWidget.ActiveRequest.RequestTemplateType == ContentType.JSON) {
+					TextInput.Text = JSONFormatter.Format (ReqWidget.ActiveRequest.RequestTemplate);
+				}
+				if (TextInput.Text.Length == 0) {
+					TextInput.Text = ReqWidget.ActiveRequest.RequestTemplate;
+				}
+				ContentTypeSelect.SelectedItem = ReqWidget.ActiveRequest.RequestTemplateType;
             }
             else if (ResWidget != null)
             {
-                TextInput.Text = JSONFormatter.Format(ResWidget.ActiveRequest.ResponseTemplate);
-            }
+				if (ResWidget.ActiveRequest.ResponseTemplateType == ContentType.JSON) {
+					TextInput.Text = JSONFormatter.Format (ResWidget.ActiveRequest.RequestTemplate);
+				}
+				if (TextInput.Text.Length == 0) {
+					TextInput.Text = ResWidget.ActiveRequest.RequestTemplate;
+				}
+				ContentTypeSelect.SelectedItem = ResWidget.ActiveRequest.ResponseTemplateType;
+			}
+
+			// Add
+			InputArea.PackStart(new Label() { Markup = "<b>Content type:</b>" });
+			InputArea.PackStart (ContentTypeSelect, false, true);
+
 
             ScrollView ScrollTextInput = new ScrollView()
             {
@@ -116,27 +151,42 @@ namespace Director.Forms.Inputs
         /// </summary>
         void ConfirmButton_Clicked(object sender, EventArgs e)
         {
-            List<ParserError> errors = new List<ParserError>();
-            Parser.deserialize(TextInput.Text, errors, "json");
-            if (errors.Count == 0)
-            {
-                if (ReqWidget != null)
-                {
-                    ReqWidget.SetRequest(TextInput.Text);
-                    Close();
-                }
-                else if (ResWidget != null)
-                {
-                    ResWidget.SetResponse(TextInput.Text);
-                    Close();
-                }
-                else
-                    Close();
-            }
-            else
-            {
-                ErrorReport.Markdown = ParserResult.CreateMarkdownReport(errors);
-            }
+			// Type
+			ContentType type = (ContentType) ContentTypeSelect.SelectedItem;
+
+			// Data
+			String error = null;
+
+			// Parse
+			if (type == ContentType.JSON) {
+				List<ParserError> errors = new List<ParserError>();
+				Parser.deserialize(TextInput.Text, errors, "json");
+				if (errors.Count > 0)
+					error = ParserResult.CreateMarkdownReport(errors);
+
+			} else if (type == ContentType.XML) {
+				try {
+					using (XmlReader reader = XmlReader.Create(new StringReader(TextInput.Text)))
+					{
+						// OK
+					}
+				} catch (Exception er) {
+					error = er.Message;
+				}
+			}
+
+			if (error != null) {
+				ErrorReport.Markdown = error;
+				return;
+			}
+
+			if (ReqWidget != null) {
+				ReqWidget.SetRequest (TextInput.Text, type);
+			} else {
+				ResWidget.SetResponse (TextInput.Text, type);
+			}
+
+			Close ();
         }
 
     }
