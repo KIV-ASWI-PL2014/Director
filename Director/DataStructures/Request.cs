@@ -12,6 +12,7 @@ using Director.Formatters;
 using Xwt.Drawing;
 using Director.Forms.Controls;
 using System.Xml;
+using System.ComponentModel;
 
 namespace Director.DataStructures
 {
@@ -87,6 +88,18 @@ namespace Director.DataStructures
 		/// <value>The type of the request template.</value>
 		[XmlIgnore]
 		public ContentType RequestTemplateType { get; set; }
+
+        /// <summary>
+        /// Request repeat count!
+        /// </summary>
+        [DefaultValue(1)]
+        public int RepeatsCounter { get; set; }
+
+        /// <summary>
+        /// Request repeat time between repeats in seconds.
+        /// </summary>
+        [DefaultValue(1)]
+        public int RepeatsTimeout { get; set; }
 
 		/// <summary>
 		/// Request template types.

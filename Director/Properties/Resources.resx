@@ -934,4 +934,40 @@
   <data name="UseVarInsteadOfValue" xml:space="preserve">
     <value>Use variable instead of value</value>
   </data>
+  <data name="CompareAllArrayItem" xml:space="preserve">
+    <value>Compare all array item</value>
+  </data>
+  <data name="CompareItemCount" xml:space="preserve">
+    <value>Compare item count</value>
+  </data>
+  <data name="EvaluateConditionIfParameterIsPresent" xml:space="preserve">
+    <value>Evaluate condition if parameter is present</value>
+  </data>
+  <data name="InvalidRepeatCount" xml:space="preserve">
+    <value>Repeat count has to be greather or equal than 0!</value>
+  </data>
+  <data name="NumberOfCallRepeats" xml:space="preserve">
+    <value>Retries of request:</value>
+  </data>
+  <data name="PresentsTest" xml:space="preserve">
+    <value>Present test</value>
+  </data>
+  <data name="RequestBodyIsEmpty" xml:space="preserve">
+    <value>Request body is empty!</value>
+  </data>
+  <data name="ResponseBodyIsEmpty" xml:space="preserve">
+    <value>Response body is empty!</value>
+  </data>
+  <data name="ResponseHeaders" xml:space="preserve">
+    <value>Response headers</value>
+  </data>
+  <data name="TimeBetweenRequests" xml:space="preserve">
+    <value>Time in seconds between retries of request:</value>
+  </data>
+  <data name="TryNumberOfTotals" xml:space="preserve">
+    <value>Attempt: {0}/{1}</value>
+  </data>
+  <data name="VariableInsteadConditionValue" xml:space="preserve">
+    <value>Use variable instead of condition value</value>
+  </data>
 </root>

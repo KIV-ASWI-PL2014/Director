@@ -1389,190 +1389,246 @@ namespace Director.Forms
                         ChangeIcon(r.TreePosition, text: r.Name);
                     }
 
-                    // Clear result
-                    r.ClearResults();
-
-                    // Parser
-                    Parser p = new Parser();
-
-					// Prepare URL
-					ParserResult result = Parser.parseHeader(r.Url, r.ParentScenario.customVariables);
-					if (result.isSuccess () == false) {
-						// Headers
-						r.AddResultViewItem(1, Director.Properties.Resources.ErrorGeneratingUrl + ":");
-
-						// Errors
-						foreach (var i in result.getErrors())
-						{
-							r.AddResultViewItem(2, i.getMessage());
-						}
-
-						// Change icon
-						ChangeIcon(r.TreePosition, ERORImage);
-						success = false;
-						break;
-					}
-					// Erro result
-					String URL = result.getResult ();
-
-					// Body
-					String RequestBody = null;
-
-					// Create RestRequest
-					var request = new RestRequest(r.RequestMethod);
-
-                    // Prepare template
-                    if (r.RequestTemplate != null && r.RequestTemplate.Length > 0)
-                    {
-						if (r.RequestTemplateType == ContentType.PLAIN) {
-							RequestBody = r.RequestTemplate;
-							request.AddParameter ("text/plain", RequestBody, ParameterType.RequestBody);
-						} else {
-							string jsonData = r.RequestTemplate;
-
-							if (r.RequestTemplateType == ContentType.XML) {
-								XmlDocument doc = new XmlDocument ();
-								doc.LoadXml (jsonData);
-								jsonData = Newtonsoft.Json.JsonConvert.SerializeXmlNode (doc);
-							}
-
-							// Generate
-							result = p.generateRequest (jsonData, r.ParentScenario.customVariables);
-
-							// Cannot generate reqeust!
-							if (result.isSuccess () == false) {
-								// Write errors!
-								r.AddResultViewItem (1, Director.Properties.Resources.ErrorWhenGeneratingTemplate + ":");
-
-								// Errors
-								foreach (var i in result.getErrors()) {
-									r.AddResultViewItem (2, i.getMessage ());
-								}
-
-								// Change icon
-								ChangeIcon (r.TreePosition, ERORImage);
-								success = false;
-								break;
-							}
-							
-							// Parameter
-							if (result.getResult () != null && result.getResult ().Length > 0) {
-								if (r.RequestTemplateType == ContentType.XML) {
-									RequestBody = JsonConvert.DeserializeXmlNode (result.getResult()).ToString();
-									request.RequestFormat = DataFormat.Xml;
-									request.AddParameter ("application/xml", RequestBody, ParameterType.RequestBody);
-								} else {
-									request.RequestFormat = DataFormat.Json;
-									RequestBody = result.getResult ();
-									request.AddParameter ("application/json", result.getResult (), ParameterType.RequestBody);
-								}
-							}
-						}
-                    }
-						
-					// Prepare headers
-					foreach (var h in r.Headers) {
-						result = Parser.parseHeader(h.Value, r.ParentScenario.customVariables);
-						if (result.isSuccess () == false) {
-							// Headers
-							r.AddResultViewItem(1, Director.Properties.Resources.ErrorWhenGeneratingHeaders + ":");
-
-							// Errors
-							foreach (var i in result.getErrors())
-							{
-								r.AddResultViewItem(2, i.getMessage());
-							}
-
-							// Change icon
-							ChangeIcon(r.TreePosition, ERORImage);
-							success = false;
-							break;
-						}
-						// Add header
-						request.AddHeader (h.Name, result.getResult ());
-					}
-
-                    // Prepare error...
-                    r.AddResultViewItem(1, Director.Properties.Resources.Error + ":");
-
-                    // Send
-					RestResponse response = Director.Remote.Remote.SendRemoteRequest(r, request, URL);
-
-                    // Valid?
+                    // Set running variables
                     bool valid = false;
+                    RestResponse response = null;
+                    string RequestBody = null;
+                    int RepeatCounter = r.RepeatsCounter;
 
-                    // Response
-                    p = new Parser();
-                    ParserResult res = null;
-                        
-					if (r.ResponseTemplate != null && r.ResponseTemplate.Length > 0) {
-						string json = r.ResponseTemplate;
-						string jsonBody = response.Content;
-						if (r.ResponseTemplateType == ContentType.XML) {
-							// Convert to JSON both of them
-							XmlDocument doc = new XmlDocument ();
-							doc.LoadXml (json);
-							json = Newtonsoft.Json.JsonConvert.SerializeXmlNode (doc);
+                    do
+                    {
+                        // Reset variables
+                        valid = false;
 
-							doc = new XmlDocument ();
-							doc.LoadXml (jsonBody);
-							jsonBody = Newtonsoft.Json.JsonConvert.SerializeXmlNode (doc);
-						}
-
-						res = p.parseResponse (json, jsonBody, s.customVariables, true);
-					}
-						
-                    // Parse response
-                    if (response.ResponseStatus != ResponseStatus.Completed)
-                    {
-                        r.AddResultViewItem(2, string.Format(Director.Properties.Resources.RequestNotSuccessfull, response.ResponseStatus.ToString()));
-                    }
-                    else if (r.ExpectedStatusCode != -1 && ((int)response.StatusCode) != r.ExpectedStatusCode)
-                    {
-                        // Set error message:
-                        r.AddResultViewItem(2, string.Format(Director.Properties.Resources.InvalidReturnCode, r.ExpectedStatusCode, (int)response.StatusCode));
-                    }
-                    else if (res is ParserResult && !res.isSuccess())
-                    {
-                        foreach (var er in res.getErrors())
-                            r.AddResultViewItem(2, er.getMessage());
-                    }
-                    else
-                    {
-                        valid = true;
+                        // Clear result
                         r.ClearResults();
-                        r.AddResultViewItem(1, Director.Properties.Resources.ResultIsOk);
-                    }
+
+                        // Parser
+                        Parser p = new Parser();
+
+                        // Prepare URL
+                        ParserResult result = Parser.parseHeader(r.Url, r.ParentScenario.customVariables);
+                        if (result.isSuccess() == false)
+                        {
+                            // Headers
+                            r.AddResultViewItem(1, Director.Properties.Resources.ErrorGeneratingUrl + ":");
+
+                            // Errors
+                            foreach (var i in result.getErrors())
+                            {
+                                r.AddResultViewItem(2, i.getMessage());
+                            }
+
+                            // Change icon
+                            ChangeIcon(r.TreePosition, ERORImage);
+                            success = false;
+                            break;
+                        }
+                        // Erro result
+                        String URL = result.getResult();
+
+                        // Body
+                        RequestBody = null;
+
+                        // Create RestRequest
+                        var request = new RestRequest(r.RequestMethod);
+
+                        // Prepare template
+                        if (r.RequestTemplate != null && r.RequestTemplate.Length > 0)
+                        {
+                            if (r.RequestTemplateType == ContentType.PLAIN)
+                            {
+                                RequestBody = r.RequestTemplate;
+                                request.AddParameter("text/plain", RequestBody, ParameterType.RequestBody);
+                            }
+                            else
+                            {
+                                string jsonData = r.RequestTemplate;
+
+                                if (r.RequestTemplateType == ContentType.XML)
+                                {
+                                    XmlDocument doc = new XmlDocument();
+                                    doc.LoadXml(jsonData);
+                                    jsonData = Newtonsoft.Json.JsonConvert.SerializeXmlNode(doc);
+                                }
+
+                                // Generate
+                                result = p.generateRequest(jsonData, r.ParentScenario.customVariables);
+
+                                // Cannot generate reqeust!
+                                if (result.isSuccess() == false)
+                                {
+                                    // Write errors!
+                                    r.AddResultViewItem(1, Director.Properties.Resources.ErrorWhenGeneratingTemplate + ":");
+
+                                    // Errors
+                                    foreach (var i in result.getErrors())
+                                    {
+                                        r.AddResultViewItem(2, i.getMessage());
+                                    }
+
+                                    // Change icon
+                                    ChangeIcon(r.TreePosition, ERORImage);
+                                    success = false;
+                                    break;
+                                }
+
+                                // Parameter
+                                if (result.getResult() != null && result.getResult().Length > 0)
+                                {
+                                    if (r.RequestTemplateType == ContentType.XML)
+                                    {
+                                        RequestBody = JsonConvert.DeserializeXmlNode(result.getResult()).ToString();
+                                        request.RequestFormat = DataFormat.Xml;
+                                        request.AddParameter("application/xml", RequestBody, ParameterType.RequestBody);
+                                    }
+                                    else
+                                    {
+                                        request.RequestFormat = DataFormat.Json;
+                                        RequestBody = result.getResult();
+                                        request.AddParameter("application/json", result.getResult(), ParameterType.RequestBody);
+                                    }
+                                }
+                            }
+                        }
+
+                        // Prepare headers
+                        foreach (var h in r.Headers)
+                        {
+                            result = Parser.parseHeader(h.Value, r.ParentScenario.customVariables);
+                            if (result.isSuccess() == false)
+                            {
+                                // Headers
+                                r.AddResultViewItem(1, Director.Properties.Resources.ErrorWhenGeneratingHeaders + ":");
+
+                                // Errors
+                                foreach (var i in result.getErrors())
+                                {
+                                    r.AddResultViewItem(2, i.getMessage());
+                                }
+
+                                // Change icon
+                                ChangeIcon(r.TreePosition, ERORImage);
+                                success = false;
+                                break;
+                            }
+                            // Add header
+                            request.AddHeader(h.Name, result.getResult());
+                        }
+
+                        // Prepare error...
+                        r.AddResultViewItem(1, Director.Properties.Resources.Error + ":");
+
+                        // Send
+                        response = Director.Remote.Remote.SendRemoteRequest(r, request, URL);
+
+                        // Response
+                        p = new Parser();
+                        ParserResult res = null;
+
+                        if (r.ResponseTemplate != null && r.ResponseTemplate.Length > 0)
+                        {
+                            string json = r.ResponseTemplate;
+                            string jsonBody = response.Content;
+                            if (r.ResponseTemplateType == ContentType.XML)
+                            {
+                                // Convert to JSON both of them
+                                XmlDocument doc = new XmlDocument();
+                                doc.LoadXml(json);
+                                json = Newtonsoft.Json.JsonConvert.SerializeXmlNode(doc);
+
+                                doc = new XmlDocument();
+                                doc.LoadXml(jsonBody);
+                                jsonBody = Newtonsoft.Json.JsonConvert.SerializeXmlNode(doc);
+                            }
+
+                            res = p.parseResponse(json, jsonBody, s.customVariables, true);
+                        }
+
+                        // Parse response
+                        if (response.ResponseStatus != ResponseStatus.Completed)
+                        {
+                            r.AddResultViewItem(2, string.Format(Director.Properties.Resources.RequestNotSuccessfull, response.ResponseStatus.ToString()));
+                        }
+                        else if (r.ExpectedStatusCode != -1 && ((int)response.StatusCode) != r.ExpectedStatusCode)
+                        {
+                            // Set error message:
+                            r.AddResultViewItem(2, string.Format(Director.Properties.Resources.InvalidReturnCode, r.ExpectedStatusCode, (int)response.StatusCode));
+                        }
+                        else if (res is ParserResult && !res.isSuccess())
+                        {
+                            foreach (var er in res.getErrors())
+                                r.AddResultViewItem(2, er.getMessage());
+                        }
+                        else
+                        {
+                            valid = true;
+                            r.ClearResults();
+                            r.AddResultViewItem(1, Director.Properties.Resources.ResultIsOk);
+                        }
+
+                        if (valid == true)
+                            break;
+
+                        // Set repeats counter
+                        RepeatCounter--;
+
+                        // Wait propriet time
+                        int BetweenTime = r.RepeatsTimeout;
+                        if (RepeatCounter >= 0)
+                        {
+                            if (BetweenTime > 0)
+                            {
+                                Console.WriteLine("Waiting for {0}s", BetweenTime);
+                                while (BetweenTime > 0)
+                                {
+                                    ChangeIcon(r.TreePosition, text: string.Format("{0} ({1} s)", r.Name, BetweenTime));
+                                    Thread.Sleep(1000);
+                                    BetweenTime--;
+                                }
+                                r.AddResultViewItem(2, string.Format(Director.Properties.Resources.TryNumberOfTotals, RepeatCounter, r.RepeatsCounter));
+                                RefreshCurrentServer = true;
+                                ChangeIcon(r.TreePosition, text: r.Name);
+                            }
+                        }
+
+                        // Loop again
+                    } while (RepeatCounter >= 0);
+
+                    // Add response headers
+                    r.AddResultViewItem(1, Director.Properties.Resources.ResponseHeaders + ":");
+
+                    // Iterate
+                    foreach (var h in response.Headers)
+                        r.AddResultViewItem(2, string.Format("{0} - {1}", h.Name, h.Value));
 
                     // Add request content
-                    if (RequestBody != null && RequestBody.Length > 0)
-                    {
-                        r.AddResultViewItem(1, Director.Properties.Resources.RequestTab + ":");
+                    r.AddResultViewItem(1, Director.Properties.Resources.RequestTab + ":");
 
-                        // Response
-                        String formatted = JSONFormatter.Format(RequestBody);
+                    // Response
+                    String formatted = (RequestBody != null && RequestBody.Length > 0) ? JSONFormatter.Format(RequestBody) : null;
 
-                        // Request box
-                        if (formatted != null)
-                            r.AddResultViewItem(3, formatted);
-                        else
-                            r.AddResultViewItem(3, RequestBody);
-                    }
+                    // Request box
+                    if (formatted != null)
+                        r.AddResultViewItem(3, formatted);
+                    else if (RequestBody == null || RequestBody.Length == 0)
+                        r.AddResultViewItem(2, Director.Properties.Resources.RequestBodyIsEmpty);
+                    else
+                        r.AddResultViewItem(3, RequestBody);
 
                     // Add response content
-                    if (response.Content != null && response.Content.Length > 0)
-                    {
-                        r.AddResultViewItem(1, Director.Properties.Resources.Response + ":");
+                    r.AddResultViewItem(1, Director.Properties.Resources.Response + ":");
 
-                        // Response
-                        String formatted = JSONFormatter.Format(response.Content);
+                    // Response
+                    formatted = (response.Content != null && response.Content.Length > 0) ? JSONFormatter.Format(response.Content) : null;
 
-                        // Request box
-                        if (formatted != null)
-                            r.AddResultViewItem(3, formatted);                       
-                        else
-                            r.AddResultViewItem(3, response.Content);  
-                    }
+                    // Request box
+                    if (formatted != null)
+                        r.AddResultViewItem(3, formatted);
+                    else if (response.Content == null || response.Content.Length == 0)
+                        r.AddResultViewItem(2, Director.Properties.Resources.ResponseBodyIsEmpty);
+                    else
+                        r.AddResultViewItem(3, response.Content);  
 
                     // Refresh UI
                     RefreshCurrentServer = true;

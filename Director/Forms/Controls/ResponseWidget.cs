@@ -424,11 +424,11 @@ namespace Director.Forms.Controls
 			VBox ContentBox = new VBox ();
 
 			// Create Item count
-			ItemCount = new RadioButton ("Compare item count");
+			ItemCount = new RadioButton (Director.Properties.Resources.CompareItemCount);
 			ContentBox.PackStart (ItemCount);
 
 			// Create All item template
-			AllItemsTemplate = new RadioButton ("Copare all array item");
+			AllItemsTemplate = new RadioButton (Director.Properties.Resources.CompareAllArrayItem);
 			ContentBox.PackStart (AllItemsTemplate);
 
 			// Set group
@@ -436,7 +436,7 @@ namespace Director.Forms.Controls
 			ItemCount.Group.ActiveRadioButtonChanged += CompareTypeChanged_Event;
 
 			// Type
-			ContentBox.PackStart (new Label ("Format type:") { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
+			ContentBox.PackStart (new Label (Director.Properties.Resources.FormatType) { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
 
 			// Combo box
 			FormatTypeSelect = new ComboBox ();
@@ -450,15 +450,15 @@ namespace Director.Forms.Controls
 			ContentBox.PackStart (FormatTypeSelect, true, false);
 
 			// Operations
-			ContentBox.PackStart (new Label ("Operation:") { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
+			ContentBox.PackStart (new Label (Director.Properties.Resources.Operation) { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
 			FormatOperationsSelect = new ComboBox ();
-			FormatOperationsSelect.Items.Add ("eq", "Equals");
-			FormatOperationsSelect.Items.Add ("ne", "Not equals");
-			FormatOperationsSelect.Items.Add ("lt", "Less than");
-			FormatOperationsSelect.Items.Add ("lte", "Less than or equal");
-			FormatOperationsSelect.Items.Add ("gt", "Greather than");
-			FormatOperationsSelect.Items.Add ("gte", "Greather than or equal");
-			FormatOperationsSelect.Items.Add ("mp", "Matching regexp pattern");
+            FormatOperationsSelect.Items.Add("ip_", Director.Properties.Resources.PresentsTest);
+            FormatOperationsSelect.Items.Add("eq", Director.Properties.Resources.OperationEquals);
+            FormatOperationsSelect.Items.Add("ne", Director.Properties.Resources.OperationNotEquals);
+            FormatOperationsSelect.Items.Add("lte", Director.Properties.Resources.OperationLessThanOrEquals);
+            FormatOperationsSelect.Items.Add("gt", Director.Properties.Resources.OperationGreatherThan);
+            FormatOperationsSelect.Items.Add("gte", Director.Properties.Resources.OperationGreatherThanOrEqual);
+            FormatOperationsSelect.Items.Add("mp", Director.Properties.Resources.OperationMatchingRegex);
 			FormatOperationsSelect.SelectedIndex = 0;
 
 			// Select - fill combo box
@@ -468,20 +468,20 @@ namespace Director.Forms.Controls
 			ContentBox.PackStart (FormatOperationsSelect, true, false);
 
 			// Create items
-			UseVariable = new CheckBox ("Use variable instead of value");
+			UseVariable = new CheckBox (Director.Properties.Resources.VariableInsteadConditionValue);
 			ContentBox.PackStart (UseVariable, true, false);
 
 			// Evaluate this if present
-			EvalIfPresent = new CheckBox ("Evaluate condition if parameter is present");
+			EvalIfPresent = new CheckBox (Director.Properties.Resources.EvaluateConditionIfParameterIsPresent);
 			ContentBox.PackStart (EvalIfPresent, true, false);
 
 			// Value
-			ContentBox.PackStart (new Label ("Condition value:") { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
+			ContentBox.PackStart (new Label (Director.Properties.Resources.ConditionValue) { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
 			ConditionValue = new TextEntry ();
 			ContentBox.PackStart (ConditionValue, true, false);
 
 			// Save to variable
-			ContentBox.PackStart (new Label ("Save to variable:") { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
+			ContentBox.PackStart (new Label (Director.Properties.Resources.SaveToVariable) { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
 			SaveToVariable = new TextEntry ();
 			ContentBox.PackStart (SaveToVariable, true, false);
 
@@ -507,13 +507,11 @@ namespace Director.Forms.Controls
 			if (ItemCount.Active)
 				formatTypeSelected = "integer";
 
+            FormatOperationsSelect.Items.Add("ip_", Director.Properties.Resources.PresentsTest);
+            FormatOperationsSelect.Items.Add("eq", Director.Properties.Resources.OperationEquals);
+            FormatOperationsSelect.Items.Add("ne", Director.Properties.Resources.OperationNotEquals);
 
-			if (formatTypeSelected == "boolean") {
-				FormatOperationsSelect.Items.Add ("eq", Director.Properties.Resources.OperationEquals);
-				FormatOperationsSelect.Items.Add ("ne", Director.Properties.Resources.OperationNotEquals);
-			} else {
-				FormatOperationsSelect.Items.Add ("eq", Director.Properties.Resources.OperationEquals);
-				FormatOperationsSelect.Items.Add("ne", Director.Properties.Resources.OperationNotEquals);
+			if (formatTypeSelected != "boolean") {
 				FormatOperationsSelect.Items.Add ("lt", Director.Properties.Resources.OperationLessThan);
 				FormatOperationsSelect.Items.Add("lte", Director.Properties.Resources.OperationLessThanOrEquals);
 				FormatOperationsSelect.Items.Add("gt", Director.Properties.Resources.OperationGreatherThan);
@@ -567,21 +565,32 @@ namespace Director.Forms.Controls
 					// Method
 					var method = tokens [2];
 
-					// Simple method?
-					UseVariable.State = (method.IndexOf ("uv", 0) >= 0) ? CheckBoxState.On : CheckBoxState.Off;
-					EvalIfPresent.State = (method.IndexOf("ip", 0) >= 0) ? CheckBoxState.On : CheckBoxState.Off;
+                    // Only if present test?
+                    if (method == "ip_")
+                    {
+                        FormatOperationsSelect.SelectedItem = "ip_";
+                    }
+                    else
+                    {
+                        // Simple method?
+                        UseVariable.State = (method.IndexOf("uv", 0) >= 0) ? CheckBoxState.On : CheckBoxState.Off;
 
-					// Method name
-					FormatOperationsSelect.SelectedItem = method.Replace("uv_", "").Replace("ip_", "");
-					if (FormatOperationsSelect.SelectedIndex < 0)
-						throw new Exception ("Invalid operation");
+                        // If preset exists?
+                        EvalIfPresent.State = (method.IndexOf("ip", 0) >= 0) ? CheckBoxState.On : CheckBoxState.Off;
 
-					// Type
-					var type = tokens[1];
 
-					if (type == "array") {
-						ItemCount.Active = true;
-					} else  {
+                        // Method name
+                        FormatOperationsSelect.SelectedItem = method.Replace("uv_", "").Replace("ip_", "");
+                        if (FormatOperationsSelect.SelectedIndex < 0)
+                            throw new Exception("Invalid operation");
+
+                    }
+				    // Type
+				    var type = tokens[1];
+
+				    if (type == "array") {
+					    ItemCount.Active = true;
+				    } else  {
 						AllItemsTemplate.Active = true;
 						FormatTypeSelect.SelectedItem = type;
 						if (FormatTypeSelect.SelectedIndex < 0)
@@ -738,19 +747,19 @@ namespace Director.Forms.Controls
 				String[] tokens = text.Split ('#');
 				try {
 					if (tokens.Length == 6) {
-						// Set format active
+				        // Set format active
 						Format.Active = true;
 
-					// value
-					var value = tokens [3];
-					ConditionValue.Text = value;
+					    // value
+					    var value = tokens [3];
+					    ConditionValue.Text = value;
 
-					// Var name
-					var variable = tokens [4];
-					SaveToVariable.Text = variable;
+				    	// Var name
+					    var variable = tokens [4];
+					    SaveToVariable.Text = variable;
 
 						// Type
-					var type = tokens[1];
+					    var type = tokens[1];
 						FormatTypeSelect.SelectedItem = type;
 
 						if (FormatTypeSelect.SelectedIndex < 0)
@@ -759,14 +768,21 @@ namespace Director.Forms.Controls
 						// Method
 						var method = tokens [2];
 
-						// Simple method?
-						UseVariable.State = (method.IndexOf ("uv", 0) >= 0) ? CheckBoxState.On : CheckBoxState.Off;
-						EvalIfPresent.State = (method.IndexOf("ip", 0) >= 0) ? CheckBoxState.On : CheckBoxState.Off;
+                        if (method == "ip_")
+                        {
+                            FormatOperationsSelect.SelectedItem = "ip_";
+                        }
+                        else
+                        {
+                            // Simple method?
+                            UseVariable.State = (method.IndexOf("uv", 0) >= 0) ? CheckBoxState.On : CheckBoxState.Off;
+                            EvalIfPresent.State = (method.IndexOf("ip", 0) >= 0) ? CheckBoxState.On : CheckBoxState.Off;
 
-						// Method name
-						FormatOperationsSelect.SelectedItem = method.Replace("uv_", "").Replace("ip_", "");
-						if (FormatOperationsSelect.SelectedIndex < 0)
-							throw new Exception ("Invalid operation");
+                            // Method name
+                            FormatOperationsSelect.SelectedItem = method.Replace("uv_", "").Replace("ip_", "");
+                            if (FormatOperationsSelect.SelectedIndex < 0)
+                                throw new Exception("Invalid operation");
+                        }
 					} else {
 						throw new Exception("Cannot evaluate");
 					}
@@ -872,12 +888,13 @@ namespace Director.Forms.Controls
 
 				FormatOperationsSelect.Items.Clear();
 
-				if (((String)FormatTypeSelect.SelectedItem) == "boolean") {
-					FormatOperationsSelect.Items.Add ("eq", Director.Properties.Resources.OperationEquals);
-					FormatOperationsSelect.Items.Add ("ne", Director.Properties.Resources.OperationNotEquals);
-				} else {
-					FormatOperationsSelect.Items.Add ("eq", Director.Properties.Resources.OperationEquals);
-                    FormatOperationsSelect.Items.Add("ne", Director.Properties.Resources.OperationNotEquals);
+                // Always
+                FormatOperationsSelect.Items.Add("ip_", Director.Properties.Resources.PresentsTest);
+                FormatOperationsSelect.Items.Add("eq", Director.Properties.Resources.OperationEquals);
+                FormatOperationsSelect.Items.Add("ne", Director.Properties.Resources.OperationNotEquals);
+
+
+				if (((String)FormatTypeSelect.SelectedItem) != "boolean") {
 					FormatOperationsSelect.Items.Add ("lt", Director.Properties.Resources.OperationLessThan);
                     FormatOperationsSelect.Items.Add("lte", Director.Properties.Resources.OperationLessThanOrEquals);
                     FormatOperationsSelect.Items.Add("gt", Director.Properties.Resources.OperationGreatherThan);
@@ -896,6 +913,7 @@ namespace Director.Forms.Controls
 			// Operations
 			ContentBox.PackStart (new Label (Director.Properties.Resources.Operation) { Font = Font.SystemFont.WithWeight (FontWeight.Bold) }, true, false);
 			FormatOperationsSelect = new ComboBox ();
+            FormatOperationsSelect.Items.Add("ip_", Director.Properties.Resources.PresentsTest);
             FormatOperationsSelect.Items.Add("eq", Director.Properties.Resources.OperationEquals);
             FormatOperationsSelect.Items.Add("ne", Director.Properties.Resources.OperationNotEquals);
             FormatOperationsSelect.Items.Add("lt", Director.Properties.Resources.OperationLessThan);
@@ -924,11 +942,29 @@ namespace Director.Forms.Controls
 			ConditionValue = new TextEntry ();
 			ContentBox.PackStart (ConditionValue, true, false);
 
-
 			// Save to variable
             ContentBox.PackStart(new Label(Director.Properties.Resources.SaveToVariable) { Font = Font.SystemFont.WithWeight(FontWeight.Bold) }, true, false);
 			SaveToVariable = new TextEntry ();
 			ContentBox.PackStart (SaveToVariable, true, false);
+
+            // Change selection
+            FormatOperationsSelect.SelectionChanged += delegate
+            {
+                string item = (String)FormatOperationsSelect.SelectedItem;
+
+                if (item == "ip_")
+                {
+                    UseVariable.Sensitive = false;
+                    ConditionValue.Sensitive = false;
+                    EvalIfPresent.Sensitive = false;
+                }
+                else
+                {
+                    UseVariable.Sensitive = true;
+                    ConditionValue.Sensitive = true;
+                    EvalIfPresent.Sensitive = true;
+                }
+            };
 
 			// Content
 			Content = ContentBox;

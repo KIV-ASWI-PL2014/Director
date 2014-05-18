@@ -56,6 +56,30 @@ namespace Director.Forms.Inputs
         };
 
         /// <summary>
+        /// Invalid repeat count!
+        /// </summary>
+        private Label InvalidRepeatCount = new Label()
+        {
+            Markup = "<b>" + Director.Properties.Resources.InvalidRepeatCount + "</b>",
+            Visible = false,
+            TextColor = Colors.Red,
+            TextAlignment = Alignment.End,
+            MarginRight = 10
+        };
+
+        /// <summary>
+        /// Invalid waiting time.
+        /// </summary>
+        private Label InvalidBetweenRepeatTime = new Label()
+        {
+            Markup = "<b>" + Director.Properties.Resources.InvalidWaitTime + "</b>",
+            Visible = false,
+            TextColor = Colors.Red,
+            TextAlignment = Alignment.End,
+            MarginRight = 10
+        };
+
+        /// <summary>
         /// Create window instance.
         /// </summary>
         /// <param name="_window">Main window</param>
@@ -70,7 +94,7 @@ namespace Director.Forms.Inputs
             Resizable = true;
 
             // Set title
-            Title = "Request: " + _request.Name;
+            Title = string.Format("{0}: {1}", Director.Properties.Resources.RequestTab, _request.Name);
 
             // Icon
             Icon = Image.FromResource(DirectorImages.ROOT_ICON);
@@ -161,7 +185,65 @@ namespace Director.Forms.Inputs
                 }
             };
 
+            // Repeat count
+            RequestUrlContent.PackStart(new Label(Director.Properties.Resources.NumberOfCallRepeats));
+            TextEntry RepeatCounter = new TextEntry()
+            {
+                Text = ActiveRequest.RepeatsCounter + ""
+            };
+            RequestUrlContent.PackStart(RepeatCounter, expand: true, fill: true);
+            RequestUrlContent.PackStart(InvalidRepeatCount, vpos: WidgetPlacement.End);
+            RepeatCounter.Changed += delegate
+            {
+                try
+                {
+                    ActiveRequest.RepeatsCounter = int.Parse(RepeatCounter.Text);
 
+                    if (ActiveRequest.RepeatsCounter < 0)
+                    {
+                        ActiveRequest.RepeatsCounter = 0;
+                        RepeatCounter.Text = "0";
+                        throw new InvalidCastException();
+                    }
+
+                    InvalidRepeatCount.Visible = false;
+                }
+                catch
+                {
+                    InvalidRepeatCount.Visible = true;
+                }
+            };
+
+            // Time between repeaters
+            RequestUrlContent.PackStart(new Label(Director.Properties.Resources.TimeBetweenRequests));
+            TextEntry RequestTimeouts = new TextEntry()
+            {
+                Text = ActiveRequest.RepeatsTimeout + ""
+            };
+            RequestUrlContent.PackStart(RequestTimeouts, expand: true, fill: true);
+            RequestUrlContent.PackStart(InvalidBetweenRepeatTime, vpos: WidgetPlacement.End);
+            RequestTimeouts.Changed += delegate
+            {
+                try
+                {
+                    ActiveRequest.RepeatsTimeout = int.Parse(RequestTimeouts.Text);
+
+                    if (ActiveRequest.RepeatsTimeout < 0)
+                    {
+                        ActiveRequest.RepeatsTimeout = 0;
+                        RequestTimeouts.Text = "0";
+                        throw new InvalidCastException();
+                    }
+
+                    InvalidBetweenRepeatTime.Visible = false;
+                }
+                catch
+                {
+                    InvalidBetweenRepeatTime.Visible = true;
+                }
+            };
+
+            // Set content
             RequestUrl.Content = RequestUrlContent;
             ParentContent.PackStart(RequestUrl, expand: false, fill: true);
 

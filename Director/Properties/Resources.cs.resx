@@ -898,4 +898,40 @@
   <data name="UseVarInsteadOfValue" xml:space="preserve">
     <value>Použij proměnnou namísto hodnoty</value>
   </data>
+  <data name="CompareAllArrayItem" xml:space="preserve">
+    <value>Vzor pro položky v poli</value>
+  </data>
+  <data name="CompareItemCount" xml:space="preserve">
+    <value>Porovnat počet položek</value>
+  </data>
+  <data name="EvaluateConditionIfParameterIsPresent" xml:space="preserve">
+    <value>Vyhodnotit pouze pokud je parametr v těle odpovědi</value>
+  </data>
+  <data name="InvalidRepeatCount" xml:space="preserve">
+    <value>Chybný počet opakování (musí být větší rovno 0)!</value>
+  </data>
+  <data name="NumberOfCallRepeats" xml:space="preserve">
+    <value>Počet pokusů volání požadavku:</value>
+  </data>
+  <data name="PresentsTest" xml:space="preserve">
+    <value>Test na přítomnost parametru</value>
+  </data>
+  <data name="RequestBodyIsEmpty" xml:space="preserve">
+    <value>Tělo požadavku je prázdné!</value>
+  </data>
+  <data name="ResponseBodyIsEmpty" xml:space="preserve">
+    <value>Tělo odpovědi je prázdné!</value>
+  </data>
+  <data name="ResponseHeaders" xml:space="preserve">
+    <value>Hlavičky odpovědi</value>
+  </data>
+  <data name="TimeBetweenRequests" xml:space="preserve">
+    <value>Čas v sekundách mezi pokusy:</value>
+  </data>
+  <data name="TryNumberOfTotals" xml:space="preserve">
+    <value>Pokus: {0}/{1}</value>
+  </data>
+  <data name="VariableInsteadConditionValue" xml:space="preserve">
+    <value>Použít proměnnou jako podmínkovou hodnotu</value>
+  </data>
 </root>
