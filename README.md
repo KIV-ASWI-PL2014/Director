@@ -28,9 +28,3 @@ Team members
 * Vaclav Stengl
   * Export settings
   * Automatic tests of parser
-
-* Dana Lunterova
-  * Behaviour tester - on specified OS
-  * Redmine manager
-  * Team support
-  
