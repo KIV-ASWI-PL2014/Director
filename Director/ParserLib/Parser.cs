@@ -1473,7 +1473,7 @@ namespace Director.ParserLib
             // continuosly add items to the return object until both occurence lists are empty
             while (var_occurrences.Count != 0 || fn_occurrences.Count != 0)
             {
-                if (var_occurrences.Count == 0 || var_occurrences[0] > fn_occurrences[0])
+                if (var_occurrences.Count == 0 || (fn_occurrences.Count > 0 && var_occurrences[0] > fn_occurrences[0]))
                 {
                     // add text if possible
                     if (current_position < fn_occurrences[0])
@@ -1531,7 +1531,7 @@ namespace Director.ParserLib
 
                     continue;
                 }
-                if (fn_occurrences.Count == 0 || var_occurrences[0] < fn_occurrences[0])
+                if (fn_occurrences.Count == 0 || (var_occurrences.Count > 0 && var_occurrences[0] < fn_occurrences[0]))
                 {
                     // add text if possible
                     if (current_position < var_occurrences[0])
