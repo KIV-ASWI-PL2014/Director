@@ -1,4 +1,31 @@
-﻿using System;
+﻿//
+// OutlineViewBackend.cs
+//
+// Author:
+//       Lluis Sanchez <lluis@xamarin.com>
+//       Hywel Thomas <hywel.w.thomas@gmail.com>
+//       strnadj <jan.strnadek@gmail.com>
+//
+// Copyright (c) 2014 Xamarin Inc
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
 using MonoMac.CoreGraphics;
@@ -7,18 +34,15 @@ namespace Xwt.Mac
 {
 	public class OutlineViewBackend : NSOutlineView
 	{
-		IWidgetEventSink eventSink;
+		ITreeViewEventSink eventSink;
 		protected ApplicationContext context;
-		NSTrackingArea trackingArea;	// Captures Mouse Entered, Exited, and Moved events
+		NSTrackingArea trackingArea;
 
-		public OutlineViewBackend(IWidgetEventSink eventSink, ApplicationContext context) {
+		public OutlineViewBackend (ITreeViewEventSink eventSink, ApplicationContext context)
+		{
 			this.context = context;
 			this.eventSink = eventSink;
 		}
-
-
-
-		public ViewBackend Backend { get; set; }
 
 		public NSOutlineView View {
 			get { return this; }
@@ -38,7 +62,7 @@ namespace Xwt.Mac
 
 		public override void RightMouseDown (NSEvent theEvent)
 		{
-			base.RightMouseDown (theEvent);
+			base.RightMouseUp (theEvent);
 			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
 			ButtonEventArgs args = new ButtonEventArgs ();
 			args.X = p.X;
@@ -90,6 +114,7 @@ namespace Xwt.Mac
 
 		public override void MouseEntered (NSEvent theEvent)
 		{
+			base.MouseEntered (theEvent);
 			context.InvokeUserCode (delegate {
 				eventSink.OnMouseEntered ();
 			});
@@ -97,6 +122,7 @@ namespace Xwt.Mac
 
 		public override void MouseExited (NSEvent theEvent)
 		{
+			base.MouseExited (theEvent);
 			context.InvokeUserCode (delegate {
 				eventSink.OnMouseExited ();
 			});
@@ -104,6 +130,7 @@ namespace Xwt.Mac
 
 		public override void MouseMoved (NSEvent theEvent)
 		{
+			base.MouseMoved (theEvent);
 			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
 			MouseMovedEventArgs args = new MouseMovedEventArgs ((long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds, p.X, p.Y);
 			context.InvokeUserCode (delegate {
@@ -113,6 +140,7 @@ namespace Xwt.Mac
 
 		public override void MouseDragged (NSEvent theEvent)
 		{
+			base.MouseDragged (theEvent);
 			var p = ConvertPointFromView (theEvent.LocationInWindow, null);
 			MouseMovedEventArgs args = new MouseMovedEventArgs ((long) TimeSpan.FromSeconds (theEvent.Timestamp).TotalMilliseconds, p.X, p.Y);
 			context.InvokeUserCode (delegate {

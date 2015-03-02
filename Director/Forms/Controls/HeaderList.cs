@@ -307,8 +307,7 @@ namespace Director
                 MarginLeft = 5,
                 VerticalPlacement = WidgetPlacement.Center,
                 HorizontalPlacement = WidgetPlacement.Fill,
-                HelpStrings = MostUsedHeaders,
-                TabIndex = ParentList.TAB_INDEX
+                HelpStrings = MostUsedHeaders
             };
             Types.Changed += delegate { ActiveHeader.Name = Types.Text; };
             Types.HelperGotFocus += GotChildFocusHandler;
@@ -320,8 +319,7 @@ namespace Director
                 MarginLeft = 5,
                 VerticalPlacement = WidgetPlacement.Center,
                 HorizontalPlacement = WidgetPlacement.Fill,
-                HelpStrings = MostUsedValues,
-                TabIndex = ParentList.TAB_INDEX
+                HelpStrings = MostUsedValues
             };
             Values.Changed += delegate { ActiveHeader.Value = Values.Text; };
             Values.HelperGotFocus += GotChildFocusHandler;

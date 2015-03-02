@@ -108,7 +108,9 @@ namespace Xwt.GtkBackend
 			RegisterBackend<IPasswordEntryBackend, PasswordEntryBackend> ();
 			RegisterBackend<KeyboardHandler, GtkKeyboardHandler> ();
 			RegisterBackend<ISearchTextEntryBackend, SearchTextEntryBackend> ();
-			RegisterBackend<IMultiLineTextEntryBackend, MultiLineTextEntryBackend> ();
+			RegisterBackend<IWebViewBackend, WebViewBackend> ();
+			RegisterBackend<IColorSelectorBackend, ColorSelectorBackend> ();
+			RegisterBackend<IColorPickerBackend, ColorPickerBackend> ();
 
 			string typeName = null;
 			string asmName = null;
@@ -314,10 +316,14 @@ namespace Xwt.GtkBackend
 		{
 			var w = ((WidgetBackend)widget.GetBackend ()).Widget;
 			Gdk.Window win = w.GdkWindow;
-			if (win != null && win.IsViewable)
-				return new GtkImage (Gdk.Pixbuf.FromDrawable (win, Colormap.System, w.Allocation.X, w.Allocation.Y, 0, 0, w.Allocation.Width, w.Allocation.Height));
-			else
-				throw new InvalidOperationException ();
+			if (win != null && win.IsViewable) {
+				int ww, wh;
+				win.GetSize (out ww, out wh);
+				if (ww == w.Allocation.Width && wh == w.Allocation.Height)
+					return new GtkImage (win.ToPixbuf (0, 0, w.Allocation.Width, w.Allocation.Height));
+				return new GtkImage (win.ToPixbuf (w.Allocation.X, w.Allocation.Y, w.Allocation.Width, w.Allocation.Height));
+			}
+			throw new InvalidOperationException ();
 		}
 
 		public override void RenderImage (object nativeWidget, object nativeContext, ImageDescription img, double x, double y)
@@ -331,7 +337,12 @@ namespace Xwt.GtkBackend
 
 		public override ToolkitFeatures SupportedFeatures {
 			get {
-				var f = ToolkitFeatures.All & ~ToolkitFeatures.WidgetOpacity;
+				var f = ToolkitFeatures.All;
+
+				if (GtkWorkarounds.GtkMajorVersion <= 2 ||
+				    GtkWorkarounds.GtkMajorVersion == 3 && GtkWorkarounds.GtkMinorVersion < 8)
+					f &= ~ToolkitFeatures.WidgetOpacity;
+
 				if (Platform.IsWindows)
 					f &= ~ToolkitFeatures.WindowOpacity;
 				return f;

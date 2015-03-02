@@ -88,6 +88,14 @@ namespace Xwt.GtkBackend
 			Widget.Selection.UnselectIter (it);
 		}
 
+		public void ScrollToRow (int row)
+		{
+			Gtk.TreeIter it;
+			if (!Widget.Model.IterNthChild (out it, row))
+				return;
+			ScrollToRow (it);
+		}
+
 		public int[] SelectedRows {
 			get {
 				var sel = Widget.Selection.GetSelectedRows ();
@@ -96,6 +104,11 @@ namespace Xwt.GtkBackend
 					res [n] = sel [n].Indices[0];
 				return res;
 			}
+		}
+
+		public int CurrentEventRow {
+			get;
+			internal set;
 		}
 
 		public bool BorderVisible {
@@ -154,6 +167,14 @@ namespace Xwt.GtkBackend
 			col.CellGetSize (rect, out x, out y, out w, out h);
 
 			return new Rectangle (x, y, w, h);
+		}
+
+		public override void SetCurrentEventRow (string path)
+		{
+			if (path.Contains (":")) {
+				path = path.Split (':') [0];
+			}
+			CurrentEventRow = int.Parse (path);
 		}
 	}
 }

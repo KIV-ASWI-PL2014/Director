@@ -2,7 +2,7 @@
 // SaveFileDialogBackend.cs
 //
 // Author:
-//       strnadj <jan.strnadek@gmail.com>
+//       Jan Strnadek <jan.strnadek@gmail.com>
 //
 // Copyright (c) 2014 strnadj
 //

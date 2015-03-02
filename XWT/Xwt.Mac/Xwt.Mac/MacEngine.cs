@@ -124,6 +124,7 @@ namespace Xwt.Mac
 			RegisterBackend <Xwt.Backends.IPasswordEntryBackend, PasswordEntryBackend> ();
 			RegisterBackend <Xwt.Backends.IWebViewBackend, WebViewBackend> ();
 			RegisterBackend <Xwt.Backends.ISaveFileDialogBackend, SaveFileDialogBackend> ();
+			RegisterBackend <Xwt.Backends.IColorPickerBackend, ColorPickerBackend> ();
 		}
 
 		public override void RunApplication ()
@@ -187,17 +188,27 @@ namespace Xwt.Mac
 		
 		public override object GetNativeWidget (Widget w)
 		{
-			ViewBackend wb = (ViewBackend)Toolkit.GetBackend (w);
+			var wb = GetNativeBackend (w);
 			wb.SetAutosizeMode (true);
 			return wb.Widget;
 		}
 
 		public override bool HasNativeParent (Widget w)
 		{
-			ViewBackend wb = (ViewBackend)Toolkit.GetBackend (w);
+			var wb = GetNativeBackend (w);
 			return wb.Widget.Superview != null;
 		}
-		
+
+		public ViewBackend GetNativeBackend (Widget w)
+		{
+			var backend = Toolkit.GetBackend (w);
+			if (backend is ViewBackend)
+				return (ViewBackend)backend;
+			if (backend is XwtWidgetBackend)
+				return GetNativeBackend ((Widget)backend);
+			return null;
+		}
+
 		public override Xwt.Backends.IWindowFrameBackend GetBackendForWindow (object nativeWindow)
 		{
 			throw new NotImplementedException ();

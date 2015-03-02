@@ -422,7 +422,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\Bluenote.icns" />
-  </ItemGroup>
 </Project>

@@ -3,8 +3,6 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
-//		 Jan Strnadek <jan.strnadek@gmail.com>
-//       	- add delegates for refreshing NSOutlineView DataSource after source was changed!
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -31,7 +29,6 @@ using MonoMac.AppKit;
 using MonoMac.Foundation;
 using Xwt.Backends;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace Xwt.Mac
 {
@@ -54,6 +51,15 @@ namespace Xwt.Mac
 				Backend.EventSink.OnRowExpanding (((TreeItem)notification.UserInfo["NSObject"]).Position);
 			}
 
+			public override void ItemDidCollapse (NSNotification notification)
+			{
+				Backend.EventSink.OnRowCollapsed (((TreeItem)notification.UserInfo["NSObject"]).Position);
+			}
+
+			public override void ItemWillCollapse (NSNotification notification)
+			{
+				Backend.EventSink.OnRowCollapsing (((TreeItem)notification.UserInfo["NSObject"]).Position);
+			}		
 		}
 		
 		NSOutlineView Tree {
@@ -62,7 +68,7 @@ namespace Xwt.Mac
 		
 		protected override NSTableView CreateView ()
 		{
-			var t = new OutlineViewBackend(EventSink, ApplicationContext);
+			var t = new OutlineViewBackend (EventSink, ApplicationContext);
 			t.Delegate = new TreeDelegate () { Backend = this };
 			return t;
 		}
@@ -71,11 +77,11 @@ namespace Xwt.Mac
 			get { return "NSOutlineViewSelectionDidChangeNotification"; }
 		}
 
-		public TreePosition CurrentEventRow { get; set; }
+		public TreePosition CurrentEventRow { get; internal set; }
 
-		public override object AddColumn (ListViewColumn col)
+		public override NSTableColumn AddColumn (ListViewColumn col)
 		{
-			NSTableColumn tcol = (NSTableColumn) base.AddColumn (col);
+			NSTableColumn tcol = base.AddColumn (col);
 			if (Tree.OutlineTableColumn == null)
 				Tree.OutlineTableColumn = tcol;
 			return tcol;
@@ -87,10 +93,10 @@ namespace Xwt.Mac
 			tsource = new TreeSource (source);
 			Tree.DataSource = tsource;
 
-			// You have to call Reload data for Cocoa
-			source.NodeChanged += delegate(object sender, TreeNodeEventArgs e) {
-				Table.ReloadData();
-			};
+			source.NodeInserted += (sender, e) => Tree.ReloadItem (tsource.GetItem (source.GetParent(e.Node)), true);
+			source.NodeDeleted += (sender, e) => Tree.ReloadItem (tsource.GetItem (e.Node), true);
+			source.NodeChanged += (sender, e) => Tree.ReloadItem (tsource.GetItem (e.Node), false);
+			source.NodesReordered += (sender, e) => Tree.ReloadItem (tsource.GetItem (e.Node), true);
 		}
 		
 		public override object GetValue (object pos, int nField)
@@ -114,6 +120,11 @@ namespace Xwt.Mac
 				}
 				return res;
 			}
+		}
+
+		public override void SetCurrentEventRow (object pos)
+		{
+			CurrentEventRow = (TreePosition)pos;
 		}
 
 		public void SelectRow (TreePosition pos)
@@ -160,42 +171,31 @@ namespace Xwt.Mac
 		{
 			var it = tsource.GetItem (pos);
 			if (it != null)
-				Tree.ScrollRowToVisible (Tree.RowForItem (it));
+				ScrollToRow (Tree.RowForItem (it));
 		}
 		
 		public void ExpandToRow (TreePosition pos)
 		{
-			NSObject it = tsource.GetItem (pos);
-			if (it == null)
-				return;
-			
-			it = Tree.GetParent (it);
-			while (it != null) {
+			var p = source.GetParent (pos);
+			while (p != null) {
+				var it = tsource.GetItem (p);
+				if (it == null)
+					break;
 				Tree.ExpandItem (it, false);
-				it = Tree.GetParent (it);
+				p = source.GetParent (p);
 			}
 		}
-
-		/** Implement */
+		
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
 		{
 			// Get row
-			int row = Tree.GetRow (new System.Drawing.PointF ((float)x, (float)y));
-
-			// Set position
+			int row = Tree.GetRow(new System.Drawing.PointF ((float)x, (float)y));
 			pos = RowDropPosition.Into;
-
-			// Set node position
 			nodePosition = null;
-
-			// Row found
 			if (row >= 0) {
 				nodePosition = ((TreeItem)Tree.ItemAtRow (row)).Position;
-				return true;
 			}
-
-			// Nothing found
-			return false;
+			return nodePosition != null;
 		}
 		
 /*		protected override void OnDragOverCheck (NSDraggingInfo di, DragOverCheckEventArgs args)
@@ -249,10 +249,17 @@ namespace Xwt.Mac
 		public TreeSource (ITreeDataSource source)
 		{
 			this.source = source;
+
+			source.NodeInserted += (sender, e) => {
+				if (!items.ContainsKey (e.Node))
+					items.Add (e.Node, new TreeItem { Position = e.Node });
+			};
 		}
 		
 		public TreeItem GetItem (TreePosition pos)
 		{
+			if (pos == null)
+				return null;
 			TreeItem it;
 			items.TryGetValue (pos, out it);
 			return it;

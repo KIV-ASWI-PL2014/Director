@@ -54,6 +54,7 @@ namespace Xwt.Mac
 			Widget.Editable = false;
 			Widget.Bezeled = false;
 			Widget.DrawsBackground = false;
+			Widget.BackgroundColor = NSColor.Clear;
 			Wrap = WrapMode.None;
 			Container.ExpandVertically = true;
 			Widget.Cell.Scrollable = false;
@@ -213,6 +214,7 @@ namespace Xwt.Mac
 				Child.Frame = new System.Drawing.RectangleF (0, 0, Frame.Width, Frame.Height);
 			else
 				Child.Frame = new System.Drawing.RectangleF (0, (Frame.Height - Child.Frame.Height) / 2, Frame.Width, Child.Frame.Height);
+			Child.NeedsDisplay = true;
 		}
 	}
 	

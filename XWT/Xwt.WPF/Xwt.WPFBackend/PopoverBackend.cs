@@ -40,6 +40,15 @@ namespace Xwt.WPFBackend
 			get; set;
 		}
 
+		public Xwt.Drawing.Color BackgroundColor {
+			get {
+				return Border.Background.ToXwtColor ();
+			}
+			set {
+				Border.Background = new SolidColorBrush (value.ToWpfColor ());
+			}
+		}
+
 		IPopoverEventSink EventSink {
 			get; set;
 		}
@@ -60,6 +69,7 @@ namespace Xwt.WPFBackend
 				Padding = new System.Windows.Thickness (15),
 				BorderThickness = new System.Windows.Thickness (1)
 			};
+			BackgroundColor = Xwt.Drawing.Color.FromBytes (230, 230, 230, 230);
 
 			NativeWidget = new System.Windows.Controls.Primitives.Popup {
 				AllowsTransparency = true,
@@ -68,18 +78,7 @@ namespace Xwt.WPFBackend
 				StaysOpen = false,
 				Margin = new System.Windows.Thickness (10),
 			};
-
-			NativeWidget.CustomPopupPlacementCallback = (popupSize, targetSize, offset) => {
-				var location = new System.Windows.Point (targetSize.Width / 2 - popupSize.Width / 2, 0);
-				if (ActualPosition == Popover.Position.Top)
-					location.Y = targetSize.Height;
-				else
-					location.Y = -popupSize.Height;
-
-				return new[] {
-					new System.Windows.Controls.Primitives.CustomPopupPlacement (location, System.Windows.Controls.Primitives.PopupPrimaryAxis.Horizontal)
-				};
-			};
+			NativeWidget.Closed += NativeWidget_Closed;
 		}
 
 		public void Initialize (IPopoverEventSink sink)
@@ -87,36 +86,35 @@ namespace Xwt.WPFBackend
 			EventSink = sink;
 		}
 
-		public override void EnableEvent (object eventId)
-		{
-			if (eventId is PopoverEvent)
-				if ((PopoverEvent)eventId == PopoverEvent.Closed)
-					NativeWidget.Closed +=new EventHandler(NativeWidget_Closed);
-		}
-
-		public override void DisableEvent (object eventId)
-		{
-			if (eventId is PopoverEvent)
-				if ((PopoverEvent) eventId == PopoverEvent.Closed)
-					NativeWidget.Closed += new EventHandler (NativeWidget_Closed);
-		}
-
 		public void Show (Xwt.Popover.Position orientation, Xwt.Widget reference, Xwt.Rectangle positionRect, Widget child)
 		{
 			ActualPosition = orientation;
 			Border.Child = (System.Windows.FrameworkElement)Context.Toolkit.GetNativeWidget (child);
+			NativeWidget.CustomPopupPlacementCallback = (popupSize, targetSize, offset) => {
+				System.Windows.Point location;
+				if (ActualPosition == Popover.Position.Top)
+					location = new System.Windows.Point (positionRect.Left, positionRect.Bottom);
+				else
+					location = new System.Windows.Point (positionRect.Left, positionRect.Top - popupSize.Height);
+
+				return new[] {
+					new System.Windows.Controls.Primitives.CustomPopupPlacement (location, System.Windows.Controls.Primitives.PopupPrimaryAxis.Horizontal)
+				};
+			};
 			NativeWidget.PlacementTarget = (System.Windows.FrameworkElement)Context.Toolkit.GetNativeWidget (reference);
 			NativeWidget.IsOpen = true;
 		}
 
 		void NativeWidget_Closed (object sender, EventArgs e)
 		{
+			Border.Child = null;
 			EventSink.OnClosed ();
 		}
 
 		public void Hide ()
 		{
 			NativeWidget.IsOpen = false;
+			Border.Child = null;
 		}
 
 		public void Dispose ()

@@ -431,6 +431,8 @@ namespace Xwt.WPFBackend
 				widget.Cursor = Cursors.Wait;
 			else if (cursor == CursorType.Help)
 				widget.Cursor = Cursors.Help;
+			else if (cursor == CursorType.Invisible)
+				widget.Cursor = Cursors.None;
 			else
 				Widget.Cursor = Cursors.Arrow;
 		}
@@ -445,10 +447,13 @@ namespace Xwt.WPFBackend
 				var ev = (WidgetEvent)eventId;
 				switch (ev) {
 					case WidgetEvent.KeyPressed:
-						Widget.KeyDown += WidgetKeyDownHandler;
+						Widget.PreviewKeyDown += WidgetKeyDownHandler;
 						break;
 					case WidgetEvent.KeyReleased:
-						Widget.KeyUp += WidgetKeyUpHandler;
+						Widget.PreviewKeyUp += WidgetKeyUpHandler;
+						break;
+					case WidgetEvent.PreviewTextInput:
+						TextCompositionManager.AddPreviewTextInputHandler(Widget, WidgetPreviewTextInputHandler);
 						break;
 					case WidgetEvent.ButtonPressed:
 						Widget.MouseDown += WidgetMouseDownHandler;
@@ -496,10 +501,13 @@ namespace Xwt.WPFBackend
 				var ev = (WidgetEvent)eventId;
 				switch (ev) {
 					case WidgetEvent.KeyPressed:
-						Widget.KeyDown -= WidgetKeyDownHandler;
+						Widget.PreviewKeyDown -= WidgetKeyDownHandler;
 						break;
 					case WidgetEvent.KeyReleased:
-						Widget.KeyUp -= WidgetKeyUpHandler;
+						Widget.PreviewKeyUp -= WidgetKeyUpHandler;
+						break;
+					case WidgetEvent.PreviewTextInput:
+						TextCompositionManager.RemovePreviewTextInputHandler(Widget, WidgetPreviewTextInputHandler);
 						break;
 					case WidgetEvent.ButtonPressed:
 						Widget.MouseDown -= WidgetMouseDownHandler;
@@ -594,8 +602,19 @@ namespace Xwt.WPFBackend
 			if ((int)key == 0)
 				return false;
 
-			result = new KeyEventArgs (key, KeyboardUtil.GetModifiers (), e.IsRepeat, e.Timestamp);
+			result = new KeyEventArgs (key, (int)e.Key, KeyboardUtil.GetModifiers (), e.IsRepeat, e.Timestamp);
 			return true;
+		}
+
+		void WidgetPreviewTextInputHandler (object sender, System.Windows.Input.TextCompositionEventArgs e)
+		{
+			PreviewTextInputEventArgs args = new PreviewTextInputEventArgs(e.Text);
+			Context.InvokeUserCode(delegate
+			{
+				eventSink.OnPreviewTextInput(args);
+			});
+			if (args.Handled)
+				e.Handled = true;
 		}
 
 		void WidgetMouseDownHandler (object o, MouseButtonEventArgs e)
@@ -655,15 +674,7 @@ namespace Xwt.WPFBackend
 
 		private SW.Window GetParentWindow()
 		{
-			FrameworkElement current = Widget;
-			while (current != null) {
-				if (current is SW.Window)
-					return (SW.Window)current;
-
-				current = VisualTreeHelper.GetParent (current) as FrameworkElement;
-			}
-
-			return null;
+			return Widget.GetParentWindow ();
 		}
 
 		public void DragStart (DragStartData data)

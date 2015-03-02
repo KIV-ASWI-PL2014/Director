@@ -33,7 +33,8 @@ using MonoMac.Foundation;
 
 namespace Xwt.Mac
 {
-	public abstract class TableViewBackend<T,S>: ViewBackend<NSScrollView,S>, ICellSource where T:NSTableView where S:ITableViewEventSink
+	public abstract class TableViewBackend<T,S>: ViewBackend<NSScrollView,S>, ITableViewBackend, ICellSource
+		where T:NSTableView where S:ITableViewEventSink
 	{
 		List<NSTableColumn> cols = new List<NSTableColumn> ();
 		protected NSTableView Table;
@@ -186,12 +187,12 @@ namespace Xwt.Mac
 			Table.AllowsMultipleSelection = mode == SelectionMode.Multiple;
 		}
 
-		public virtual object AddColumn (ListViewColumn col)
+		public virtual NSTableColumn AddColumn (ListViewColumn col)
 		{
 			var tcol = new NSTableColumn ();
 			tcol.Editable = true;
 			cols.Add (tcol);
-			var c = CellUtil.CreateCell (Table, this, col.Views, cols.Count - 1);
+			var c = CellUtil.CreateCell (ApplicationContext, Table, this, col.Views, cols.Count - 1);
 			tcol.DataCell = c;
 			Table.AddColumn (tcol);
 			var hc = new NSTableHeaderCell ();
@@ -199,6 +200,10 @@ namespace Xwt.Mac
 			tcol.HeaderCell = hc;
 			Widget.InvalidateIntrinsicContentSize ();
 			return tcol;
+		}
+		object IColumnContainerBackend.AddColumn (ListViewColumn col)
+		{
+			return AddColumn (col);
 		}
 		
 		public void RemoveColumn (ListViewColumn col, object handle)
@@ -209,7 +214,7 @@ namespace Xwt.Mac
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			NSTableColumn tcol = (NSTableColumn) handle;
-			tcol.DataCell = CellUtil.CreateCell (Table, this, col.Views, cols.IndexOf (tcol));
+			tcol.DataCell = CellUtil.CreateCell (ApplicationContext, Table, this, col.Views, cols.IndexOf (tcol));
 		}
 
 		public void SelectAll ()
@@ -221,10 +226,17 @@ namespace Xwt.Mac
 		{
 			Table.DeselectAll (null);
 		}
+
+		public void ScrollToRow (int row)
+		{
+			Table.ScrollRowToVisible (row);
+		}
 		
 		public abstract object GetValue (object pos, int nField);
 		
 		public abstract void SetValue (object pos, int nField, object value);
+
+		public abstract void SetCurrentEventRow (object pos);
 
 		float ICellSource.RowHeight {
 			get { return Table.RowHeight; }
@@ -250,6 +262,12 @@ namespace Xwt.Mac
 					Table.HeaderView = null;
 				}
 			}
+		}
+
+		public GridLines GridLinesVisible
+		{
+			get { return Table.GridStyleMask.ToXwtValue (); }
+			set { Table.GridStyleMask = value.ToMacValue (); }
 		}
 	}
 	

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -7,8 +7,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt</RootNamespace>
     <AssemblyName>Xwt</AssemblyName>
-    <ProductVersion>12.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -19,28 +19,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>True</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug Linux|AnyCPU' ">
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug Linux</OutputPath>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug Mac|AnyCPU' ">
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug Mac</OutputPath>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -52,6 +38,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Xwt.Backends\IPasswordEntryBackend.cs" />
     <Compile Include="Xwt\PasswordEntry.cs" />
+    <Compile Include="Xwt\PreviewTextEventArgs.cs" />
     <Compile Include="Xwt\Widget.cs" />
     <Compile Include="Xwt\Window.cs" />
     <Compile Include="Xwt\Button.cs" />
@@ -334,8 +321,10 @@
     <Compile Include="Xwt.Backends\ICanvasCellViewBackend.cs" />
     <Compile Include="Xwt\SearchTextEntry.cs" />
     <Compile Include="Xwt.Backends\ISearchTextEntryBackend.cs" />
-    <Compile Include="Xwt\MultiLineTextEntry.cs" />
-    <Compile Include="Xwt.Backends\IMultiLineTextEntryBackend.cs" />
+    <Compile Include="Xwt\GridLines.cs" />
+    <Compile Include="Xwt\ColorPicker.cs" />
+    <Compile Include="Xwt.Backends\IColorPickerBackend.cs" />
+    <Compile Include="Xwt\XwtSynchronizationContext.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

@@ -54,6 +54,8 @@ namespace Xwt.WPFBackend
 	                return null;
 	        }
         }
+
+        public int CurrentEventRow { get; set;  }
 		
 		public ScrollPolicy VerticalScrollPolicy {
 			get { return ScrollViewer.GetVerticalScrollBarVisibility (this.ListView).ToXwtScrollPolicy (); }
@@ -109,6 +111,30 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		GridLines gridLinesVisible;
+		public GridLines GridLinesVisible {
+			get {
+				return gridLinesVisible;
+			}
+			set {
+				gridLinesVisible = value;
+				// we support only horizontal grid lines for now
+				// vertical lines are tricky and have to be drawn manually...
+				if (value == GridLines.None) {
+					if (this.ListView.ItemContainerStyle != null) {
+						this.ListView.ItemContainerStyle.Setters.Remove (GridHorizontalSetter);
+						this.ListView.ItemContainerStyle.Setters.Remove (BorderBrushSetter);
+					}
+				} else {
+					if (this.ListView.ItemContainerStyle == null)
+						this.ListView.ItemContainerStyle = new Style ();
+
+					this.ListView.ItemContainerStyle.Setters.Add (GridHorizontalSetter);
+					this.ListView.ItemContainerStyle.Setters.Add (BorderBrushSetter);
+				}
+			}
+		}
+
 		public int[] SelectedRows {
 			get { return ListView.SelectedItems.Cast<object>().Select (ListView.Items.IndexOf).ToArray (); }
 		}
@@ -116,9 +142,9 @@ namespace Xwt.WPFBackend
 		public object AddColumn (ListViewColumn col)
 		{
 			var column = new GridViewColumn ();
-			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (Frontend, col.Views) };
+			column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate (Context, Frontend, col.Views) };
 			if (col.HeaderView != null)
-				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (Frontend, col.HeaderView) };
+				column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer (Context, Frontend, col.HeaderView) };
 			else
 				column.Header = col.Title;
 
@@ -135,9 +161,9 @@ namespace Xwt.WPFBackend
 		public void UpdateColumn (ListViewColumn col, object handle, ListViewColumnChange change)
 		{
 			var column = (GridViewColumn) handle;
-            column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Frontend, col.Views) };
+            column.CellTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundColumnTemplate(Context, Frontend, col.Views) };
 			if (col.HeaderView != null)
-                column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Frontend, col.HeaderView) };
+                column.HeaderTemplate = new DataTemplate { VisualTree = CellUtil.CreateBoundCellRenderer(Context, Frontend, col.HeaderView) };
 			else
 				column.Header = col.Title;
 		}
@@ -163,6 +189,11 @@ namespace Xwt.WPFBackend
 		public void UnselectAll ()
 		{
 			ListView.UnselectAll();
+		}
+
+		public void ScrollToRow (int row)
+		{
+			ListView.ScrollIntoView (ListView.Items [row]);
 		}
 
 		public void SetSource (IListDataSource source, IBackend sourceBackend)
@@ -234,6 +265,8 @@ namespace Xwt.WPFBackend
 		}
 
 		private static readonly Setter HideHeadersSetter = new Setter (UIElement.VisibilityProperty, Visibility.Collapsed);
+		private static readonly Setter GridHorizontalSetter = new Setter (ListViewItem.BorderThicknessProperty, new Thickness (0, 0, 0, 1));
+		private static readonly Setter BorderBrushSetter = new Setter (ListViewItem.BorderBrushProperty, System.Windows.Media.Brushes.LightGray);
 
 
         public int GetRowAtPosition(Point p)

@@ -43,20 +43,26 @@ namespace Xwt.Mac
 		Orientation direction;
 		NSCell trackingCell;
 		ITablePosition tablePosition;
+		ApplicationContext context;
 
 		static CompositeCell ()
 		{
 			Util.MakeCopiable<CompositeCell> ();
 		}
 
-		public CompositeCell (Orientation dir, ICellSource source)
+		public CompositeCell (ApplicationContext context, Orientation dir, ICellSource source)
 		{
 			direction = dir;
+			this.context = context;
 			this.source = source;
 		}
 		
 		public CompositeCell (IntPtr p): base (p)
 		{
+		}
+
+		public ApplicationContext Context {
+			get { return context; }
 		}
 
 		#region ICellDataSource implementation
@@ -73,9 +79,15 @@ namespace Xwt.Mac
 			source.SetValue (tablePosition.Position, field.Index, value);
 		}
 
+		public void SetCurrentEventRow ()
+		{
+			source.SetCurrentEventRow (tablePosition.Position);
+		}
+
 		void ICopiableObject.CopyFrom (object other)
 		{
 			var ob = (CompositeCell)other;
+			context = ob.context;
 			source = ob.source;
 			val = ob.val;
 			tablePosition = ob.tablePosition;
@@ -169,6 +181,17 @@ namespace Xwt.Mac
 		public override SizeF CellSizeForBounds (RectangleF bounds)
 		{
 			return CalcSize ();
+		}
+
+		public override NSBackgroundStyle BackgroundStyle {
+			get {
+				return base.BackgroundStyle;
+			}
+			set {
+				base.BackgroundStyle = value;
+				foreach (NSCell c in cells)
+					c.BackgroundStyle = value;
+			}
 		}
 		
 		public override NSCellStateValue State {

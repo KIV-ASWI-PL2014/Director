@@ -26,12 +26,15 @@
 using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
-using MonoMac.ObjCRuntime;
+
 
 namespace Xwt.Mac
 {
 	public class TextEntryBackend: ViewBackend<NSView,ITextEntryEventSink>, ITextEntryBackend
 	{
+		int cacheSelectionStart, cacheSelectionLength;
+		bool checkMouseSelection;
+
 		public TextEntryBackend ()
 		{
 		}
@@ -40,12 +43,7 @@ namespace Xwt.Mac
 		{
 			ViewObject = field;
 		}
-
-		public int TabIndex {
-			get { return 0; }
-			set { }
-		}
-
+		
 		public override void Initialize ()
 		{
 			base.Initialize ();
@@ -56,6 +54,18 @@ namespace Xwt.Mac
 				ViewObject = new CustomAlignedContainer (EventSink, ApplicationContext, (NSView)view);
 				MultiLine = false;
 			}
+
+			Frontend.MouseEntered += delegate {
+				checkMouseSelection = true;
+			};
+			Frontend.MouseExited += delegate {
+				checkMouseSelection = false;
+				HandleSelectionChanged ();
+			};
+			Frontend.MouseMoved += delegate {
+				if (checkMouseSelection)
+					HandleSelectionChanged ();
+			};
 		}
 		
 		protected override void OnSizeToFit ()
@@ -145,6 +155,79 @@ namespace Xwt.Mac
 			}
 		}
 
+		public int CursorPosition { 
+			get {
+				if (Widget.CurrentEditor == null)
+					return 0;
+				return Widget.CurrentEditor.SelectedRange.Location;
+			}
+			set {
+				Widget.CurrentEditor.SelectedRange = new MonoMac.Foundation.NSRange (value, SelectionLength);
+				HandleSelectionChanged ();
+			}
+		}
+
+		public int SelectionStart { 
+			get {
+				if (Widget.CurrentEditor == null)
+					return 0;
+				return Widget.CurrentEditor.SelectedRange.Location;
+			}
+			set {
+				Widget.CurrentEditor.SelectedRange = new MonoMac.Foundation.NSRange (value, SelectionLength);
+				HandleSelectionChanged ();
+			}
+		}
+
+		public int SelectionLength { 
+			get {
+				if (Widget.CurrentEditor == null)
+					return 0;
+				return Widget.CurrentEditor.SelectedRange.Length;
+			}
+			set {
+				Widget.CurrentEditor.SelectedRange = new MonoMac.Foundation.NSRange (SelectionStart, value);
+				HandleSelectionChanged ();
+			}
+		}
+
+		public string SelectedText { 
+			get {
+				if (Widget.CurrentEditor == null)
+					return String.Empty;
+				int start = SelectionStart;
+				int end = start + SelectionLength;
+				if (start == end) return String.Empty;
+				try {
+					return Text.Substring (start, end - start);
+				} catch {
+					return String.Empty;
+				}
+			}
+			set {
+				int cacheSelStart = SelectionStart;
+				int pos = cacheSelStart;
+				if (SelectionLength > 0) {
+					Text = Text.Remove (pos, SelectionLength).Insert (pos, value);
+				}
+				SelectionStart = pos;
+				SelectionLength = value.Length;
+				HandleSelectionChanged ();
+			}
+		}
+
+		void HandleSelectionChanged ()
+		{
+			if (cacheSelectionStart != SelectionStart ||
+			    cacheSelectionLength != SelectionLength) {
+				cacheSelectionStart = SelectionStart;
+				cacheSelectionLength = SelectionLength;
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnSelectionChanged ();
+				});
+			}
+		}
+
 		public override void SetFocus ()
 		{
 			Widget.BecomeFirstResponder ();
@@ -169,28 +252,6 @@ namespace Xwt.Mac
 			}
 		}
 
-		public override bool PerformKeyEquivalent(NSEvent theEvent) {
-			if (theEvent.Type == NSEventType.KeyDown) {
-				NSApplication app = NSApplication.SharedApplication;
-				if ((theEvent.ModifierFlags & NSEventModifierMask.DeviceIndependentModifierFlagsMask) == NSEventModifierMask.CommandKeyMask) {
-					string ch = theEvent.CharactersIgnoringModifiers;
-					if (ch == "x") {
-						return app.SendAction(new Selector("cut:"), this.Window.FirstResponder, this);
-					}
-					if (ch == "c") {
-						return app.SendAction(new Selector("copy:"), this.Window.FirstResponder, this);
-					}
-					if (ch == "v") {
-						return app.SendAction(new Selector("paste:"), this.Window.FirstResponder, this);
-					}
-					if (ch == "a") {
-						return app.SendAction(new Selector("selectAll:"), this.Window.FirstResponder, this);
-					}
-				}
-			}
-			return base.PerformKeyEquivalent(theEvent);
-		}
-
 		public ViewBackend Backend { get; set; }
 		
 		public override void DidChange (MonoMac.Foundation.NSNotification notification)
@@ -198,7 +259,19 @@ namespace Xwt.Mac
 			base.DidChange (notification);
 			context.InvokeUserCode (delegate {
 				eventSink.OnChanged ();
+				eventSink.OnSelectionChanged ();
 			});
+		}
+
+		int cachedCursorPosition;
+		public override void KeyUp (NSEvent theEvent)
+		{
+			base.KeyUp (theEvent);
+			if (cachedCursorPosition != CurrentEditor.SelectedRange.Location)
+				context.InvokeUserCode (delegate {
+				eventSink.OnSelectionChanged ();
+			});
+			cachedCursorPosition = CurrentEditor.SelectedRange.Location;
 		}
 	}
 }

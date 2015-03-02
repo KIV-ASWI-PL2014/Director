@@ -256,11 +256,12 @@ namespace Director.DataStructures
                 }
                 else
                 {
-                    MultiLineTextEntry RequestTextEntry = new MultiLineTextEntry()
+                    TextEntry RequestTextEntry = new TextEntry()
                     {
                         Margin = 10,
 						Text = i.Data,
-						Sensitive = false
+						Sensitive = false,
+						MultiLine = true
                     };
                     RequestStatus.PackStart(RequestTextEntry);
                     Button ClipboardButtonReq = new Button(Image.FromResource(DirectorImages.COPY_ICON), "")
@@ -411,9 +412,9 @@ namespace Director.DataStructures
                     MarginTop = 20
                 }, false, false);
 
-                MultiLineTextEntry RequestTextEntry = new MultiLineTextEntry()
+				TextEntry RequestTextEntry = new TextEntry()
                 {
-					Margin = 10, Sensitive = false
+					Margin = 10, Sensitive = false, MultiLine = true
                 };
 						
 				if (RequestTemplateType == ContentType.JSON)
@@ -466,9 +467,9 @@ namespace Director.DataStructures
                     MarginTop = (ExpectedStatusCode > 0) ? 20 : 0
                 }, false, false);
 
-                MultiLineTextEntry ResponseTextEntry = new MultiLineTextEntry()
+				TextEntry ResponseTextEntry = new TextEntry()
                 {
-					Margin = 10, Sensitive = false
+					Margin = 10, Sensitive = false, MultiLine = true
                 };
 
                 if (ResponseTemplate.Trim().StartsWith("{"))

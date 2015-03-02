@@ -1,4 +1,32 @@
-﻿using System;
+﻿//
+// NSTableViewBackend.cs
+//
+// Author:
+//       Lluis Sanchez <lluis@xamarin.com>
+//       Hywel Thomas <hywel.w.thomas@gmail.com>
+//       strnadj <jan.strnadek@gmail.com>
+//
+// Copyright (c) 2014 Xamarin Inc 
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+using System;
 using Xwt.Backends;
 using MonoMac.AppKit;
 using MonoMac.CoreGraphics;
@@ -117,6 +145,36 @@ namespace Xwt.Mac
 			context.InvokeUserCode (delegate {
 				eventSink.OnMouseMoved (args);
 			});
+		}
+
+		public override void KeyDown (NSEvent theEvent)
+		{
+			var keyArgs = theEvent.ToXwtKeyEventArgs ();
+			context.InvokeUserCode (delegate {
+				eventSink.OnKeyPressed (keyArgs);
+			});
+			if (keyArgs.Handled)
+				return;
+
+			var textArgs = new PreviewTextInputEventArgs (theEvent.Characters);
+			if (!String.IsNullOrEmpty(theEvent.Characters))
+				context.InvokeUserCode (delegate {
+					eventSink.OnPreviewTextInput (textArgs);
+				});
+			if (textArgs.Handled)
+				return;
+
+			base.KeyDown (theEvent);
+		}
+
+		public override void KeyUp (NSEvent theEvent)
+		{
+			var keyArgs = theEvent.ToXwtKeyEventArgs ();
+			context.InvokeUserCode (delegate {
+				eventSink.OnKeyReleased (keyArgs);
+			});
+			if (!keyArgs.Handled)
+				base.KeyUp (theEvent);
 		}
 	}
 }

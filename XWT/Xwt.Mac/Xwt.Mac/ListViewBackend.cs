@@ -3,8 +3,9 @@
 //  
 // Author:
 //       Lluis Sanchez <lluis@xamarin.com>
-//		 Jan Strnadek <jan.strnadek@gmail.com>
-//       	- add delegates for refreshing NSTableView DataSource after source was changed!
+//       Jan Strnadek <jan.strnadek@gmail.com>
+//              - GetAtRowPosition
+//              - NSTableView for mouse events
 // 
 // Copyright (c) 2011 Xamarin Inc
 // 
@@ -29,7 +30,6 @@
 using System;
 using MonoMac.AppKit;
 using Xwt.Backends;
-using System.Collections.Generic;
 using MonoMac.Foundation;
 
 namespace Xwt.Mac
@@ -47,23 +47,65 @@ namespace Xwt.Mac
 		protected override string SelectionChangeEventName {
 			get { return "NSTableViewSelectionDidChangeNotification"; }
 		}
+
+		public override void EnableEvent (object eventId)
+		{
+			base.EnableEvent (eventId);
+			if (eventId is ListViewEvent) {
+				switch ((ListViewEvent)eventId) {
+				case ListViewEvent.RowActivated:
+					Table.DoubleClick += HandleDoubleClick;
+					break;
+				}
+			}
+		}
+
+		public override void DisableEvent (object eventId)
+		{
+			base.DisableEvent (eventId);
+			if (eventId is ListViewEvent) {
+				switch ((ListViewEvent)eventId) {
+				case ListViewEvent.RowActivated:
+					Table.DoubleClick -= HandleDoubleClick;
+					Table.DoubleAction = null;
+					break;
+				}
+			}
+		}
+
+		void HandleDoubleClick (object sender, EventArgs e)
+		{
+			var cr = Table.ClickedRow;
+			if (cr >= 0) {
+				ApplicationContext.InvokeUserCode (delegate {
+					((IListViewEventSink)EventSink).OnRowActivated (cr);
+				});
+			}
+		}
 		
-		public void SetSource (IListDataSource source, IBackend sourceBackend)
+		public virtual void SetSource (IListDataSource source, IBackend sourceBackend)
 		{
 			this.source = source;
 			tsource = new ListSource (source);
 			Table.DataSource = tsource;
-			source.RowChanged += delegate(object sender, ListRowEventArgs e) {
-				Table.ReloadData();
-			};
+
+			//TODO: Reloading single rows would be slightly more efficient.
+			//      According to NSTableView.ReloadData() documentation,
+			//      only the visible rows are reloaded.
+			source.RowInserted += (sender, e) => Table.ReloadData();
+			source.RowDeleted += (sender, e) => Table.ReloadData();
+			source.RowChanged += (sender, e) => Table.ReloadData();
+			source.RowsReordered += (sender, e) => Table.ReloadData();
 		}
 		
 		public int[] SelectedRows {
 			get {
 				int[] sel = new int [Table.SelectedRowCount];
-				int i = 0;
-				foreach (int r in Table.SelectedRows)
-					sel [i++] = r;
+				if (sel.Length > 0) {
+					int i = 0;
+					foreach (int r in Table.SelectedRows)
+						sel [i++] = r;
+				}
 				return sel;
 			}
 		}
@@ -88,13 +130,20 @@ namespace Xwt.Mac
 			source.SetValue ((int)pos, nField, value);
 		}
 
+		public int CurrentEventRow { get; internal set; }
+
+		public override void SetCurrentEventRow (object pos)
+		{
+			CurrentEventRow = (int)pos;
+		}
+
 		// TODO
 		public bool BorderVisible { get; set; }
 
 
 		public int GetRowAtPosition (Point p)
 		{
-			return Table.GetRow (new System.Drawing.PointF ((float) p.X, (float) p.Y));
+			return Table.GetRow (new System.Drawing.PointF ((float)p.X, (float)p.Y));
 		}
 
 		public Rectangle GetCellBounds (int row, CellView cell, bool includeMargin)

@@ -219,7 +219,7 @@ namespace Director.Forms.Controls
 		/// <summary>
 		/// Render box for plain / text.
 		/// </summary>
-		public MultiLineTextEntry TextEntry { get; set; }
+		public TextEntry TextEntry { get; set; }
 
 		/// <summary>
 		/// Scroll view.
@@ -242,8 +242,8 @@ namespace Director.Forms.Controls
 			// Guess type?
 			if (ActiveRequest.ResponseTemplateType == ContentType.PLAIN  || ActiveRequest.ResponseTemplate == null || ActiveRequest.ResponseTemplate.Length == 0) {
 				if (TextEntry == null) {
-					TextEntry = new MultiLineTextEntry () {
-						Sensitive = false
+					TextEntry = new TextEntry () {
+						Sensitive = false, MultiLine = true
 					};
 					TextEntrySV = new ScrollView () {
 						Content = TextEntry,

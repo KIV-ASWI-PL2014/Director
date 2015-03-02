@@ -48,10 +48,16 @@ namespace Xwt.GtkBackend
 					Widget.RowActivated += HandleRowActivated;
 					break;
 				case TreeViewEvent.RowExpanding:
-					Widget.TestExpandRow += HandleTestExpandRow;;
+					Widget.TestExpandRow += HandleTestExpandRow;
 					break;
 				case TreeViewEvent.RowExpanded:
-					Widget.RowExpanded += HandleRowExpanded;;
+					Widget.RowExpanded += HandleRowExpanded;
+					break;
+				case TreeViewEvent.RowCollapsing:
+					Widget.TestCollapseRow += HandleTestCollapseRow;
+					break;
+				case TreeViewEvent.RowCollapsed:
+					Widget.RowCollapsed += HandleRowCollapsed;
 					break;
 				}
 			}
@@ -70,6 +76,12 @@ namespace Xwt.GtkBackend
 					break;
 				case TreeViewEvent.RowExpanded:
 					Widget.RowExpanded -= HandleRowExpanded;;
+					break;
+				case TreeViewEvent.RowCollapsing:
+					Widget.TestCollapseRow -= HandleTestCollapseRow;
+					break;
+				case TreeViewEvent.RowCollapsed:
+					Widget.RowCollapsed -= HandleRowCollapsed;
 					break;
 				}
 			}
@@ -93,6 +105,28 @@ namespace Xwt.GtkBackend
 				CurrentEventRow = new IterPos (-1, it);
 				ApplicationContext.InvokeUserCode (delegate {
 					EventSink.OnRowExpanding (new IterPos (-1, it));
+				});
+			}
+		}
+
+		void HandleRowCollapsed (object o, Gtk.RowCollapsedArgs args)
+		{
+			Gtk.TreeIter it;
+			if (Widget.Model.GetIter (out it, args.Path)) {
+				CurrentEventRow = new IterPos (-1, it);
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnRowCollapsed (new IterPos (-1, it));
+				});
+			}
+		}
+
+		void HandleTestCollapseRow (object o, Gtk.TestCollapseRowArgs args)
+		{
+			Gtk.TreeIter it;
+			if (Widget.Model.GetIter (out it, args.Path)) {
+				CurrentEventRow = new IterPos (-1, it);
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnRowCollapsing (new IterPos (-1, it));
 				});
 			}
 		}
@@ -217,8 +251,7 @@ namespace Xwt.GtkBackend
 		
 		public void ScrollToRow (TreePosition pos)
 		{
-			if (Widget.Columns.Length > 0)
-				Widget.ScrollToCell (Widget.Model.GetPath (((IterPos)pos).Iter), Widget.Columns[0], false, 0, 0);
+			ScrollToRow (((IterPos)pos).Iter);
 		}
 		
 		public void ExpandToRow (TreePosition pos)

@@ -57,7 +57,6 @@ namespace Xwt.WPFBackend
 			Tree.Resources.MergedDictionaries.Add (TreeResourceDictionary);
 			Tree.ItemTemplate = new HierarchicalDataTemplate { ItemsSource = new Binding ("Children") };
 			Tree.SetValue (VirtualizingStackPanel.IsVirtualizingProperty, true);
-            Tree.AllowDrop = true;
 		}
 
 		public ScrollViewer ScrollViewer {
@@ -114,6 +113,16 @@ namespace Xwt.WPFBackend
 			}
 		}
 
+		GridLines gridLinesVisible;
+		public GridLines GridLinesVisible {
+			get {
+				return gridLinesVisible;
+			}
+			set {
+				gridLinesVisible = value;
+			}
+		}
+
 		public void SelectRow (TreePosition pos)
 		{
 			Tree.SelectedItems.Add (pos);
@@ -159,7 +168,9 @@ namespace Xwt.WPFBackend
 
 		public void ScrollToRow (TreePosition pos)
 		{
-			GetVisibleTreeItem (pos).BringIntoView();
+			ExTreeViewItem item = GetVisibleTreeItem (pos);
+			if (item != null)
+				item.BringIntoView ();
 		}
 
 		public void SetSelectionMode (SelectionMode mode)
@@ -206,7 +217,7 @@ namespace Xwt.WPFBackend
 				break;
 
 			case ListViewColumnChange.Cells:
-                var cellTemplate = CellUtil.CreateBoundColumnTemplate(Frontend, column.Views);
+                var cellTemplate = CellUtil.CreateBoundColumnTemplate(Context, Frontend, column.Views);
 
 				col.CellTemplate = new DataTemplate { VisualTree = cellTemplate };
 
@@ -218,6 +229,11 @@ namespace Xwt.WPFBackend
 					col.CellTemplate.VisualTree = dockFactory;
 				}
 
+				break;
+			case ListViewColumnChange.Alignment:
+				var style = new Style(typeof(GridViewColumnHeader));
+				style.Setters.Add(new Setter(Control.HorizontalContentAlignmentProperty, Util.ToWpfHorizontalAlignment(column.Alignment)));
+				col.HeaderContainerStyle = style;
 				break;
 			}
 		}
@@ -359,6 +375,9 @@ namespace Xwt.WPFBackend
 			while (nodes.Count > 0) {
 				node = nodes.Pop ();
 				treeItem = (ExTreeViewItem) g.ContainerFromItem (node);
+				if (treeItem == null)
+					continue;
+
 				treeItem.UpdateLayout ();
 				g = treeItem.ItemContainerGenerator;
 

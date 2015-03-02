@@ -33,10 +33,6 @@ using System.Windows.Controls;
 
 using SWC = System.Windows.Controls;
 using Xwt.Backends;
-using System.Drawing;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
-using System.Windows.Media;
 
 namespace Xwt.WPFBackend
 {
@@ -80,8 +76,8 @@ namespace Xwt.WPFBackend
 				felement.Loaded += OnContentLoaded;
 			}
 
-            TabControl.Items.Add(ti);
-
+			TabControl.Items.Add (ti);
+			
 			if (TabControl.SelectedIndex == -1)
 				TabControl.SelectedIndex = 0;
 		}

@@ -23,7 +23,7 @@ namespace Director
 			Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(Director.Properties.Settings.Default.language);
 
 			// Set toolkit type
-			Config.SetAppType (ToolkitType.Gtk); 
+			Config.SetAppType (ToolkitType.Cocoa); 
           	Application.Initialize(Config.GetAppType());
 
 			// Main window

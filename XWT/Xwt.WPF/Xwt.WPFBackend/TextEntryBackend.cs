@@ -39,34 +39,26 @@ namespace Xwt.WPFBackend
 		: WidgetBackend, ITextEntryBackend
 	{
 		bool multiline;
+		string placeholderText;
 
 		PlaceholderTextAdorner Adorner {
 			get; set;
 		}
 
-        public TextEntryBackend()
-        {
-            Widget = new ExTextBox { IsReadOnlyCaretVisible = true };
-            Adorner = new PlaceholderTextAdorner(TextBox);
-            TextBox.Loaded += TextBox_Loaded;
-            TextBox.VerticalContentAlignment = VerticalAlignment.Center;
-        }
+		public TextEntryBackend()
+		{
+			Widget = new ExTextBox { IsReadOnlyCaretVisible = true };
+			TextBox.Loaded += delegate {
+				Adorner = new PlaceholderTextAdorner (TextBox);
+				var layer = AdornerLayer.GetAdornerLayer (TextBox);
+				if (layer != null)
+					layer.Add (Adorner);
+				if (!String.IsNullOrEmpty(placeholderText))
+					Adorner.PlaceholderText = placeholderText;
+			};
+			TextBox.VerticalContentAlignment = VerticalAlignment.Center;
+		}        
 
-        public int TabIndex
-        {
-            get { return TextBox.TabIndex; }
-            set { TextBox.TabIndex = value; }
-        }
-
-        void TextBox_Loaded(object sender, RoutedEventArgs e)
-        {
-            var layer = AdornerLayer.GetAdornerLayer(TextBox);
-
-            if (layer != null)
-                layer.Add(Adorner);
-
-            TextBox.Loaded -= TextBox_Loaded;
-        }
 		protected override double DefaultNaturalWidth
 		{
 			get { return -1; }
@@ -84,10 +76,15 @@ namespace Xwt.WPFBackend
 			set { TextBox.TextAlignment = DataConverter.ToTextAlignment (value); }
 		}
 
-		public string PlaceholderText
-		{
-			get { return Adorner.PlaceholderText; }
-			set { Adorner.PlaceholderText = value; }
+		public string PlaceholderText {
+			get {
+				return placeholderText;
+			}
+			set {
+				placeholderText = value;
+				if (Adorner != null)
+					Adorner.PlaceholderText = value;
+			}
 		}
 
 		public bool ReadOnly
@@ -100,6 +97,44 @@ namespace Xwt.WPFBackend
 		{
 			get { return TextBox.ShowFrame; }
 			set { TextBox.ShowFrame = value; }
+		}
+
+		public int CursorPosition {
+			get {
+				return TextBox.SelectionStart;
+			}
+			set {
+				TextBox.SelectionStart = value;
+			}
+		}
+
+		public int SelectionStart {
+			get {
+				return TextBox.SelectionStart;
+			}
+			set {
+				TextBox.Focus();
+				TextBox.Select(value, SelectionLength);
+			}
+		}
+
+		public int SelectionLength {
+			get {
+				return TextBox.SelectionLength;
+			}
+			set {
+				TextBox.Focus();
+				TextBox.Select(SelectionStart, value);
+			}
+		}
+
+		public string SelectedText {
+			get {
+				return TextBox.SelectedText;
+			}
+			set {
+				TextBox.SelectedText = value;
+			}
 		}
 
 		public bool MultiLine {
@@ -135,6 +170,9 @@ namespace Xwt.WPFBackend
 					case TextEntryEvent.Activated:
 						TextBox.KeyDown += OnActivated;
 						break;
+					case TextEntryEvent.SelectionChanged:
+						TextBox.SelectionChanged += OnSelectionChanged;
+						break;
 				}
 			}
 		}
@@ -152,6 +190,9 @@ namespace Xwt.WPFBackend
 						break;
 					case TextEntryEvent.Activated:
 						TextBox.KeyDown -= OnActivated;
+						break;
+					case TextEntryEvent.SelectionChanged:
+						TextBox.SelectionChanged -= OnSelectionChanged;
 						break;
 				}
 			}
@@ -175,6 +216,11 @@ namespace Xwt.WPFBackend
 		private void OnTextChanged (object s, TextChangedEventArgs e)
 		{
 			Context.InvokeUserCode (EventSink.OnChanged);
+		}
+
+		private void OnSelectionChanged (object s, EventArgs e)
+		{
+			Context.InvokeUserCode (EventSink.OnSelectionChanged);
 		}
 	}
 }

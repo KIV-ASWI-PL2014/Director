@@ -95,6 +95,12 @@ namespace Xwt
 			set { Backend.BorderVisible = value; }
 		}
 
+		public GridLines GridLinesVisible
+		{
+			get { return Backend.GridLinesVisible; }
+			set { Backend.GridLinesVisible = value; }
+		}
+
 		public ScrollPolicy VerticalScrollPolicy {
 			get { return Backend.VerticalScrollPolicy; }
 			set { Backend.VerticalScrollPolicy = value; }
@@ -159,6 +165,20 @@ namespace Xwt
 				Backend.SetSelectionMode (mode);
 			}
 		}
+
+		/// <summary>
+		/// Gets or sets the row the current event applies to.
+		/// The behavior of this property is undefined when used outside an
+		/// event that supports it.
+		/// </summary>
+		/// <value>
+		/// The current event row.
+		/// </value>
+		public int CurrentEventRow {
+			get {
+				return Backend.CurrentEventRow;
+			}
+		}
 		
 		public int SelectedRow {
 			get {
@@ -195,6 +215,11 @@ namespace Xwt
 		public void UnselectAll ()
 		{
 			Backend.UnselectAll ();
+		}
+
+		public void ScrollToRow (int row)
+		{
+			Backend.ScrollToRow (row);
 		}
 
 		/// <summary>

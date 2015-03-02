@@ -71,8 +71,8 @@ namespace Xwt.Mac
 			CGContext ctx = NSGraphicsContext.CurrentContext.GraphicsPort;
 
 			//fill BackgroundColor
-			//	ctx.SetFillColor (Backend.Frontend.BackgroundColor.ToCGColor ());
-			//ctx.FillRect (Bounds);
+			ctx.SetFillColor (Backend.Frontend.BackgroundColor.ToCGColor ());
+			ctx.FillRect (Bounds);
 		}
 
 		public override void UpdateTrackingAreas ()
@@ -167,6 +167,36 @@ namespace Xwt.Mac
 			});
 		}
 
+		public override void KeyDown (NSEvent theEvent)
+		{
+			var keyArgs = theEvent.ToXwtKeyEventArgs ();
+			context.InvokeUserCode (delegate {
+				eventSink.OnKeyPressed (keyArgs);
+			});
+			if (keyArgs.Handled)
+				return;
+
+			var textArgs = new PreviewTextInputEventArgs (theEvent.Characters);
+			if (!String.IsNullOrEmpty(theEvent.Characters))
+				context.InvokeUserCode (delegate {
+					eventSink.OnPreviewTextInput (textArgs);
+				});
+			if (textArgs.Handled)
+				return;
+
+			base.KeyDown (theEvent);
+		}
+
+		public override void KeyUp (NSEvent theEvent)
+		{
+			var keyArgs = theEvent.ToXwtKeyEventArgs ();
+			context.InvokeUserCode (delegate {
+				eventSink.OnKeyReleased (keyArgs);
+			});
+			if (!keyArgs.Handled)
+				base.KeyUp (theEvent);
+		}
+
 		public override void SetFrameSize (System.Drawing.SizeF newSize)
 		{
 			bool changed = !newSize.Equals (Frame.Size);
@@ -176,6 +206,13 @@ namespace Xwt.Mac
 					eventSink.OnBoundsChanged ();
 				});
 			}
+		}
+
+		public override void ResetCursorRects ()
+		{
+			base.ResetCursorRects ();
+			if (Backend.Cursor != null)
+				AddCursorRect (Bounds, Backend.Cursor);
 		}
 	}
 }

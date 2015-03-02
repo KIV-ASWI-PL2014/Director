@@ -28,7 +28,6 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Linq;
 using System.Windows.Input;
 using SWC = System.Windows.Controls;
 using WKey = System.Windows.Input.Key;
@@ -66,12 +65,22 @@ namespace Xwt.WPFBackend
 
 		protected override void OnCollapsed(RoutedEventArgs e)
 		{
+			var node = DataContext as TreeStoreNode;
+			if (node == null) {
+				return;
+			}
 			if (!IsExpanded)
 				UnselectChildren((object o, ExTreeViewItem i) =>
 				{
 					return i != this;
 				});
+			view.Backend.Context.InvokeUserCode (delegate {
+				((ITreeViewEventSink)view.Backend.EventSink).OnRowCollapsing (node);
+			});
 			base.OnCollapsed(e);
+			view.Backend.Context.InvokeUserCode (delegate {
+				((ITreeViewEventSink)view.Backend.EventSink).OnRowCollapsed (node);
+			});
 		}
 
 		public int Level {
@@ -117,147 +126,11 @@ namespace Xwt.WPFBackend
 			return new ExTreeViewItem (this.view);
 		}
 
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            base.OnMouseMove(e);
-
-            var p = e.GetPosition(view);
-            var a = new MouseMovedEventArgs(e.Timestamp, p.X, p.Y);
-            view.Backend.Context.InvokeUserCode(delegate
-            {
-                ((ITreeViewEventSink)view.Backend.EventSink).OnMouseMoved(a);
-            });
-        }
-
-        class DragDropData
-        {
-            // Source
-            public bool AutodetectDrag;
-            public Rect DragRect = Rect.Empty;
-            // Target
-            public TransferDataType[] TargetTypes = new TransferDataType[0];
-        }
-
-
-        DragDropData dragDropInfo;
-
-        DragDropData DragDropInfo
-        {
-            get
-            {
-                if (dragDropInfo == null)
-                    dragDropInfo = new DragDropData();
-
-                return dragDropInfo;
-            }
-        }
-
-        protected override void OnDragOver(System.Windows.DragEventArgs e)
-        {
-            base.OnDragOver(e);
-
-            Console.WriteLine("Drag OVER item");
-
-            var pos = e.GetPosition(view).ToXwtPoint();
-            var proposedAction = DetectDragAction(e.KeyStates);
-            var store = new TransferDataStore();
-
-            FillDataStore(store, e.Data, DragDropInfo.TargetTypes);
-
-            var args = new DragOverEventArgs(pos, store, proposedAction);
-
-            view.Backend.Context.InvokeUserCode(delegate
-            {
-                ((ITreeViewEventSink)view.Backend.EventSink).OnDragOver(args);
-            });
-        }
-
-        static void FillDataStore(TransferDataStore store, IDataObject data, TransferDataType[] types)
-        {
-            foreach (var type in types)
-            {
-                string format = type.ToWpfDataFormat();
-                if (!data.GetDataPresent(format))
-                {
-                    // This is a workaround to support type names which don't include the assembly name.
-                    // It eases integration with Windows DND.
-                    format = NormalizeTypeName(format);
-                    if (!data.GetDataPresent(format))
-                        continue;
-                }
-
-                var value = data.GetData(format);
-                if (type == TransferDataType.Text)
-                    store.AddText((string)value);
-                else if (type == TransferDataType.Uri)
-                {
-                    var uris = ((string[])value).Select(f => new Uri(f)).ToArray();
-                    store.AddUris(uris);
-                }
-                else if (value is byte[])
-                    store.AddValue(type, (byte[])value);
-                else
-                    store.AddValue(type, value);
-            }
-        }
-
-        static string NormalizeTypeName(string dataType)
-        {
-            // If the string is a fully qualified type name, strip the assembly name
-            int i = dataType.IndexOf(',');
-            if (i == -1)
-                return dataType;
-            string asmName = dataType.Substring(i + 1).Trim();
-            try
-            {
-                new System.Reflection.AssemblyName(asmName);
-            }
-            catch
-            {
-                return dataType;
-            }
-            return dataType.Substring(0, i).Trim();
-        }
-
-
-        static DragDropAction DetectDragAction(DragDropKeyStates keys)
-        {
-            if ((keys & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey)
-            {
-                if ((keys & DragDropKeyStates.ShiftKey) == DragDropKeyStates.ShiftKey)
-                    return DragDropAction.Link;
-                else
-                    return DragDropAction.Copy;
-            }
-
-            return DragDropAction.Move;
-        }
-
 		protected override void OnMouseLeftButtonDown (MouseButtonEventArgs e) {
 			view.SelectItem(this);
 			e.Handled = true;
 			base.OnMouseLeftButtonDown(e);
-
-            var args = ToXwtButtonArgs(e);
-
-            view.Backend.Context.InvokeUserCode(delegate
-            {
-                ((ITreeViewEventSink)view.Backend.EventSink).OnButtonPressed(args);
-            });
 		}
-
-        ButtonEventArgs ToXwtButtonArgs(MouseButtonEventArgs e)
-        {
-            var pos = e.GetPosition(view);
-            return new ButtonEventArgs()
-            {
-                X = pos.X,
-                Y = pos.Y,
-                MultiplePress = e.ClickCount,
-                Button = e.ChangedButton.ToXwtButton()
-            };
-        }
-
 
 		private ExTreeView TreeView
 		{

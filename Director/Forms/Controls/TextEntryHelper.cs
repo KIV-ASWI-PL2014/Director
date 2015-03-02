@@ -97,16 +97,7 @@ namespace Director.Forms.Controls
             get { return HelperListView.Visible; }
             set { HelperListView.Visible = value; }
         }
-
-        /// <summary>
-        /// Use tab indexes!
-        /// </summary>
-        public int TabIndex
-        {
-            set { InnerTextEntry.TabIndex = value; }
-            get { return InnerTextEntry.TabIndex; }
-        }
-
+			
         /// <summary>
         /// Constructor.
         /// </summary>
