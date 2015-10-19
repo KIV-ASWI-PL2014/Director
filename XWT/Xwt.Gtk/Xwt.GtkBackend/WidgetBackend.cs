@@ -157,17 +157,8 @@ namespace Xwt.GtkBackend
 		
 		public virtual void SetFocus ()
 		{
-			Widget.IsFocus = true;
-//			SetFocus (Widget);
-		}
-
-		void SetFocus (Gtk.Widget w)
-		{
-			if (w.Parent != null)
-				SetFocus (w.Parent);
-			w.GrabFocus ();
-			w.IsFocus = true;
-			w.HasFocus = true;
+			if (CanGetFocus)
+				Widget.GrabFocus ();
 		}
 
 		public string TooltipText {
@@ -269,6 +260,8 @@ namespace Xwt.GtkBackend
 				MarkDestroyed (Frontend);
 				Widget.Destroy ();
 			}
+			if (IMContext != null)
+				IMContext.Dispose ();
 		}
 
 		void MarkDestroyed (Widget w)
@@ -442,11 +435,18 @@ namespace Xwt.GtkBackend
 			// Wraps the widget with an event box. Required for some
 			// widgets such as Label which doesn't have its own gdk window
 
+			if (visibleWindow) {
+				if (eventBox != null)
+					eventBox.VisibleWindow = true;
+				else if (EventsRootWidget is Gtk.EventBox)
+					((Gtk.EventBox)EventsRootWidget).VisibleWindow = true;
+			}
+
 			if (!NeedsEventBox) return;
 
 			if (eventBox == null && !EventsRootWidget.GetHasWindow()) {
 				if (EventsRootWidget is Gtk.EventBox) {
-					((Gtk.EventBox)EventsRootWidget).VisibleWindow = true;
+					((Gtk.EventBox)EventsRootWidget).VisibleWindow = visibleWindow;
 					return;
 				}
 				eventBox = new Gtk.EventBox ();
@@ -513,11 +513,26 @@ namespace Xwt.GtkBackend
 				case WidgetEvent.BoundsChanged:
 					Widget.SizeAllocated += HandleWidgetBoundsChanged;
 					break;
-                case WidgetEvent.MouseScrolled:
-                    AllocEventBox();
+				case WidgetEvent.MouseScrolled:
+					AllocEventBox();
 					EventsRootWidget.AddEvents ((int)Gdk.EventMask.ScrollMask);
-                    Widget.ScrollEvent += HandleScrollEvent;
-                    break;
+					Widget.ScrollEvent += HandleScrollEvent;
+					break;
+				case WidgetEvent.TextInput:
+					if (EditableWidget != null) {
+						EditableWidget.TextInserted += HandleTextInserted;
+					} else {
+						RunWhenRealized (delegate {
+							if (IMContext == null) {
+								IMContext = new Gtk.IMMulticontext ();
+								IMContext.ClientWindow = EventsRootWidget.GdkWindow;
+								IMContext.Commit += HandleImCommitEvent;
+							}
+						});
+						Widget.KeyPressEvent += HandleTextInputKeyPressEvent;
+						Widget.KeyReleaseEvent += HandleTextInputKeyReleaseEvent;
+					}
+					break;
 				}
 				if ((ev & dragDropEvents) != 0 && (enabledEvents & dragDropEvents) == 0) {
 					// Enabling a drag&drop event for the first time
@@ -580,11 +595,21 @@ namespace Xwt.GtkBackend
 				case WidgetEvent.BoundsChanged:
 					Widget.SizeAllocated -= HandleWidgetBoundsChanged;
 					break;
-                case WidgetEvent.MouseScrolled:
+				case WidgetEvent.MouseScrolled:
 					if (!EventsRootWidget.IsRealized)
 						EventsRootWidget.Events &= ~Gdk.EventMask.ScrollMask;
-                    Widget.ScrollEvent -= HandleScrollEvent;
-                    break;
+					Widget.ScrollEvent -= HandleScrollEvent;
+					break;
+				case WidgetEvent.TextInput:
+					if (EditableWidget != null) {
+						EditableWidget.TextInserted -= HandleTextInserted;
+					} else {
+						if (IMContext != null)
+							IMContext.Commit -= HandleImCommitEvent;
+						Widget.KeyPressEvent -= HandleTextInputKeyPressEvent;
+						Widget.KeyReleaseEvent -= HandleTextInputKeyReleaseEvent;
+					}
+					break;
 				}
 				
 				enabledEvents &= ~ev;
@@ -664,23 +689,80 @@ namespace Xwt.GtkBackend
 			return new KeyEventArgs (k, (int)args.Event.KeyValue, m, false, (long)args.Event.Time);
 		}
 
-        [GLib.ConnectBefore]
-        void HandleScrollEvent(object o, Gtk.ScrollEventArgs args)
-        {
+		protected Gtk.IMContext IMContext { get; set; }
+
+		[GLib.ConnectBefore]
+		void HandleTextInserted (object o, Gtk.TextInsertedArgs args)
+		{
+			if (String.IsNullOrEmpty (args.GetText ()))
+				return;
+
+			var pargs = new TextInputEventArgs (args.GetText ());
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnTextInput (pargs);
+			});
+
+			if (pargs.Handled)
+				((GLib.Object)o).StopSignal ("insert-text");
+		}
+
+		[GLib.ConnectBefore]
+		void HandleTextInputKeyReleaseEvent (object o, Gtk.KeyReleaseEventArgs args)
+		{
+			if (IMContext != null)
+				IMContext.FilterKeypress (args.Event);
+		}
+
+		[GLib.ConnectBefore]
+		void HandleTextInputKeyPressEvent (object o, Gtk.KeyPressEventArgs args)
+		{
+			if (IMContext != null)
+				IMContext.FilterKeypress (args.Event);
+
+			// new lines are not triggered by im, handle them here
+			if (args.Event.Key == Gdk.Key.Return ||
+			    args.Event.Key == Gdk.Key.ISO_Enter ||
+			    args.Event.Key == Gdk.Key.KP_Enter) {
+				var pargs = new TextInputEventArgs (Environment.NewLine);
+				ApplicationContext.InvokeUserCode (delegate {
+					EventSink.OnTextInput (pargs);
+				});
+			}
+		}
+
+		[GLib.ConnectBefore]
+		void HandleImCommitEvent (object o, Gtk.CommitArgs args)
+		{
+			if (String.IsNullOrEmpty (args.Str))
+				return;
+
+			var pargs = new TextInputEventArgs (args.Str);
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnTextInput (pargs);
+			});
+
+			if (pargs.Handled)
+				args.RetVal = true;
+		}
+
+		[GLib.ConnectBefore]
+		void HandleScrollEvent(object o, Gtk.ScrollEventArgs args)
+		{
 			var a = GetScrollEventArgs (args);
 			if (a == null)
 				return;
-            ApplicationContext.InvokeUserCode (delegate {
-                EventSink.OnMouseScrolled(a);
-            });
-            if (a.Handled)
-                args.RetVal = true;
+			ApplicationContext.InvokeUserCode (delegate {
+				EventSink.OnMouseScrolled(a);
+			});
+			if (a.Handled)
+			args.RetVal = true;
 		}
 
 		protected virtual MouseScrolledEventArgs GetScrollEventArgs (Gtk.ScrollEventArgs args)
 		{
 			var direction = args.Event.Direction.ToXwtValue ();
-			return new MouseScrolledEventArgs ((long) args.Event.Time, args.Event.X, args.Event.Y, direction);
+			var pointer_coords = EventsRootWidget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			return new MouseScrolledEventArgs ((long) args.Event.Time, pointer_coords.X, pointer_coords.Y, direction);
 		}
         
 
@@ -734,7 +816,8 @@ namespace Xwt.GtkBackend
 
 		protected virtual MouseMovedEventArgs GetMouseMovedEventArgs (Gtk.MotionNotifyEventArgs args)
 		{
-			return new MouseMovedEventArgs ((long) args.Event.Time, args.Event.X, args.Event.Y);
+			var pointer_coords = EventsRootWidget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			return new MouseMovedEventArgs ((long) args.Event.Time, pointer_coords.X, pointer_coords.Y);
 		}
 
 		void HandleButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
@@ -752,8 +835,11 @@ namespace Xwt.GtkBackend
 		protected virtual ButtonEventArgs GetButtonReleaseEventArgs (Gtk.ButtonReleaseEventArgs args)
 		{
 			var a = new ButtonEventArgs ();
-			a.X = args.Event.X;
-			a.Y = args.Event.Y;
+
+			var pointer_coords = EventsRootWidget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			a.X = pointer_coords.X;
+			a.Y = pointer_coords.Y;
+
 			a.Button = (PointerButton) args.Event.Button;
 			return a;
 		}
@@ -774,8 +860,10 @@ namespace Xwt.GtkBackend
 		protected virtual ButtonEventArgs GetButtonPressEventArgs (Gtk.ButtonPressEventArgs args)
 		{
 			var a = new ButtonEventArgs ();
-			a.X = args.Event.X;
-			a.Y = args.Event.Y;
+
+			var pointer_coords = EventsRootWidget.CheckPointerCoordinates (args.Event.Window, args.Event.X, args.Event.Y);
+			a.X = pointer_coords.X;
+			a.Y = pointer_coords.Y;
 
 			a.Button = (PointerButton) args.Event.Button;
 			if (args.Event.Type == Gdk.EventType.TwoButtonPress)
